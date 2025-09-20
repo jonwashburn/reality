@@ -1490,7 +1490,8 @@ def Recognition_Closure (φ : ℝ) : Prop :=
     IndisputableMonolith.RH.RS.UniqueCalibration L B A ∧
     IndisputableMonolith.RH.RS.MeetsBands L B (IndisputableMonolith.RH.RS.sampleBandsFor U.c))
   ∧ IndisputableMonolith.RH.RS.Inevitability_dimless φ
-  ∧ ∃ C : CertFamily, Verified φ C
+  ∧ ∃ C : CertFamily, (Verified φ C ∧
+      (C.kgate ≠ [] ∧ C.kidentities ≠ [] ∧ C.lambdaRec ≠ [] ∧ C.speedFromUnits ≠ []))
 
 /-- Canonical scaffold for Recognition Closure using existing witnesses. -/
 theorem recognition_closure_any (φ : ℝ) : Recognition_Closure φ := by
@@ -1500,9 +1501,11 @@ theorem recognition_closure_any (φ : ℝ) : Recognition_Closure φ := by
   · -- Dimensionless inevitability (spec witness)
     have h := InevitabilityDimlessCert.verified_any (c := {})
     simpa using h φ
-  · -- Existence of a (possibly empty) verified certificate family
+  · -- Existence of a non‑empty verified certificate family
     rcases demo_generators φ with ⟨C, hC⟩
-    exact ⟨C, hC⟩
+    refine ⟨C, And.intro hC ?nonempty⟩
+    -- Show selected lists are non‑empty
+    simp [demo_generators]
 
 end URCGenerators
 end IndisputableMonolith
