@@ -14,6 +14,12 @@ structure PathWeight (γ : Type) where
   sum_prob_eq_one : Finset.sum normSet (fun g => prob g) = 1
 -- (prob_comp omitted in WIP minimal stub)
 
+/-- Bose–Einstein occupancy: n_B(E;β,μ) = 1 / (exp(β (E − μ)) − 1). -/
+def occupancyBose (β μ E : ℝ) : ℝ := 1 / (Real.exp (β * (E - μ)) - 1)
+
+/-- Fermi–Dirac occupancy: n_F(E;β,μ) = 1 / (exp(β (E − μ)) + 1). -/
+def occupancyFermi (β μ E : ℝ) : ℝ := 1 / (Real.exp (β * (E - μ)) + 1)
+
 structure BornRuleIface (γ : Type) (PW : PathWeight γ) : Prop where
   normalized : Finset.sum PW.normSet (fun g => PW.prob g) = 1
   prob_nonneg : ∀ g, 0 ≤ PW.prob g

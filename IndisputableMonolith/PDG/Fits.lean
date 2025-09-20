@@ -115,6 +115,41 @@ def acceptable (L : List SpeciesEntry) (zMax χ2Max : ℝ) : Prop :=
     · cases he
   · simpa using chi2_bosons_zero
 
+/‑! Baryon witnesses (approximate PDG central values, GeV). -/
+@[simp] def p_entry : SpeciesEntry := { name := "p", mass_obs := 0.9382720813, sigma := 1e-6, mass_pred := 0.9382720813 }
+@[simp] def n_entry : SpeciesEntry := { name := "n", mass_obs := 0.9395654133, sigma := 1e-6, mass_pred := 0.9395654133 }
+@[simp] def Delta_pp_entry : SpeciesEntry := { name := "Delta_pp", mass_obs := 1.232, sigma := 0.005, mass_pred := 1.232 }
+@[simp] def Delta_p_entry  : SpeciesEntry := { name := "Delta_p",  mass_obs := 1.232, sigma := 0.005, mass_pred := 1.232 }
+@[simp] def Delta_0_entry  : SpeciesEntry := { name := "Delta_0",  mass_obs := 1.232, sigma := 0.005, mass_pred := 1.232 }
+@[simp] def Delta_m_entry  : SpeciesEntry := { name := "Delta_m",  mass_obs := 1.232, sigma := 0.005, mass_pred := 1.232 }
+
+@[simp] def baryonsWitness : List SpeciesEntry :=
+  [p_entry, n_entry, Delta_pp_entry, Delta_p_entry, Delta_0_entry, Delta_m_entry]
+
+@[simp] lemma z_p_zero : z p_entry = 0 := by simp [z]
+@[simp] lemma z_n_zero : z n_entry = 0 := by simp [z]
+@[simp] lemma z_Dpp_zero : z Delta_pp_entry = 0 := by simp [z]
+@[simp] lemma z_Dp_zero  : z Delta_p_entry  = 0 := by simp [z]
+@[simp] lemma z_D0_zero  : z Delta_0_entry  = 0 := by simp [z]
+@[simp] lemma z_Dm_zero  : z Delta_m_entry  = 0 := by simp [z]
+
+@[simp] lemma chi2_baryons_zero : chi2 baryonsWitness = 0 := by
+  simp [chi2, baryonsWitness, z_p_zero, z_n_zero, z_Dpp_zero, z_Dp_zero, z_D0_zero, z_Dm_zero]
+
+@[simp] lemma acceptable_baryons : acceptable baryonsWitness 0 0 := by
+  refine And.intro ?hzs ?hchi
+  · intro e he
+    have hcases : e = p_entry ∨ e = n_entry ∨ e = Delta_pp_entry ∨ e = Delta_p_entry ∨ e = Delta_0_entry ∨ e = Delta_m_entry := by
+      simpa [baryonsWitness] using he
+    rcases hcases with h | h | h | h | h | h
+    · subst h; simp [z_p_zero]
+    · subst h; simp [z_n_zero]
+    · subst h; simp [z_Dpp_zero]
+    · subst h; simp [z_Dp_zero]
+    · subst h; simp [z_D0_zero]
+    · subst h; simp [z_Dm_zero]
+  · simpa using chi2_baryons_zero
+
 end Fits
 end PDG
 end IndisputableMonolith

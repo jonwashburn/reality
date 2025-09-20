@@ -35,6 +35,27 @@ namespace URCAdapters
     exact IndisputableMonolith.Constants.RSUnits.K_gate_eqK U
   "KIdentitiesCert: OK"
 
+/-- #eval-friendly report for InvariantsRatioCert. -/
+@[simp] def invariants_ratio_report : String :=
+  let cert : URCGenerators.InvariantsRatioCert := {}
+  have _ : URCGenerators.InvariantsRatioCert.verified cert :=
+    URCGenerators.InvariantsRatioCert.verified_any _
+  "InvariantsRatioCert: OK"
+
+/-- #eval-friendly report for PlanckLengthIdentityCert. -/
+@[simp] def planck_length_identity_report : String :=
+  let cert : URCGenerators.PlanckLengthIdentityCert := {}
+  have _ : URCGenerators.PlanckLengthIdentityCert.verified cert :=
+    URCGenerators.PlanckLengthIdentityCert.verified_any _
+  "PlanckLengthIdentityCert: OK"
+
+/-- #eval-friendly report for RouteAGateIdentityCert (ħ = E_coh·τ0). -/
+@[simp] def routeA_gate_identity_report : String :=
+  let cert : URCGenerators.RouteAGateIdentityCert := {}
+  have _ : URCGenerators.RouteAGateIdentityCert.verified cert :=
+    URCGenerators.RouteAGateIdentityCert.verified_any _
+  "RouteAGateIdentityCert: OK"
+
 /-- #eval-friendly report confirming KGateCert via the K-gate bridge hook. -/
 @[simp] def k_gate_report : String :=
   let U : IndisputableMonolith.Constants.RSUnits :=
@@ -80,12 +101,33 @@ namespace URCAdapters
   have hKB : URCGenerators.UnitsInvarianceCert.verified KB := URCGenerators.UnitsInvarianceCert.verified_any _
   "UnitsInvarianceCert: OK"
 
+/-- #eval-friendly report for UnitsQuotientFunctorCert (bridge factorization). -/
+@[simp] def units_quotient_functor_report : String :=
+  let cert : URCGenerators.UnitsQuotientFunctorCert := {}
+  have _ : URCGenerators.UnitsQuotientFunctorCert.verified cert :=
+    URCGenerators.UnitsQuotientFunctorCert.verified_any _
+  "UnitsQuotientFunctorCert: OK"
+
 /-- #eval-friendly report for EightTickMinimalCert (T6). -/
 @[simp] def eight_tick_report : String :=
   let cert : URCGenerators.EightTickMinimalCert := {}
   have _ : URCGenerators.EightTickMinimalCert.verified cert :=
     URCGenerators.EightTickMinimalCert.verified_any _
   "EightTickMinimalCert: OK"
+
+/-- #eval-friendly report for EightBeatHypercubeCert (N_ticks = 2^D). -/
+@[simp] def hypercube_period_report : String :=
+  let cert3 : URCGenerators.EightBeatHypercubeCert := { D := 3 }
+  have _ : URCGenerators.EightBeatHypercubeCert.verified cert3 :=
+    URCGenerators.EightBeatHypercubeCert.verified_any _
+  "EightBeatHypercubeCert: OK"
+
+/-- #eval-friendly report for GrayCodeCycleCert (8-vertex Hamiltonian cycle). -/
+@[simp] def gray_code_cycle_report : String :=
+  let cert : URCGenerators.GrayCodeCycleCert := {}
+  have _ : URCGenerators.GrayCodeCycleCert.verified cert :=
+    URCGenerators.GrayCodeCycleCert.verified_any _
+  "GrayCodeCycleCert: OK"
 
 /-- #eval-friendly report for Window8NeutralityCert. -/
 @[simp] def window8_report : String :=
@@ -242,6 +284,62 @@ namespace URCAdapters
     URCGenerators.BornRuleCert.verified_any _
   "BornRuleCert: OK"
 
+/-- #eval-friendly report for QuantumOccupancyCert (Bose/Fermi occupancy + Born). -/
+@[simp] def quantum_occupancy_report : String :=
+  let cert : URCGenerators.QuantumOccupancyCert := {}
+  have _ : URCGenerators.QuantumOccupancyCert.verified cert :=
+    URCGenerators.QuantumOccupancyCert.verified_any _
+  "QuantumOccupancyCert: OK"
+
+/-- #eval-friendly report for PathCostIsomorphismCert (additivity + policy placeholder). -/
+@[simp] def path_cost_isomorphism_report : String :=
+  let cert : URCGenerators.PathCostIsomorphismCert := {}
+  have _ : URCGenerators.PathCostIsomorphismCert.verified cert :=
+    URCGenerators.PathCostIsomorphismCert.verified_any _
+  "PathCostIsomorphismCert: OK"
+
+/-- #eval-friendly report for GapSeriesClosedFormCert (F(1)=ln φ). -/
+@[simp] def gap_series_closed_form_report : String :=
+  let cert : URCGenerators.GapSeriesClosedFormCert := {}
+  have _ : URCGenerators.GapSeriesClosedFormCert.verified cert :=
+    URCGenerators.GapSeriesClosedFormCert.verified_any _
+  "GapSeriesClosedFormCert: OK"
+
+/-- #eval-friendly report for ILGKernelFormCert (policy-level form check). -/
+@[simp] def ilg_kernel_form_report : String :=
+  let cert : URCGenerators.ILGKernelFormCert := {}
+  have _ : URCGenerators.ILGKernelFormCert.verified cert :=
+    URCGenerators.ILGKernelFormCert.verified_any _
+  "ILGKernelFormCert: OK"
+
+/-- #eval-friendly report for InflationPotentialCert. -/
+@[simp] def inflation_potential_report : String :=
+  let cert : URCGenerators.InflationPotentialCert := {}
+  have _ : URCGenerators.InflationPotentialCert.verified cert :=
+    URCGenerators.InflationPotentialCert.verified_any _
+  "InflationPotentialCert: OK"
+
+/-- #eval-friendly report for IRCoherenceGateCert (tolerance policy). -/
+@[simp] def ir_coherence_gate_report : String :=
+  let cert : URCGenerators.IRCoherenceGateCert := {}
+  have _ : URCGenerators.IRCoherenceGateCert.verified cert :=
+    URCGenerators.IRCoherenceGateCert.verified_any _
+  "IRCoherenceGateCert: OK"
+
+/-- #eval-friendly report for PlanckGateToleranceCert (policy). -/
+@[simp] def planck_gate_tolerance_report : String :=
+  let cert : URCGenerators.PlanckGateToleranceCert := {}
+  have _ : URCGenerators.PlanckGateToleranceCert.verified cert :=
+    URCGenerators.PlanckGateToleranceCert.verified_any _
+  "PlanckGateToleranceCert: OK"
+
+/-- #eval-friendly report for ProtonNeutronSplitCert. -/
+@[simp] def pn_split_report : String :=
+  let cert : URCGenerators.ProtonNeutronSplitCert := { tol := 1e-6, htol := by norm_num }
+  have _ : URCGenerators.ProtonNeutronSplitCert.verified cert :=
+    URCGenerators.ProtonNeutronSplitCert.verified_any _
+  "ProtonNeutronSplitCert: OK"
+
 
 /-- #eval-friendly report for FoldingComplexityCert. -/
 @[simp] def folding_complexity_report : String :=
@@ -278,18 +376,31 @@ namespace URCAdapters
     URCGenerators.ControlsInflateCert.verified_any _
   "ControlsInflateCert: OK"
 
+/-- #eval-friendly report for LambdaRecUncertaintyCert (u_rel(λ_rec)=½u_rel(G)). -/
+@[simp] def lambda_rec_uncertainty_report : String :=
+  let cert : URCGenerators.LambdaRecUncertaintyCert := {}
+  have _ : URCGenerators.LambdaRecUncertaintyCert.verified cert :=
+    URCGenerators.LambdaRecUncertaintyCert.verified_any _
+  "LambdaRecUncertaintyCert: OK"
+
 /-- Consolidated manifest of certificate reports (forces elaboration of each). -/
 @[simp] def certificates_manifest : String :=
   String.intercalate "\n"
     [ routeA_report
     , k_identities_report
+    , invariants_ratio_report
+    , planck_length_identity_report
+    , routeA_gate_identity_report
     , k_gate_report
     , lambda_rec_identity_report
     , single_inequality_report
     , exactness_report
     , cone_bound_report
     , units_invariance_report
+    , units_quotient_functor_report
     , eight_tick_report
+    , hypercube_period_report
+    , gray_code_cycle_report
     , window8_report
     , ledger_units_report
     , rung45_report
@@ -304,6 +415,14 @@ namespace URCAdapters
     , maxwell_continuity_report
     , bose_fermi_report
     , born_rule_report
+    , quantum_occupancy_report
+    , path_cost_isomorphism_report
+    , gap_series_closed_form_report
+    , ilg_kernel_form_report
+    , inflation_potential_report
+    , ir_coherence_gate_report
+    , planck_gate_tolerance_report
+    , pn_split_report
     , rotation_identity_report
     , ilg_time_report
     , ilg_effective_report
@@ -314,6 +433,7 @@ namespace URCAdapters
     , dec_dd_zero_report
     , dec_bianchi_report
     , controls_inflate_report
+    , lambda_rec_uncertainty_report
     , pdg_fits_report
     , sat_separation_report
     ]
