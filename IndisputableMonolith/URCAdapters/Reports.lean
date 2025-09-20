@@ -57,6 +57,17 @@ namespace URCAdapters
     URCGenerators.PlanckLengthIdentityCert.verified_any _
   "PlanckLengthIdentityCert: OK"
 
+/-- #eval-friendly physical witness for λ_rec identities requiring Physical B. -/
+@[simp] def lambda_rec_identity_physical_report : String :=
+  -- Construct a concrete BridgeData and Physical witness
+  let B : IndisputableMonolith.BridgeData :=
+    { G := 1, hbar := 1, c := 1, tau0 := 1, ell0 := 1 }
+  let H : IndisputableMonolith.BridgeData.Physical B :=
+    { c_pos := by norm_num, hbar_pos := by norm_num, G_pos := by norm_num }
+  -- Exercise the physical lemma explicitly
+  have _ := IndisputableMonolith.BridgeData.lambda_rec_dimensionless_id_physical B H
+  "LambdaRecIdentity (physical witness): OK"
+
 /-- #eval-friendly report for RouteAGateIdentityCert (ħ = E_coh·τ0). -/
 @[simp] def routeA_gate_identity_report : String :=
   let cert : URCGenerators.RouteAGateIdentityCert := {}
@@ -235,6 +246,19 @@ namespace URCAdapters
     URCGenerators.RotationIdentityCert.verified_any _
   "RotationIdentityCert: OK"
 
+/-- #eval-friendly physical witness for Planck-length identity requiring Physical B. -/
+@[simp] def planck_length_identity_physical_report : String :=
+  let B : IndisputableMonolith.BridgeData :=
+    { G := 1, hbar := 1, c := 1, tau0 := 1, ell0 := 1 }
+  let H : IndisputableMonolith.BridgeData.Physical B :=
+    { c_pos := by norm_num, hbar_pos := by norm_num, G_pos := by norm_num }
+  -- Use the certificate theorem on a concrete witness
+  let cert : URCGenerators.PlanckLengthIdentityCert := {}
+  have _ : URCGenerators.PlanckLengthIdentityCert.verified cert :=
+    URCGenerators.PlanckLengthIdentityCert.verified_any _
+  have _ := (URCGenerators.PlanckLengthIdentityCert.verified_any cert) B H
+  "PlanckLengthIdentity (physical witness): OK"
+
 /-- #eval-friendly report for SpeedFromUnitsCert (ℓ0/τ0=c and display-speed=c). -/
 @[simp] def speed_from_units_report : String :=
   let cert : URCGenerators.SpeedFromUnitsCert := {}
@@ -406,9 +430,11 @@ namespace URCAdapters
     , k_identities_report
     , invariants_ratio_report
     , planck_length_identity_report
+    , lambda_rec_identity_physical_report
     , routeA_gate_identity_report
     , k_gate_report
     , lambda_rec_identity_report
+    , planck_length_identity_physical_report
     , single_inequality_report
     , exactness_report
     , cone_bound_report
