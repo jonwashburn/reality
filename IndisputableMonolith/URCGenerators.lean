@@ -941,6 +941,10 @@ structure InflationPotentialCert where
 
 /‑! ILG kernel closed form (policy level): w(k,a) = 1 + φ^{-3/2} [a/(k τ0)]^α with α=(1−1/φ)/2. -/
 
+namespace Policy
+
+/‑! Policy‑level placeholders: kept out of the Verified bundle. -/
+
 structure ILGKernelFormCert where
   deriving Repr
 
@@ -968,6 +972,8 @@ structure PlanckGateToleranceCert where
 
 @[simp] theorem PlanckGateToleranceCert.verified_any (c : PlanckGateToleranceCert) :
   PlanckGateToleranceCert.verified c := by trivial
+
+end Policy
 
 structure CertFamily where
   unitsInv : List UnitsInvarianceCert := []
@@ -1004,10 +1010,7 @@ structure CertFamily where
   quantumOccupancy : List QuantumOccupancyCert := []
   pathCostIso : List PathCostIsomorphismCert := []
   gapSeriesClosed : List GapSeriesClosedFormCert := []
-  ilgKernel : List ILGKernelFormCert := []
   inflationPotential : List InflationPotentialCert := []
-  irCoherenceGate : List IRCoherenceGateCert := []
-  planckGateTolerance : List PlanckGateToleranceCert := []
   pnSplit : List ProtonNeutronSplitCert := []
   lnalInv : List LNALInvariantsCert := []
   compilerChecks : List CompilerStaticChecksCert := []
@@ -1063,10 +1066,8 @@ def Verified (φ : ℝ) (C : CertFamily) : Prop :=
   (∀ c ∈ C.quantumOccupancy, QuantumOccupancyCert.verified c) ∧
   (∀ c ∈ C.pathCostIso, PathCostIsomorphismCert.verified c) ∧
   (∀ c ∈ C.gapSeriesClosed, GapSeriesClosedFormCert.verified c) ∧
-  (∀ c ∈ C.ilgKernel, ILGKernelFormCert.verified c) ∧
   (∀ c ∈ C.inflationPotential, InflationPotentialCert.verified c) ∧
-  (∀ c ∈ C.irCoherenceGate, IRCoherenceGateCert.verified c) ∧
-  (∀ c ∈ C.planckGateTolerance, PlanckGateToleranceCert.verified c) ∧
+  True ∧  True ∧
   (∀ c ∈ C.pnSplit, ProtonNeutronSplitCert.verified c) ∧
   (∀ c ∈ C.lnalInv, LNALInvariantsCert.verified c) ∧
   (∀ c ∈ C.compilerChecks, CompilerStaticChecksCert.verified c) ∧

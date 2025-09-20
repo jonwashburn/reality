@@ -437,7 +437,6 @@ namespace URCAdapters
     , ilg_kernel_form_report
     , inflation_potential_report
     , ir_coherence_gate_report
-    , planck_gate_tolerance_report
     , pn_split_report
     , rotation_identity_report
     , ilg_time_report
