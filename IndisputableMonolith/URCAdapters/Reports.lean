@@ -1,6 +1,7 @@
 import Mathlib
 import IndisputableMonolith.Constants.KDisplay
 import IndisputableMonolith.Verification
+import IndisputableMonolith.Verification.Reality
 import IndisputableMonolith.Constants
 import IndisputableMonolith.URCGenerators
 import IndisputableMonolith.Bridge.DataExt
@@ -17,6 +18,13 @@ namespace URCAdapters
 
 /-- #eval-friendly report. -/
 @[simp] def lambda_report : String := "URC λ_rec uniqueness: OK"
+
+/-- #eval-friendly report confirming RS measures reality at a chosen φ. -/
+@[simp] def reality_bridge_report : String :=
+  let φ : ℝ := IndisputableMonolith.Constants.phi
+  have _ : IndisputableMonolith.Verification.Reality.RSMeasuresReality φ :=
+    IndisputableMonolith.Verification.Reality.rs_measures_reality_any φ
+  "RSMeasuresReality: OK"
 
 /-- #eval-friendly recognition closure report (meta certificate). -/
 @[simp] def recognition_closure_report : String :=
@@ -394,6 +402,7 @@ namespace URCAdapters
 @[simp] def certificates_manifest : String :=
   String.intercalate "\n"
     [ routeA_report
+    , reality_bridge_report
     , k_identities_report
     , invariants_ratio_report
     , planck_length_identity_report
