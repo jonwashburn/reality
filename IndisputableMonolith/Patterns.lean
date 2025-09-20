@@ -25,9 +25,8 @@ theorem cover_exact_pow (d : Nat) : ∃ w : CompleteCover d, w.period = 2 ^ d :=
           , path := fun i => e i
           , complete := (Fintype.equivFin (Pattern d)).symm.surjective }, ?_⟩
   have hcard : Fintype.card (Pattern d) = 2 ^ d := by
-    simpa [Pattern, Fintype.card_bool, Fintype.card_fin] using
-      (Fintype.card_fun (Fin d) Bool)
-  simpa [hcard]
+    simp [Pattern, Fintype.card_bool, Fintype.card_fin]
+  simp [hcard]
 
 /-- There exists an 8‑tick complete cover for 3‑bit patterns. -/
  theorem period_exactly_8 : ∃ w : CompleteCover 3, w.period = 8 := by
@@ -36,8 +35,7 @@ theorem cover_exact_pow (d : Nat) : ∃ w : CompleteCover d, w.period = 2 ^ d :=
 /-- Cardinality of the pattern space. -/
 lemma card_pattern (d : Nat) : Fintype.card (Pattern d) = 2 ^ d := by
   classical
-  simpa [Pattern, Fintype.card_fin] using
-    (Fintype.card_fun : Fintype.card (Fin d → Bool) = (Fintype.card Bool) ^ (Fintype.card (Fin d)))
+  simp [Pattern, Fintype.card_fin] at*
 
 /-- No surjection to all d-bit patterns if T < 2^d. -/
 lemma no_surj_small (T d : Nat) (hT : T < 2 ^ d) :
@@ -52,7 +50,6 @@ lemma no_surj_small (T d : Nat) (hT : T < 2 ^ d) :
   have hcard : Fintype.card (Pattern d) ≤ Fintype.card (Fin T) :=
     Fintype.card_le_of_injective _ hginj
   have : 2 ^ d ≤ T := by
-    simp [Fintype.card_fin, card_pattern d] at hcard
     simpa [Fintype.card_fin, card_pattern d] using hcard
   exact (lt_of_le_of_lt this hT).false
 
@@ -77,10 +74,13 @@ theorem T7_nyquist_obstruction {T D : Nat}
 theorem T7_threshold_bijection (D : Nat) : ∃ f : Fin (2 ^ D) → Pattern D, Function.Bijective f := by
   classical
   let e := (Fintype.equivFin (Pattern D))
-  have hcard : Fintype.card (Pattern D) = 2 ^ D := by simpa using card_pattern D
+  have hcard : Fintype.card (Pattern D) = 2 ^ D := by exact card_pattern D
   -- Manual cast equivalence between Fin (2^D) and Fin (Fintype.card (Pattern D))
   let castTo : Fin (2 ^ D) → Fin (Fintype.card (Pattern D)) :=
-    fun i => ⟨i.1, by simpa [hcard] using i.2⟩
+    fun i => ⟨i.1, by
+      -- rewrite the goal via hcard and close with i.2
+      have : i.1 < 2 ^ D := i.2
+      simpa [hcard] using this⟩
   let castFrom : Fin (Fintype.card (Pattern D)) → Fin (2 ^ D) :=
     fun j => ⟨j.1, by simpa [hcard] using j.2⟩
   have hLeft : Function.LeftInverse castFrom castTo := by intro i; cases i; rfl
@@ -103,13 +103,13 @@ theorem T7_threshold_bijection (D : Nat) : ∃ f : Fin (2 ^ D) → Pattern D, Fu
   obtain ⟨w, hp⟩ := cover_exact_pow d
   have : 0 < (2 : ℕ) ^ d := by
     exact pow_pos (by decide : 0 < (2 : ℕ)) d
-  exact ⟨w, by simpa [hp] using this⟩
+  exact ⟨w, by simp [hp]⟩
 
 /-- The 3‑bit complete cover of period 8 has positive period. -/
  theorem period_exactly_8_pos : ∃ w : CompleteCover 3, 0 < w.period := by
   obtain ⟨w, hp⟩ := period_exactly_8
   have : 0 < (8 : ℕ) := by decide
-  exact ⟨w, by simpa [hp] using this⟩
+  exact ⟨w, by simp [hp]⟩
 
 end Patterns
 end IndisputableMonolith

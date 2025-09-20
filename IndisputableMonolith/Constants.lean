@@ -11,7 +11,7 @@ lemma phi_pos : 0 < phi := by
   -- Use that √5 > 0
   have hroot_pos : 0 < Real.sqrt 5 := by
     have : (0 : ℝ) < 5 := by norm_num
-    simpa using Real.sqrt_pos.mpr this
+    exact Real.sqrt_pos.mpr this
   have hnum_pos : 0 < 1 + Real.sqrt 5 := by exact add_pos_of_pos_of_nonneg (by norm_num) (le_of_lt hroot_pos)
   simpa [phi] using (div_pos hnum_pos htwo)
 
