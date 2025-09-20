@@ -138,9 +138,16 @@ noncomputable def tau0 (B : BridgeData) : ℝ := lambda_rec B / B.c
 
 /-! Recognition-specific primitives are left abstract via neutral defaults
     to keep this module axiom-free while isolating numerics elsewhere. -/
-noncomputable abbrev Recognition_r : ℝ := 0
-noncomputable abbrev Recognition_Fgap : ℝ → ℝ := fun _ => 0
-noncomputable abbrev Recognition_Z : ℝ := 0
+/-! Parametric recognition inputs (replace numeric stubs). -/
+
+structure RecognitionInputsScalar where
+  r    : ℝ
+  Fgap : ℝ → ℝ
+  Z    : ℝ
+  deriving Repr
+
+@[simp] noncomputable def neutralInputs : RecognitionInputsScalar :=
+  { r := 0, Fgap := fun _ => 0, Z := 0 }
 
 /-- Coherence energy: E_coh = φ^-5 · (2π ħ / τ0). -/
 noncomputable def E_coh (B : BridgeData) : ℝ :=
@@ -154,14 +161,21 @@ noncomputable def alphaInv : ℝ :=
 noncomputable def alpha : ℝ := 1 / alphaInv
 
 /-- Electron mass in units of E_coh: m_e/E_coh = Φ(r_e + 𝔽(Z_e)). -/
-noncomputable def m_e_over_Ecoh : ℝ :=
-  PhiPow (Recognition_r + Recognition_Fgap Recognition_Z)
+noncomputable def m_e_over_Ecoh_with (I : RecognitionInputsScalar) : ℝ :=
+  PhiPow (I.r + I.Fgap I.Z)
 
 /-- Electron mass: m_e = (m_e/E_coh) · E_coh. -/
-noncomputable def m_e (B : BridgeData) : ℝ := m_e_over_Ecoh * E_coh B
+noncomputable def m_e_with (B : BridgeData) (I : RecognitionInputsScalar) : ℝ :=
+  m_e_over_Ecoh_with I * E_coh B
+
+-- Backwards-compatible default (uses neutral inputs)
+@[simp] noncomputable def m_e (B : BridgeData) : ℝ := m_e_with B neutralInputs
 
 /-- Bohr radius a0 = ħ / (m_e c α). -/
-noncomputable def a0_bohr (B : BridgeData) : ℝ :=
-  B.hbar / (m_e B * B.c * alpha)
+noncomputable def a0_bohr_with (B : BridgeData) (I : RecognitionInputsScalar) : ℝ :=
+  B.hbar / (m_e_with B I * B.c * alpha)
+
+-- Backwards-compatible default (uses neutral inputs)
+@[simp] noncomputable def a0_bohr (B : BridgeData) : ℝ := a0_bohr_with B neutralInputs
 
 end IndisputableMonolith.BridgeData
