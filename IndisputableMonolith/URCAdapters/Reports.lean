@@ -8,9 +8,42 @@ import IndisputableMonolith.Bridge.DataExt
 import IndisputableMonolith.LightCone.StepBounds
 import IndisputableMonolith.Patterns
 import IndisputableMonolith.Quantum
+import IndisputableMonolith.Ethics.Core
+import IndisputableMonolith.Ethics.Decision.BoolProp
+import IndisputableMonolith.Ethics.Decision.Mapping
+import IndisputableMonolith.Ethics.Decision.Fairness
+import IndisputableMonolith.Ethics.Decision.Select
+import IndisputableMonolith.Ethics.Truth
 
 namespace IndisputableMonolith
 namespace URCAdapters
+/-- #eval-friendly report for EthicsPolicyCert. -/
+@[simp] def ethics_policy_report : String :=
+  let cert : URCGenerators.EthicsPolicyCert := {}
+  have _ : URCGenerators.EthicsPolicyCert.verified cert :=
+    URCGenerators.EthicsPolicyCert.verified_any _
+  "EthicsPolicyCert: OK"
+
+/-- #eval-friendly report for FairnessBatchCert. -/
+@[simp] def fairness_batch_report : String :=
+  let cert : URCGenerators.FairnessBatchCert := {}
+  have _ : URCGenerators.FairnessBatchCert.verified cert :=
+    URCGenerators.FairnessBatchCert.verified_any _
+  "FairnessBatchCert: OK"
+
+/-- #eval-friendly report for PreferLexCert. -/
+@[simp] def prefer_lex_report : String :=
+  let cert : URCGenerators.PreferLexCert := {}
+  have _ : URCGenerators.PreferLexCert.verified cert :=
+    URCGenerators.PreferLexCert.verified_any _
+  "PreferLexCert: OK"
+
+/-- #eval-friendly report for TruthLedgerCert. -/
+@[simp] def truth_ledger_report : String :=
+  let cert : URCGenerators.TruthLedgerCert := {}
+  have _ : URCGenerators.TruthLedgerCert.verified cert :=
+    URCGenerators.TruthLedgerCert.verified_any _
+  "TruthLedgerCert: OK"
 
 /-- #eval manifest confirming Route A wiring. -/
 @[simp] def routeA_report : String :=
@@ -477,6 +510,10 @@ namespace URCAdapters
     , lambda_rec_uncertainty_report
     , pdg_fits_report
     , sat_separation_report
+    , ethics_policy_report
+    , fairness_batch_report
+    , prefer_lex_report
+    , truth_ledger_report
     ]
 
 /-- #eval-friendly consolidated audit identities report (K‑gate, K identities, λ_rec identity, single‑inequality). -/

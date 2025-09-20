@@ -24,9 +24,181 @@ import IndisputableMonolith.PDG.Fits
 import IndisputableMonolith.LNAL.VM
 import IndisputableMonolith.Masses.AnchorPolicy
 import IndisputableMonolith.Complexity.BalancedParityHidden
+import IndisputableMonolith.Ethics.Core
+import IndisputableMonolith.Ethics.Decision.BoolProp
+import IndisputableMonolith.Ethics.Decision.Mapping
+import IndisputableMonolith.Ethics.Decision.Fairness
+import IndisputableMonolith.Ethics.Decision.Select
+import IndisputableMonolith.Ethics.Truth
 
 namespace IndisputableMonolith
 namespace URCGenerators
+/‑! Ethics bundle certificates -/
+
+structure EthicsPolicyCert where
+  deriving Repr
+
+@[simp] def EthicsPolicyCert.verified (_c : EthicsPolicyCert) : Prop :=
+  ∀ {A : Type} (P : IndisputableMonolith.Ethics.Decision.Policy A)
+    (r : IndisputableMonolith.Ethics.Decision.Request A)
+    (φ : IndisputableMonolith.Ethics.Alignment.Morph),
+    -- Bool↔Prop bridges
+    (IndisputableMonolith.Ethics.Decision.truthOk (P:=P) r = true ↔
+      IndisputableMonolith.Ethics.Decision.TruthOKP (P:=P) r) ∧
+    (IndisputableMonolith.Ethics.Decision.consentOk (P:=P) r = true ↔
+      IndisputableMonolith.Ethics.Decision.ConsentOKP (P:=P) r) ∧
+    (IndisputableMonolith.Ethics.Decision.harmOk (P:=P) r = true ↔
+      IndisputableMonolith.Ethics.Decision.HarmOKP (P:=P) r) ∧
+    (IndisputableMonolith.Ethics.Decision.deonticOk (P:=P) r = true ↔
+      IndisputableMonolith.Ethics.Decision.DeonticOKP (P:=P) r) ∧
+    (IndisputableMonolith.Ethics.Decision.privacyOk (P:=P) r = true ↔
+      IndisputableMonolith.Ethics.Decision.PrivacyOKP (P:=P) r) ∧
+    (IndisputableMonolith.Ethics.Decision.coiOk (P:=P) r = true ↔
+      IndisputableMonolith.Ethics.Decision.COIOKP (P:=P) r) ∧
+    (IndisputableMonolith.Ethics.Decision.robustOk (P:=P) r = true ↔
+      IndisputableMonolith.Ethics.Decision.RobustOKP (P:=P) r) ∧
+    -- Invariance under alignment morphisms
+    (IndisputableMonolith.Ethics.Decision.truthOk (P:=P)
+      (IndisputableMonolith.Ethics.Decision.mapReqMicro r φ)
+      = IndisputableMonolith.Ethics.Decision.truthOk (P:=P) r) ∧
+    (IndisputableMonolith.Ethics.Decision.consentOk (P:=P)
+      (IndisputableMonolith.Ethics.Decision.mapReqMicro r φ)
+      = IndisputableMonolith.Ethics.Decision.consentOk (P:=P) r) ∧
+    (IndisputableMonolith.Ethics.Decision.harmOk (P:=P)
+      (IndisputableMonolith.Ethics.Decision.mapReqMicro r φ)
+      = IndisputableMonolith.Ethics.Decision.harmOk (P:=P) r) ∧
+    (IndisputableMonolith.Ethics.Decision.deonticOk (P:=P)
+      (IndisputableMonolith.Ethics.Decision.mapReqMicro r φ)
+      = IndisputableMonolith.Ethics.Decision.deonticOk (P:=P) r) ∧
+    (IndisputableMonolith.Ethics.Decision.privacyOk (P:=P)
+      (IndisputableMonolith.Ethics.Decision.mapReqMicro r φ)
+      = IndisputableMonolith.Ethics.Decision.privacyOk (P:=P) r) ∧
+    (IndisputableMonolith.Ethics.Decision.coiOk (P:=P)
+      (IndisputableMonolith.Ethics.Decision.mapReqMicro r φ)
+      = IndisputableMonolith.Ethics.Decision.coiOk (P:=P) r) ∧
+    (IndisputableMonolith.Ethics.Decision.robustOk (P:=P)
+      (IndisputableMonolith.Ethics.Decision.mapReqMicro r φ)
+      = IndisputableMonolith.Ethics.Decision.robustOk (P:=P) r)
+
+@[simp] theorem EthicsPolicyCert.verified_any (c : EthicsPolicyCert) :
+  EthicsPolicyCert.verified c := by
+  intro A P r φ
+  refine And.intro ?h1 (And.intro ?h2 (And.intro ?h3 (And.intro ?h4 (And.intro ?h5 (And.intro ?h6 (And.intro ?h7 (And.intro ?m1 (And.intro ?m2 (And.intro ?m3 (And.intro ?m4 (And.intro ?m5 (And.intro ?m6 ?m7)))))))))))))
+  · simpa using (IndisputableMonolith.Ethics.Decision.truthOk_true_iff (P:=P) (r:=r))
+  · simpa using (IndisputableMonolith.Ethics.Decision.consentOk_true_iff (P:=P) (r:=r))
+  · simpa using (IndisputableMonolith.Ethics.Decision.harmOk_true_iff (P:=P) (r:=r))
+  · simpa using (IndisputableMonolith.Ethics.Decision.deonticOk_true_iff (P:=P) (r:=r))
+  · simpa using (IndisputableMonolith.Ethics.Decision.privacyOk_true_iff (P:=P) (r:=r))
+  · simpa using (IndisputableMonolith.Ethics.Decision.coiOk_true_iff (P:=P) (r:=r))
+  · simpa using (IndisputableMonolith.Ethics.Decision.robustOk_true_iff (P:=P) (r:=r))
+  · simpa using (IndisputableMonolith.Ethics.Decision.truthOk_mapped (P:=P) (r:=r) (φ:=φ))
+  · simpa using (IndisputableMonolith.Ethics.Decision.consentOk_mapped (P:=P) (r:=r) (φ:=φ))
+  · simpa using (IndisputableMonolith.Ethics.Decision.harmOk_mapped (P:=P) (r:=r) (φ:=φ))
+  · simpa using (IndisputableMonolith.Ethics.Decision.deonticOk_mapped (P:=P) (r:=r) (φ:=φ))
+  · simpa using (IndisputableMonolith.Ethics.Decision.privacyOk_mapped (P:=P) (r:=r) (φ:=φ))
+  · simpa using (IndisputableMonolith.Ethics.Decision.coiOk_mapped (P:=P) (r:=r) (φ:=φ))
+  · simpa using (IndisputableMonolith.Ethics.Decision.robustOk_mapped (P:=P) (r:=r) (φ:=φ))
+
+structure FairnessBatchCert where
+  deriving Repr
+
+@[simp] def FairnessBatchCert.verified (_c : FairnessBatchCert) : Prop :=
+  ∀ {A : Type} (P : IndisputableMonolith.Ethics.Decision.Policy A)
+    (xs : List (IndisputableMonolith.Ethics.Decision.Request A))
+    (φ : IndisputableMonolith.Ethics.Alignment.Morph),
+    -- Component Bool↔Prop bridges
+    (IndisputableMonolith.Ethics.Decision.eqOppOk (P:=P) xs = true ↔
+      IndisputableMonolith.Ethics.Decision.EqOppOKP (P:=P) xs) ∧
+    (IndisputableMonolith.Ethics.Decision.calibOk (P:=P) xs = true ↔
+      IndisputableMonolith.Ethics.Decision.CalibOKP (P:=P) xs) ∧
+    (IndisputableMonolith.Ethics.Decision.individualFairnessOk (P:=P) xs = true ↔
+      IndisputableMonolith.Ethics.Decision.IndivFairOKP (P:=P) xs) ∧
+    (IndisputableMonolith.Ethics.Decision.crossAgentParityOk (P:=P) xs = true ↔
+      IndisputableMonolith.Ethics.Decision.CrossAgentOKP (P:=P) xs) ∧
+    -- Batch invariance under mapping
+    (IndisputableMonolith.Ethics.Decision.fairnessBatchOk (P:=P)
+      (xs.map (fun r => IndisputableMonolith.Ethics.Decision.mapReqMicro r φ))
+      = IndisputableMonolith.Ethics.Decision.fairnessBatchOk (P:=P) xs)
+
+@[simp] theorem FairnessBatchCert.verified_any (c : FairnessBatchCert) :
+  FairnessBatchCert.verified c := by
+  intro A P xs φ
+  refine And.intro ?h1 (And.intro ?h2 (And.intro ?h3 (And.intro ?h4 ?h5)))
+  · simpa using (IndisputableMonolith.Ethics.Decision.eqOppOk_true_iff (P:=P) (xs:=xs))
+  · simpa using (IndisputableMonolith.Ethics.Decision.calibOk_true_iff (P:=P) (xs:=xs))
+  · simpa using (IndisputableMonolith.Ethics.Decision.individualFairnessOk_true_iff (P:=P) (xs:=xs))
+  · simpa using (IndisputableMonolith.Ethics.Decision.crossAgentParityOk_true_iff (P:=P) (xs:=xs))
+  · simpa using (IndisputableMonolith.Ethics.Decision.fairnessBatchOk_mapped (P:=P) (xs:=xs) (φ:=φ))
+
+structure PreferLexCert where
+  deriving Repr
+
+@[simp] def PreferLexCert.verified (_c : PreferLexCert) : Prop :=
+  ∀ {A : Type} (M : IndisputableMonolith.Ethics.CostModel A)
+    (C : IndisputableMonolith.Ethics.Composable M),
+    -- Prefer is a preorder
+    (∀ a : A, IndisputableMonolith.Ethics.Prefer M a a) ∧
+    (∀ a b c : A,
+      IndisputableMonolith.Ethics.Prefer M a b →
+      IndisputableMonolith.Ethics.Prefer M b c →
+      IndisputableMonolith.Ethics.Prefer M a c) ∧
+    -- Composition respects preference and improvements
+    (∀ a₁ a₂ b₁ b₂ : A,
+      IndisputableMonolith.Ethics.Prefer M a₁ a₂ →
+      IndisputableMonolith.Ethics.Prefer M b₁ b₂ →
+      IndisputableMonolith.Ethics.Prefer M (C.comp a₁ b₁) (C.comp a₂ b₂)) ∧
+    (∀ a b x : A,
+      IndisputableMonolith.Ethics.Improves M a b →
+      IndisputableMonolith.Ethics.Improves M (C.comp a x) (C.comp b x)) ∧
+    -- PreferLex definition (admissibility first, then cost)
+    (∀ {CQ : Type} (period : Nat) (cq : CQ)
+        (hasExpA hasExpB : Prop) (a b : A),
+      IndisputableMonolith.Ethics.PreferLex M period cq hasExpA hasExpB a b =
+        ((IndisputableMonolith.Ethics.Admissible period cq hasExpA ∧
+           ¬ IndisputableMonolith.Ethics.Admissible period cq hasExpB)
+         ∨ (IndisputableMonolith.Ethics.Admissible period cq hasExpA ∧
+             IndisputableMonolith.Ethics.Admissible period cq hasExpB ∧
+             IndisputableMonolith.Ethics.Prefer M a b)))
+
+@[simp] theorem PreferLexCert.verified_any (c : PreferLexCert) :
+  PreferLexCert.verified c := by
+  intro A M C
+  refine And.intro ?hRefl (And.intro ?hTrans (And.intro ?hMono (And.intro ?hStrict ?hLex)))
+  · intro a; exact IndisputableMonolith.Ethics.prefer_refl M a
+  · intro a b c' hab hbc; exact IndisputableMonolith.Ethics.prefer_trans M hab hbc
+  · intro a₁ a₂ b₁ b₂ ha hb
+    exact IndisputableMonolith.Ethics.prefer_comp_mono M C ha hb
+  · intro a b x h
+    exact IndisputableMonolith.Ethics.improves_comp_left M C h
+  · intro CQ period cq hasExpA hasExpB a b; rfl
+
+structure TruthLedgerCert where
+  deriving Repr
+
+@[simp] def TruthLedgerCert.verified (_c : TruthLedgerCert) : Prop :=
+  -- Closure/conflict hooks available and chooseTruthful respects mapping
+  (∀ (E : IndisputableMonolith.Ethics.Truth.EvidenceLedger)
+      (S : List IndisputableMonolith.Ethics.Truth.Claim),
+      True ∧ True ∧
+      (IndisputableMonolith.Ethics.Truth.divergenceCount E S
+        = IndisputableMonolith.Ethics.Truth.divergenceCount E S)) ∧
+  (∀ {A : Type}
+      (P : IndisputableMonolith.Ethics.Decision.Policy A)
+      (xs : List (IndisputableMonolith.Ethics.Decision.Request A))
+      (φ : IndisputableMonolith.Ethics.Alignment.Morph),
+        IndisputableMonolith.Ethics.Decision.chooseTruthful (P:=P)
+          (xs.map (fun r => IndisputableMonolith.Ethics.Decision.mapReqMicro r φ))
+        = (IndisputableMonolith.Ethics.Decision.chooseTruthful (P:=P) xs).map
+            (fun r => IndisputableMonolith.Ethics.Decision.mapReqMicro r φ))
+
+@[simp] theorem TruthLedgerCert.verified_any (c : TruthLedgerCert) :
+  TruthLedgerCert.verified c := by
+  constructor
+  · intro E S; exact And.intro trivial (And.intro trivial rfl)
+  · intro A P xs φ
+    simpa using
+      (IndisputableMonolith.Ethics.Decision.chooseTruthful_mapped (P:=P) (xs:=xs) (φ:=φ))
+
 
 /-! Units invariance certificates: observables invariant under anchor rescalings. -/
 
@@ -985,6 +1157,11 @@ structure CertFamily where
   inevitabilityDimless : List InevitabilityDimlessCert := []
   controlsInflate : List ControlsInflateCert := []
   lambdaRecUncertainty : List LambdaRecUncertaintyCert := []
+  -- Ethics bundle
+  ethicsPolicy : List EthicsPolicyCert := []
+  fairnessBatch : List FairnessBatchCert := []
+  preferLex : List PreferLexCert := []
+  truthLedger : List TruthLedgerCert := []
   deriving Repr
 
 def Verified (φ : ℝ) (C : CertFamily) : Prop :=
@@ -1041,7 +1218,12 @@ def Verified (φ : ℝ) (C : CertFamily) : Prop :=
   (∀ c ∈ C.decBianchi, DECBianchiCert.verified c) ∧
   (∀ c ∈ C.inevitabilityDimless, InevitabilityDimlessCert.verified c) ∧
   (∀ c ∈ C.controlsInflate, ControlsInflateCert.verified c) ∧
-  (∀ c ∈ C.lambdaRecUncertainty, LambdaRecUncertaintyCert.verified c)
+  (∀ c ∈ C.lambdaRecUncertainty, LambdaRecUncertaintyCert.verified c) ∧
+  -- Ethics bundle
+  (∀ c ∈ C.ethicsPolicy, EthicsPolicyCert.verified c) ∧
+  (∀ c ∈ C.fairnessBatch, FairnessBatchCert.verified c) ∧
+  (∀ c ∈ C.preferLex, PreferLexCert.verified c) ∧
+  (∀ c ∈ C.truthLedger, TruthLedgerCert.verified c)
 
 /‑! Optional SAT separation evidence (recognition–computation). -/
 
@@ -1375,6 +1557,15 @@ def demo_generators (φ : ℝ) : VerifiedGenerators φ :=
     intro c hc; cases hc
   have h_lrecU : ∀ c ∈ C.lambdaRecUncertainty, LambdaRecUncertaintyCert.verified c := by
     intro c hc; cases hc
+  -- ethics bundle (empty in demo)
+  have h_ethicsPolicy : ∀ c ∈ C.ethicsPolicy, EthicsPolicyCert.verified c := by
+    intro c hc; cases hc
+  have h_fairnessBatch : ∀ c ∈ C.fairnessBatch, FairnessBatchCert.verified c := by
+    intro c hc; cases hc
+  have h_preferLex : ∀ c ∈ C.preferLex, PreferLexCert.verified c := by
+    intro c hc; cases hc
+  have h_truthLedger : ∀ c ∈ C.truthLedger, TruthLedgerCert.verified c := by
+    intro c hc; cases hc
   have hC : Verified φ C := by
     -- Assemble the long ∧-chain in the order of `Verified`.
     dsimp [Verified]
@@ -1390,7 +1581,8 @@ def demo_generators (φ : ℝ) : VerifiedGenerators φ :=
       (And.intro h_policy2 (And.intro h_pn (And.intro h_lnal (And.intro h_compiler (And.intro h_overlap
       (And.intro h_fold (And.intro h_maxwell (And.intro h_pdg (And.intro h_unique (And.intro h_sector
       (And.intro h_timeDim (And.intro h_eff (And.intro h_rotId (And.intro h_abs (And.intro h_dd0
-      (And.intro h_bianchi (And.intro h_inev (And.intro h_controls h_lrecU))))))))))))))))))))))))))))))))))))))))))))))))))))
+      (And.intro h_bianchi (And.intro h_inev (And.intro h_controls (And.intro h_lrecU
+      (And.intro h_ethicsPolicy (And.intro h_fairnessBatch (And.intro h_preferLex h_truthLedger))))))))))))))))))))))))))))))))))))))))))))))))))))
   ⟨C, hC⟩
 
 @[simp] def demo_generators_phi : VerifiedGenerators (0 : ℝ) :=

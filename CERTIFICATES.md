@@ -22,6 +22,15 @@ This index lists the wired certificates and their #eval reports. Copy/paste any 
   - Demo:
     - `#eval IndisputableMonolith.URCAdapters.routeB_closure_report`
 
+- Ethics bundle
+  - What it is: Certificates covering policy gates Bool↔Prop bridges and alignment invariance, fairness batch semantics and invariance, lexicographic preference discipline, and truth/evidence ledger selection behavior.
+  - Where: `IndisputableMonolith/URCGenerators.lean` (EthicsPolicyCert, FairnessBatchCert, PreferLexCert, TruthLedgerCert) and `URCAdapters/Reports.lean`.
+  - Demo:
+    - `#eval IndisputableMonolith.URCAdapters.ethics_policy_report`
+    - `#eval IndisputableMonolith.URCAdapters.fairness_batch_report`
+    - `#eval IndisputableMonolith.URCAdapters.prefer_lex_report`
+    - `#eval IndisputableMonolith.URCAdapters.truth_ledger_report`
+
 - Recognition Closure (meta certificate)
   - What it is: Packs (i) absolute‑layer acceptance (universally), (ii) dimensionless inevitability at φ, and (iii) existence of a verified certificate family (with selected lists non‑empty). A direct precursor to the Reality bundle.
   - Where: `IndisputableMonolith/URCGenerators.lean` (`recognition_closure_any`).
@@ -73,6 +82,12 @@ This index lists the wired certificates and their #eval reports. Copy/paste any 
 - Controls / RG residue
   - `#eval IndisputableMonolith.URCAdapters.controls_inflate_report`
   - `#eval IndisputableMonolith.URCAdapters.rg_residue_report`
+
+- Ethics
+  - `#eval IndisputableMonolith.URCAdapters.ethics_policy_report`
+  - `#eval IndisputableMonolith.URCAdapters.fairness_batch_report`
+  - `#eval IndisputableMonolith.URCAdapters.prefer_lex_report`
+  - `#eval IndisputableMonolith.URCAdapters.truth_ledger_report`
 
 Bulk manifest (prints one line per cert):
 
