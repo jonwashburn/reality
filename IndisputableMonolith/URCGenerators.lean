@@ -973,6 +973,7 @@ structure CertFamily where
   unitsInv : List UnitsInvarianceCert := []
   units     : List UnitsCert        := []
   unitsQuot : List UnitsQuotientFunctorCert := []
+  speedFromUnits : List SpeedFromUnitsCert := []
   eightbeat : List EightBeatCert    := []
   hypercube : List EightBeatHypercubeCert := []
   grayCode  : List GrayCodeCycleCert := []
@@ -1031,6 +1032,7 @@ def Verified (φ : ℝ) (C : CertFamily) : Prop :=
   (∀ c ∈ C.unitsInv, UnitsInvarianceCert.verified c) ∧
   (∀ c ∈ C.units, UnitsCert.verified c) ∧
   (∀ c ∈ C.unitsQuot, UnitsQuotientFunctorCert.verified c) ∧
+  (∀ c ∈ C.speedFromUnits, SpeedFromUnitsCert.verified c) ∧
   (∀ c ∈ C.eightbeat, EightBeatCert.verified c) ∧
   (∀ c ∈ C.hypercube, EightBeatHypercubeCert.verified c) ∧
   (∀ c ∈ C.grayCode, GrayCodeCycleCert.verified c) ∧

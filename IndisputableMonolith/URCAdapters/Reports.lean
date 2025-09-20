@@ -227,6 +227,13 @@ namespace URCAdapters
     URCGenerators.RotationIdentityCert.verified_any _
   "RotationIdentityCert: OK"
 
+/-- #eval-friendly report for SpeedFromUnitsCert (ℓ0/τ0=c and display-speed=c). -/
+@[simp] def speed_from_units_report : String :=
+  let cert : URCGenerators.SpeedFromUnitsCert := {}
+  have _ : URCGenerators.SpeedFromUnitsCert.verified cert :=
+    URCGenerators.SpeedFromUnitsCert.verified_any _
+  "SpeedFromUnitsCert: OK"
+
 
 /-- #eval-friendly report for FamilyRatioCert (mass ratios φ^(Δr) at matching scale). -/
 @[simp] def family_ratio_report : String :=
