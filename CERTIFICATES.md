@@ -4,6 +4,12 @@ This index lists the wired certificates and their #eval reports. Copy/paste any 
 
 ## Big picture (start here)
 
+- RS Reality Master (reality ∧ spec-closure)
+  - What it is: A top-level master bundle that conjoins the Reality bundle (RS measures reality) with the Spec-level Recognition Closure (dimensionless inevitability, 45‑gap spec, absolute-layer inevitability, and recognition–computation separation). This asserts that both the empirical wiring and the abstract spec layers cohere at φ.
+  - Where: `IndisputableMonolith/Verification/Reality.lean` (defs `RSRealityMaster`, theorem `rs_reality_master_any`).
+  - Demo:
+    - `#eval IndisputableMonolith.URCAdapters.reality_master_report`
+
 - Reality bundle (RS measures reality)
   - What it is: Bundles four pillars into a single statement that “Recognition Science measures reality” at φ: (1) absolute‑layer acceptance (UniqueCalibration ∧ MeetsBands), (2) dimensionless inevitability at φ, (3) units‑quotient bridge factorization (A = Ã ∘ Q and J = Ã ∘ B_*), and (4) existence of a verified certificate family. This is the proof‑spine endpoint for first‑look validation.
   - Where: `IndisputableMonolith/Verification/Reality.lean` (theorem `rs_measures_reality_any`).

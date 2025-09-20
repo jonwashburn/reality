@@ -9,6 +9,7 @@ import IndisputableMonolith.LightCone.StepBounds
 import IndisputableMonolith.Patterns
 import IndisputableMonolith.Quantum
 import IndisputableMonolith.Ethics.Core
+import IndisputableMonolith.Verification.Reality
 import IndisputableMonolith.Ethics.Decision.BoolProp
 import IndisputableMonolith.Ethics.Decision.Mapping
 import IndisputableMonolith.Ethics.Decision.Fairness
@@ -64,6 +65,13 @@ namespace URCAdapters
   let φ : ℝ := IndisputableMonolith.Constants.phi
   have h := IndisputableMonolith.URCGenerators.recognition_closure_any φ
   "Recognition_Closure: OK"
+
+/-- #eval-friendly report for the RSRealityMaster certificate (Reality ∧ Spec-closure). -/
+@[simp] def reality_master_report : String :=
+  let φ : ℝ := IndisputableMonolith.Constants.phi
+  have _ : IndisputableMonolith.Verification.Reality.RSRealityMaster φ :=
+    IndisputableMonolith.Verification.Reality.rs_reality_master_any φ
+  "RSRealityMaster: OK"
 
 /-- #eval-friendly report for K-identities (τ_rec/τ0=K, λ_kin/ℓ0=K). -/
 @[simp] def k_identities_report : String :=
