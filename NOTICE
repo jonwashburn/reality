@@ -1,0 +1,14 @@
+Recognition Science Repository
+
+This repository contains source code, formal specifications, proofs, and documentation authored by the Recognition Science contributors. The contents are provided under the MIT License (see LICENSE).
+
+Scope of repository contents:
+- Formalized mathematics and specifications implemented in Lean 4
+- Certificate definitions and verification scripts (e.g., #eval reports)
+- Documentation and supporting materials (e.g., manifests, outlines)
+
+No patent license is granted, implied, or intended beyond any rights that may be necessary to practice the code and materials as distributed in this repository under the MIT License. The authors make no representation regarding the applicability of any patents to any implementation outside the scope of these distributed materials.
+
+Third-party components within this repository, if any, are licensed under their respective licenses.
+
+
