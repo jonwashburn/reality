@@ -40,11 +40,10 @@ jobs:
           cp IndisputableMonolith.lean IndisputableMonolith.full.lean
           head -n 6000 IndisputableMonolith.full.lean > IndisputableMonolith.lean
           lake build IndisputableMonolith
-          git checkout -- IndisputableMonolith.lean
+          git checkout -- IndisputableMonolith.lean || cp IndisputableMonolith.full.lean IndisputableMonolith.lean
 
       - name: Run CI checks
         run: |
-          lake build ci_checks
-          ./build/bin/ci_checks
+          lake exe ci_checks
 
 

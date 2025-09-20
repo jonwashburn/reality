@@ -34,8 +34,7 @@ jobs:
           lake update
           lake env -- lean -q IndisputableMonolith/Core.lean -o /dev/null
           lake env -- lean -q IndisputableMonolith.lean -o /dev/null
-          lake build ci_checks
-          ./build/bin/ci_checks | sed -e 's/.*/HEAD: &/'
+          lake exe ci_checks | sed -e 's/.*/HEAD: &/'
       - name: CI guard (no sorry/admit, report axiom count)
         shell: bash
         run: |
@@ -66,8 +65,7 @@ jobs:
           lake update
           lake env -- lean -q IndisputableMonolith/Core.lean -o /dev/null
           lake env -- lean -q IndisputableMonolith.lean -o /dev/null
-          lake build ci_checks
-          ./build/bin/ci_checks | sed -e 's/.*/FULL: &/'
+          lake exe ci_checks | sed -e 's/.*/FULL: &/'
       - name: CI guard (no sorry/admit, report axiom count)
         shell: bash
         run: |
