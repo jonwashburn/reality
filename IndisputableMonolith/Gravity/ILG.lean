@@ -7,7 +7,7 @@ namespace ILG
 noncomputable section
 open Real
 
-/-! Minimal extracted time-kernel basics (axiom stubs). -/
+/-! Minimal extracted time-kernel basics with parametric interfaces. -/
 
 structure BridgeData where
   tau0 : ℝ
@@ -17,20 +17,37 @@ structure BaryonCurves where
   vdisk : ℝ → ℝ
   vbul  : ℝ → ℝ
 
-def upsilonStar : ℝ := 1.0
-def εr : ℝ := 1e-12
-def εv : ℝ := 1e-12
-def εt : ℝ := 1e-12
-def εa : ℝ := 1e-12
+/-! Configurable numeric regularization parameters. -/
+structure Config where
+  upsilonStar : ℝ
+  eps_r : ℝ
+  eps_v : ℝ
+  eps_t : ℝ
+  eps_a : ℝ
+  deriving Repr
 
-def vbarSq (C : BaryonCurves) (r : ℝ) : ℝ :=
-  max 0 ((C.vgas r) ^ 2 + ((Real.sqrt upsilonStar) * (C.vdisk r)) ^ 2 + (C.vbul r) ^ 2)
+@[simp] def defaultConfig : Config :=
+  { upsilonStar := 1.0
+  , eps_r := 1e-12
+  , eps_v := 1e-12
+  , eps_t := 1e-12
+  , eps_a := 1e-12 }
 
-def vbar (C : BaryonCurves) (r : ℝ) : ℝ :=
-  Real.sqrt (max εv (vbarSq C r))
+structure ConfigProps (cfg : Config) : Prop where
+  eps_t_le_one : cfg.eps_t ≤ 1
 
-def gbar (C : BaryonCurves) (r : ℝ) : ℝ :=
-  (vbar C r) ^ 2 / max εr r
+@[simp] lemma defaultConfig_props : ConfigProps defaultConfig := by
+  refine ⟨?h⟩
+  norm_num
+
+def vbarSq_with (cfg : Config) (C : BaryonCurves) (r : ℝ) : ℝ :=
+  max 0 ((C.vgas r) ^ 2 + ((Real.sqrt cfg.upsilonStar) * (C.vdisk r)) ^ 2 + (C.vbul r) ^ 2)
+
+def vbar_with (cfg : Config) (C : BaryonCurves) (r : ℝ) : ℝ :=
+  Real.sqrt (max cfg.eps_v (vbarSq_with cfg C r))
+
+def gbar_with (cfg : Config) (C : BaryonCurves) (r : ℝ) : ℝ :=
+  (vbar_with cfg C r) ^ 2 / max cfg.eps_r r
 
 structure Params where
   alpha      : ℝ
@@ -48,76 +65,79 @@ structure ParamProps (P : Params) : Prop where
   r0_pos       : 0 < P.r0
   p_pos        : 0 < P.p
 
-def w_t (P : Params) (Tdyn τ0 : ℝ) : ℝ :=
-  let t := max εt (Tdyn / τ0)
+def w_t_with (cfg : Config) (P : Params) (Tdyn τ0 : ℝ) : ℝ :=
+  let t := max cfg.eps_t (Tdyn / τ0)
   1 + P.Clag * (Real.rpow t P.alpha - 1)
 
-@[simp] def w_t_display (P : Params) (B : BridgeData) (Tdyn : ℝ) : ℝ :=
-  w_t P Tdyn B.tau0
+@[simp] def w_t (P : Params) (Tdyn τ0 : ℝ) : ℝ := w_t_with defaultConfig P Tdyn τ0
 
-/-– Auxiliary: εt ≤ 1 for the chosen numerical constant. -/
-lemma eps_t_le_one : εt ≤ (1 : ℝ) := by
-  -- 1e-12 ≤ 1
-  norm_num [εt]
+@[simp] def w_t_display (P : Params) (B : BridgeData) (Tdyn : ℝ) : ℝ :=
+  w_t_with defaultConfig P Tdyn B.tau0
+
+lemma eps_t_le_one_default : defaultConfig.eps_t ≤ (1 : ℝ) := by
+  norm_num
 
 /-- Reference identity under nonzero tick: w_t(τ0, τ0) = 1. -/
-lemma w_t_ref (P : Params) (τ0 : ℝ) (hτ : τ0 ≠ 0) : w_t P τ0 τ0 = 1 := by
-  dsimp [w_t]
+lemma w_t_ref_with (cfg : Config) (hcfg : ConfigProps cfg)
+  (P : Params) (τ0 : ℝ) (hτ : τ0 ≠ 0) : w_t_with cfg P τ0 τ0 = 1 := by
+  dsimp [w_t_with]
   have hdiv : τ0 / τ0 = (1 : ℝ) := by
     field_simp [hτ]
-  have hmax : max εt (τ0 / τ0) = (1 : ℝ) := by
-    simpa [hdiv, max_eq_right eps_t_le_one]
+  have hmax : max cfg.eps_t (τ0 / τ0) = (1 : ℝ) := by
+    simpa [hdiv, max_eq_right hcfg.eps_t_le_one]
   simp [hmax]
 
-lemma w_t_rescale (P : Params) (c Tdyn τ0 : ℝ) (hc : 0 < c) :
-  w_t P (c * Tdyn) (c * τ0) = w_t P Tdyn τ0 := by
-  dsimp [w_t]
+lemma w_t_ref (P : Params) (τ0 : ℝ) (hτ : τ0 ≠ 0) : w_t P τ0 τ0 = 1 :=
+  w_t_ref_with defaultConfig defaultConfig_props P τ0 hτ
+
+lemma w_t_rescale_with (cfg : Config) (P : Params) (c Tdyn τ0 : ℝ) (hc : 0 < c) :
+  w_t_with cfg P (c * Tdyn) (c * τ0) = w_t_with cfg P Tdyn τ0 := by
+  dsimp [w_t_with]
   have hc0 : (c : ℝ) ≠ 0 := ne_of_gt hc
   have : (c * Tdyn) / (c * τ0) = Tdyn / τ0 := by field_simp [hc0]
   simp [this]
 
+lemma w_t_rescale (P : Params) (c Tdyn τ0 : ℝ) (hc : 0 < c) :
+  w_t P (c * Tdyn) (c * τ0) = w_t P Tdyn τ0 :=
+  w_t_rescale_with defaultConfig P c Tdyn τ0 hc
+
 /-- Nonnegativity of time-kernel under ParamProps. -/
-lemma w_t_nonneg (P : Params) (H : ParamProps P) (Tdyn τ0 : ℝ) : 0 ≤ w_t P Tdyn τ0 := by
-  dsimp [w_t]
-  set t := max εt (Tdyn / τ0) with ht
+lemma w_t_nonneg_with (cfg : Config) (P : Params) (H : ParamProps P) (Tdyn τ0 : ℝ) :
+  0 ≤ w_t_with cfg P Tdyn τ0 := by
+  dsimp [w_t_with]
+  set t := max cfg.eps_t (Tdyn / τ0) with ht
   have ht_nonneg : 0 ≤ t := by
-    have hε : 0 ≤ εt := by norm_num [εt]
-    have : εt ≤ t := by
-      simpa [ht] using le_max_left εt (Tdyn / τ0)
+    have hε : 0 ≤ cfg.eps_t := by
+      have : 0 ≤ max cfg.eps_t (Tdyn / τ0) := by
+        have := le_max_left cfg.eps_t (Tdyn / τ0); exact le_trans (le_of_lt_or_eq (le_total 0 _) ) this
+      exact le_trans (le_max_left _ _) this
+    have : cfg.eps_t ≤ t := by simpa [ht] using le_max_left cfg.eps_t (Tdyn / τ0)
     exact le_trans hε this
   have hrpow_nonneg : 0 ≤ Real.rpow t P.alpha := Real.rpow_nonneg_of_nonneg ht_nonneg _
-  -- Bound: Real.rpow t α − 1 ≥ −1
   have hge : Real.rpow t P.alpha - 1 ≥ -1 := by
     have : (0 : ℝ) ≤ Real.rpow t P.alpha := hrpow_nonneg
     have : -1 ≤ Real.rpow t P.alpha - 1 := by linarith
     simpa [sub_eq_add_neg] using this
-  -- Scale by 0 ≤ Clag ≤ 1
   have hClag_nonneg : 0 ≤ P.Clag := H.Clag_nonneg
   have hClag_le_one : P.Clag ≤ 1 := H.Clag_le_one
   have hscale : P.Clag * (Real.rpow t P.alpha - 1) ≥ -1 := by
-    -- Since (Real.rpow t α − 1) ≥ −1 and 0 ≤ Clag ≤ 1, we have Clag * (⋯) ≥ −1
     have : -1 ≤ Real.rpow t P.alpha - 1 := by
-      have : (0 : ℝ) ≤ Real.rpow t P.alpha := hrpow_nonneg
-      linarith
-    -- Multiply inequality by nonnegative Clag preserves direction
+      have : (0 : ℝ) ≤ Real.rpow t P.alpha := hrpow_nonneg; linarith
     have := mul_le_mul_of_nonneg_left this hClag_nonneg
-    -- Clag * (-1) ≥ -1 since Clag ≤ 1
     have hleft : (-1 : ℝ) ≤ P.Clag * (-1) := by
       have : -1 ≤ -P.Clag := by simpa using (neg_le_neg hClag_le_one)
       simpa [mul_comm, mul_left_comm, mul_assoc] using this
-    -- Combine lower bounds: Clag*(rpow−1) ≥ Clag*(-1) and ≥ -1; pick the weaker bound -1
     have : P.Clag * (Real.rpow t P.alpha - 1) ≥ P.Clag * (-1) := by
-      -- from mul_le_mul result above
-      have h := this
-      simpa [sub_eq_add_neg] using h
+      have h := this; simpa [sub_eq_add_neg] using h
     exact le_trans hleft this
-  -- Now 1 + Clag*(⋯) ≥ 0
   have : 0 ≤ 1 + P.Clag * (Real.rpow t P.alpha - 1) := by
     have : -1 ≤ P.Clag * (Real.rpow t P.alpha - 1) := by
-      -- from hscale, rewrite ≥ as ≤ after multiplying by -1
       simpa [neg_le] using hscale
     linarith
-  simpa [w_t, ht, add_comm, add_left_comm, add_assoc] using this
+  simpa [w_t_with, ht, add_comm, add_left_comm, add_assoc] using this
+
+lemma w_t_nonneg (P : Params) (H : ParamProps P) (Tdyn τ0 : ℝ) : 0 ≤ w_t P Tdyn τ0 :=
+  w_t_nonneg_with defaultConfig P H Tdyn τ0
 
 end
 end ILG
