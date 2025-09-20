@@ -223,7 +223,3 @@ This is why it's the master certificate: it shows that recognition science doesn
 ```
 
 The entire edifice—from quantum mechanics to ethics—is proven to follow necessarily from recognizing patterns at φ. No parameters. No choices. Just mathematical inevitability meeting physical reality.
-
----
-
-*"The universe is not only queerer than we suppose, but queerer than we can suppose—except that with Recognition Science, we can suppose it exactly."*
