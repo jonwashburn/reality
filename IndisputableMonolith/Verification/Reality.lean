@@ -16,7 +16,8 @@ def RealityBundle (φ : ℝ) : Prop :=
     RH.RS.UniqueCalibration L B A ∧ RH.RS.MeetsBands L B (RH.RS.sampleBandsFor U.c))
   ∧ RH.RS.Inevitability_dimless φ
   ∧ IndisputableMonolith.Verification.BridgeFactorizes
-  ∧ ∃ C : URCGenerators.CertFamily, URCGenerators.Verified φ C
+  ∧ ∃ C : URCGenerators.CertFamily, (URCGenerators.Verified φ C ∧
+      (C.kgate ≠ [] ∧ C.kidentities ≠ [] ∧ C.lambdaRec ≠ [] ∧ C.speedFromUnits ≠ []))
 
 /-- RS measures reality at φ: wrapper Prop. -/
 def RSMeasuresReality (φ : ℝ) : Prop := RealityBundle φ
@@ -31,8 +32,13 @@ theorem rs_measures_reality_any (φ : ℝ) : RSMeasuresReality φ := by
     exact (URCGenerators.recognition_closure_any φ).right.left
   · -- Bridge factorization (A=Ã∘Q and J=Ã∘B_*)
     exact IndisputableMonolith.Verification.bridge_factorizes
-  · -- Existence of a certificate family C with all bundled verifications
-    exact (URCGenerators.recognition_closure_any φ).right.right
+  · -- Existence of a non‑empty certificate family C with all bundled verifications
+    rcases (URCGenerators.recognition_closure_any φ).right.right with ⟨C0, hC0⟩
+    -- Strengthen using our non‑empty demo family
+    rcases (URCGenerators.demo_generators φ) with ⟨C, hC⟩
+    refine ⟨C, And.intro hC ?nonempty⟩
+    -- Show selected lists are non‑empty
+    simp [URCGenerators.demo_generators]  -- k-gate, k-identities, lambdaRec, speedFromUnits are present
 
 end Reality
 end Verification

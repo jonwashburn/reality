@@ -1281,13 +1281,160 @@ theorem determination_by_generators {φ : ℝ}
       (And.intro core.rotation (And.intro core.outer (And.intro core.conscious
         (And.intro core.kidentities core.kgate)))))))
 
-/-- A tiny demo family: empty certificate sets verify vacuously. -/
+/-- Demo family: small, non‑empty bundle using already‑proved certificates. -/
 def demo_generators (φ : ℝ) : VerifiedGenerators φ :=
-  let C : CertFamily := {}  -- All fields default to empty lists
+  -- Minimal non-empty selections; all others remain empty.
+  let C : CertFamily :=
+    { kgate := [({} : KGateCert)]
+    , kidentities := [({} : KIdentitiesCert)]
+    , lambdaRec := [({} : LambdaRecIdentityCert)]
+    , speedFromUnits := [({} : SpeedFromUnitsCert)]
+    , absoluteLayer := [({} : AbsoluteLayerCert)]
+    , timeKernelDimless := [({} : TimeKernelDimlessCert)]
+    , decDDZero := [({} : DECDDZeroCert)]
+    , decBianchi := [({} : DECBianchiCert)]
+    }
+  have h_unitsInv : ∀ c ∈ C.unitsInv, UnitsInvarianceCert.verified c := by
+    intro c hc; cases hc
+  have h_units : ∀ c ∈ C.units, UnitsCert.verified c := by
+    intro c hc; cases hc
+  have h_unitsQuot : ∀ c ∈ C.unitsQuot, UnitsQuotientFunctorCert.verified c := by
+    intro c hc; cases hc
+  have h_speedFromUnits : ∀ c ∈ C.speedFromUnits, SpeedFromUnitsCert.verified c := by
+    intro c hc
+    have hc0 : c = ({} : SpeedFromUnitsCert) := by simpa [C]
+    simpa [hc0] using (SpeedFromUnitsCert.verified_any (c := {}))
+  have h_eightbeat : ∀ c ∈ C.eightbeat, EightBeatCert.verified c := by
+    intro c hc; cases hc
+  have h_hypercube : ∀ c ∈ C.hypercube, EightBeatHypercubeCert.verified c := by
+    intro c hc; cases hc
+  have h_gray : ∀ c ∈ C.grayCode, GrayCodeCycleCert.verified c := by
+    intro c hc; cases hc
+  have h_el : ∀ c ∈ C.elprobes, ELProbe.verified c := by
+    intro c hc; cases hc
+  have h_mass : ∀ c ∈ C.masses, MassCert.verified φ c := by
+    intro c hc; cases hc
+  have h_rot : ∀ c ∈ C.rotation, RotationCert.verified c := by
+    intro c hc; cases hc
+  have h_outer : ∀ c ∈ C.outer, OuterBudgetCert.verified c := by
+    intro c hc; cases hc
+  have h_conscious : ∀ c ∈ C.conscious, ConsciousCert.verified c := by
+    intro c hc; cases hc
+  have h_eightTick : ∀ c ∈ C.eightTick, EightTickMinimalCert.verified c := by
+    intro c hc; cases hc
+  have h_kids : ∀ c ∈ C.kidentities, KIdentitiesCert.verified c := by
+    intro c hc
+    have hc0 : c = ({} : KIdentitiesCert) := by simpa [C]
+    simpa [hc0] using (KIdentitiesCert.verified_any (c := {}))
+  have h_invratio : ∀ c ∈ C.invariantsRatio, InvariantsRatioCert.verified c := by
+    intro c hc; cases hc
+  have h_kgate : ∀ c ∈ C.kgate, KGateCert.verified c := by
+    intro c hc
+    have hc0 : c = ({} : KGateCert) := by simpa [C]
+    simpa [hc0] using (KGateCert.verified_any (c := {}))
+  have h_pl : ∀ c ∈ C.planckLength, PlanckLengthIdentityCert.verified c := by
+    intro c hc; cases hc
+  have h_lrec : ∀ c ∈ C.lambdaRec, LambdaRecIdentityCert.verified c := by
+    intro c hc
+    have hc0 : c = ({} : LambdaRecIdentityCert) := by simpa [C]
+    simpa [hc0] using (LambdaRecIdentityCert.verified_any (c := {}))
+  have h_routeA : ∀ c ∈ C.routeAGate, RouteAGateIdentityCert.verified c := by
+    intro c hc; cases hc
+  have h_single : ∀ c ∈ C.singleineq, SingleInequalityCert.verified c := by
+    intro c hc; cases hc
+  have h_cone : ∀ c ∈ C.coneBound, ConeBoundCert.verified c := by
+    intro c hc; cases hc
+  have h_window8 : ∀ c ∈ C.window8, Window8NeutralityCert.verified c := by
+    intro c hc; cases hc
+  have h_exact : ∀ c ∈ C.exactness, ExactnessCert.verified c := by
+    intro c hc; cases hc
+  have h_ledger : ∀ c ∈ C.ledgerUnits, LedgerUnitsCert.verified c := by
+    intro c hc; cases hc
+  have h_rung45 : ∀ c ∈ C.rung45, Rung45WitnessCert.verified c := by
+    intro c hc; cases hc
+  have h_gap45 : ∀ c ∈ C.gap45, GapConsequencesCert.verified c := by
+    intro c hc; cases hc
+  have h_family : ∀ c ∈ C.familyRatio, FamilyRatioCert.verified c := by
+    intro c hc; cases hc
+  have h_equalZ : ∀ c ∈ C.equalZAnchor, EqualZAnchorCert.verified c := by
+    intro c hc; cases hc
+  have h_rgResidue : ∀ c ∈ C.rgResidue, RGResidueCert.verified c := by
+    intro c hc; cases hc
+  have h_bose : ∀ c ∈ C.boseFermi, BoseFermiCert.verified c := by
+    intro c hc; cases hc
+  have h_born : ∀ c ∈ C.bornRule, BornRuleCert.verified c := by
+    intro c hc; cases hc
+  have h_qocc : ∀ c ∈ C.quantumOccupancy, QuantumOccupancyCert.verified c := by
+    intro c hc; cases hc
+  have h_pathIso : ∀ c ∈ C.pathCostIso, PathCostIsomorphismCert.verified c := by
+    intro c hc; cases hc
+  have h_gapClosed : ∀ c ∈ C.gapSeriesClosed, GapSeriesClosedFormCert.verified c := by
+    intro c hc; cases hc
+  have h_infl : ∀ c ∈ C.inflationPotential, InflationPotentialCert.verified c := by
+    intro c hc; cases hc
+  -- policy placeholders removed from Verified; occupy with trivial truths
+  have h_policy1 : True := trivial
+  have h_policy2 : True := trivial
+  have h_pn : ∀ c ∈ C.pnSplit, ProtonNeutronSplitCert.verified c := by
+    intro c hc; cases hc
+  have h_lnal : ∀ c ∈ C.lnalInv, LNALInvariantsCert.verified c := by
+    intro c hc; cases hc
+  have h_compiler : ∀ c ∈ C.compilerChecks, CompilerStaticChecksCert.verified c := by
+    intro c hc; cases hc
+  have h_overlap : ∀ c ∈ C.overlap, OverlapContractionCert.verified c := by
+    intro c hc; cases hc
+  have h_fold : ∀ c ∈ C.foldingComplexity, FoldingComplexityCert.verified c := by
+    intro c hc; cases hc
+  have h_maxwell : ∀ c ∈ C.maxwell, MaxwellContinuityCert.verified c := by
+    intro c hc; cases hc
+  have h_pdg : ∀ c ∈ C.pdgFits, PDGFitsCert.verified c := by
+    intro c hc; cases hc
+  have h_unique : ∀ c ∈ C.uniqueUpToUnits, UniqueUpToUnitsCert.verified c := by
+    intro c hc; cases hc
+  have h_sector : ∀ c ∈ C.sectorYardstick, SectorYardstickCert.verified c := by
+    intro c hc; cases hc
+  have h_timeDim : ∀ c ∈ C.timeKernelDimless, TimeKernelDimlessCert.verified c := by
+    intro c hc
+    have hc0 : c = ({} : TimeKernelDimlessCert) := by simpa [C]
+    simpa [hc0] using (TimeKernelDimlessCert.verified_any (c := {}))
+  have h_eff : ∀ c ∈ C.effectiveWeightNonneg, EffectiveWeightNonnegCert.verified c := by
+    intro c hc; cases hc
+  have h_rotId : ∀ c ∈ C.rotationIdentity, RotationIdentityCert.verified c := by
+    intro c hc; cases hc
+  have h_abs : ∀ c ∈ C.absoluteLayer, AbsoluteLayerCert.verified c := by
+    intro c hc
+    have hc0 : c = ({} : AbsoluteLayerCert) := by simpa [C]
+    simpa [hc0] using (AbsoluteLayerCert.verified_any (c := {}))
+  have h_dd0 : ∀ c ∈ C.decDDZero, DECDDZeroCert.verified c := by
+    intro c hc
+    have hc0 : c = ({} : DECDDZeroCert) := by simpa [C]
+    simpa [hc0] using (DECDDZeroCert.verified_any (c := {}))
+  have h_bianchi : ∀ c ∈ C.decBianchi, DECBianchiCert.verified c := by
+    intro c hc
+    have hc0 : c = ({} : DECBianchiCert) := by simpa [C]
+    simpa [hc0] using (DECBianchiCert.verified_any (c := {}))
+  have h_inev : ∀ c ∈ C.inevitabilityDimless, InevitabilityDimlessCert.verified c := by
+    intro c hc; cases hc
+  have h_controls : ∀ c ∈ C.controlsInflate, ControlsInflateCert.verified c := by
+    intro c hc; cases hc
+  have h_lrecU : ∀ c ∈ C.lambdaRecUncertainty, LambdaRecUncertaintyCert.verified c := by
+    intro c hc; cases hc
   have hC : Verified φ C := by
-    dsimp [Verified, C]
-    -- All empty lists verify vacuously
-    repeat (constructor; intro x hx; cases hx)
+    -- Assemble the long ∧-chain in the order of `Verified`.
+    dsimp [Verified]
+    refine And.intro h_unitsInv (And.intro h_units (And.intro h_unitsQuot (And.intro h_speedFromUnits
+      (And.intro h_eightbeat (And.intro h_hypercube (And.intro h_gray (And.intro h_el
+      (And.intro h_mass (And.intro h_rot (And.intro h_outer (And.intro h_conscious
+      (And.intro h_eightTick (And.intro h_kids (And.intro h_invratio (And.intro h_kgate
+      (And.intro h_pl (And.intro h_lrec (And.intro h_routeA (And.intro h_single
+      (And.intro h_cone (And.intro h_window8 (And.intro h_exact (And.intro h_ledger
+      (And.intro h_rung45 (And.intro h_gap45 (And.intro h_family (And.intro h_equalZ
+      (And.intro h_rgResidue (And.intro h_bose (And.intro h_born (And.intro h_qocc
+      (And.intro h_pathIso (And.intro h_gapClosed (And.intro h_infl (And.intro h_policy1
+      (And.intro h_policy2 (And.intro h_pn (And.intro h_lnal (And.intro h_compiler (And.intro h_overlap
+      (And.intro h_fold (And.intro h_maxwell (And.intro h_pdg (And.intro h_unique (And.intro h_sector
+      (And.intro h_timeDim (And.intro h_eff (And.intro h_rotId (And.intro h_abs (And.intro h_dd0
+      (And.intro h_bianchi (And.intro h_inev (And.intro h_controls h_lrecU))))))))))))))))))))))))))))))))))))))))))))))))))))
   ⟨C, hC⟩
 
 @[simp] def demo_generators_phi : VerifiedGenerators (0 : ℝ) :=
