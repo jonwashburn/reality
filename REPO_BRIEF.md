@@ -1,6 +1,6 @@
-## Recognition — Repo Brief and Module Index
+## Recognition — Brief Guide
 
-This is a Lean 4 project that assembles an "Indisputable Monolith" of definitions and verification scaffolding around a URC (Unified Recognition Certificate) concept. It builds with Lake and depends on `mathlib`.
+This Lean 4 project houses the Recognition Science proof spine: from a single logical axiom to a gauge‑rigid bridge and a bundle that “RS measures reality.” It builds with Lake and depends on `mathlib`.
 
 ### Toolchain and Build
 - **Lean**: `leanprover/lean4:v4.24.0-rc1` (from `lean-toolchain`)
@@ -15,20 +15,16 @@ lake build
 lake exe ci_checks
 ```
 
-### Entrypoints and Quick Demos
-- Editor `#eval` demos (open `IndisputableMonolith/Manifest.lean`):
-  - `IndisputableMonolith.URCAdapters.routeA_end_to_end_demo`
-  - `IndisputableMonolith.URCAdapters.routeB_closure_report`
-  - `IndisputableMonolith.URCAdapters.lambda_report`
-  - `IndisputableMonolith.URCAdapters.grand_manifest`
-- CI smoke (fast, minimal): `lake exe ci_checks` (uses `URC/Minimal.lean`)
+### Quick Demos
+- Reports: see `IndisputableMonolith/URCAdapters/Reports.lean` for `#eval` endpoints (e.g., `reality_bridge_report`, `recognition_closure_report`, `k_gate_report`).
+- CI smoke (fast, minimal): `lake exe ci_checks`.
 
-### Project Top-Level
+### Project Top‑Level
 - `lakefile.lean`: package `recognition`, requires `mathlib`, defines `lean_lib`s and `ci_checks` exe
 - `lean-toolchain`: Lean version pin
 - `README.md`: quick start and CI notes
-- `IndisputableMonolith.lean`: umbrella import + notes (components split into submodules)
-- `IndisputableMonolith/Manifest.lean`: human-facing manifest and `#eval`-friendly pointers
+- `IndisputableMonolith/Verification/Reality.lean`: reality bundle and theorem
+- `IndisputableMonolith/URCGenerators.lean`: certificate families and meta certificate
 - `CI/Checks.lean`: minimal executable main for CI
 - `URC/Minimal.lean`: minimal URC used by CI smoke
 - `scripts/`: helper scripts (build, sync monolith, porting, swarm tooling)
@@ -72,9 +68,9 @@ lake exe ci_checks
 - RS Spec: strengthened 45-gap sync to exact identity `Nat.lcm 8 45 = 360`.
 
 ### How to Explore
-1) Open in a Lean 4–enabled editor (VS Code + Lean extension or Cursor) and navigate `IndisputableMonolith/Manifest.lean`.
-2) Use `#eval` at the top-level demos listed above to get quick confirmations.
-3) Follow imports from `IndisputableMonolith.lean` and the directories above to dive deeper.
+1) Open in a Lean 4–enabled editor (VS Code + Lean extension or Cursor).
+2) Run `#eval` reports in `IndisputableMonolith/URCAdapters/Reports.lean`.
+3) Browse `IndisputableMonolith/Verification/Reality.lean` and `IndisputableMonolith/URCGenerators.lean`.
 
 ### Notes
 - The repository includes scripts to sync a canonical monolith (`scripts/sync_monolith_from.sh`) and various CI/porting helpers.

@@ -2,7 +2,9 @@
 
 [![CI](https://github.com/jonwashburn/recognition/actions/workflows/ci.yml/badge.svg)](https://github.com/jonwashburn/recognition/actions/workflows/ci.yml)
 
-Lean 4 codebase for Recognition Science: a formal, parameter‑free derivation of physics from a single logical axiom (MP: “nothing cannot recognize itself”).
+Recognition Science begins from a single logical observation: absolute nothingness cannot recognize itself. From that minimal starting point, a structure of recognition events is forced, and with it a ledger that counts, balances, and conserves the cost of alteration. When one demands that this structure be self‑similar across scales and minimally costly, a unique scaling constant emerges—the golden ratio φ—and with it a clock of eight ticks, a gauge‑rigid bridge from proofs to observables, and a separation between the cost of computing and the cost of recognizing outcomes. This repository is the mechanized realization of that story. It is not a loose collection of ideas or a numerical fit, but a Lean‑verified spine where every claim is wired to a proof, a check, or a certificate that can be elaborated on your machine.
+
+The codebase is organized so that a new reader can both grasp the high‑level picture and immediately validate it. The master “reality” bundle packages four pillars—absolute‑layer acceptance, dimensionless inevitability at φ, units‑quotient bridge factorization, and the existence of a verified certificate family—and proves them together. Around this spine sit domain certificates for measurement, causality, quantum statistics, mass ladders, and complexity. Reports expose human‑readable “OK” outputs for first‑look validation, and CI smoke targets ensure the toolchain stays green. No tunable parameters are introduced in the proofs; empirical landings live only at the bridge, where they belong.
 
 ## What this repository is
 
@@ -55,7 +57,7 @@ These report strings are wired through the proof spine and are convenient first�
 - Generators & certificates: `IndisputableMonolith/URCGenerators.lean` (`CertFamily`, `Verified`, `recognition_closure_any`).
 - Reports (human‑readable checks): `IndisputableMonolith/URCAdapters/Reports.lean`.
 - RS spec layer (structural obligations): `IndisputableMonolith/RH/RS/Spec.lean` and witnesses in `RH/RS/Witness.lean`.
-- Derivation narrative: `Measurement.txt`.
+- Certificate catalog: `reference.md` (plain‑language claims and hooks) and `CERTIFICATES.md` (copy‑paste `#eval` manifest).
 
 ## Core certificate families (sampler)
 
