@@ -1200,6 +1200,67 @@ def ConsciousProp (C : CertFamily) : Prop := ∀ c ∈ C.conscious, ConsciousCer
 def KIdentitiesProp (C : CertFamily) : Prop := ∀ c ∈ C.kidentities, KIdentitiesCert.verified c
 def KGateProp (C : CertFamily) : Prop := ∀ c ∈ C.kgate, KGateCert.verified c
 
+/--- Order‑agnostic projection of the subset of `Verified` needed for `LawfulBridge`.
+     This avoids fragile positional destructuring of a long ∧‑chain. -/
+structure VerifiedCore (φ : ℝ) (C : CertFamily) : Prop where
+  units       : UnitsProp C
+  eightbeat   : EightBeatProp C
+  elprobes    : ELProp C
+  masses      : PhiRungProp φ C
+  rotation    : RotationProp C
+  outer       : OuterBudgetProp C
+  conscious   : ConsciousProp C
+  kidentities : KIdentitiesProp C
+  kgate       : KGateProp C
+
+namespace VerifiedCore
+
+/-- Extract a `VerifiedCore` from the full `Verified` bundle.
+    Centralizes dependence on the internal ordering of the ∧‑chain. -/
+lemma of_verified {φ : ℝ} {C : CertFamily}
+  (h : Verified φ C) : VerifiedCore φ C := by
+  -- h = (unitsInv) ∧ (units) ∧ (unitsQuot) ∧ (speedFromUnits) ∧ (eightbeat)
+  --     ∧ (hypercube) ∧ (grayCode) ∧ (elprobes) ∧ (masses) ∧ (rotation)
+  --     ∧ (outer) ∧ (conscious) ∧ (eightTick) ∧ (kidentities) ∧ (invariantsRatio)
+  --     ∧ (kgate) ∧ ... (rest not needed here)
+  let t1 := h.right                              -- (units) ∧ rest
+  have hu := t1.left                             -- units
+  let t2 := t1.right                             -- (unitsQuot) ∧ rest
+  let t3 := t2.right                             -- (speedFromUnits) ∧ rest
+  let t4 := t3.right                             -- (eightbeat) ∧ rest
+  have he8 := t4.left                            -- eightbeat
+  let t5 := t4.right                             -- (hypercube) ∧ rest
+  let t6 := t5.right                             -- (grayCode) ∧ rest
+  let t7 := t6.right                             -- (elprobes) ∧ rest
+  have hel := t7.left                            -- elprobes
+  let t8 := t7.right                             -- (masses) ∧ rest
+  have hm := t8.left                             -- masses
+  let t9 := t8.right                             -- (rotation) ∧ rest
+  have hrot := t9.left                           -- rotation
+  let t10 := t9.right                            -- (outer) ∧ rest
+  have hout := t10.left                          -- outer
+  let t11 := t10.right                           -- (conscious) ∧ rest
+  have hcons := t11.left                         -- conscious
+  let t12 := t11.right                           -- (eightTick) ∧ rest
+  let t13 := t12.right                           -- (kidentities) ∧ rest
+  have hkid := t13.left                          -- kidentities
+  let t14 := t13.right                           -- (invariantsRatio) ∧ rest
+  let t15 := t14.right                           -- (kgate) ∧ rest
+  have hkg := t15.left                           -- kgate
+  exact {
+    units := hu
+  , eightbeat := he8
+  , elprobes := hel
+  , masses := hm
+  , rotation := hrot
+  , outer := hout
+  , conscious := hcons
+  , kidentities := hkid
+  , kgate := hkg
+  }
+
+end VerifiedCore
+
 /--- Route B Lawfulness bundle, tied to a concrete certificate family and φ.
      Strengthened: includes all verified subpredicates (no trailing True). -/
 def LawfulBridge (φ : ℝ) (C : CertFamily) : Prop :=
@@ -1212,9 +1273,12 @@ theorem determination_by_generators {φ : ℝ}
   rcases VG with ⟨C, hC⟩
   dsimp [LawfulBridge, UnitsProp, EightBeatProp, ELProp, PhiRungProp,
         RotationProp, OuterBudgetProp, ConsciousProp, KIdentitiesProp, KGateProp] at *
-  rcases hC with ⟨huInv, hu, he8, hel, hm, hrot, hout, hcons, hkid, hkg, hlrec⟩
-  exact And.intro hu
-    (And.intro he8 (And.intro hel (And.intro hm (And.intro hrot (And.intro hout (And.intro hcons (And.intro hkid hkg)))))))
+  -- Use order-agnostic projection to avoid fragile ∧-chain destructuring
+  have core := VerifiedCore.of_verified (φ:=φ) (C:=C) hC
+  exact And.intro core.units
+    (And.intro core.eightbeat (And.intro core.elprobes (And.intro core.masses
+      (And.intro core.rotation (And.intro core.outer (And.intro core.conscious
+        (And.intro core.kidentities core.kgate)))))))
 
 /-- A tiny demo family: empty certificate sets verify vacuously. -/
 def demo_generators (φ : ℝ) : VerifiedGenerators φ :=
