@@ -80,5 +80,7 @@ All are aggregated in `CertFamily` and checked by `Verified φ C` (`URCGenerator
 
 ## Contact
 
-- Open issues or discussions on this repository.
+- Email: washburn@recognitionphysics.org
+- Twitter: @jonwashburn
+- Or open issues/discussions on this repository.
 
