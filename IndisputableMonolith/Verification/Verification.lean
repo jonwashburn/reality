@@ -180,5 +180,18 @@ noncomputable def runKGate (U : RSUnits) (inp : KGateInput) : KGateResult :=
   , passed := ok
   , note := if ok then "K_A = K_B holds" else "K_A != K_B" }
 
+/-- Structural bridge factorization bundle:
+    (A) for any observable O, bridge evaluation is invariant under anchor rescaling (A = Ã ∘ Q), and
+    (J) the K‑gate identity holds for all anchors (encodes J = Ã ∘ B_* in this scaffold). -/
+def BridgeFactorizes : Prop :=
+  (∀ (O : Observable) {U U'}, UnitsRescaled U U' → BridgeEval O U = BridgeEval O U')
+  ∧ (∀ U, BridgeEval K_A_obs U = BridgeEval K_B_obs U)
+
+/-- Proof witness for BridgeFactorizes using existing invariance and K‑gate bridge lemmas. -/
+theorem bridge_factorizes : BridgeFactorizes := by
+  refine And.intro ?hQ ?hJ
+  · intro O U U' h; exact anchor_invariance O h
+  · intro U; exact K_gate_bridge U
+
 end Verification
 end IndisputableMonolith
