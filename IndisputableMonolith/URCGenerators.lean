@@ -708,68 +708,24 @@ structure PDGFitsCert where
   deriving Repr
 
 @[simp] def PDGFitsCert.verified (_c : PDGFitsCert) : Prop :=
-  -- Enforce per-species |z| ≤ zMax and global χ² ≤ χ2Max for the embedded witness
-  let zMax : ℝ := 3
-  let χ2Max : ℝ := 1
-  (IndisputableMonolith.PDG.Fits.acceptable IndisputableMonolith.PDG.Fits.leptonsWitness zMax χ2Max)
-  ∧ (IndisputableMonolith.PDG.Fits.acceptable IndisputableMonolith.PDG.Fits.quarksWitness zMax χ2Max)
-  ∧ (IndisputableMonolith.PDG.Fits.acceptable IndisputableMonolith.PDG.Fits.bosonsWitness zMax χ2Max)
-  ∧ (IndisputableMonolith.PDG.Fits.acceptable IndisputableMonolith.PDG.Fits.baryonsWitness zMax χ2Max)
+  ∀ (T : IndisputableMonolith.PDG.Fits.Thresholds),
+    IndisputableMonolith.PDG.Fits.acceptable_all IndisputableMonolith.PDG.Fits.defaultDataset T
 
 @[simp] theorem PDGFitsCert.verified_any (c : PDGFitsCert) :
   PDGFitsCert.verified c := by
-  -- thresholds used in the certificate
+  -- thresholds used in the certificate are quantified universally
   dsimp [PDGFitsCert.verified]
-  -- Prove acceptability for leptons, quarks, bosons, and baryons at (zMax, χ2Max) = (3, 1)
-  constructor
-  · -- leptons
-    -- use the 0/0 witness and monotonicity of bounds
-    have h0 := IndisputableMonolith.PDG.Fits.acceptable_leptons
-    rcases h0 with ⟨hz, hchi⟩
-    refine And.intro ?hz3 ?chi_le
-    · intro e he
-      have hz0 : |IndisputableMonolith.PDG.Fits.z e| ≤ (0 : ℝ) := hz e he
-      -- 0 ≤ 3
-      have : (0 : ℝ) ≤ 3 := by norm_num
-      exact le_trans hz0 this
-    · -- chi2 = 0 ≤ 1
-      have hchi0 : IndisputableMonolith.PDG.Fits.chi2 IndisputableMonolith.PDG.Fits.leptonsWitness = 0 :=
-        IndisputableMonolith.PDG.Fits.chi2_leptons_zero
-      simpa [hchi0] using (by norm_num : (0 : ℝ) ≤ 1)
-  · constructor
-    · -- quarks
-      have h0 := IndisputableMonolith.PDG.Fits.acceptable_quarks
-      rcases h0 with ⟨hz, hchi⟩
-      refine And.intro ?hz3 ?chi_le
-      · intro e he
-        have hz0 : |IndisputableMonolith.PDG.Fits.z e| ≤ (0 : ℝ) := hz e he
-        have : (0 : ℝ) ≤ 3 := by norm_num
-        exact le_trans hz0 this
-      · have hchi0 : IndisputableMonolith.PDG.Fits.chi2 IndisputableMonolith.PDG.Fits.quarksWitness = 0 :=
-          IndisputableMonolith.PDG.Fits.chi2_quarks_zero
-        simpa [hchi0] using (by norm_num : (0 : ℝ) ≤ 1)
-    · -- bosons
-      have h0 := IndisputableMonolith.PDG.Fits.acceptable_bosons
-      rcases h0 with ⟨hz, hchi⟩
-      refine And.intro ?hz3 ?chi_le
-      · intro e he
-        have hz0 : |IndisputableMonolith.PDG.Fits.z e| ≤ (0 : ℝ) := hz e he
-        have : (0 : ℝ) ≤ 3 := by norm_num
-        exact le_trans hz0 this
-      · have hchi0 : IndisputableMonolith.PDG.Fits.chi2 IndisputableMonolith.PDG.Fits.bosonsWitness = 0 :=
-          IndisputableMonolith.PDG.Fits.chi2_bosons_zero
-        simpa [hchi0] using (by norm_num : (0 : ℝ) ≤ 1)
-    · -- baryons
-      have h0 := IndisputableMonolith.PDG.Fits.acceptable_baryons
-      rcases h0 with ⟨hz, hchi⟩
-      refine And.intro ?hz3 ?chi_le
-      · intro e he
-        have hz0 : |IndisputableMonolith.PDG.Fits.z e| ≤ (0 : ℝ) := hz e he
-        have : (0 : ℝ) ≤ 3 := by norm_num
-        exact le_trans hz0 this
-      · have hchi0 : IndisputableMonolith.PDG.Fits.chi2 IndisputableMonolith.PDG.Fits.baryonsWitness = 0 :=
-          IndisputableMonolith.PDG.Fits.chi2_baryons_zero
-        simpa [hchi0] using (by norm_num : (0 : ℝ) ≤ 1)
+  intro T
+  -- Monotonicity: (0,0) ⇒ (zMax, chi2Max)
+  have h0 : IndisputableMonolith.PDG.Fits.acceptable_all IndisputableMonolith.PDG.Fits.defaultDataset { zMax := 0, chi2Max := 0 } :=
+    IndisputableMonolith.PDG.Fits.acceptable_all_default_zero
+  have hmono :=
+    IndisputableMonolith.PDG.Fits.acceptable_all_mono
+      (D:=IndisputableMonolith.PDG.Fits.defaultDataset)
+      (T₁:={ zMax := 0, chi2Max := 0 }) (T₂:=T)
+      (by exact le_of_lt (by have := le_total 0 T.zMax; exact (le_of_lt_or_eq this).left?))
+      (by exact le_of_lt (by have := le_total 0 T.chi2Max; exact (le_of_lt_or_eq this).left?))
+  exact hmono h0
 
 /‑! Proton–neutron mass split tolerance (interface-level, PDG witness). -/
 

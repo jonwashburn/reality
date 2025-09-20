@@ -150,6 +150,74 @@ def acceptable (L : List SpeciesEntry) (zMax χ2Max : ℝ) : Prop :=
     · subst h; simp [z_Dm_zero]
   · simpa using chi2_baryons_zero
 
+/-! Parameterized PDG fits: thresholds and dataset wrappers. -/
+
+structure Thresholds where
+  zMax   : ℝ
+  chi2Max : ℝ
+  deriving Repr
+
+structure Dataset where
+  leptons : List SpeciesEntry
+  quarks  : List SpeciesEntry
+  bosons  : List SpeciesEntry
+  baryons : List SpeciesEntry
+  deriving Repr
+
+@[simp] def defaultDataset : Dataset :=
+  { leptons := leptonsWitness
+  , quarks  := quarksWitness
+  , bosons  := bosonsWitness
+  , baryons := baryonsWitness
+  }
+
+/-- All-species acceptability at given thresholds. -/
+def acceptable_all (D : Dataset) (T : Thresholds) : Prop :=
+  acceptable D.leptons T.zMax T.chi2Max ∧
+  acceptable D.quarks  T.zMax T.chi2Max ∧
+  acceptable D.bosons  T.zMax T.chi2Max ∧
+  acceptable D.baryons T.zMax T.chi2Max
+
+/-- Monotonicity of single-list acceptability in the thresholds. -/
+lemma acceptable_mono {L : List SpeciesEntry}
+  {z₁ z₂ χ₁ χ₂ : ℝ}
+  (hz : z₁ ≤ z₂) (hχ : χ₁ ≤ χ₂) :
+  acceptable L z₁ χ₁ → acceptable L z₂ χ₂ := by
+  intro h
+  rcases h with ⟨hzs, hchi⟩
+  refine And.intro ?hzs' ?hchi'
+  · intro e he; exact le_trans (hzs e he) hz
+  · exact le_trans hchi hχ
+
+/-- Monotonicity of all-species acceptability in the thresholds. -/
+lemma acceptable_all_mono (D : Dataset)
+  {T₁ T₂ : Thresholds}
+  (hZ : T₁.zMax ≤ T₂.zMax) (hC : T₁.chi2Max ≤ T₂.chi2Max) :
+  acceptable_all D T₁ → acceptable_all D T₂ := by
+  intro h; rcases h with ⟨hl, hq, hb, hB⟩
+  refine And.intro ?hl' (And.intro ?hq' (And.intro ?hb' ?hB'))
+  · exact acceptable_mono (L:=D.leptons) hZ hC hl
+  · exact acceptable_mono (L:=D.quarks)  hZ hC hq
+  · exact acceptable_mono (L:=D.bosons)  hZ hC hb
+  · exact acceptable_mono (L:=D.baryons) hZ hC hB
+
+/-- Baseline: default dataset satisfies thresholds (0,0). -/
+lemma acceptable_all_default_zero : acceptable_all defaultDataset { zMax := 0, chi2Max := 0 } := by
+  refine And.intro ?hl (And.intro ?hq (And.intro ?hb ?hB))
+  · simpa [defaultDataset] using acceptable_leptons
+  · simpa [defaultDataset] using acceptable_quarks
+  · simpa [defaultDataset] using acceptable_bosons
+  · simpa [defaultDataset] using acceptable_baryons
+
+namespace External
+
+/-- Placeholder: load a dataset from a JSON file (to be implemented).
+    Currently returns the `defaultDataset`. -/
+def loadDatasetFromJson (_path : System.FilePath) : IO Dataset :=
+  pure defaultDataset
+
+end External
+
 end Fits
 end PDG
 end IndisputableMonolith
