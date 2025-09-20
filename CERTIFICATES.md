@@ -2,6 +2,34 @@
 
 This index lists the wired certificates and their #eval reports. Copy/paste any line into a Lean buffer (with this repo opened) to force elaboration and see a concise OK line.
 
+## Big picture (start here)
+
+- Reality bundle (RS measures reality)
+  - What it is: Bundles four pillars into a single statement that “Recognition Science measures reality” at φ: (1) absolute‑layer acceptance (UniqueCalibration ∧ MeetsBands), (2) dimensionless inevitability at φ, (3) units‑quotient bridge factorization (A = Ã ∘ Q and J = Ã ∘ B_*), and (4) existence of a verified certificate family. This is the proof‑spine endpoint for first‑look validation.
+  - Where: `IndisputableMonolith/Verification/Reality.lean` (theorem `rs_measures_reality_any`).
+  - Demo:
+    - `#eval IndisputableMonolith.URCAdapters.reality_bridge_report`
+
+- Route A (axioms ⇒ bridge ⇒ absolute layer)
+  - What it is: A minimal bridge obtained from axioms (URC Minimal), plus generic witnesses that the absolute layer accepts (UniqueCalibration ∧ MeetsBands). Use this to sanity‑check the spec‑level wiring from axioms to a working bridge with empirical obligations.
+  - Where: `IndisputableMonolith/URCAdapters/Routes.lean` and `Reports.lean`.
+  - Demo:
+    - `#eval IndisputableMonolith.URCAdapters.routeA_report`
+
+- Route B (generators ⇒ bridge ⇒ absolute layer)
+  - What it is: A concrete, generator‑driven construction of witnesses (a small `CertFamily`) that yields a bridge accepted by the absolute layer. This demonstrates that the generator stack alone is sufficient to satisfy UniqueCalibration ∧ MeetsBands in a minimal setting.
+  - Where: `IndisputableMonolith/URCGenerators.lean` (demo family) and `URCAdapters/Routes.lean`.
+  - Demo:
+    - `#eval IndisputableMonolith.URCAdapters.routeB_closure_report`
+
+- Recognition Closure (meta certificate)
+  - What it is: Packs (i) absolute‑layer acceptance (universally), (ii) dimensionless inevitability at φ, and (iii) existence of a verified certificate family (with selected lists non‑empty). A direct precursor to the Reality bundle.
+  - Where: `IndisputableMonolith/URCGenerators.lean` (`recognition_closure_any`).
+  - Demo:
+    - `#eval IndisputableMonolith.URCAdapters.recognition_closure_report`
+
+---
+
 - Route A wiring
   - `#eval IndisputableMonolith.URCAdapters.routeA_report`
 - K identities and gate
