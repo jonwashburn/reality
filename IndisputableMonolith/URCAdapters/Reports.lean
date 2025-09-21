@@ -596,6 +596,7 @@ namespace URCAdapters
     , truth_ledger_report
     , zpf_isomorphism_report
     , framework_uniqueness_report
+  , closed_theorem_stack_report
     , dimensional_rigidity_lite_report
     , generations_upper_bound_report
     , generations_lower_bound_report
@@ -616,6 +617,13 @@ namespace URCAdapters
   have _ : IndisputableMonolith.Meta.AxiomLattice.MPMinimal φ :=
     IndisputableMonolith.Meta.AxiomLattice.mp_minimal_holds φ
   "completeness_report: OK (" ++ completeness_status_summary ++ ")"
+
+/-- #eval-friendly report: closed theorem stack holds at φ. -/
+@[simp] def closed_theorem_stack_report : String :=
+  let φ : ℝ := IndisputableMonolith.Constants.phi
+  have _ : IndisputableMonolith.Verification.Completeness.ClosedTheoremStack φ :=
+    IndisputableMonolith.Verification.Completeness.closed_theorem_stack φ
+  "ClosedTheoremStack: OK"
 
 /-- #eval-friendly report of minimality (provenance form). -/
 @[simp] def minimality_report : String :=
