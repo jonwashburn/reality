@@ -19,6 +19,7 @@ import IndisputableMonolith.PhiSupport.Lemmas
 
 namespace IndisputableMonolith
 namespace URCAdapters
+
 /-- #eval-friendly report for EthicsPolicyCert. -/
 @[simp] def ethics_policy_report : String :=
   let cert : URCGenerators.EthicsPolicyCert := {}
@@ -73,13 +74,6 @@ namespace URCAdapters
   have _ : URCGenerators.PhiUniquenessCert.verified cert :=
     URCGenerators.PhiUniquenessCert.verified_any _
   "PhiUniquenessCert: OK"
-
-/-- #eval-friendly report for the RSRealityMaster certificate (Reality ∧ Spec-closure). -/
-@[simp] def reality_master_report : String :=
-  let φ : ℝ := IndisputableMonolith.Constants.phi
-  have _ : IndisputableMonolith.Verification.Reality.RSRealityMaster φ :=
-    IndisputableMonolith.Verification.Reality.rs_reality_master_any φ
-  "RSRealityMaster: OK"
 
 /-- #eval-friendly report for K-identities (τ_rec/τ0=K, λ_kin/ℓ0=K). -/
 @[simp] def k_identities_report : String :=
@@ -315,7 +309,6 @@ namespace URCAdapters
     URCGenerators.SpeedFromUnitsCert.verified_any _
   "SpeedFromUnitsCert: OK"
 
-
 /-- #eval-friendly report for FamilyRatioCert (mass ratios φ^(Δr) at matching scale). -/
 @[simp] def family_ratio_report : String :=
   let cert : URCGenerators.FamilyRatioCert := {}
@@ -428,7 +421,6 @@ namespace URCAdapters
     URCGenerators.ProtonNeutronSplitCert.verified_any _
   "ProtonNeutronSplitCert: OK"
 
-
 /-- #eval-friendly report for FoldingComplexityCert. -/
 @[simp] def folding_complexity_report : String :=
   let cert : URCGenerators.FoldingComplexityCert := {}
@@ -513,7 +505,7 @@ namespace URCAdapters
     , inflation_potential_report
     , ir_coherence_gate_report
     , pn_split_report
-  , phi_uniqueness_report
+    , phi_uniqueness_report
     , rotation_identity_report
     , ilg_time_report
     , ilg_effective_report

@@ -1715,5 +1715,41 @@ theorem recognition_closure_any (φ : ℝ) : Recognition_Closure φ := by
     -- Show selected lists are non‑empty
     simp [demo_generators]
 
+/-! ### Domain‑level: uniqueness of φ together with Recognition_Closure -/
+
+/-- There exists exactly one φ such that the φ‑selection predicate holds and the
+    Recognition_Closure obligations hold (the latter are uniform in φ). -/
+theorem phi_selection_unique_with_closure :
+  ∃! φ : ℝ, IndisputableMonolith.RH.RS.PhiSelection φ ∧ IndisputableMonolith.RH.RS.Recognition_Closure φ := by
+  -- Existence: pick φ and combine selection with recognition_closure_any
+  refine Exists.intro IndisputableMonolith.Constants.phi ?hexact
+  have hsel : IndisputableMonolith.RH.RS.PhiSelection IndisputableMonolith.Constants.phi := by
+    refine And.intro ?hquad ?hpos
+    · simpa using IndisputableMonolith.PhiSupport.phi_squared
+    · have : 1 < IndisputableMonolith.Constants.phi := IndisputableMonolith.Constants.one_lt_phi
+      exact lt_trans (by norm_num) this
+  have hclos : IndisputableMonolith.RH.RS.Recognition_Closure IndisputableMonolith.Constants.phi := by
+    -- From generators: closure holds uniformly in φ
+    exact recognition_closure_any IndisputableMonolith.Constants.phi
+  refine And.intro ⟨hsel, hclos⟩ ?huniq
+  -- Uniqueness: if another x satisfies selection and closure, the selection part forces x = φ
+  intro x hx
+  have hx_eq : x = IndisputableMonolith.Constants.phi := by
+    -- Use unique positive root characterization
+    have := IndisputableMonolith.PhiSupport.phi_unique_pos_root x
+    exact (this.mp hx.left)
+  exact hx_eq
+
+/-- Certificate asserting domain‑level φ selection is unique in conjunction with recognition closure. -/
+structure PhiSelectionSpecCert where
+  deriving Repr
+
+@[simp] def PhiSelectionSpecCert.verified (_c : PhiSelectionSpecCert) : Prop :=
+  ∃! φ : ℝ, IndisputableMonolith.RH.RS.PhiSelection φ ∧ IndisputableMonolith.RH.RS.Recognition_Closure φ
+
+@[simp] theorem PhiSelectionSpecCert.verified_any (c : PhiSelectionSpecCert) :
+  PhiSelectionSpecCert.verified c := by
+  exact phi_selection_unique_with_closure
+
 end URCGenerators
 end IndisputableMonolith
