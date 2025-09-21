@@ -1,5 +1,5 @@
 import Mathlib
-import IndisputableMonolith
+import IndisputableMonolith.Ethics.Core
 
 namespace IndisputableMonolith
 

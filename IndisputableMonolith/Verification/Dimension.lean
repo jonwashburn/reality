@@ -43,6 +43,20 @@ theorem dimension_three_of_cover_and_sync {D : Nat}
   (hsync : Nat.lcm (2 ^ D) 45 = 360) : D = 3 := by
   simpa using (IndisputableMonolith.RH.RS.lcm_pow2_45_eq_iff D).mp hsync
 
+/-- Exact characterization: the RSCounting + Gap45 synchronization predicate holds
+    if and only if the spatial dimension is three. This upgrades the one‑way
+    necessity into a biconditional sufficiency. -/
+theorem rs_counting_gap45_absolute_iff_dim3 {D : Nat} :
+  RSCounting_Gap45_Absolute D ↔ D = 3 := by
+  constructor
+  · intro h; exact onlyD3_satisfies_RSCounting_Gap45_Absolute h
+  · intro hD
+    cases hD
+    constructor
+    · exact IndisputableMonolith.Patterns.cover_exact_pow 3
+    · -- lcm(2^3,45)=360
+      simpa using (IndisputableMonolith.RH.RS.lcm_pow2_45_eq_iff 3).mpr rfl
+
 end Dimension
 end Verification
 end IndisputableMonolith

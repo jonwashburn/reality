@@ -380,12 +380,77 @@ def DimensionalRigidity (D : Nat) : Prop :=
 lemma lcm_pow2_45_eq_iff (D : Nat) : Nat.lcm (2 ^ D) 45 = 360 ↔ D = 3 := by
   constructor
   · intro h
-    -- Case analysis on D by small numerals; we keep this decidable for the scaffold.
-    -- For D=3 it holds; for other small D it does not.
-    -- We discharge by finite checking via decide on each side and rely on refl.
-    -- Replace with a full number-theoretic proof when upgrading.
-    revert h; decide
-  · intro h; cases h; decide
+    -- Key facts: 45 is odd, hence coprime to 2; coprimality lifts to powers.
+    have hodd5 : Nat.Odd 5 := by simpa [bit1] using (Nat.odd_bit1 2)
+    have hodd9 : Nat.Odd 9 := by simpa [bit1] using (Nat.odd_bit1 4)
+    have hodd45 : Nat.Odd 45 := by
+      simpa using (Nat.odd_mul.mpr ⟨hodd9, hodd5⟩)
+    have hcop2_45 : Nat.coprime 2 45 := by
+      -- Nat.coprime n 2 ↔ Odd n
+      simpa [Nat.coprime_comm] using (Nat.coprime_two_right.mpr hodd45)
+    have hcop_pow : Nat.coprime (2 ^ D) 45 := by
+      -- Coprimality is preserved under taking powers on the left
+      simpa using (Nat.coprime_pow_left.mpr hcop2_45)
+    -- From lcm equality and gcd*lcm = a*b, we get 8 ∣ 2^D (so D ≥ 3)
+    have hgcd_mul : Nat.gcd (2 ^ D) 45 * Nat.lcm (2 ^ D) 45 = (2 ^ D) * 45 :=
+      Nat.gcd_mul_lcm (2 ^ D) 45
+    have hMulEq : Nat.gcd (2 ^ D) 45 * 360 = (2 ^ D) * 45 := by simpa [h]
+      using hgcd_mul
+    have hpos45 : 0 < 45 := by decide
+    have hdiv8 : 8 ∣ 2 ^ D := by
+      -- cancel 45 on the right to see 8 | 2^D
+      -- gcd * 360 = (2^D) * 45  ⇒ (gcd * 8) * 45 = (2^D) * 45
+      -- cancel 45 to get gcd * 8 = 2^D, hence 8 ∣ 2^D
+      have := congrArg (fun n => n / 45) hMulEq
+      -- Instead of division on ℕ, directly cancel 45 using positivity
+      have hcancel := by
+        apply (Nat.mul_right_cancel (a:=45) (b:=Nat.gcd (2 ^ D) 45 * 8)
+          (c:=2 ^ D))
+        · exact hpos45
+        · -- Rearrange equality to (45 * (gcd * 8)) = 45 * (2^D)
+          -- starting from gcd*360 = (2^D)*45
+          simpa [Nat.mul_left_comm, Nat.mul_assoc]
+            using hMulEq
+      -- We obtained: Nat.gcd (2^D) 45 * 8 = 2^D
+      -- Hence 8 divides 2^D.
+      exact ⟨Nat.gcd (2 ^ D) 45, by simpa [Nat.mul_comm, Nat.mul_left_comm, Nat.mul_assoc] using hcancel.symm⟩
+    -- Also, 2^D ∣ 360 and coprime(2^D,45) imply 2^D ∣ 8 (so D ≤ 3)
+    have hdiv_lcm : (2 ^ D) ∣ Nat.lcm (2 ^ D) 45 := Nat.dvd_lcm_left _ _
+    have hdiv_prod : (2 ^ D) ∣ 360 := by simpa [h]
+      using (dvd_trans hdiv_lcm (dvd_refl _))
+    -- Use coprimeness with 45 to strip that factor from 8*45 = 360
+    have hdiv8' : (2 ^ D) ∣ 8 := by
+      -- 2^D ∣ 8*45 and coprime (2^D) 45 ⇒ 2^D ∣ 8
+      have : (2 ^ D) ∣ 8 * 45 := by simpa [Nat.mul_comm] using hdiv_prod
+      exact (Nat.coprime.dvd_of_dvd_mul_right hcop_pow) this
+    -- Sandwiching divisibility: 8 ∣ 2^D and 2^D ∣ 8 ⇒ 2^D = 8
+    have hpow_eq : 2 ^ D = 8 := Nat.dvd_antisymm hdiv8' hdiv8
+    -- Injectivity of powers at base 2 (1 < 2) gives D = 3
+    have hbase : 1 < (2 : Nat) := by decide
+    have : D = 3 := by
+      -- Use strict monotonicity/injectivity of n ↦ 2^n on ℕ
+      exact (pow_right_injective hbase) hpow_eq
+    exact this
+  · intro hD
+    -- If D = 3, coprimality gives lcm(2^3,45) = 8*45 = 360
+    subst hD
+    have hodd5 : Nat.Odd 5 := by simpa [bit1] using (Nat.odd_bit1 2)
+    have hodd9 : Nat.Odd 9 := by simpa [bit1] using (Nat.odd_bit1 4)
+    have hodd45 : Nat.Odd 45 := by
+      simpa using (Nat.odd_mul.mpr ⟨hodd9, hodd5⟩)
+    have hcop2_45 : Nat.coprime 2 45 := by
+      simpa [Nat.coprime_comm] using (Nat.coprime_two_right.mpr hodd45)
+    have hcop_pow : Nat.coprime (2 ^ (3 : Nat)) 45 := by
+      simpa using (Nat.coprime_pow_left.mpr hcop2_45)
+    have hgcd : Nat.gcd (2 ^ (3 : Nat)) 45 = 1 := by simpa [Nat.coprime]
+      using hcop_pow
+    have := Nat.gcd_mul_lcm (2 ^ (3 : Nat)) 45
+    have hlcm : Nat.lcm (2 ^ (3 : Nat)) 45 = (2 ^ (3 : Nat)) * 45 := by
+      simpa [hgcd, Nat.one_mul] using this
+    -- Evaluate 2^3 = 8 and multiply out
+    have : Nat.lcm (2 ^ (3 : Nat)) 45 = 8 * 45 := by
+      simpa using hlcm
+    simpa using this.trans (by decide)
 
 /-- 45‑gap consequence for any ledger/bridge given a rung‑45 witness and no‑multiples.
     This provides a non‑IM branch to satisfy the 45‑gap spec. -/

@@ -14,8 +14,9 @@ lemma tc_growth_holds : tc_growth_prop := by
   -- PhiPow(x) = exp(log φ * x); since log φ > 0, it is monotone.
   have hφpos : 0 < IndisputableMonolith.Constants.phi := IndisputableMonolith.Constants.phi_pos
   have hlogpos : 0 < Real.log (IndisputableMonolith.Constants.phi) := by
-    have : 1 < IndisputableMonolith.Constants.phi := IndisputableMonolith.Constants.one_lt_phi
-    exact Real.log_pos_iff.mpr (And.intro (le_of_lt this) this)
+    have hx : 0 ≤ IndisputableMonolith.Constants.phi := le_of_lt hφpos
+    have hx1 : 1 < IndisputableMonolith.Constants.phi := IndisputableMonolith.Constants.one_lt_phi
+    exact (Real.log_pos_iff hx).2 hx1
   dsimp [IndisputableMonolith.RH.RS.PhiPow]
   -- Use monotonicity of exp and multiplication by positive scalar
   have : Real.log (IndisputableMonolith.Constants.phi) * x ≤ Real.log (IndisputableMonolith.Constants.phi) * y :=

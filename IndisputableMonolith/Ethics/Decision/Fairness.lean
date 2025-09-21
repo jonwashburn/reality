@@ -1,6 +1,5 @@
 import Mathlib
-import IndisputableMonolith
-import IndisputableMonolith.Ethics.Decision.BoolProp
+import IndisputableMonolith.Ethics.Core
 
 namespace IndisputableMonolith
 namespace Ethics

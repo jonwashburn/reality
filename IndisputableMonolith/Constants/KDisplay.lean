@@ -1,5 +1,5 @@
 import Mathlib
-import IndisputableMonolith.Core
+import IndisputableMonolith.Constants
 
 open IndisputableMonolith.Constants
 
