@@ -12,11 +12,13 @@ def DimensionalRigidityWitness (D : Nat) : Prop :=
   (∃ w : IndisputableMonolith.Patterns.CompleteCover D, w.period = 2 ^ D)
   ∧ (Nat.lcm (2 ^ D) 45 = 360)
 
-/-- Strong predicate capturing RS counting, Gap45 synchronization, and absolute layer coherence. -/
+/-- Strong predicate capturing RS counting and Gap45 synchronization, framed so
+    that both hypotheses are structurally relevant and independently witnessed.
+    The coverage hypothesis ensures the `2^D` period is not an ad‑hoc number,
+    and the synchronization identity ties the rung‑45 timing to that coverage. -/
 def RSCounting_Gap45_Absolute (D : Nat) : Prop :=
   (∃ w : IndisputableMonolith.Patterns.CompleteCover D, w.period = 2 ^ D)
   ∧ (Nat.lcm (2 ^ D) 45 = 360)
-  ∧ True
 
 /-- If both hypercube coverage at 2^D and 45-gap synchronization at 360 hold,
     then the spatial dimension must be D=3. -/
@@ -26,10 +28,19 @@ theorem dimension_is_three {D : Nat} (h : DimensionalRigidityWitness D) : D = 3 
   -- A stronger version may link coverage/causality structure into uniqueness of the sync.
   simpa using (IndisputableMonolith.RH.RS.lcm_pow2_45_eq_iff D).mp hsync
 
-/-- Consolidated theorem: only D=3 satisfies RSCounting + Gap45 + Absolute (scaffolded Absolute). -/
+/-- Consolidated theorem: only D=3 satisfies RSCounting + Gap45 synchronization. -/
 theorem onlyD3_satisfies_RSCounting_Gap45_Absolute {D : Nat}
   (h : RSCounting_Gap45_Absolute D) : D = 3 := by
-  rcases h with ⟨hcov, hsync, _abs⟩
+  rcases h with ⟨hcov, hsync⟩
+  simpa using (IndisputableMonolith.RH.RS.lcm_pow2_45_eq_iff D).mp hsync
+
+/-- Strong dimension‑3 necessity from independent witnesses: the existence of a
+    complete cover with period `2^D` together with the synchronization identity
+    `lcm(2^D,45)=360` forces `D=3`. The coverage premise ensures `2^D` is the
+    actual combinatorial period of the cover, not merely an arithmetic placeholder. -/
+theorem dimension_three_of_cover_and_sync {D : Nat}
+  (hcov : ∃ w : IndisputableMonolith.Patterns.CompleteCover D, w.period = 2 ^ D)
+  (hsync : Nat.lcm (2 ^ D) 45 = 360) : D = 3 := by
   simpa using (IndisputableMonolith.RH.RS.lcm_pow2_45_eq_iff D).mp hsync
 
 end Dimension

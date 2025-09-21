@@ -10,7 +10,7 @@ namespace Verification
 namespace Completeness
 
 /-!
-# Completeness certificates (closed theorem stack)
+# Completeness certificates (Prime Closure)
 
 This module bundles the now-proven pillars into a single constructive record and
 an easy-to-consume closed theorem stack predicate.
@@ -45,20 +45,24 @@ theorem rs_completeness : RSCompleteness := by
   · intro D h; exact Dimension.onlyD3_satisfies_RSCounting_Gap45_Absolute h
   · exact IndisputableMonolith.RSBridge.genOf_surjective
 
-/-- A closed theorem stack predicate at scale `φ` (for simple consumption). -/
-def ClosedTheoremStack (φ : ℝ) : Prop :=
+/-- Prime Closure predicate at scale `φ` (apex certificate). -/
+def PrimeClosure (φ : ℝ) : Prop :=
   Reality.RSRealityMaster φ ∧
   IndisputableMonolith.RH.RS.FrameworkUniqueness φ ∧
   (∀ D : Nat, Dimension.RSCounting_Gap45_Absolute D → D = 3) ∧
   Function.Surjective IndisputableMonolith.RSBridge.genOf ∧
   Meta.AxiomLattice.MPMinimal φ
 
-/-- Constructive witness of the closed theorem stack at `φ`. -/
-theorem closed_theorem_stack (φ : ℝ) : ClosedTheoremStack φ := by
+/-- Constructive witness of Prime Closure at `φ`. -/
+theorem prime_closure (φ : ℝ) : PrimeClosure φ := by
   refine And.intro (Reality.rs_reality_master_any φ) ?rest
   refine And.intro (IndisputableMonolith.RH.RS.framework_uniqueness φ) ?rest2
   refine And.intro (fun D h => Dimension.onlyD3_satisfies_RSCounting_Gap45_Absolute h) ?rest3
   refine And.intro (IndisputableMonolith.RSBridge.genOf_surjective) (Meta.AxiomLattice.mp_minimal_holds φ)
+
+/- Backwards compatibility aliases. -/
+abbrev ClosedTheoremStack := PrimeClosure
+theorem closed_theorem_stack (φ : ℝ) : ClosedTheoremStack φ := prime_closure φ
 
 end Completeness
 end Verification

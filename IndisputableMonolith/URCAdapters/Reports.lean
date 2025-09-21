@@ -621,9 +621,9 @@ namespace URCAdapters
 /-- #eval-friendly report: closed theorem stack holds at φ. -/
 @[simp] def closed_theorem_stack_report : String :=
   let φ : ℝ := IndisputableMonolith.Constants.phi
-  have _ : IndisputableMonolith.Verification.Completeness.ClosedTheoremStack φ :=
-    IndisputableMonolith.Verification.Completeness.closed_theorem_stack φ
-  "ClosedTheoremStack: OK"
+  have _ : IndisputableMonolith.Verification.Completeness.PrimeClosure φ :=
+    IndisputableMonolith.Verification.Completeness.prime_closure φ
+  "PrimeClosure: OK"
 
 /-- #eval-friendly report of minimality (provenance form). -/
 @[simp] def minimality_report : String :=
