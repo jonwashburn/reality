@@ -20,6 +20,7 @@ import IndisputableMonolith.Gravity.ILG
 import IndisputableMonolith.Gravity.Rotation
 import IndisputableMonolith.Quantum
 import IndisputableMonolith.YM.Dobrushin
+import IndisputableMonolith.PhiSupport.Lemmas
 import IndisputableMonolith.PDG.Fits
 import IndisputableMonolith.LNAL.VM
 import IndisputableMonolith.Masses.AnchorPolicy
@@ -737,6 +738,21 @@ structure InevitabilityDimlessCert where
   InevitabilityDimlessCert.verified c := by
   intro φ
   exact IndisputableMonolith.RH.RS.Witness.inevitability_dimless_partial φ
+
+/‑! Uniqueness of φ: the unique positive solution of x² = x + 1. -/
+
+/-- Certificate asserting: among positive reals, the quadratic x² = x + 1 has
+    the unique solution x = φ. -/
+structure PhiUniquenessCert where
+  deriving Repr
+
+@[simp] def PhiUniquenessCert.verified (_c : PhiUniquenessCert) : Prop :=
+  ∀ x : ℝ, (x ^ 2 = x + 1 ∧ 0 < x) ↔ x = IndisputableMonolith.Constants.phi
+
+@[simp] theorem PhiUniquenessCert.verified_any (c : PhiUniquenessCert) :
+  PhiUniquenessCert.verified c := by
+  intro x
+  simpa using IndisputableMonolith.PhiSupport.phi_unique_pos_root x
 
 /‑! Sector yardsticks (A_B): coherence via fixed integer pairs per sector.
     Hooks: Source.txt @SECTOR_YARDSTICKS. -/

@@ -15,6 +15,7 @@ import IndisputableMonolith.Ethics.Decision.Mapping
 import IndisputableMonolith.Ethics.Decision.Fairness
 import IndisputableMonolith.Ethics.Decision.Select
 import IndisputableMonolith.Ethics.Truth
+import IndisputableMonolith.PhiSupport.Lemmas
 
 namespace IndisputableMonolith
 namespace URCAdapters
@@ -65,6 +66,13 @@ namespace URCAdapters
   let φ : ℝ := IndisputableMonolith.Constants.phi
   have h := IndisputableMonolith.URCGenerators.recognition_closure_any φ
   "Recognition_Closure: OK"
+
+/-- #eval-friendly report for PhiUniquenessCert (unique positive solution of x²=x+1). -/
+@[simp] def phi_uniqueness_report : String :=
+  let cert : URCGenerators.PhiUniquenessCert := {}
+  have _ : URCGenerators.PhiUniquenessCert.verified cert :=
+    URCGenerators.PhiUniquenessCert.verified_any _
+  "PhiUniquenessCert: OK"
 
 /-- #eval-friendly report for the RSRealityMaster certificate (Reality ∧ Spec-closure). -/
 @[simp] def reality_master_report : String :=
@@ -509,6 +517,7 @@ namespace URCAdapters
     , ilg_time_report
     , ilg_effective_report
     , overlap_contraction_report
+    , phi_uniqueness_report
     , folding_complexity_report
     , lnal_invariants_report
     , compiler_checks_report
