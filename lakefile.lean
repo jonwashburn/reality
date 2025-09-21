@@ -15,3 +15,11 @@ lean_exe ci_checks {
 lean_exe core_audit {
   root := `IndisputableMonolith.URCAdapters.CoreAuditMain
 }
+
+lean_exe ok {
+  root := `IndisputableMonolith.URCAdapters.OK
+}
+
+lean_exe ci {
+  root := `CI.Checks
+}

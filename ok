@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Ensure Lean toolchain is available (elan)
+if [ -f "$HOME/.elan/env" ]; then source "$HOME/.elan/env"; fi
+
+# Fast smoke check (toolchain OK)
+lake exe ci_checks >/dev/null
+
+# Print closed theorem stack status
+printf "ClosedTheoremStack: "
+echo -e "import IndisputableMonolith.URCAdapters.Reports\n#eval IndisputableMonolith.URCAdapters.closed_theorem_stack_report" | lake env lean --stdin | tail -n 1
+
+
