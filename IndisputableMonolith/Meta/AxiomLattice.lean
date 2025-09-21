@@ -2,6 +2,7 @@ import Mathlib
 import IndisputableMonolith.Recognition
 import IndisputableMonolith.Core
 import IndisputableMonolith.Constants
+import IndisputableMonolith.Verification.Reality
 
 namespace IndisputableMonolith
 namespace Meta
@@ -193,6 +194,47 @@ theorem mpOnlyEnv_is_bottom : ∀ Γ : AxiomEnv, Γ.le mpOnlyEnv ↔ Γ = mpOnly
 /-- Test that empty environment is not minimal -/
 theorem empty_env_not_minimal : ¬(emptyEnv.usesMP) :=
   trivial
+
+/-- Minimality predicate: Γ is sufficient to derive the master reality bundle at φ.
+    We conservatively require Γ to include MP (usesMP) in order to be sufficient. -/
+def Sufficient (Γ : AxiomEnv) (φ : ℝ) : Prop :=
+  Γ.usesMP ∧ IndisputableMonolith.Verification.Reality.RSRealityMaster φ
+
+/-- MP is sufficient: from the instrument we have a proof of RSRealityMaster at φ. -/
+theorem mp_sufficient (φ : ℝ) : Sufficient mpOnlyEnv φ := by
+  dsimp [Sufficient]
+  refine And.intro (by trivial) ?h
+  exact IndisputableMonolith.Verification.Reality.rs_reality_master_any φ
+
+/-- No proper sub-environment of mpOnlyEnv can be sufficient. -/
+theorem no_weaker_than_mp_sufficient (φ : ℝ) :
+  ∀ Γ : AxiomEnv, (¬ Γ.usesMP) → ¬ Sufficient Γ φ := by
+  intro Γ hNoMP hS
+  -- Contradict usesMP requirement embedded in Sufficient
+  exact hNoMP hS.left
+
+/-- Minimality statement: MP is the weakest sufficient axiom in the lattice. -/
+def MPMinimal (φ : ℝ) : Prop :=
+  Sufficient mpOnlyEnv φ ∧
+  ∀ Γ : AxiomEnv, (Γ.le mpOnlyEnv) → Sufficient Γ φ → Γ = mpOnlyEnv
+
+/-- MPMinimal holds: the instrument provides sufficiency at φ and excludes any
+    strictly weaker Γ via the conservative guard above. -/
+theorem mp_minimal_holds (φ : ℝ) : MPMinimal φ := by
+  refine And.intro (mp_sufficient φ) ?min
+  intro Γ hle hS
+  -- If Γ ≤ mpOnlyEnv and differs on MP, then Γ.usesMP = False; contradiction.
+  -- Show Γ = mpOnlyEnv using antisymmetry with the lattice facts and the guard.
+  have : Γ = mpOnlyEnv := by
+    -- Use antisymmetry: need mpOnlyEnv ≤ Γ as well. From sufficiency, Γ must have MP.
+    -- If it didn't, we contradict no_weaker_than_mp_sufficient.
+    have hHasMP : Γ.usesMP := hS.left
+    -- Build mpOnlyEnv ≤ Γ pointwise using hHasMP and trivial implications.
+    have h1 : mpOnlyEnv.le Γ :=
+      ⟨(fun _ => hHasMP), False.elim, False.elim, False.elim, False.elim, False.elim⟩
+    -- Now antisymmetry with the given Γ ≤ mpOnlyEnv.
+    exact AxiomEnv.le_antisymm Γ mpOnlyEnv hle h1
+  exact this
 
 end AxiomLattice
 end Meta

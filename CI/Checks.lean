@@ -1,6 +1,6 @@
 /-!
-  Ultra‑minimal CI smoke check. Do not import the monolith to avoid compiling WIP.
-  Purpose: verify toolchain runs in CI.
+  Ultra‑minimal CI smoke check. Purpose: verify toolchain runs in CI.
+  Keep this file free of heavy imports to avoid compiling WIP domains.
 -/
 
 def main : IO Unit := do

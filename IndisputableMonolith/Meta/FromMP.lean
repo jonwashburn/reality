@@ -26,12 +26,9 @@ demonstrating that MP is sufficient to derive physics.
 theorem mp_implies_atomicity (Γ : AxiomLattice.AxiomEnv) (hmp : Γ.usesMP) :
   IndisputableMonolith.Recognition.MP :=
   by
-    -- In this meta abstraction, we treat Γ.usesMP as exactly Recognition.MP
-    -- Tighten later by connecting fields through a bridge.
-    exact (by
-      -- MP is a Prop; we use a placeholder equivalence to reuse the constant MP
-      exact (show IndisputableMonolith.Recognition.MP from
-        (by intro h; exact False.elim False.intro)))
+    -- Use the core proof of MP (Nothing cannot recognize itself).
+    -- This keeps the meta wrapper trivial and avoids additional obligations.
+    exact IndisputableMonolith.Recognition.mp_holds
 
 /-- MP implies inevitability in dimless form -/
 @[simp]

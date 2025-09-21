@@ -90,4 +90,30 @@ theorem K_gate_single_inequality (U : RSUnits)
   -- Conclude
   simpa [hEq, Real.abs_zero] using hrhs
 
+/-- Edge-case check: `K_gate_single_inequality` holds at ρ = 1 with k = 0. -/
+@[simp] theorem K_gate_single_inequality_rho_pos1_k0 (U : RSUnits) (u_ell0 u_lrec : ℝ) :
+  Real.abs (BridgeEval K_A_obs U - BridgeEval K_B_obs U)
+    ≤ 0 * uComb u_ell0 u_lrec (1 : ℝ) := by
+  have hk : 0 ≤ (0 : ℝ) := by simp
+  have hrho : -1 ≤ (1 : ℝ) ∧ (1 : ℝ) ≤ 1 := by constructor <;> norm_num
+  simpa using K_gate_single_inequality U u_ell0 u_lrec (1 : ℝ) 0 hk hrho
+
+/-- Edge-case check: `K_gate_single_inequality` holds at ρ = -1 with k = 0. -/
+@[simp] theorem K_gate_single_inequality_rho_neg1_k0 (U : RSUnits) (u_ell0 u_lrec : ℝ) :
+  Real.abs (BridgeEval K_A_obs U - BridgeEval K_B_obs U)
+    ≤ 0 * uComb u_ell0 u_lrec (-1 : ℝ) := by
+  have hk : 0 ≤ (0 : ℝ) := by simp
+  have hrho : -1 ≤ (-1 : ℝ) ∧ (-1 : ℝ) ≤ 1 := by constructor <;> norm_num
+  simpa using K_gate_single_inequality U u_ell0 u_lrec (-1 : ℝ) 0 hk hrho
+
+/-- Anchor rescaling invariance for constants: `K_A_obs` is invariant under `UnitsRescaled`. -/
+@[simp] theorem K_A_obs_anchor_invariant {U U' : RSUnits} (hUU' : UnitsRescaled U U') :
+  BridgeEval K_A_obs U = BridgeEval K_A_obs U' := by
+  simpa using anchor_invariance K_A_obs hUU'
+
+/-- Anchor rescaling invariance for constants: `K_B_obs` is invariant under `UnitsRescaled`. -/
+@[simp] theorem K_B_obs_anchor_invariant {U U' : RSUnits} (hUU' : UnitsRescaled U U') :
+  BridgeEval K_B_obs U = BridgeEval K_B_obs U' := by
+  simpa using anchor_invariance K_B_obs hUU'
+
 end IndisputableMonolith

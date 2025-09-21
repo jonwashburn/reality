@@ -92,5 +92,36 @@ structure ResidueCert where
 def ResidueCert.valid (c : ResidueCert) : Prop :=
   (c.lo : ℝ) ≤ gap (ZOf c.f) ∧ gap (ZOf c.f) ≤ (c.hi : ℝ)
 
+/‑! ### Generation indexing (three disjoint families) -/
+
+/-- Generation index (0,1,2) assigned by rung/sector ordering. -/
+def genOf : Fermion → Fin 3
+| .e   => ⟨0, by decide⟩ | .mu  => ⟨1, by decide⟩ | .tau => ⟨2, by decide⟩
+| .u   => ⟨0, by decide⟩ | .c   => ⟨1, by decide⟩ | .t   => ⟨2, by decide⟩
+| .d   => ⟨0, by decide⟩ | .s   => ⟨1, by decide⟩ | .b   => ⟨2, by decide⟩
+| .nu1 => ⟨0, by decide⟩ | .nu2 => ⟨1, by decide⟩ | .nu3 => ⟨2, by decide⟩
+
+/-- Surjectivity of the generation index: there are exactly three generations. -/
+theorem genOf_surjective : Function.Surjective genOf := by
+  intro i; cases i using Fin.cases with
+  | H0 => exact ⟨Fermion.e, rfl⟩
+  | Hs i => cases i using Fin.cases with
+    | H0 => exact ⟨Fermion.mu, rfl⟩
+    | Hs _ => exact ⟨Fermion.tau, rfl⟩
+
+/‑! ### Admissible family encoding via rung residue classes and equal‑Z ‑/
+
+/-- Rung residue class modulo 360 (the joint sync scale of 8‑beat and rung‑45). -/
+def rungResidueClass (a : ℤ) : Set Fermion :=
+  { f | Int.ModEq (360 : ℤ) (rung f) a }
+
+/-- An admissible family is a set of fermions that share a single Z value
+    (equal‑Z degeneracy at μ*) and land on a common rung residue class
+    modulo 360. This packages the “equal‑Z + rung‑offset” policy encoding. -/
+structure AdmissibleFamily (S : Set Fermion) : Prop where
+  equalZ_const : ∃ Z0 : ℤ, ∀ {f}, f ∈ S → ZOf f = Z0
+  rung_residue : ∃ a : ℤ, ∀ {f}, f ∈ S → Int.ModEq (360 : ℤ) (rung f) a
+
+
 end RSBridge
 end IndisputableMonolith

@@ -88,6 +88,8 @@ This index lists the wired certificates and their #eval reports. Copy/paste any 
 - Controls / RG residue
   - `#eval IndisputableMonolith.URCAdapters.controls_inflate_report`
   - `#eval IndisputableMonolith.URCAdapters.rg_residue_report`
+  - `#eval IndisputableMonolith.URCAdapters.sm_concrete_ratios_report`
+  - `#eval IndisputableMonolith.URCAdapters.alpha_phi_report`
 
 - Ethics
   - `#eval IndisputableMonolith.URCAdapters.ethics_policy_report`

@@ -40,6 +40,7 @@ theorem born_from_TruthCore : bornHolds := by
   refine ⟨IndisputableMonolith.Patterns.grayWindow, ?_⟩
   have hk : (1 : Nat) ≠ 0 := by decide
   simpa using IndisputableMonolith.Measurement.observeAvg8_periodic_eq_Z (k:=1) hk _
+
 theorem boseFermi_from_TruthCore : boseFermiHolds := by
   -- Derived from the generic RS pathweight interface
   simpa using
@@ -50,44 +51,18 @@ theorem boseFermi_from_TruthCore : boseFermiHolds := by
       , normSet := { PUnit.unit }
       , sum_prob_eq_one := by simp [IndisputableMonolith.Quantum.PathWeight.prob] }).right
 
-/-- Provisional φ-closed proof for alpha (constant 1/alphaInv expression). -/
-instance phiClosed_alpha (φ : ℝ) : RH.RS.PhiClosed φ (0 : ℝ) := ⟨⟩
+/-- Historical alias: now redirects to the explicit φ‑closed target in `Spec`. -/
+noncomputable def UD_minimal (φ : ℝ) : RH.RS.UniversalDimless φ :=
+  RH.RS.UD_explicit φ
 
-/-- Minimal universal dimless pack using current dimensionless exports. -/
-noncomputable def UD_minimal (φ : ℝ) : RH.RS.UniversalDimless φ where
-  alpha0 := 0
-  massRatios0 := []
-  mixingAngles0 := []
-  g2Muon0 := 0
-  strongCP0 := True
-  eightTick0 := True
-  born0 := True
-  boseFermi0 := True
-  alpha0_isPhi := by infer_instance
-  massRatios0_isPhi := by intro r hr; cases hr
-  mixingAngles0_isPhi := by intro th hth; cases hth
-  g2Muon0_isPhi := by infer_instance
-
-/-- Minimal dimless pack associated to any bridge (spec-level placeholder). -/
+/-- Historical alias: now mirrors the explicit `dimlessPack_explicit` from `Spec`. -/
 noncomputable def dimlessPack_minimal (L : RH.RS.Ledger) (B : RH.RS.Bridge L) : RH.RS.DimlessPack L B :=
-{ alpha := 0
-, massRatios := []
-, mixingAngles := []
-, g2Muon := 0
-, strongCPNeutral := True
-, eightTickMinimal := True
-, bornRule := True
-, boseFermi := True }
+  RH.RS.dimlessPack_explicit L B
 
-/-- Matches holds for the minimal universal pack (partial witness for α and placeholder fields). -/
+/-- Matches holds for the explicit universal pack (alias to `Spec.matches_explicit`). -/
 theorem matches_minimal (φ : ℝ) (L : RH.RS.Ledger) (B : RH.RS.Bridge L) :
   RH.RS.Matches φ L B (UD_minimal φ) := by
-  refine Exists.intro (dimlessPack_minimal L B) ?h
-  dsimp [UD_minimal, dimlessPack_minimal, RH.RS.Matches]
-  -- chain equalities and trivial props
-  repeat' first
-    | rfl
-    | apply And.intro rfl
+  simpa [UD_minimal, dimlessPack_minimal] using RH.RS.matches_explicit φ L B
 
 /-- Combined witness: Matches plus the TruthCore-provided proofs for the three props. -/
 theorem matches_withTruthCore (φ : ℝ) (L : RH.RS.Ledger) (B : RH.RS.Bridge L) :
@@ -96,11 +71,9 @@ theorem matches_withTruthCore (φ : ℝ) (L : RH.RS.Ledger) (B : RH.RS.Bridge L)
   refine And.intro (matches_minimal φ L B) ?rest
   refine And.intro eightTick_from_TruthCore (And.intro born_from_TruthCore boseFermi_from_TruthCore)
 
-/-- Partial inevitability: dimensionless layer witnessed by UD_minimal and matches_withTruthCore. -/
-theorem inevitability_dimless_partial (φ : ℝ) : RH.RS.Inevitability_dimless φ := by
-  intro L B
-  refine Exists.intro (UD_minimal φ) ?h
-  exact matches_minimal φ L B
+/-- Strong inevitability: alias to the strengthened inevitability in `Spec`. -/
+theorem inevitability_dimless_partial (φ : ℝ) : RH.RS.Inevitability_dimless φ :=
+  RH.RS.inevitability_dimless_strong φ
 
 end Witness
 end RS

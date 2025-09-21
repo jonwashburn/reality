@@ -15,6 +15,23 @@ Dimensionless observables are invariant under admissible anchor rescalings. This
 - Hooks: `Verification.UnitsRescaled`, `Verification.anchor_invariance`
 - Demo: `units_invariance_report`
 
+### SMConcreteRatiosCert
+Concrete mass-ratio identities at the matching scale expressed as φ-expressions, assuming equal‑Z degeneracy within a sector and the published rung table. Asserts:
+- m_μ/m_e = exp((13−2)·ln φ)
+- m_τ/m_μ = exp((19−13)·ln φ)
+- m_c/m_u = exp((15−4)·ln φ)
+- m_t/m_c = exp((21−15)·ln φ)
+- Hooks: `RSBridge.anchor_ratio`, `RSBridge.ZOf`, `RSBridge.rung`
+- Assumptions: matching scale at μ*, equal‑Z degeneracy per sector, rung laws per `RSBridge.rung`
+- Demo: `sm_concrete_ratios_report`
+
+### AlphaPhiCert
+Inverse fine-structure constant at φ from the curvature pipeline.
+- Claim: α^{-1} = 4π·11 − (ln φ + δ_κ)
+- Hooks: `Pipelines.Curvature.alphaInvPrediction`, `Constants.alphaInv`
+- Assumptions: curvature seam term δ_κ from voxel seam count; symbolic identity only (no numerics here)
+- Demo: `alpha_phi_report`
+
 ### UnitsQuotientFunctorCert
 Bridge factorization through the units quotient: numerical assignment `A` factors as `Ã ∘ Q`, and the cost–action correspondence factors as `J = Ã ∘ B_*`. This encodes the commuting bridge diagram formally.
 - Hooks: `Verification.bridge_factorizes`

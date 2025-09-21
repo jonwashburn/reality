@@ -41,6 +41,12 @@ namespace URCAdapters
 
   "AUDIT CORE: OK (KGate, LambdaRec, Exactness, EightTick, ConeBound, PhiUnique)"
 
+/-- Thin master report (core-only): elaborates the master bundle with light deps. -/
+@[simp] def reality_master_core_report : String :=
+  let φ : ℝ := IndisputableMonolith.Constants.phi
+  let _ := IndisputableMonolith.Verification.Reality.rs_reality_master_any φ
+  "RSRealityMaster(Core): OK"
+
 end URCAdapters
 end IndisputableMonolith
 
