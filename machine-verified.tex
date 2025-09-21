@@ -279,21 +279,21 @@
 \maketitle
 
 \begin{abstract}
-\noindent We present a certificates-first, machine-verified framework in Lean~4 that derives a discrete recognition calculus from a single axiom (\texttt{MP}: "nothing cannot recognize itself") and exposes only dimensionless observables through a gauge-quotiented bridge. The master statement $\mathsf{RSRealityMaster}(\varphi)$ conjoins (i) a reality-facing bundle—unique calibration, units quotient and K-gate route identity, and a non-empty, cross-domain certificate family—with (ii) a spec-level closure that, parameterized by $\varphi$, compels counting/causality consequences and a model-level recognition–computation separation. Each claim is a Lean proposition with a one-line \texttt{\#eval} report on a pinned toolchain and no external I/O.
+\noindent We present a certificates-first, machine-verified framework in Lean~4 that derives a discrete recognition calculus from a single axiom ("nothing cannot recognize itself") and exposes only dimensionless observables through a gauge-quotiented bridge. The master statement $\mathsf{RSRealityMaster}(\varphi)$ conjoins (i) a reality-facing bundle—unique calibration, units quotient and K-gate route identity, and a non-empty, cross-domain certificate family—with (ii) a spec-level closure that, parameterized by $\varphi$, compels counting/causality consequences and a model-level recognition–computation separation. Each claim is a Lean proposition with a one-line \texttt{\#eval} report on a pinned toolchain and no external I/O.
 
-Representative verified consequences include: exact 8-tick minimality in 3D, a discrete light-cone bound with slope $c$, a Planck normalization $\big(c^3\lambda_{\mathrm{rec}}^2\big)/(\hbar G)=1/\pi$ under mild positivity, and $\varphi$-power mass-ratio ladders at the matching scale. The bridge is gauge-rigid (dimensionless displays invariant under admissible units rescaling) and route-locked (time-first = length-first via the K-gate), eliminating tunable continuous parameters on the reported surface; a single-inequality audit provides a units-aware falsifier for route equality. We prove a Minimal Axiom Theorem (provenance-based): there exists an MP-only environment that derives $\mathsf{RSRealityMaster}(\varphi)$, and any environment that derives it must use MP; hence the MP-only environment is minimal in the axiom lattice. We also prove $\varphi$-selection at the algebraic level: among positive reals, the unique solution of $x^2 = x + 1$ is $\varphi$; within the instrument, $\varphi$-selection together with the closure holds uniquely. We distinguish formal truths inside the instrument from empirical alignment: the former are machine-checked theorems; the latter are unit-aware comparisons and ablation tests. The repository acts as an auditable instrument: running the manifest prints "OK" per certificate or fails deterministically if any obligation is not met.
+Representative verified consequences include: exact 8-tick minimality in 3D, a discrete light-cone bound with slope $c$, a Planck normalization $\big(c^3\lambda_{\mathrm{rec}}^2\big)/(\hbar G)=1/\pi$ under mild positivity, and $\varphi$-power mass-ratio ladders at the matching scale. The bridge is gauge-rigid (dimensionless displays invariant under admissible units rescaling) and route-locked (time-first = length-first via the K-gate), eliminating tunable continuous parameters on the reported surface; a single-inequality audit provides a units-aware falsifier for route equality. We prove a Minimal Axiom Theorem (provenance-based): there exists an environment that uses only this axiom and derives $\mathsf{RSRealityMaster}(\varphi)$, and any environment that derives it must include this axiom; hence the axiom-only environment is minimal in the axiom lattice. We also prove $\varphi$-selection at the algebraic level: among positive reals, the unique solution of $x^2 = x + 1$ is $\varphi$; within the instrument, $\varphi$-selection together with the closure holds uniquely. We distinguish formal truths inside the instrument from empirical alignment: the former are machine-checked theorems; the latter are unit-aware comparisons and ablation tests. The repository acts as an auditable instrument: running the manifest prints "OK" per certificate or fails deterministically if any obligation is not met.
 \end{abstract}
 
-\noindent\textbf{Zero-parameter stance.} This framework takes a radically different approach: zero free parameters. We start from one axiom—"nothing cannot recognize itself" (MP)—and show that all physical constants and laws emerge through pure mathematical necessity. The framework cannot be adjusted or tuned; it either works completely or fails completely.
+\noindent\textbf{Zero-parameter stance.} This framework takes a radically different approach: zero free parameters. We start from one axiom—"nothing cannot recognize itself"—and show that all physical constants and laws emerge through pure mathematical necessity. The framework cannot be adjusted or tuned; it either works completely or fails completely.
 
-\paragraph{Plain-language summary.} We built a small program (in the Lean~4 proof assistant) that behaves like a scientific instrument. You run a one-line command; it checks each statement and prints \texttt{OK} if it holds. The framework starts from one simple rule—MP ("nothing cannot recognize itself")—removes unit choices (by quotienting), enforces a route identity (the K-gate), and then proves concrete results: an 8‑step minimal cycle in 3D, a discrete light‑cone bound with slope $c$, a Planck‑scale normalization, and the golden ratio $\varphi$ as the unique positive solution of $x^2 = x + 1$. We also prove a Minimal Axiom Theorem inside the program: MP alone is enough to derive our target bundle, and any assumptions that do the same must include MP. All proofs are machine‑checked and reproducible on any machine with the pinned toolchain. We keep proofs (formal math) separate from data checks (empirical alignment).
+\paragraph{Plain-language summary.} We built a small program (in the Lean~4 proof assistant) that behaves like a scientific instrument. You run a one-line command; it checks each statement and prints \texttt{OK} if it holds. The framework starts from one simple rule—"nothing cannot recognize itself"—removes unit choices (by quotienting), enforces a route identity (the K-gate), and then proves concrete results: an 8‑step minimal cycle in 3D, a discrete light‑cone bound with slope $c$, a Planck‑scale normalization, and the golden ratio $\varphi$ as the unique positive solution of $x^2 = x + 1$. We also prove a Minimal Axiom Theorem inside the program: this single statement alone is enough to derive our target bundle, and any assumptions that do the same must include it. All proofs are machine‑checked and reproducible on any machine with the pinned toolchain. We keep proofs (formal math) separate from data checks (empirical alignment).
 
 \vspace{1em}
 \noindent\textbf{Keywords:} Recognition Science $\cdot$ Lean verification $\cdot$ Golden ratio $\cdot$ Machine verification $\cdot$ Formal methods $\cdot$ Parameter-free physics $\cdot$ Foundational mathematics
 
 
 % Significance
-\paragraph{Significance.} This is an auditable, certificates‑first, parameter‑free framework with a pinned toolchain. Inside the instrument we prove a provenance‑based Minimal Axiom Theorem: there exists an MP‑only environment that derives our master bundle, and any environment that derives it must use MP; thus MP‑only is minimal in the stated axiom lattice. We also prove algebraic $\varphi$‑selection (the unique positive root of $x^2 = x + 1$ is $\varphi$), and we verify representative consequences (8‑tick minimality, light‑cone bound, Planck normalization) with units quotienting and a K‑gate route check. The contribution is twofold: (i) a reproducible, one‑line \texttt{\#eval} interface that either prints \texttt{OK} or fails deterministically, and (ii) a clear separation of formal theorems from empirical comparisons. We do not claim empirical exclusivity; rather, we provide a minimal, falsifiable, and fully reproducible formal scaffold that others can run, inspect, and test.
+\paragraph{Significance.} This is an auditable, certificates‑first, parameter‑free framework with a pinned toolchain. Inside the instrument we prove a provenance‑based Minimal Axiom Theorem: there exists an environment that assumes only the single statement above and derives our master bundle, and any environment that derives it must include that statement; thus the axiom‑only environment is minimal in the stated axiom lattice. We also prove algebraic $\varphi$‑selection (the unique positive root of $x^2 = x + 1$ is $\varphi$), and we verify representative consequences (8‑tick minimality, light‑cone bound, Planck normalization) with units quotienting and a K‑gate route check. The contribution is twofold: (i) a reproducible, one‑line \texttt{\#eval} interface that either prints \texttt{OK} or fails deterministically, and (ii) a clear separation of formal theorems from empirical comparisons. We do not claim empirical exclusivity; rather, we provide a minimal, falsifiable, and fully reproducible formal scaffold that others can run, inspect, and test.
 
 
 % Compact verification entry point (minimal, 3–5 lines)
@@ -329,7 +329,7 @@ eight_tick_report: OK
 \section*{Executive Summary: What This Paper Claims}\label{sec:executive}
 \addcontentsline{toc}{section}{Executive Summary}
 
-\paragraph{The Central Claim.} We derive fundamental physics from a single axiom with \textbf{zero free parameters} and prove this is the \textbf{only possible way} to do so. Starting from MP ("nothing cannot recognize itself"), we machine-verify that all physical laws and constants are mathematically forced—not chosen, not fitted, not adjustable. The meta-certificate \texttt{RSCompleteness} establishes that: (1) this framework works, (2) no alternative exists, (3) the axiom is minimal, (4) every physical quantity is determined, and (5) all predictions are instantly verifiable. The golden ratio $\varphi$ emerges as the unique organizing principle, making this not just a theory but \emph{the} theory—the unique, complete, and minimal description of physics.
+\paragraph{The Central Claim.} We derive a parameter‑free physics framework from a single statement—"nothing cannot recognize itself"—and we prove (inside the instrument) a Minimal Axiom Theorem: the single statement alone suffices to derive the target bundle, and any assumptions that do the same must include it. All reported consequences are mathematically forced—not chosen, not fitted, not adjustable. The golden ratio $\varphi$ appears via a simple algebraic selection (the unique positive root of $x^2=x+1$). We present this as a reproducible formal scaffold, clearly separated from empirical comparisons.
 
 \paragraph{Why This Matters.} The Standard Model of particle physics requires at least 19 free parameters that must be measured experimentally. String theory introduces even more. Our framework derives all constants from first principles. If correct, this solves the parameter problem that has plagued physics since Newton: why do the constants of nature have the values they do?
 
@@ -360,7 +360,7 @@ Before diving into technical details, we explain the key ideas that make this wo
 
 \paragraph{The Parameter Problem.} Every fundamental theory in physics contains numbers that we measure but cannot explain. Why is the electron mass exactly 0.511 MeV? Why is the fine structure constant approximately 1/137? The Standard Model needs 19+ such numbers, measured to many decimal places but without theoretical justification. This is the parameter problem.
 
-\paragraph{Our Solution: No Parameters.} This framework takes a radically different approach: \textbf{zero free parameters}. We start from one axiom—"nothing cannot recognize itself" (denoted MP)—and show that all physical constants and laws emerge through pure mathematical necessity. The framework cannot be adjusted or tuned; it either works completely or fails completely.
+\paragraph{Our Solution: No Parameters.} This framework takes a radically different approach: \textbf{zero free parameters}. We start from one axiom—"nothing cannot recognize itself"—and show that all physical constants and laws emerge through pure mathematical necessity. The framework cannot be adjusted or tuned; it either works completely or fails completely.
 
 \paragraph{The Role of Machine Verification.} To ensure our claims are exactly correct, every statement is a machine-verified theorem in Lean~4. This means:
 \begin{itemize}[leftmargin=*,topsep=2pt,itemsep=2pt]
@@ -386,7 +386,7 @@ Each prediction is mathematically forced—if any fails experimentally, the enti
 
 Fundamental physics faces a parameter problem: the Standard Model alone requires at least 19 free parameters that must be measured, not derived. This work demonstrates that physics can be constructed differently—from a single axiom with zero adjustable parameters. We develop and machine-verify in Lean~4 a complete framework where all physical constants and relationships emerge from pure mathematical necessity.
 
-The framework begins with one axiom: "nothing cannot recognize itself" (\texttt{MP}). From this, the mathematics forces discrete time steps, conservation laws, specific periodicities (e.g., 8 ticks in 3D), and ultimately all observable physics. The central theorem, \texttt{RSRealityMaster}($\varphi$), proves that this construction correctly describes physical reality when specialized to the golden ratio $\varphi$. Crucially, there are no parameters to tune: every prediction is mathematically forced and can be verified by running a single command.
+The framework begins with one axiom: "nothing cannot recognize itself". From this, the mathematics forces discrete time steps, conservation laws, specific periodicities (e.g., 8 ticks in 3D), and ultimately all observable physics. The central theorem, \texttt{RSRealityMaster}($\varphi$), states that this construction satisfies the reality bundle and closure at the golden ratio $\varphi$. Crucially, there are no parameters to tune: every prediction is mathematically forced and can be verified by running a single command.
 
 At the empirical level, the framework makes concrete predictions: gauge-invariant observables, specific mass ratios following $\varphi$-powers, the identity $(c^3\lambda_{\mathrm{rec}}^2)/(\hbar G) = 1/\pi$, and timing relationships like the 8--45 synchronization at lcm$(8,45)=360$. At the theoretical level, it proves that these structures are inevitable given the axiom—not choices or fits. The machine verification ensures that all mathematical claims are exactly as stated; any error would cause immediate, identifiable failure.
 
@@ -433,7 +433,7 @@ Under step bounds, \(\mathrm{rad}\,y - \mathrm{rad}\,x \le U.c\, (\mathrm{time}\
 
 \paragraph{What is new.}
 \begin{itemize}
-  \item \textbf{Zero free parameters:} Unlike any existing fundamental theory, this framework has no adjustable parameters—all constants emerge from the single axiom MP through mathematical necessity.
+  \item \textbf{Zero free parameters:} Unlike any existing fundamental theory, this framework has no adjustable parameters—all constants emerge from the single axiom through mathematical necessity.
   \item \textbf{Machine-verified correctness:} Every claim is a Lean theorem with instant verification. Running \texttt{\#eval RSRealityMaster} proves the entire construction in under a second.
   \item \textbf{Forced structure at $\varphi$:} The golden ratio emerges from the mathematics, not from aesthetic choice or parameter fitting. Mass ratios, timing relationships, and other observables organize around $\varphi$-powers.
   \item \textbf{Multiple falsification routes:} The framework makes precise predictions (8-tick period, $(c^3\lambda_{\mathrm{rec}}^2)/(\hbar G) = 1/\pi$, specific mass ratios) that would cause immediate failure if wrong—no wiggle room for adjustment.
@@ -446,7 +446,7 @@ Under step bounds, \(\mathrm{rad}\,y - \mathrm{rad}\,x \le U.c\, (\mathrm{time}\
 
 This paper's primary contribution is demonstrating that fundamental physics can be derived from a single axiom with zero free parameters, all machine-verified for correctness. Specifically:
 \begin{itemize}
-  \item \textbf{Complete parameter-free construction:} Starting from axiom \(\mathsf{MP}\) ("nothing cannot recognize itself"), we derive all physical laws and constants through mathematical necessity. No parameters are fitted to data—the framework is completely rigid.
+  \item \textbf{Complete parameter-free construction:} Starting from one axiom ("nothing cannot recognize itself"), we derive all physical laws and constants through mathematical necessity. No parameters are fitted to data—the framework is completely rigid.
   \item \textbf{Machine-verified proofs:} Every claim is a Lean theorem that can be verified in under a second. The master certificate \texttt{RSRealityMaster} proves the entire construction is mathematically correct.
   \item \textbf{Concrete testable predictions:} The framework yields specific values: 8-tick minimal period, $(c^3\lambda_{\mathrm{rec}}^2)/(\hbar G) = 1/\pi$, mass ratios as $\varphi$-powers, and timing relationships like $\Delta t = 3/64$. These are not fitted—they are mathematically forced.
   \item \textbf{Gauge-rigid architecture:} All observables are dimensionless and units-invariant by construction. The K-gate identity ensures different calculation routes give identical results, eliminating hidden dependencies.
@@ -708,40 +708,40 @@ Validation is fully mechanized. Minimal entry points are given in the "How to ve
 %----------------------------------------
 % Section 4 - Foundations: from MP to discrete recognition
 %----------------------------------------
-\section{Foundations: from MP to discrete recognition}\label{sec:foundations}
+\section{Foundations: from a single axiom to discrete recognition}\label{sec:foundations}
 
 This section develops the recognition foundations. We begin with a single axiom—absolute nothingness cannot recognize itself—and show how it forces a discrete calculus: events are posted in atomic ticks (no concurrency), flows are conserved around closed loops (discrete continuity), and potentials are unique up to constants on reach components (exactness). Counting then locks minimal cover lengths (8 ticks in three dimensions) and yields a light-cone inequality at the step level. All statements below are realized as Lean definitions and theorems with file/identifier citations. In each case, you can evaluate a linked report (\texttt{\#eval}) to confirm the claim on any machine.
 
-\subsection{Axiom MP}
+\subsection{The single axiom}
 
-\noindent The spine starts from \textbf{MP}: nothing cannot recognize itself. In code (\texttt{IndisputableMonolith/Recognition.lean}):
+\noindent The spine starts from a single statement: absolute nothingness cannot recognize itself. In code (\texttt{IndisputableMonolith/Recognition.lean}):
 
 \begin{lstlisting}
-/-! T1 (MP): Nothing cannot recognize itself -/
+/-! T1: Nothing cannot recognize itself -/
 abbrev Nothing := Empty
 
 structure Recognize (A : Type) (B : Type) : Type where
   recognizer : A
   recognized : B
 
-def MP : Prop := ¬ ∃ _ : Recognize Nothing Nothing, True
+def NothingCannotRecognizeItself : Prop := ¬ ∃ _ : Recognize Nothing Nothing, True
 
-theorem mp_holds : MP := by
+theorem nothing_cannot_recognize_itself : NothingCannotRecognizeItself := by
   intro h; rcases h with ⟨⟨r, _⟩, _⟩; cases r
 \end{lstlisting}
 
 \noindent\textbf{Interpretation:} If there is no recognizer, there is no recognition. Formally: there is no inhabitant witnessing a self-recognition of \texttt{Nothing}. This is the only axiom we assume; the rest of the section is forced structure.
 
-\subsection{MP Minimality Theorem}
+\subsection{Minimal Axiom Theorem}
 
-The MP minimality theorem formalizes that MP is both necessary and sufficient to derive physics. In code (\texttt{IndisputableMonolith/Meta/Necessity.lean}):
+The Minimal Axiom Theorem formalizes that this single axiom is both necessary and sufficient to derive the target physics bundle. In code (\texttt{IndisputableMonolith/Meta/Necessity.lean}):
 
 \begin{lstlisting}
 theorem mp_minimal_axiom_theorem :
-  ∃ Γmp : AxiomLattice.AxiomEnv, Γmp.usesMP ∧ MinimalForPhysics Γmp
+  ∃ Γ₀ : AxiomLattice.AxiomEnv, Γ₀.usesMP ∧ MinimalForPhysics Γ₀
 \end{lstlisting}
 
-\noindent\textbf{Interpretation:} There exists an axiom environment that has MP and is minimal for physics derivation. This means: (i) MP alone suffices to derive physics (sufficiency), and (ii) any axiom set that can derive physics must include MP (necessity). The proof combines meta-reasoning about self-recognition consistency with a formal axiom lattice tracking which assumptions are used.
+\noindent\textbf{Interpretation:} There exists an axiom environment that assumes only this one statement and is minimal for physics derivation. This means: (i) the single axiom alone suffices to derive the target (sufficiency), and (ii) any axiom set that can derive the target must include this statement (necessity). The proof uses a provenance-aware axiom lattice that records which assumptions are actually used.
 
 \subsection{Recognition structure and ledger}
 
