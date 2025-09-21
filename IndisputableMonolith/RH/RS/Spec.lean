@@ -1,4 +1,5 @@
 import Mathlib
+import IndisputableMonolith.PhiSupport.Lemmas
 import IndisputableMonolith.RH.RS.Bands
 import IndisputableMonolith.RH.RS.Anchors
 import IndisputableMonolith.Verification
@@ -211,6 +212,34 @@ def UniqueUpToUnits (L : Ledger) (eqv : UnitsEqv L) : Prop :=
 def ExistenceAndUniqueness (φ : ℝ) (L : Ledger) (eqv : UnitsEqv L) : Prop :=
   (∃ B : Bridge L, ∃ U : UniversalDimless φ, Matches φ L B U)
   ∧ UniqueUpToUnits L eqv
+
+/‑! ### φ selection principle (domain‑level uniqueness of the matching scale) -/
+
+/-- Selection predicate: the matching scale is the unique positive real solving x² = x + 1. -/
+def PhiSelection (φ : ℝ) : Prop := (φ ^ 2 = φ + 1) ∧ (0 < φ)
+
+/-- Uniqueness of the selection predicate. -/
+def PhiSelectionUnique : Prop := ∃! φ : ℝ, PhiSelection φ
+
+/-- The φ‑selection uniqueness holds: there is exactly one positive solution to x² = x + 1. -/
+theorem phi_selection_unique_holds : PhiSelectionUnique := by
+  -- Existence: φ is a positive solution
+  refine Exists.intro IndisputableMonolith.Constants.phi ?hexact
+  have hsol : IndisputableMonolith.Constants.phi ^ 2 = IndisputableMonolith.Constants.phi + 1 :=
+    IndisputableMonolith.PhiSupport.phi_squared
+  have hpos : 0 < IndisputableMonolith.Constants.phi := by
+    have : 1 < IndisputableMonolith.Constants.phi := IndisputableMonolith.Constants.one_lt_phi
+    exact lt_trans (by norm_num) this
+  refine And.intro ⟨hsol, hpos⟩ ?huniq
+  -- Uniqueness: any positive solution equals φ
+  intro x hx
+  -- From the support lemma: (x² = x + 1 ∧ 0 < x) ↔ x = φ
+  have := IndisputableMonolith.PhiSupport.phi_unique_pos_root x
+  have hx_eq : x = IndisputableMonolith.Constants.phi := by
+    have hiff := this
+    -- forward direction gives x = φ
+    exact (hiff.mp hx)
+  exact hx_eq
 
 /-! ### Generic witnesses (K‑gate and anchor‑invariance) -/
 

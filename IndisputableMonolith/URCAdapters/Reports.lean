@@ -513,11 +513,11 @@ namespace URCAdapters
     , inflation_potential_report
     , ir_coherence_gate_report
     , pn_split_report
+  , phi_uniqueness_report
     , rotation_identity_report
     , ilg_time_report
     , ilg_effective_report
     , overlap_contraction_report
-    , phi_uniqueness_report
     , folding_complexity_report
     , lnal_invariants_report
     , compiler_checks_report
