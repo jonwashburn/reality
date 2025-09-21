@@ -11,3 +11,7 @@ lean_lib URC
 lean_exe ci_checks {
   root := `CI.Checks
 }
+
+lean_exe core_audit {
+  root := `IndisputableMonolith.URCAdapters.CoreAuditMain
+}
