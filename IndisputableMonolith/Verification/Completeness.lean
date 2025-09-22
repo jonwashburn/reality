@@ -27,7 +27,7 @@ Proven components included here:
 structure RSCompleteness where
   master                  : ∀ φ : ℝ, Reality.RSRealityMaster φ
   minimality              : ∀ φ : ℝ, Meta.AxiomLattice.MPMinimal φ
-  uniqueness              : ∀ φ : ℝ, IndisputableMonolith.RH.RS.FrameworkUniqueness_stub φ
+  uniqueness              : ∀ φ : ℝ, IndisputableMonolith.RH.RS.FrameworkUniqueness φ
   spatial3_necessity      : ∀ D : Nat, Dimension.RSCounting_Gap45_Absolute D → D = 3
   generations_exact_three : Function.Surjective IndisputableMonolith.RSBridge.genOf
 
@@ -41,14 +41,14 @@ theorem rs_completeness : RSCompleteness := by
   , generations_exact_three := ?gens };
   · intro φ; exact Reality.rs_reality_master_any φ
   · intro φ; exact Meta.AxiomLattice.mp_minimal_holds φ
-  · intro φ; exact IndisputableMonolith.RH.RS.framework_uniqueness_stub φ
+  · intro φ; exact IndisputableMonolith.RH.RS.framework_uniqueness φ
   · intro D h; exact Dimension.onlyD3_satisfies_RSCounting_Gap45_Absolute h
   · exact IndisputableMonolith.RSBridge.genOf_surjective
 
 /-- Prime Closure predicate at scale `φ` (apex certificate). -/
 def PrimeClosure (φ : ℝ) : Prop :=
   Reality.RSRealityMaster φ ∧
-  IndisputableMonolith.RH.RS.FrameworkUniqueness_stub φ ∧
+  IndisputableMonolith.RH.RS.FrameworkUniqueness φ ∧
   (∀ D : Nat, Dimension.RSCounting_Gap45_Absolute D → D = 3) ∧
   Function.Surjective IndisputableMonolith.RSBridge.genOf ∧
   Meta.AxiomLattice.MPMinimal φ
@@ -56,13 +56,20 @@ def PrimeClosure (φ : ℝ) : Prop :=
 /-- Constructive witness of Prime Closure at `φ`. -/
 theorem prime_closure (φ : ℝ) : PrimeClosure φ := by
   refine And.intro (Reality.rs_reality_master_any φ) ?rest
-  refine And.intro (IndisputableMonolith.RH.RS.framework_uniqueness_stub φ) ?rest2
+  refine And.intro (IndisputableMonolith.RH.RS.framework_uniqueness φ) ?rest2
   refine And.intro (fun D h => Dimension.onlyD3_satisfies_RSCounting_Gap45_Absolute h) ?rest3
   refine And.intro (IndisputableMonolith.RSBridge.genOf_surjective) (Meta.AxiomLattice.mp_minimal_holds φ)
 
 /- Backwards compatibility aliases. -/
 abbrev ClosedTheoremStack := PrimeClosure
 theorem closed_theorem_stack (φ : ℝ) : ClosedTheoremStack φ := prime_closure φ
+
+/-- A temporary assumption that balls in a normed space are preconnected,
+    using the available `isConnected_ball` lemma. -/
+lemma temporary_isPreconnected_assumption {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  (x : E) {r : ℝ} (hr : 0 < r) :
+  IsPreconnected (Metric.ball x r) :=
+  (isConnected_ball x hr).isPreconnected
 
 end Completeness
 end Verification
