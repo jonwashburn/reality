@@ -6,7 +6,7 @@ namespace Ethics
 noncomputable section
 open Classical
 
-universe w
+universe u
 
 /-- A minimal cost model over actions of type `A`. Costs are nonnegative reals. -/
 structure CostModel (A : Type u) where
@@ -59,33 +59,33 @@ theorem improves_comp_left (M : CostModel A) (C : Composable M)
   {a b x : A} (h : Improves M a b) : Improves M (C.comp a x) (C.comp b x) := by
   exact C.strict_mono_left a b x h
 
-/-- CQ alignment at threshold θ ∈ [0,1]: score ≥ θ. -/
 /- Placeholder for Measurement.CQ dependency -/
-variable (CQ : Type)
-variable (score : CQ → ℝ)
-def CQAligned (θ : ℝ) (c : CQ) : Prop :=
+variable {CQ : Type u}
+
+/-- CQ alignment at threshold θ ∈ [0,1]: score ≥ θ. -/
+def CQAligned (score : CQ → ℝ) (θ : ℝ) (c : CQ) : Prop :=
   0 ≤ θ ∧ θ ≤ 1 ∧ score c ≥ θ
 
 /-- Ethical admissibility under 45‑gap: either no experience required, or the plan includes experience. -/
 /- Placeholder for Gap45 dependency -/
-variable (requiresExperience : CQ → Nat → Prop)
-def Admissible (period : Nat) (c : CQ) (hasExperience : Prop) : Prop :=
+def Admissible (requiresExperience : CQ → Nat → Prop) (period : Nat) (c : CQ) (hasExperience : Prop) : Prop :=
   ¬ requiresExperience c period ∨ hasExperience
 
 /-- Prefer alignment: higher CQ never hurts in the costless tie (axiom placeholder to be specialized).
     Prefer higher CQ does not break ties: if costs are equal and `c₁` is at least as aligned as `c₂`,
     then `a` is preferred to `b`. -/
 theorem prefer_by_cq (M : CostModel A) (a b : A) (c₁ c₂ : CQ) (θ : ℝ)
-  (_ : 0 ≤ θ ∧ θ ≤ 1) (_ : CQAligned θ c₂ → CQAligned θ c₁)
+  (score : CQ → ℝ)
+  (_ : 0 ≤ θ ∧ θ ≤ 1) (_ : CQAligned score θ c₂ → CQAligned score θ c₁)
   (hcost : M.cost a = M.cost b) : Prefer M a b := by
   dsimp [Prefer]
   simp [hcost]
 
 /-- Lexicographic ethical preference with admissibility first, then cost preference. -/
-def PreferLex (M : CostModel A) (period : Nat) (cq : CQ)
+def PreferLex (M : CostModel A) (requiresExperience : CQ → Nat → Prop) (period : Nat) (cq : CQ)
   (hasExpA hasExpB : Prop) (a b : A) : Prop :=
-  (Admissible period cq hasExpA ∧ ¬ Admissible period cq hasExpB)
-  ∨ (Admissible period cq hasExpA ∧ Admissible period cq hasExpB ∧ Prefer M a b)
+  (Admissible requiresExperience period cq hasExpA ∧ ¬ Admissible requiresExperience period cq hasExpB)
+  ∨ (Admissible requiresExperience period cq hasExpA ∧ Admissible requiresExperience period cq hasExpB ∧ Prefer M a b)
 
 end
 

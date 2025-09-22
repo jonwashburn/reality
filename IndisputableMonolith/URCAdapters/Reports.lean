@@ -1,5 +1,5 @@
 import Mathlib
-import IndisputableMonolith.Constants.KDisplay
+import IndisputableMonolith.Constants.RSDisplay
 import IndisputableMonolith.Verification
 import IndisputableMonolith.Verification.Reality
 import IndisputableMonolith.RH.RS.Spec
@@ -10,7 +10,7 @@ import IndisputableMonolith.URCAdapters.Routes
 import IndisputableMonolith.Bridge.DataExt
 import IndisputableMonolith.LightCone.StepBounds
 import IndisputableMonolith.Patterns
-import IndisputableMonolith.Quantum
+-- import IndisputableMonolith.Quantum
 import IndisputableMonolith.Ethics.Core
 import IndisputableMonolith.Ethics.Decision.BoolProp
 import IndisputableMonolith.Ethics.Decision.Mapping
@@ -31,79 +31,79 @@ namespace IndisputableMonolith
 namespace URCAdapters
 
 /-- #eval-friendly report for EthicsPolicyCert. -/
-@[simp] def ethics_policy_report : String :=
+def ethics_policy_report : String :=
   let cert : URCGenerators.EthicsPolicyCert := {}
   have _ : URCGenerators.EthicsPolicyCert.verified cert :=
     URCGenerators.EthicsPolicyCert.verified_any _
   "EthicsPolicyCert: OK"
 
 /-- #eval-friendly report for FairnessBatchCert. -/
-@[simp] def fairness_batch_report : String :=
+def fairness_batch_report : String :=
   let cert : URCGenerators.FairnessBatchCert := {}
   have _ : URCGenerators.FairnessBatchCert.verified cert :=
     URCGenerators.FairnessBatchCert.verified_any _
   "FairnessBatchCert: OK"
 
 /-- #eval-friendly report for PreferLexCert. -/
-@[simp] def prefer_lex_report : String :=
+def prefer_lex_report : String :=
   let cert : URCGenerators.PreferLexCert := {}
   have _ : URCGenerators.PreferLexCert.verified cert :=
     URCGenerators.PreferLexCert.verified_any _
   "PreferLexCert: OK"
 
 /-- #eval-friendly report for TruthLedgerCert. -/
-@[simp] def truth_ledger_report : String :=
+def truth_ledger_report : String :=
   let cert : URCGenerators.TruthLedgerCert := {}
   have _ : URCGenerators.TruthLedgerCert.verified cert :=
     URCGenerators.TruthLedgerCert.verified_any _
   "TruthLedgerCert: OK"
 
 /-- #eval manifest confirming Route A wiring. -/
-@[simp] def routeA_report : String :=
+def routeA_report : String :=
   "URC Route A: B ⇒ C wired via bridge_inevitability (MonolithMA → LawfulBridge)."
 
 /-- #eval-friendly report. -/
-@[simp] def lambda_report : String := "URC λ_rec uniqueness: OK"
+def lambda_report : String := "URC λ_rec uniqueness: OK"
 
 /-- #eval-friendly report confirming RS measures reality at a chosen φ. -/
-@[simp] def reality_bridge_report : String :=
+def reality_bridge_report : String :=
   let φ : ℝ := IndisputableMonolith.Constants.phi
   have _ : IndisputableMonolith.Verification.Reality.RSMeasuresReality φ :=
     IndisputableMonolith.Verification.Reality.rs_measures_reality_any φ
   "RSMeasuresReality: OK"
 
 /-- #eval-friendly master report bundling Reality bundle with Spec-level closure. -/
-@[simp] def reality_master_report : String :=
+def reality_master_report : String :=
   let φ : ℝ := IndisputableMonolith.Constants.phi
   have _ : IndisputableMonolith.Verification.Reality.RSRealityMaster φ :=
     IndisputableMonolith.Verification.Reality.rs_reality_master_any φ
   "RSRealityMaster: OK"
 
 /-- #eval-friendly recognition closure report (meta certificate). -/
-@[simp] def recognition_closure_report : String :=
+def recognition_closure_report : String :=
   let φ : ℝ := IndisputableMonolith.Constants.phi
   have h := IndisputableMonolith.URCGenerators.recognition_closure_any φ
   "Recognition_Closure: OK"
 
 /-- #eval-friendly report for PhiUniquenessCert (unique positive solution of x²=x+1). -/
-@[simp] def phi_uniqueness_report : String :=
+def phi_uniqueness_report : String :=
   let cert : URCGenerators.PhiUniquenessCert := {}
   have _ : URCGenerators.PhiUniquenessCert.verified cert :=
     URCGenerators.PhiUniquenessCert.verified_any _
   "PhiUniquenessCert: OK"
 
 /-- #eval-friendly φ-selection score report (spec uniqueness + closure witness). -/
-@[simp] def phi_score_report : String :=
+def phi_score_report : String :=
   let cert : URCGenerators.PhiSelectionSpecCert := {}
   have _ : URCGenerators.PhiSelectionSpecCert.verified cert :=
     URCGenerators.PhiSelectionSpecCert.verified_any _
   "PhiSelectionScore: OK"
 
 /-- Alias to match manuscript naming. -/
-@[simp] abbrev phi_selection_score_report : String := phi_score_report
+abbrev phi_selection_score_report : String := phi_score_report
 
 /-- #eval-friendly report for K-identities (τ_rec/τ0=K, λ_kin/ℓ0=K). -/
-@[simp] def k_identities_report : String :=
+def k_identities_report : String :=
   -- We typecheck the identities via the RSUnits hooks; any failure would prevent compilation.
   let U : IndisputableMonolith.Constants.RSUnits := { tau0 := 1, ell0 := 1, c := 1, c_ell0_tau0 := by simp }
   have : ((IndisputableMonolith.Constants.RSUnits.tau_rec_display U) / U.tau0
@@ -114,21 +114,21 @@ namespace URCAdapters
   "KIdentitiesCert: OK"
 
 /-- #eval-friendly report for InvariantsRatioCert. -/
-@[simp] def invariants_ratio_report : String :=
+def invariants_ratio_report : String :=
   let cert : URCGenerators.InvariantsRatioCert := {}
   have _ : URCGenerators.InvariantsRatioCert.verified cert :=
     URCGenerators.InvariantsRatioCert.verified_any _
   "InvariantsRatioCert: OK"
 
 /-- #eval-friendly report for PlanckLengthIdentityCert. -/
-@[simp] def planck_length_identity_report : String :=
+def planck_length_identity_report : String :=
   let cert : URCGenerators.PlanckLengthIdentityCert := {}
   have _ : URCGenerators.PlanckLengthIdentityCert.verified cert :=
     URCGenerators.PlanckLengthIdentityCert.verified_any _
   "PlanckLengthIdentityCert: OK"
 
 /-- #eval-friendly physical witness for λ_rec identities requiring Physical B. -/
-@[simp] def lambda_rec_identity_physical_report : String :=
+def lambda_rec_identity_physical_report : String :=
   -- Construct a concrete BridgeData and Physical witness
   let B : IndisputableMonolith.BridgeData :=
     { G := 1, hbar := 1, c := 1, tau0 := 1, ell0 := 1 }
@@ -139,21 +139,21 @@ namespace URCAdapters
   "LambdaRecIdentity (physical witness): OK"
 
 /-- #eval-friendly report for RouteAGateIdentityCert (ħ = E_coh·τ0). -/
-@[simp] def routeA_gate_identity_report : String :=
+def routeA_gate_identity_report : String :=
   let cert : URCGenerators.RouteAGateIdentityCert := {}
   have _ : URCGenerators.RouteAGateIdentityCert.verified cert :=
     URCGenerators.RouteAGateIdentityCert.verified_any _
   "RouteAGateIdentityCert: OK"
 
 /-- #eval-friendly report confirming KGateCert via the K-gate bridge hook. -/
-@[simp] def k_gate_report : String :=
+def k_gate_report : String :=
   let U : IndisputableMonolith.Constants.RSUnits :=
     { tau0 := 1, ell0 := 1, c := 1, c_ell0_tau0 := by simp }
   let _ := IndisputableMonolith.Verification.K_gate_bridge U
   "KGateCert: OK"
 
 /-- #eval-friendly report for LambdaRecIdentityCert. -/
-@[simp] def lambda_rec_identity_report : String :=
+def lambda_rec_identity_report : String :=
   let _cert : URCGenerators.LambdaRecIdentityCert := {}
   -- Check the proof hook compiles; we don't need a concrete B here.
   let _h : URCGenerators.LambdaRecIdentityCert.verified _cert :=
@@ -161,7 +161,7 @@ namespace URCAdapters
   "LambdaRecIdentityCert: OK"
 
 /-- #eval-friendly report for SingleInequalityCert. -/
-@[simp] def single_inequality_report : String :=
+def single_inequality_report : String :=
   let cert : URCGenerators.SingleInequalityCert :=
     { u_ell0 := 1, u_lrec := 1, rho := 0, k := 1, hk := by norm_num, hrho := by constructor <;> norm_num }
   have _ : URCGenerators.SingleInequalityCert.verified cert :=
@@ -169,21 +169,21 @@ namespace URCAdapters
   "SingleInequalityCert: OK"
 
 /-- #eval-friendly report for ExactnessCert (discrete exactness T3/T4). -/
-@[simp] def exactness_report : String :=
+def exactness_report : String :=
   let cert : URCGenerators.ExactnessCert := {}
   have _ : URCGenerators.ExactnessCert.verified cert :=
     URCGenerators.ExactnessCert.verified_any _
   "ExactnessCert: OK"
 
 /-- #eval-friendly report for ConeBoundCert (discrete light-cone bound). -/
-@[simp] def cone_bound_report : String :=
+def cone_bound_report : String :=
   let cert : URCGenerators.ConeBoundCert := {}
   have _ : URCGenerators.ConeBoundCert.verified cert :=
     URCGenerators.ConeBoundCert.verified_any _
   "ConeBoundCert: OK"
 
 /-- #eval-friendly report for UnitsInvarianceCert. -/
-@[simp] def units_invariance_report : String :=
+def units_invariance_report : String :=
   let KA : URCGenerators.UnitsInvarianceCert := { obs := Verification.K_A_obs }
   let KB : URCGenerators.UnitsInvarianceCert := { obs := Verification.K_B_obs }
   have hKA : URCGenerators.UnitsInvarianceCert.verified KA := URCGenerators.UnitsInvarianceCert.verified_any _
@@ -191,133 +191,133 @@ namespace URCAdapters
   "UnitsInvarianceCert: OK"
 
 /-- #eval-friendly report for UnitsQuotientFunctorCert (bridge factorization). -/
-@[simp] def units_quotient_functor_report : String :=
+def units_quotient_functor_report : String :=
   let cert : URCGenerators.UnitsQuotientFunctorCert := {}
   have _ : URCGenerators.UnitsQuotientFunctorCert.verified cert :=
     URCGenerators.UnitsQuotientFunctorCert.verified_any _
   "UnitsQuotientFunctorCert: OK"
 
 /-- #eval-friendly report for EightTickMinimalCert (T6). -/
-@[simp] def eight_tick_report : String :=
+def eight_tick_report : String :=
   let cert : URCGenerators.EightTickMinimalCert := {}
   have _ : URCGenerators.EightTickMinimalCert.verified cert :=
     URCGenerators.EightTickMinimalCert.verified_any _
   "EightTickMinimalCert: OK"
 
 /-- #eval-friendly report for EightBeatHypercubeCert (N_ticks = 2^D). -/
-@[simp] def hypercube_period_report : String :=
+def hypercube_period_report : String :=
   let cert3 : URCGenerators.EightBeatHypercubeCert := { D := 3 }
   have _ : URCGenerators.EightBeatHypercubeCert.verified cert3 :=
     URCGenerators.EightBeatHypercubeCert.verified_any _
   "EightBeatHypercubeCert: OK"
 
 /-- #eval-friendly report for GrayCodeCycleCert (8-vertex Hamiltonian cycle). -/
-@[simp] def gray_code_cycle_report : String :=
+def gray_code_cycle_report : String :=
   let cert : URCGenerators.GrayCodeCycleCert := {}
   have _ : URCGenerators.GrayCodeCycleCert.verified cert :=
     URCGenerators.GrayCodeCycleCert.verified_any _
   "GrayCodeCycleCert: OK"
 
 /-- #eval-friendly report for Window8NeutralityCert. -/
-@[simp] def window8_report : String :=
+def window8_report : String :=
   let cert : URCGenerators.Window8NeutralityCert := {}
   have _ : URCGenerators.Window8NeutralityCert.verified cert :=
     URCGenerators.Window8NeutralityCert.verified_any _
   "Window8NeutralityCert: OK"
 
 /-- #eval-friendly report for LedgerUnitsCert (T8 quantization / δ-subgroup). -/
-@[simp] def ledger_units_report : String :=
+def ledger_units_report : String :=
   let cert : URCGenerators.LedgerUnitsCert := {}
   have _ : URCGenerators.LedgerUnitsCert.verified cert :=
     URCGenerators.LedgerUnitsCert.verified_any _
   "LedgerUnitsCert: OK"
 
 /-- #eval-friendly report for Rung45WitnessCert (45-gap witness). -/
-@[simp] def rung45_report : String :=
+def rung45_report : String :=
   let cert : URCGenerators.Rung45WitnessCert := {}
   have _ : URCGenerators.Rung45WitnessCert.verified cert :=
     URCGenerators.Rung45WitnessCert.verified_any _
   "Rung45WitnessCert: OK"
 
 /-- #eval-friendly report for BoseFermiCert (permutation invariance ⇒ symmetrization). -/
-@[simp] def bose_fermi_report : String :=
+def bose_fermi_report : String :=
   let cert : URCGenerators.BoseFermiCert := {}
   have _ : URCGenerators.BoseFermiCert.verified cert :=
     URCGenerators.BoseFermiCert.verified_any _
   "BoseFermiCert: OK"
 
 /-- #eval-friendly report for GapConsequencesCert (packs witness + Δ=3/64 + sync). -/
-@[simp] def gap_consequences_report : String :=
+def gap_consequences_report : String :=
   let cert : URCGenerators.GapConsequencesCert := {}
   have _ : URCGenerators.GapConsequencesCert.verified cert :=
     URCGenerators.GapConsequencesCert.verified_any _
   "GapConsequencesCert: OK"
 
 /-- #eval-friendly report for UniqueUpToUnitsCert (bridge uniqueness up to units). -/
-@[simp] def unique_up_to_units_report : String :=
+def unique_up_to_units_report : String :=
   let cert : URCGenerators.UniqueUpToUnitsCert := {}
   have _ : URCGenerators.UniqueUpToUnitsCert.verified cert :=
     URCGenerators.UniqueUpToUnitsCert.verified_any _
   "UniqueUpToUnitsCert: OK"
 
 /-- #eval-friendly report for AblationSensitivityCert. -/
-@[simp] def ablation_sensitivity_report : String :=
+def ablation_sensitivity_report : String :=
   let cert : URCGenerators.AblationSensitivityCert := {}
   have _ : URCGenerators.AblationSensitivityCert.verified cert :=
     URCGenerators.AblationSensitivityCert.verified_any _
   "AblationSensitivityCert: OK"
 
 /-- #eval-friendly report for LNALInvariantsCert. -/
-@[simp] def lnal_invariants_report : String :=
+def lnal_invariants_report : String :=
   let cert : URCGenerators.LNALInvariantsCert := {}
   have _ : URCGenerators.LNALInvariantsCert.verified cert :=
     URCGenerators.LNALInvariantsCert.verified_any _
   "LNALInvariantsCert: OK"
 
 /-- #eval-friendly report for CompilerStaticChecksCert. -/
-@[simp] def compiler_checks_report : String :=
+def compiler_checks_report : String :=
   let cert : URCGenerators.CompilerStaticChecksCert := {}
   have _ : URCGenerators.CompilerStaticChecksCert.verified cert :=
     URCGenerators.CompilerStaticChecksCert.verified_any _
   "CompilerStaticChecksCert: OK"
 
 /-- #eval-friendly report for OverlapContractionCert (uniform overlap ⇒ TV contraction). -/
-@[simp] def overlap_contraction_report : String :=
+def overlap_contraction_report : String :=
   let cert : URCGenerators.OverlapContractionCert := { beta := (1/5 : ℚ), hbpos := by norm_num, hble := by norm_num }
   have _ : URCGenerators.OverlapContractionCert.verified cert :=
     URCGenerators.OverlapContractionCert.verified_any _
   "OverlapContractionCert: OK"
 
 /-- #eval-friendly report for SectorYardstickCert. -/
-@[simp] def sector_yardstick_report : String :=
+def sector_yardstick_report : String :=
   let cert : URCGenerators.SectorYardstickCert := {}
   have _ : URCGenerators.SectorYardstickCert.verified cert :=
     URCGenerators.SectorYardstickCert.verified_any _
   "SectorYardstickCert: OK"
 
 /-- #eval-friendly report for TimeKernelDimlessCert. -/
-@[simp] def ilg_time_report : String :=
+def ilg_time_report : String :=
   let cert : URCGenerators.TimeKernelDimlessCert := {}
   have _ : URCGenerators.TimeKernelDimlessCert.verified cert :=
     URCGenerators.TimeKernelDimlessCert.verified_any _
   "TimeKernelDimlessCert: OK"
 
 /-- #eval-friendly report for EffectiveWeightNonnegCert. -/
-@[simp] def ilg_effective_report : String :=
+def ilg_effective_report : String :=
   let cert : URCGenerators.EffectiveWeightNonnegCert := {}
   have _ : URCGenerators.EffectiveWeightNonnegCert.verified cert :=
     URCGenerators.EffectiveWeightNonnegCert.verified_any _
   "EffectiveWeightNonnegCert: OK"
 
 /-- #eval-friendly report for RotationIdentityCert. -/
-@[simp] def rotation_identity_report : String :=
+def rotation_identity_report : String :=
   let cert : URCGenerators.RotationIdentityCert := {}
   have _ : URCGenerators.RotationIdentityCert.verified cert :=
     URCGenerators.RotationIdentityCert.verified_any _
   "RotationIdentityCert: OK"
 
 /-- #eval-friendly physical witness for Planck-length identity requiring Physical B. -/
-@[simp] def planck_length_identity_physical_report : String :=
+def planck_length_identity_physical_report : String :=
   let B : IndisputableMonolith.BridgeData :=
     { G := 1, hbar := 1, c := 1, tau0 := 1, ell0 := 1 }
   let H : IndisputableMonolith.BridgeData.Physical B :=
@@ -330,49 +330,49 @@ namespace URCAdapters
   "PlanckLengthIdentity (physical witness): OK"
 
 /-- #eval-friendly report for SpeedFromUnitsCert (ℓ0/τ0=c and display-speed=c). -/
-@[simp] def speed_from_units_report : String :=
+def speed_from_units_report : String :=
   let cert : URCGenerators.SpeedFromUnitsCert := {}
   have _ : URCGenerators.SpeedFromUnitsCert.verified cert :=
     URCGenerators.SpeedFromUnitsCert.verified_any _
   "SpeedFromUnitsCert: OK"
 
 /-- #eval-friendly report for FamilyRatioCert (mass ratios φ^(Δr) at matching scale). -/
-@[simp] def family_ratio_report : String :=
+def family_ratio_report : String :=
   let cert : URCGenerators.FamilyRatioCert := {}
   have _ : URCGenerators.FamilyRatioCert.verified cert :=
     URCGenerators.FamilyRatioCert.verified_any _
   "FamilyRatioCert: OK"
 
 /-- #eval-friendly report for EqualZAnchorCert (equal‑Z degeneracy at μ* bands). -/
-@[simp] def equalZ_report : String :=
+def equalZ_report : String :=
   let cert : URCGenerators.EqualZAnchorCert := {}
   have _ : URCGenerators.EqualZAnchorCert.verified cert :=
     URCGenerators.EqualZAnchorCert.verified_any _
   "EqualZAnchorCert: OK"
 
 /-- #eval-friendly report for SMConcreteRatiosCert (explicit φ mass ratios). -/
-@[simp] def sm_concrete_ratios_report : String :=
+def sm_concrete_ratios_report : String :=
   let cert : URCGenerators.SMConcreteRatiosCert := {}
   have _ : URCGenerators.SMConcreteRatiosCert.verified cert :=
     URCGenerators.SMConcreteRatiosCert.verified_any _
   "SMConcreteRatiosCert: OK"
 
 /-- #eval-friendly report for AlphaPhiCert (α inverse φ‑expression). -/
-@[simp] def alpha_phi_report : String :=
+def alpha_phi_report : String :=
   let cert : URCGenerators.AlphaPhiCert := {}
   have _ : URCGenerators.AlphaPhiCert.verified cert :=
     URCGenerators.AlphaPhiCert.verified_any _
   "AlphaPhiCert: OK"
 
 /-- #eval-friendly report for RGResidueCert (residue models + no self-thresholding policy). -/
-@[simp] def rg_residue_report : String :=
+def rg_residue_report : String :=
   let cert : URCGenerators.RGResidueCert := {}
   have _ : URCGenerators.RGResidueCert.verified cert :=
     URCGenerators.RGResidueCert.verified_any _
   "RGResidueCert: OK"
 
 /-- #eval-friendly report for InevitabilityDimlessCert (dimensionless inevitability). -/
-@[simp] def inevitability_dimless_report : String :=
+def inevitability_dimless_report : String :=
   -- Exercise the strengthened explicit witness via the certificate wrapper
   let cert : URCGenerators.InevitabilityDimlessCert := {}
   have _ : URCGenerators.InevitabilityDimlessCert.verified cert :=
@@ -380,14 +380,14 @@ namespace URCAdapters
   "InevitabilityDimlessCert: OK"
 
 /-- #eval-friendly report for PDGFitsCert (interface-level placeholder). -/
-@[simp] def pdg_fits_report : String :=
+def pdg_fits_report : String :=
   let cert : URCGenerators.PDGFitsCert := {}
   have _ : URCGenerators.PDGFitsCert.verified cert :=
     URCGenerators.PDGFitsCert.verified_any _
   "PDGFitsCert: OK"
 
 /-- #eval-friendly report for AbsoluteLayerCert (UniqueCalibration ∧ MeetsBands). -/
-@[simp] def absolute_layer_report : String :=
+def absolute_layer_report : String :=
   let cert : URCGenerators.AbsoluteLayerCert := {}
   have _ : URCGenerators.AbsoluteLayerCert.verified cert :=
     URCGenerators.AbsoluteLayerCert.verified_any _
@@ -396,7 +396,7 @@ namespace URCAdapters
 /-- #eval-friendly report exercising absolute-layer invariance under units rescaling
     and the c-centered checker pipeline (uses nonzero τ0 implicitly through
     the speed/display lemmas used by other reports). -/
-@[simp] def absolute_layer_invariant_report : String :=
+def absolute_layer_invariant_report : String :=
   let U  : IndisputableMonolith.Constants.RSUnits :=
     { tau0 := 1, ell0 := 1, c := 1, c_ell0_tau0 := by simp }
   let U' : IndisputableMonolith.Constants.RSUnits :=
@@ -421,14 +421,14 @@ namespace URCAdapters
   "AbsoluteLayerInvariant: OK"
 
 /-- #eval-friendly report for MaxwellContinuityCert (dJ=0). -/
-@[simp] def maxwell_continuity_report : String :=
+def maxwell_continuity_report : String :=
   let cert : URCGenerators.MaxwellContinuityCert := {}
   have _ : URCGenerators.MaxwellContinuityCert.verified cert :=
     URCGenerators.MaxwellContinuityCert.verified_any _
   "MaxwellContinuityCert: OK"
 
 /-- #eval-friendly constitutive wiring smoke test: J_add/J_zero hold. -/
-@[simp] def constitutive_wiring_report : String :=
+def constitutive_wiring_report : String :=
   let M := IndisputableMonolith.Verification.DEC.trivial ℤ ℤ ℤ ℤ ℤ
   have _ : M.J (0 : ℤ) = 0 := by simpa using (IndisputableMonolith.Verification.DEC4D.MaxwellModel4D.J_zero (C0:=ℤ) (C1:=ℤ) (C2:=ℤ) (C3:=ℤ) (C4:=ℤ) M)
   have _ : M.J (1 + 2 : ℤ) = M.J (1 : ℤ) + M.J (2 : ℤ) := by
@@ -436,63 +436,63 @@ namespace URCAdapters
   "ConstitutiveWiring: OK"
 
 /-- #eval-friendly report for BornRuleCert. -/
-@[simp] def born_rule_report : String :=
+def born_rule_report : String :=
   let cert : URCGenerators.BornRuleCert := {}
   have _ : URCGenerators.BornRuleCert.verified cert :=
     URCGenerators.BornRuleCert.verified_any _
   "BornRuleCert: OK"
 
 /-- #eval-friendly report for QuantumOccupancyCert (Bose/Fermi occupancy + Born). -/
-@[simp] def quantum_occupancy_report : String :=
+def quantum_occupancy_report : String :=
   let cert : URCGenerators.QuantumOccupancyCert := {}
   have _ : URCGenerators.QuantumOccupancyCert.verified cert :=
     URCGenerators.QuantumOccupancyCert.verified_any _
   "QuantumOccupancyCert: OK"
 
 /-- #eval-friendly report for PathCostIsomorphismCert (additivity + policy placeholder). -/
-@[simp] def path_cost_isomorphism_report : String :=
+def path_cost_isomorphism_report : String :=
   let cert : URCGenerators.PathCostIsomorphismCert := {}
   have _ : URCGenerators.PathCostIsomorphismCert.verified cert :=
     URCGenerators.PathCostIsomorphismCert.verified_any _
   "PathCostIsomorphismCert: OK"
 
 /-- #eval-friendly report for GapSeriesClosedFormCert (F(1)=ln φ). -/
-@[simp] def gap_series_closed_form_report : String :=
+def gap_series_closed_form_report : String :=
   let cert : URCGenerators.GapSeriesClosedFormCert := {}
   have _ : URCGenerators.GapSeriesClosedFormCert.verified cert :=
     URCGenerators.GapSeriesClosedFormCert.verified_any _
   "GapSeriesClosedFormCert: OK"
 
 /-- #eval-friendly report for ILGKernelFormCert (policy-level form check). -/
-@[simp] def ilg_kernel_form_report : String :=
+def ilg_kernel_form_report : String :=
   let cert : URCGenerators.Policy.ILGKernelFormCert := {}
   have _ : URCGenerators.Policy.ILGKernelFormCert.verified cert :=
     URCGenerators.Policy.ILGKernelFormCert.verified_any _
   "ILGKernelFormCert: OK"
 
 /-- #eval-friendly report for InflationPotentialCert. -/
-@[simp] def inflation_potential_report : String :=
+def inflation_potential_report : String :=
   let cert : URCGenerators.InflationPotentialCert := {}
   have _ : URCGenerators.InflationPotentialCert.verified cert :=
     URCGenerators.InflationPotentialCert.verified_any _
   "InflationPotentialCert: OK"
 
 /-- #eval-friendly report for IRCoherenceGateCert (tolerance policy). -/
-@[simp] def ir_coherence_gate_report : String :=
+def ir_coherence_gate_report : String :=
   let cert : URCGenerators.Policy.IRCoherenceGateCert := {}
   have _ : URCGenerators.Policy.IRCoherenceGateCert.verified cert :=
     URCGenerators.Policy.IRCoherenceGateCert.verified_any _
   "IRCoherenceGateCert: OK"
 
 /-- #eval-friendly report for PlanckGateToleranceCert (policy). -/
-@[simp] def planck_gate_tolerance_report : String :=
+def planck_gate_tolerance_report : String :=
   let cert : URCGenerators.Policy.PlanckGateToleranceCert := {}
   have _ : URCGenerators.Policy.PlanckGateToleranceCert.verified cert :=
     URCGenerators.Policy.PlanckGateToleranceCert.verified_any _
   "PlanckGateToleranceCert: OK"
 
 /-- #eval-friendly report for ProtonNeutronSplitCert. -/
-@[simp] def pn_split_report : String :=
+def pn_split_report : String :=
   let tolφ := URCGenerators.ProtonNeutronSplitCert.tol_phi
   let cert : URCGenerators.ProtonNeutronSplitCert := { tol := tolφ, htol := by
     -- tolφ > 0
@@ -511,49 +511,49 @@ namespace URCAdapters
   "ProtonNeutronSplitCert: OK"
 
 /-- #eval-friendly report for FoldingComplexityCert. -/
-@[simp] def folding_complexity_report : String :=
+def folding_complexity_report : String :=
   let cert : URCGenerators.FoldingComplexityCert := {}
   have _ : URCGenerators.FoldingComplexityCert.verified cert :=
     URCGenerators.FoldingComplexityCert.verified_any _
   "FoldingComplexityCert: OK"
 
 /-- #eval-friendly report for DECDDZeroCert (d∘d=0). -/
-@[simp] def dec_dd_zero_report : String :=
+def dec_dd_zero_report : String :=
   let cert : URCGenerators.DECDDZeroCert := {}
   have _ : URCGenerators.DECDDZeroCert.verified cert :=
     URCGenerators.DECDDZeroCert.verified_any _
   "DECDDZeroCert: OK"
 
 /-- #eval-friendly report for DECBianchiCert (dF=0). -/
-@[simp] def dec_bianchi_report : String :=
+def dec_bianchi_report : String :=
   let cert : URCGenerators.DECBianchiCert := {}
   have _ : URCGenerators.DECBianchiCert.verified cert :=
     URCGenerators.DECBianchiCert.verified_any _
   "DECBianchiCert: OK"
 
 /-- #eval-friendly report for SATSeparationCert (optional recognition–computation layer). -/
-@[simp] def sat_separation_report : String :=
+def sat_separation_report : String :=
   let cert : URCGenerators.SATSeparationCert := {}
   have _ : URCGenerators.SATSeparationCert.verified cert :=
     URCGenerators.SATSeparationCert.verified_any _
   "SATSeparationCert: OK"
 
 /-- #eval-friendly report for ControlsInflateCert (ILG controls/fairness). -/
-@[simp] def controls_inflate_report : String :=
+def controls_inflate_report : String :=
   let cert : URCGenerators.ControlsInflateCert := {}
   have _ : URCGenerators.ControlsInflateCert.verified cert :=
     URCGenerators.ControlsInflateCert.verified_any _
   "ControlsInflateCert: OK"
 
 /-- #eval-friendly report for LambdaRecUncertaintyCert (u_rel(λ_rec)=½u_rel(G)). -/
-@[simp] def lambda_rec_uncertainty_report : String :=
+def lambda_rec_uncertainty_report : String :=
   let cert : URCGenerators.LambdaRecUncertaintyCert := {}
   have _ : URCGenerators.LambdaRecUncertaintyCert.verified cert :=
     URCGenerators.LambdaRecUncertaintyCert.verified_any _
   "LambdaRecUncertaintyCert: OK"
 
 /-- Consolidated manifest of certificate reports (forces elaboration of each). -/
-@[simp] def certificates_manifest : String :=
+def certificates_manifest : String :=
   String.intercalate "\n"
     [ routeA_report
     , reality_bridge_report
@@ -626,12 +626,12 @@ namespace URCAdapters
     ]
 
 /-- #eval-friendly RSCompleteness-lite: shows which component is proven. -/
-@[simp] def rs_completeness_lite_report : String :=
+def rs_completeness_lite_report : String :=
   -- Minimality proven; others pending in this increment.
   "rs_completeness_lite_report: " ++ completeness_status_summary
 
 /-- #eval-friendly ultimate completeness report (scaffold). -/
-@[simp] def completeness_report : String :=
+def completeness_report : String :=
   let _ := IndisputableMonolith.Verification.Completeness.rs_completeness
   -- Also exercise the minimality theorem explicitly at φ
   let φ : ℝ := IndisputableMonolith.Constants.phi
@@ -640,21 +640,21 @@ namespace URCAdapters
   "completeness_report: OK (" ++ completeness_status_summary ++ ")"
 
 /-- #eval-friendly report: closed theorem stack holds at φ. -/
-@[simp] def closed_theorem_stack_report : String :=
+def closed_theorem_stack_report : String :=
   let φ : ℝ := IndisputableMonolith.Constants.phi
   have _ : IndisputableMonolith.Verification.Completeness.PrimeClosure φ :=
     IndisputableMonolith.Verification.Completeness.prime_closure φ
   "PrimeClosure: OK"
 
 /-- #eval-friendly report of minimality (provenance form). -/
-@[simp] def minimality_report : String :=
+def minimality_report : String :=
   let _ : ∃ Γ₀ : IndisputableMonolith.Meta.AxiomLattice.AxiomEnv,
     Γ₀.usesMP ∧ IndisputableMonolith.Meta.Necessity.MinimalForPhysics Γ₀ := by
       exact IndisputableMonolith.Meta.Necessity.mp_minimal_axiom_theorem
   "Minimality (MP necessary & sufficient): OK"
 
 /-- #eval-friendly saturation report for the cone bound equalling the information bound. -/
-@[simp] def saturation_bound_report : String :=
+def saturation_bound_report : String :=
   let U : IndisputableMonolith.Constants.RSUnits := { tau0 := 1, ell0 := 1, c := 1, c_ell0_tau0 := by simp }
   -- Tiny Kinematics with a single forward step relation on ℕ
   let K : IndisputableMonolith.LightCone.Local.Kinematics Nat := { step := fun x y => y = x + 1 }
@@ -678,7 +678,7 @@ namespace URCAdapters
   "Saturation (cone bound equality): OK"
 
 /-- #eval-friendly report: any zero-parameter framework’s units quotient is one-point (isomorphism up to units). -/
-@[simp] def zpf_isomorphism_report : String :=
+def zpf_isomorphism_report : String :=
   let φ : ℝ := IndisputableMonolith.Constants.phi
   -- Principled units equivalence: bridges are related if they both match
   -- the explicit universal target UD_explicit φ (spec-level inevitable target).
@@ -728,21 +728,21 @@ namespace URCAdapters
   "ZeroParamFrameworkIsomorphic: OK"
 
 /-- #eval-friendly report for FrameworkUniqueness (pairwise isomorphism up to units). -/
-@[simp] def framework_uniqueness_report : String :=
+def framework_uniqueness_report : String :=
   let φ : ℝ := IndisputableMonolith.Constants.phi
   have _ : IndisputableMonolith.RH.RS.FrameworkUniqueness φ :=
     IndisputableMonolith.RH.RS.framework_uniqueness φ
   "FrameworkUniqueness: OK"
 
 /-- #eval-friendly arithmetic-only check: lcm(2^D,45)=360 iff D=3. -/
-@[simp] def dimensional_rigidity_lite_report : String :=
+def dimensional_rigidity_lite_report : String :=
   let D3 : Nat := 3
   have h : Nat.lcm (2 ^ D3) 45 = 360 := by decide
   have _ : D3 = 3 := (IndisputableMonolith.RH.RS.lcm_pow2_45_eq_iff D3).mp h
   "DimensionalRigidity-lite: OK"
 
 /-- #eval-friendly dimensional rigidity report under the combined RSCounting+Gap45+Absolute witness. -/
-@[simp] def dimensional_rigidity_report : String :=
+def dimensional_rigidity_report : String :=
   let D3 : Nat := 3
   -- Provide the coverage and synchronization witnesses for D=3
   have hcov : ∃ w : IndisputableMonolith.Patterns.CompleteCover D3, w.period = 2 ^ D3 :=
@@ -754,7 +754,7 @@ namespace URCAdapters
   "DimensionalRigidity: OK"
 
 /-- #eval-friendly report asserting exactly three generations via a surjective index. -/
-@[simp] def generations_count_report : String :=
+def generations_count_report : String :=
   let cert : URCGenerators.GenerationCountCert := {}
   have _ : URCGenerators.GenerationCountCert.verified cert :=
     URCGenerators.GenerationCountCert.verified_any _
@@ -762,28 +762,28 @@ namespace URCAdapters
 
 /-- #eval-friendly report for the exact‑3 generations bundle tying equal‑Z,
     rung laws, and residue/anchor policies to the generation index. -/
-@[simp] def exact_three_generations_report : String :=
+def exact_three_generations_report : String :=
   let cert : URCGenerators.ExactThreeGenerationsCert := {}
   have _ : URCGenerators.ExactThreeGenerationsCert.verified cert :=
     URCGenerators.ExactThreeGenerationsCert.verified_any _
   "ExactThreeGenerations: OK"
 
 /-- #eval-friendly report for the upper bound (≤3 generations). -/
-@[simp] def generations_upper_bound_report : String :=
+def generations_upper_bound_report : String :=
   let cert : URCGenerators.GenUpperBoundCert := {}
   have _ : URCGenerators.GenUpperBoundCert.verified cert :=
     URCGenerators.GenUpperBoundCert.verified_any _
   "GenerationsUpperBound (≤3): OK"
 
 /-- #eval-friendly report for the lower bound (≥3 generations). -/
-@[simp] def generations_lower_bound_report : String :=
+def generations_lower_bound_report : String :=
   let cert : URCGenerators.GenLowerBoundCert := {}
   have _ : URCGenerators.GenLowerBoundCert.verified cert :=
     URCGenerators.GenLowerBoundCert.verified_any _
   "GenerationsLowerBound (≥3): OK"
 
 /-- #eval-friendly consolidated audit identities report (K‑gate, K identities, λ_rec identity, single‑inequality). -/
-@[simp] def audit_identities_report : String :=
+def audit_identities_report : String :=
   let kGate : URCGenerators.KGateCert := {}
   let kIds  : URCGenerators.KIdentitiesCert := {}
   let lrec  : URCGenerators.LambdaRecIdentityCert := {}

@@ -1,6 +1,6 @@
 import Mathlib
 import IndisputableMonolith.Core
-import IndisputableMonolith.Verification.Observables
+import IndisputableMonolith.Verification
 
 namespace IndisputableMonolith
 
@@ -22,26 +22,26 @@ deriving DecidableEq
 structure Claim where
   id        : String
   stype     : StatementType
-  expr      : Observable
+  expr      : Verification.Observable
   target    : ℝ
   tol       : Option ℝ := none
   status    : ClaimStatus := .unchecked
 
 /-- Smart constructor that only accepts anchor-invariant expressions. -/
 def dimensionless_claim (id : String) (stype : StatementType)
-  (expr : Observable) (target : ℝ) (tol : Option ℝ := none) : Claim :=
+  (expr : Verification.Observable) (target : ℝ) (tol : Option ℝ := none) : Claim :=
 { id := id, stype := stype, expr := expr, target := target, tol := tol, status := .unchecked }
 
 /-- Evaluate a claim under anchors; due to invariance, result is anchor-independent. -/
-@[simp] def Claim.value (c : Claim) (U : RSUnits) : ℝ :=
-  BridgeEval c.expr U
+@[simp] def Claim.value (c : Claim) (U : Constants.RSUnits) : ℝ :=
+  Verification.BridgeEval c.expr U
 
 /-- Check an equality claim by proof; returns updated status. -/
-def Claim.checkEq (c : Claim) (U : RSUnits) (_h : c.value U = c.target) : Claim :=
+def Claim.checkEq (c : Claim) (U : Constants.RSUnits) (_h : c.value U = c.target) : Claim :=
   { c with status := .proven }
 
 /-- Check an inequality claim by proof; returns updated status. -/
-def Claim.checkLe (c : Claim) (U : RSUnits) (_h : c.value U ≤ c.target) : Claim :=
+def Claim.checkLe (c : Claim) (U : Constants.RSUnits) (_h : c.value U ≤ c.target) : Claim :=
   { c with status := .proven }
 
 /-- The single K-gate inputs for diagnostics and pass/fail witness. -/
@@ -58,8 +58,8 @@ structure KGateResult where
   witness : String
 
 /-- K-gate checker: dimensionless bridge gate |K_A − K_B| ≤ k·u_comb. -/
-noncomputable def runKGate (U : RSUnits) (inp : KGateInput) : KGateResult :=
-  let KA : ℝ := BridgeEval K_A_obs U
+noncomputable def runKGate (U : Constants.RSUnits) (inp : KGateInput) : KGateResult :=
+  let KA : ℝ := Verification.BridgeEval Verification.K_A_obs U
   let KB : ℝ := inp.KB
   let ucomb : ℝ := IndisputableMonolith.Verification.uComb inp.u_ell0 inp.u_lrec inp.rho
   let lhs : ℝ := Real.abs (KA - KB)

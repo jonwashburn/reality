@@ -1,5 +1,5 @@
 import Mathlib
-import IndisputableMonolith.Core
+import IndisputableMonolith.Constants
 
 /-!
 RS Units Display Functions and K-Gate Theorems
@@ -24,29 +24,30 @@ noncomputable def lambda_kin_display (U : IndisputableMonolith.Constants.RSUnits
 @[simp] lemma tau_rec_display_ratio (U : IndisputableMonolith.Constants.RSUnits)
   (hτ : U.tau0 ≠ 0) :
   (tau_rec_display U) / U.tau0 = IndisputableMonolith.Constants.K := by
-  dsimp [tau_rec_display]
-  simpa using (mul_div_cancel_left₀ IndisputableMonolith.Constants.K U.tau0 hτ)
+  simp [tau_rec_display, hτ]
 
 /-- Length-side ratio: λ_kin(display)/ℓ0 = K. -/
 @[simp] lemma lambda_kin_display_ratio (U : IndisputableMonolith.Constants.RSUnits)
   (hℓ : U.ell0 ≠ 0) :
   (lambda_kin_display U) / U.ell0 = IndisputableMonolith.Constants.K := by
-  dsimp [lambda_kin_display]
-  simpa using (mul_div_cancel_left₀ IndisputableMonolith.Constants.K U.ell0 hℓ)
+  simp [lambda_kin_display, hℓ]
 
 /-- Kinematic consistency: c · τ_rec(display) = λ_kin(display). -/
 @[simp] lemma lambda_kin_from_tau_rec (U : IndisputableMonolith.Constants.RSUnits) :
   U.c * tau_rec_display U = lambda_kin_display U := by
   -- c·(K τ0) = K·(c τ0) = K·ℓ0
   dsimp [tau_rec_display, lambda_kin_display]
-  -- use structural identity from RSUnits
-  simpa [mul_comm, mul_left_comm, mul_assoc, (U.c_ell0_tau0)]
+  calc
+    U.c * (IndisputableMonolith.Constants.K * U.tau0)
+        = (IndisputableMonolith.Constants.K * U.c) * U.tau0 := by ring
+    _   = IndisputableMonolith.Constants.K * (U.c * U.tau0) := by ring
+    _   = IndisputableMonolith.Constants.K * U.ell0 := by simpa [U.c_ell0_tau0]
 
 /-- Dimensionless bridge gate: the two independent displays agree at the ratio level. -/
 @[simp] lemma K_gate (U : IndisputableMonolith.Constants.RSUnits)
   (hτ : U.tau0 ≠ 0) (hℓ : U.ell0 ≠ 0) :
   (tau_rec_display U) / U.tau0 = (lambda_kin_display U) / U.ell0 := by
-  simpa [tau_rec_display_ratio U hτ, lambda_kin_display_ratio U hℓ]
+  simp [tau_rec_display_ratio U hτ, lambda_kin_display_ratio U hℓ]
 
 /-- Length-side display ratio equals K. -/
 @[simp] lemma K_eq_lambda_over_ell0 (U : IndisputableMonolith.Constants.RSUnits)
@@ -82,15 +83,18 @@ noncomputable def lambda_kin_display (U : IndisputableMonolith.Constants.RSUnits
 @[simp] lemma ell0_div_tau0_eq_c (U : IndisputableMonolith.Constants.RSUnits)
   (hτ : U.tau0 ≠ 0) :
   U.ell0 / U.tau0 = U.c := by
-  have : U.ell0 = U.c * U.tau0 := U.c_ell0_tau0
-  simpa [this, div_mul_eq_mul_div, mul_comm, mul_left_comm, mul_assoc] using rfl
+  calc
+    U.ell0 / U.tau0 = (U.c * U.tau0) / U.tau0 := by simpa [U.c_ell0_tau0]
+    _ = U.c * (U.tau0 / U.tau0) := by simp [mul_div_assoc]
+    _ = U.c * 1 := by simp [div_self hτ]
+    _ = U.c := by simp
 
 /-- Display speed equals structural speed: (λ_kin/τ_rec) = c. -/
 @[simp] lemma display_speed_eq_c_of_nonzero (U : IndisputableMonolith.Constants.RSUnits)
   (hτ : tau_rec_display U ≠ 0) : (lambda_kin_display U) / (tau_rec_display U) = U.c := by
-  have h := lambda_kin_from_tau_rec U
-  have h' := congrArg (fun x => x / tau_rec_display U) h
-  simpa [mul_div_cancel_left₀, hτ] using h'
+  -- (c * τ) / τ = c when τ ≠ 0
+  simpa [lambda_kin_from_tau_rec, mul_comm] using
+    (mul_div_cancel_left₀ (U.c) (tau_rec_display U) hτ)
 
 /-- Strengthen display-speed equality: remove nonzero hypothesis by proving positivity. -/
 lemma tau_rec_display_pos (U : IndisputableMonolith.Constants.RSUnits)

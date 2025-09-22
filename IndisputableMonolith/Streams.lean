@@ -40,7 +40,8 @@ def Cylinder {n : Nat} (w : Pattern n) : Set Stream :=
 
 /-- Periodic extension of an 8‑bit window. -/
 def extendPeriodic8 (w : Pattern 8) : Stream := fun t =>
-  let i : Fin 8 := ⟨t % 8, Nat.mod_lt _ (by decide)⟩
+  let h8 : 0 < 8 := by decide
+  let i : Fin 8 := ⟨t % 8, Nat.mod_lt _ h8⟩
   w i
 
 @[simp] lemma extendPeriodic8_zero (w : Pattern 8) : extendPeriodic8 w 0 = w ⟨0, by decide⟩ := by
@@ -55,8 +56,9 @@ lemma extendPeriodic8_period (w : Pattern 8) (t : Nat) :
   dsimp [extendPeriodic8]
   have hmod : (t + 8) % 8 = t % 8 := by
     simpa [Nat.mod_self, Nat.add_comm] using (Nat.add_mod t 8 8)
-  have hfin : (⟨(t + 8) % 8, Nat.mod_lt _ (by decide)⟩ : Fin 8)
-            = ⟨t % 8, Nat.mod_lt _ (by decide)⟩ := by
+  have h8 : 0 < 8 := by decide
+  have hfin : (⟨(t + 8) % 8, Nat.mod_lt _ h8⟩ : Fin 8)
+            = ⟨t % 8, Nat.mod_lt _ h8⟩ := by
     apply Fin.mk_eq_mk.mpr
     exact hmod
   simp [hfin]
@@ -86,8 +88,9 @@ lemma sumFirst8_extendPeriodic_eq_Z (w : Pattern 8) :
   unfold sumFirst Z_of_window extendPeriodic8
   have hmod : ∀ i : Fin 8, (i.val % 8) = i.val := by
     intro i; exact Nat.mod_eq_of_lt i.isLt
+  have h8 : 0 < 8 := by decide
   have hfun :
-    (fun i : Fin 8 => (if w ⟨i.val % 8, Nat.mod_lt _ (by decide)⟩ then 1 else 0))
+    (fun i : Fin 8 => (if w ⟨i.val % 8, Nat.mod_lt _ h8⟩ then 1 else 0))
     = (fun i : Fin 8 => (if w i then 1 else 0)) := by
       funext i; simp [hmod i]
   -- Now the two sums are definitionally equal by hfun.

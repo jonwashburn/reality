@@ -1,12 +1,10 @@
 import Mathlib
+import IndisputableMonolith.Constants
 
 namespace IndisputableMonolith
 namespace Constants
 
 noncomputable section
-
-/-- Golden ratio φ as a concrete real. (local WIP re-decl) -/
-@[simp] def phi : ℝ := (1 + Real.sqrt 5) / 2
 
 /-- Dimensionless inverse fine-structure constant (seed–gap–curvature). -/
 @[simp] def alphaInv : ℝ :=

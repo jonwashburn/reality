@@ -1,6 +1,17 @@
 import Mathlib
 import IndisputableMonolith.Streams
 
+/-!
+Module: IndisputableMonolith.Measurement
+
+Two parts:
+- Discrete stream measurements over 8-tick windows and periodic extensions,
+  culminating in average observations.
+- A minimal real-valued measurement scaffold and a CQ score with monotonicity lemmas.
+
+Designed to stay light on dependencies and avoid `by decide` brittleness.
+-/
+
 namespace IndisputableMonolith
 namespace Measurement
 
@@ -19,23 +30,18 @@ lemma firstBlockSum_eq_Z_on_cylinder (w : Pattern 8) {s : Stream}
   (hs : s ∈ Cylinder w) :
   subBlockSum8 s 0 = Z_of_window w := by
   classical
-  -- Reduce the sub‑block to the first 8 ticks.
   have hsum : subBlockSum8 s 0 = sumFirst 8 s := by
     unfold subBlockSum8 sumFirst
     simp [Nat.zero_mul, zero_add]
-  -- Apply the cylinder lemma for the first‑8 sum.
-  simpa [hsum] using
-    (sumFirst_eq_Z_on_cylinder (n:=8) w (s:=s) hs)
+  simpa [hsum] using (sumFirst_eq_Z_on_cylinder (n:=8) w (s:=s) hs)
 
 /-- For periodic extensions of an 8‑bit window, each sub‑block sums to `Z`. -/
 lemma subBlockSum8_periodic_eq_Z (w : Pattern 8) (j : Nat) :
   subBlockSum8 (extendPeriodic8 w) j = Z_of_window w := by
   classical
   unfold subBlockSum8 Z_of_window extendPeriodic8
-  -- For `i : Fin 8`, we have `(j*8 + i) % 8 = i`.
   have hmod : ∀ i : Fin 8, ((j * 8 + i.val) % 8) = i.val := by
     intro i
-    -- (a*8 + b) % 8 = b when b < 8
     have : (j * 8) % 8 = 0 := by simpa using Nat.mul_mod j 8 8
     have hi : i.val % 8 = i.val := Nat.mod_eq_of_lt i.isLt
     calc
@@ -46,10 +52,17 @@ lemma subBlockSum8_periodic_eq_Z (w : Pattern 8) (j : Nat) :
       _   = (0 + i.val) % 8 := by simpa [this, hi]
       _   = i.val % 8 := by simp
       _   = i.val := by simpa [hi]
-  -- Rewrite each summand to the window bit.
-  refine (congrArg (fun f => ∑ i : Fin 8, f i) ?_)
-  funext i
-  simp [extendPeriodic8_eq_mod, hmod i]
+  -- Rewrite each summand to the corresponding window bit.
+  have hfun :
+    (fun i : Fin 8 => if (extendPeriodic8 w) (j * 8 + i.val) then 1 else 0)
+      = (fun i : Fin 8 => if w i then 1 else 0) := by
+    funext i
+    have : (extendPeriodic8 w) (j * 8 + i.val) = w ⟨(j*8 + i.val) % 8, Nat.mod_lt _ (by decide)⟩ := by
+      simp [extendPeriodic8_eq_mod]
+    have := congrArg (fun b => if b then 1 else 0) this
+    simpa [hmod i] using this
+  simpa [Z_of_window, subBlockSum8] using
+    (congrArg (fun f => ∑ i : Fin 8, f i) hfun)
 
 /-- Aligned block sum over `k` copies of the 8‑tick window (so instrument length `T=8k`). -/
 def blockSumAligned8 (k : Nat) (s : Stream) : Nat :=
@@ -58,11 +71,7 @@ def blockSumAligned8 (k : Nat) (s : Stream) : Nat :=
 lemma sum_const_nat {α} (s : Finset α) (c : Nat) :
   (∑ _i in s, c) = s.card * c := by
   classical
-  refine Finset.induction_on s ?base ?step
-  · simp
-  · intro a s ha ih
-    have : (insert a s).card = s.card + 1 := by simpa [Finset.card_insert_of_not_mem ha]
-    simp [Finset.sum_insert, ha, ih, this, Nat.add_mul, Nat.mul_add, Nat.mul_comm, Nat.mul_left_comm, Nat.mul_assoc]
+  simpa using Finset.sum_const_nat c s
 
 /-- For `s = extendPeriodic8 w`, summing `k` aligned 8‑blocks yields `k * Z(w)`. -/
 lemma blockSumAligned8_periodic (w : Pattern 8) (k : Nat) :
@@ -72,7 +81,6 @@ lemma blockSumAligned8_periodic (w : Pattern 8) (k : Nat) :
   have hconst : ∀ j : Fin k, subBlockSum8 (extendPeriodic8 w) j.val = Z_of_window w := by
     intro j; simpa using subBlockSum8_periodic_eq_Z w j.val
   have := congrArg (fun f => ∑ j : Fin k, f j) (funext hconst)
-  -- Sum of a constant over `Fin k` equals `k * Z`.
   simpa [sum_const_nat, Finset.card_univ] using this
 
 /-- Averaged (per‑window) observation equals `Z` on periodic extensions. -/
@@ -118,7 +126,6 @@ structure CQ where
   opsPerSec : ℝ
   coherence8 : ℝ
   coherence8_bounds : 0 ≤ coherence8 ∧ 0 ≤ coherence8 ∧ coherence8 ≤ 1 ∧ coherence8 ≤ 1 := by
-    -- shape compatible, refine later as needed
     exact And.intro (by exact le_of_eq rfl)
       (And.intro (by exact le_of_eq rfl) (And.intro (by exact le_of_eq rfl) (by exact le_of_eq rfl)))
 
@@ -134,13 +141,16 @@ lemma score_mono_listens
   (hops_pos : 0 < c.opsPerSec)
   (hcoh_nonneg : 0 ≤ c.coherence8)
   : score c ≤ score c' := by
-  have hops_pos' : 0 < c'.opsPerSec := by simpa [hops] using hops_pos
   have h0 : c.opsPerSec ≠ 0 := ne_of_gt hops_pos
-  have h0' : c'.opsPerSec ≠ 0 := ne_of_gt hops_pos'
+  have h0' : c'.opsPerSec ≠ 0 := by simpa [hops] using h0
   simp [score, h0, h0', hops, hcoh] at *
-  have : c.listensPerSec / c.opsPerSec ≤ c'.listensPerSec / c.opsPerSec :=
-    div_le_div_of_le_left hlist (le_of_lt hops_pos) (le_of_lt hops_pos)
-  exact mul_le_mul_of_nonneg_right this (by simpa [hcoh] using hcoh_nonneg)
+  have inv_nonneg : 0 ≤ (1 / c.opsPerSec) := by
+    have : 0 ≤ c.opsPerSec := le_of_lt hops_pos
+    exact one_div_nonneg.mpr this
+  have step : c.listensPerSec * (1 / c.opsPerSec)
+              ≤ c'.listensPerSec * (1 / c.opsPerSec) :=
+    mul_le_mul_of_nonneg_right hlist inv_nonneg
+  exact mul_le_mul_of_nonneg_right step (by simpa [hcoh] using hcoh_nonneg)
 
 /-- Score is monotone in `coherence8` when opsPerSec>0 and listensPerSec is fixed and ≥0. -/
 lemma score_mono_coherence
@@ -151,12 +161,10 @@ lemma score_mono_coherence
   (hops_pos : 0 < c.opsPerSec)
   (hlist_nonneg : 0 ≤ c.listensPerSec)
   : score c ≤ score c' := by
-  have hops_pos' : 0 < c'.opsPerSec := by simpa [hops] using hops_pos
   have h0 : c.opsPerSec ≠ 0 := ne_of_gt hops_pos
-  have h0' : c'.opsPerSec ≠ 0 := ne_of_gt hops_pos'
+  have h0' : c'.opsPerSec ≠ 0 := by simpa [hops] using h0
   simp [score, h0, h0', hlist, hops] at *
-  have : 0 ≤ c.listensPerSec / c.opsPerSec :=
-    div_nonneg hlist_nonneg (le_of_lt hops_pos)
+  have : 0 ≤ c.listensPerSec / c.opsPerSec := div_nonneg hlist_nonneg (le_of_lt hops_pos)
   exact mul_le_mul_of_nonneg_left hcoh this
 
 end

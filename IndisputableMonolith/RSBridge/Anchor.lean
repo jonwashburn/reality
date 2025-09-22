@@ -35,7 +35,7 @@ noncomputable def gap (Z : ℤ) : ℝ :=
 
 notation "𝓕(" Z ")" => gap Z
 
-def residueAtAnchor (f : Fermion) : ℝ := gap (ZOf f)
+noncomputable def residueAtAnchor (f : Fermion) : ℝ := gap (ZOf f)
 
 theorem anchorEquality (f : Fermion) : residueAtAnchor f = gap (ZOf f) := by rfl
 
@@ -50,7 +50,8 @@ noncomputable def rung : Fermion → ℤ
 | .nu1 => 0   | .nu2 => 11  | .nu3 => 19
 
 def M0 : ℝ := 1
-theorem M0_pos : 0 < M0 := by norm_num
+@[simp] theorem M0_pos : 0 < M0 := by
+  dsimp [M0]; norm_num
 
 noncomputable def massAtAnchor (f : Fermion) : ℝ :=
   M0 * Real.exp (((rung f : ℝ) - 8 + gap (ZOf f)) * Real.log (Constants.phi))
@@ -61,12 +62,10 @@ theorem anchor_ratio (f g : Fermion) (hZ : ZOf f = ZOf g) :
   unfold massAtAnchor
   set Af := ((rung f : ℝ) - 8 + gap (ZOf f)) * Real.log (Constants.phi)
   set Ag := ((rung g : ℝ) - 8 + gap (ZOf g)) * Real.log (Constants.phi)
-  have hM : M0 ≠ 0 := ne_of_gt M0_pos
+  -- Since M0=1, factor cancels directly
   calc
     (M0 * Real.exp Af) / (M0 * Real.exp Ag)
-        = (Real.exp Af) / (Real.exp Ag) := by
-              simpa [mul_comm, mul_left_comm, mul_assoc] using
-                (mul_div_mul_left (Real.exp Af) (Real.exp Ag) M0 hM)
+        = (Real.exp Af) / (Real.exp Ag) := by simpa [M0]
     _ = Real.exp (Af - Ag) := by
               simpa [Real.exp_sub] using (Real.exp_sub Af Ag).symm
     _ = Real.exp ((((rung f : ℝ) - 8 + gap (ZOf f)) - ((rung g : ℝ) - 8 + gap (ZOf g)))
@@ -74,8 +73,8 @@ theorem anchor_ratio (f g : Fermion) (hZ : ZOf f = ZOf g) :
               have : Af - Ag
                     = (((rung f : ℝ) - 8 + gap (ZOf f)) - ((rung g : ℝ) - 8 + gap (ZOf g)))
                        * Real.log (Constants.phi) := by
-                        simp [Af, Ag, sub_eq, sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-                              mul_add, add_mul, sub_eq_add_neg]
+                        simp [Af, Ag, sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
+                              mul_add, add_mul]
               have h' :
                 ((rung f : ℝ) - 8 + gap (ZOf f)) - ((rung g : ℝ) - 8 + gap (ZOf g))
                 = (rung f : ℝ) - rung g + (gap (ZOf f) - gap (ZOf g)) := by ring
@@ -86,13 +85,14 @@ theorem anchor_ratio (f g : Fermion) (hZ : ZOf f = ZOf g) :
 
 structure ResidueCert where
   f  : Fermion
-  lo hi : ℚ
+  lo : ℚ
+  hi : ℚ
   lo_le_hi : lo ≤ hi
 
 def ResidueCert.valid (c : ResidueCert) : Prop :=
   (c.lo : ℝ) ≤ gap (ZOf c.f) ∧ gap (ZOf c.f) ≤ (c.hi : ℝ)
 
-/‑! ### Generation indexing (three disjoint families) -/
+/-! ### Generation indexing (three disjoint families) -/
 
 /-- Generation index (0,1,2) assigned by rung/sector ordering. -/
 def genOf : Fermion → Fin 3
@@ -103,13 +103,25 @@ def genOf : Fermion → Fin 3
 
 /-- Surjectivity of the generation index: there are exactly three generations. -/
 theorem genOf_surjective : Function.Surjective genOf := by
-  intro i; cases i using Fin.cases with
-  | H0 => exact ⟨Fermion.e, rfl⟩
-  | Hs i => cases i using Fin.cases with
-    | H0 => exact ⟨Fermion.mu, rfl⟩
-    | Hs _ => exact ⟨Fermion.tau, rfl⟩
+  intro i
+  have h : i.val = 0 ∨ i.val = 1 ∨ i.val = 2 := by
+    fin_cases i <;> simp
+  rcases h with h0 | h12
+  · -- i = 0
+    refine ⟨Fermion.e, ?_⟩
+    apply Fin.ext
+    simp [genOf, h0]
+  · rcases h12 with h1 | h2
+    · -- i = 1
+      refine ⟨Fermion.mu, ?_⟩
+      apply Fin.ext
+      simp [genOf, h1]
+    · -- i = 2
+      refine ⟨Fermion.tau, ?_⟩
+      apply Fin.ext
+      simp [genOf, h2]
 
-/‑! ### Admissible family encoding via rung residue classes and equal‑Z ‑/
+/-! ### Admissible family encoding via rung residue classes and equal‑Z -/
 
 /-- Rung residue class modulo 360 (the joint sync scale of 8‑beat and rung‑45). -/
 def rungResidueClass (a : ℤ) : Set Fermion :=

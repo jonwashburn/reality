@@ -2,6 +2,14 @@ import Mathlib
 import IndisputableMonolith.Patterns
 import IndisputableMonolith.RH.RS.Spec
 
+/-!
+Module: IndisputableMonolith.Verification.Dimension
+
+This module proves that RSCounting together with 45-gap synchronization forces `D = 3`,
+and gives the iff characterization `RSCounting_Gap45_Absolute D ↔ D = 3`. It depends only
+on arithmetic facts about `lcm` and the spec layer (`RH.RS.lcm_pow2_45_eq_iff`), keeping
+the proof path lightweight for `PrimeClosure`.
+
 namespace IndisputableMonolith
 namespace Verification
 namespace Dimension

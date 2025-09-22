@@ -52,7 +52,7 @@ lemma PhiPow_add (x y : ℝ) : PhiPow (x + y) = PhiPow x * PhiPow y := by
   have hx : Real.log (Constants.phi) * (x + y)
         = Real.log (Constants.phi) * x + Real.log (Constants.phi) * y := by
     ring
-  simpa [hx, Real.exp_add]
+  simp [hx, Real.exp_add]
 
 lemma PhiPow_sub (x y : ℝ) : PhiPow (x - y) = PhiPow x / PhiPow y := by
   unfold PhiPow
@@ -62,7 +62,7 @@ lemma PhiPow_sub (x y : ℝ) : PhiPow (x - y) = PhiPow x / PhiPow y := by
   calc
     Real.exp (Real.log (Constants.phi) * (x - y))
         = Real.exp (Real.log (Constants.phi) * x + Real.log (Constants.phi) * (-y)) := by
-              simpa [hx]
+              simp [hx]
     _   = Real.exp (Real.log (Constants.phi) * x)
             * Real.exp (Real.log (Constants.phi) * (-y)) := by
               simp [Real.exp_add]
@@ -83,7 +83,8 @@ lemma PhiPow_sub (x y : ℝ) : PhiPow (x - y) = PhiPow x / PhiPow y := by
 
 @[simp] lemma PhiPow_neg (y : ℝ) : PhiPow (-y) = 1 / PhiPow y := by
   have := PhiPow_sub 0 y
-  simpa [PhiPow_zero, sub_eq_add_neg] using this
+  simp [PhiPow_zero, sub_eq_add_neg] at this
+  simpa using this
 
 @[simp] noncomputable def lambdaA : ℝ := Real.log Constants.phi
 @[simp] noncomputable def kappaA  : ℝ := Constants.phi
