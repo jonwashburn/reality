@@ -93,8 +93,9 @@ noncomputable def lambda_kin_display (U : IndisputableMonolith.Constants.RSUnits
 @[simp] lemma display_speed_eq_c_of_nonzero (U : IndisputableMonolith.Constants.RSUnits)
   (hτ : tau_rec_display U ≠ 0) : (lambda_kin_display U) / (tau_rec_display U) = U.c := by
   -- (c * τ) / τ = c when τ ≠ 0
-  simpa [lambda_kin_from_tau_rec, mul_comm] using
-    (mul_div_cancel_left₀ (U.c) (tau_rec_display U) hτ)
+  have : (U.c * tau_rec_display U) / (tau_rec_display U) = U.c := by
+    simpa [mul_comm] using (mul_div_cancel_left₀ (tau_rec_display U) U.c hτ)
+  simpa [lambda_kin_from_tau_rec] using this
 
 /-- Strengthen display-speed equality: remove nonzero hypothesis by proving positivity. -/
 lemma tau_rec_display_pos (U : IndisputableMonolith.Constants.RSUnits)
