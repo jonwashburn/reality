@@ -19,6 +19,7 @@ import IndisputableMonolith.Ethics.Decision.Select
 import IndisputableMonolith.Ethics.Truth
 import IndisputableMonolith.PhiSupport.Lemmas
 import IndisputableMonolith.Verification.Completeness
+import IndisputableMonolith.Verification.Exclusivity
 import IndisputableMonolith.Meta.AxiomLattice
 import IndisputableMonolith.Meta.Necessity
 import IndisputableMonolith.Meta.Derivation
@@ -618,6 +619,8 @@ def certificates_manifest : String :=
     , zpf_isomorphism_report
     , framework_uniqueness_report
   , closed_theorem_stack_report
+    , exclusivity_at_report
+    , phi_pinned_report
     , dimensional_rigidity_lite_report
     , generations_upper_bound_report
     , generations_lower_bound_report
@@ -645,6 +648,20 @@ def closed_theorem_stack_report : String :=
   have _ : IndisputableMonolith.Verification.Completeness.PrimeClosure φ :=
     IndisputableMonolith.Verification.Completeness.prime_closure φ
   "PrimeClosure: OK"
+
+/-- #eval-friendly report: exclusivity-at-scale holds at φ. -/
+def exclusivity_at_report : String :=
+  let φ : ℝ := IndisputableMonolith.Constants.phi
+  have _ : IndisputableMonolith.Verification.Exclusivity.ExclusivityAt φ :=
+    IndisputableMonolith.Verification.Exclusivity.exclusivity_at_of_framework_uniqueness φ
+      (IndisputableMonolith.RH.RS.framework_uniqueness φ)
+  "ExclusivityAt: OK"
+
+/-- #eval-friendly report: φ is pinned uniquely (selection + recognition closure). -/
+def phi_pinned_report : String :=
+  have _ : IndisputableMonolith.Verification.Exclusivity.PhiPinned :=
+    IndisputableMonolith.Verification.Exclusivity.phi_pinned
+  "PhiPinned: OK"
 
 /-- #eval-friendly report of minimality (provenance form). -/
 def minimality_report : String :=

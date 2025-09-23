@@ -88,6 +88,28 @@ theorem exclusivity_at_of_framework_uniqueness (φ : ℝ)
   · exact Reality.rs_reality_master_any φ
   · exact definitional_uniqueness_of_framework_uniqueness hFU
 
+/‑! ### Global "exclusive reality" statement (once-and-for-all) -/
+
+/-- There exists a unique scale φ such that φ is pinned (selection+closure)
+    and RS exhibits exclusivity at that scale (master + definitional uniqueness). -/
+def ExclusiveReality : Prop :=
+  ∃! φ : ℝ, (PhiSelection φ ∧ Recognition_Closure φ) ∧ ExclusivityAt φ
+
+theorem exclusive_reality_holds : ExclusiveReality := by
+  -- Start from the pinned φ (selection ∧ closure) uniqueness
+  rcases phi_pinned with ⟨φ⋆, hpack, huniq⟩
+  -- Provide the exclusivity witness at φ⋆ using framework uniqueness
+  have hFU : FrameworkUniqueness φ⋆ := framework_uniqueness φ⋆
+  have hExcl : ExclusivityAt φ⋆ := exclusivity_at_of_framework_uniqueness φ⋆ hFU
+  refine Exists.intro φ⋆ ?hexact
+  refine And.intro ?hpack ?huniq'
+  · exact And.intro hpack hExcl
+  · intro x hx
+    -- Uniqueness projects through: selection+closure component pins x = φ⋆
+    -- since huniq is uniqueness for (PhiSelection x ∧ Recognition_Closure x)
+    have hx_eq : x = φ⋆ := huniq x hx.left
+    exact hx_eq
+
 end Exclusivity
 end Verification
 end IndisputableMonolith
