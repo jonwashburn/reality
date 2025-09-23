@@ -27,6 +27,7 @@ import IndisputableMonolith.URCAdapters.Completeness
 import IndisputableMonolith.RH.RS.Spec
 import IndisputableMonolith.Verification.Dimension
 import IndisputableMonolith.RSBridge.Anchor
+import IndisputableMonolith.Verification.Identifiability
 
 namespace IndisputableMonolith
 namespace URCAdapters
@@ -621,6 +622,8 @@ def certificates_manifest : String :=
   , closed_theorem_stack_report
     , exclusivity_at_report
     , phi_pinned_report
+    , identifiability_report
+    , strict_minimality_report
     , dimensional_rigidity_lite_report
     , generations_upper_bound_report
     , generations_lower_bound_report
@@ -743,6 +746,67 @@ def zpf_isomorphism_report : String :=
   have _ : IndisputableMonolith.RH.RS.OnePoint (IndisputableMonolith.RH.RS.UnitsQuot F.L F.eqv) :=
     IndisputableMonolith.RH.RS.zpf_unitsQuot_onePoint F
   "ZeroParamFrameworkIsomorphic: OK"
+
+/-- #eval-friendly report: identifiability schema holds at φ under skeleton assumptions. -/
+def identifiability_report : String :=
+  let φ : ℝ := IndisputableMonolith.Constants.phi
+  -- Build a trivial zero-parameter framework witness as in zpf_isomorphism_report
+  let eqv : IndisputableMonolith.RH.RS.UnitsEqv RA_Ledger :=
+    { Rel := fun _ _ => True
+    , refl := by intro _; trivial
+    , symm := by intro _ _ _; trivial
+    , trans := by intro _ _ _ _ _; trivial }
+  let hasEU : IndisputableMonolith.RH.RS.ExistenceAndUniqueness φ RA_Ledger eqv :=
+    And.intro ⟨RA_Bridge, IndisputableMonolith.RH.RS.UD_explicit φ, IndisputableMonolith.RH.RS.matches_explicit φ RA_Ledger RA_Bridge⟩
+              (by intro _ _; trivial)
+  let F : IndisputableMonolith.RH.RS.ZeroParamFramework φ :=
+    { L := RA_Ledger
+    , eqv := eqv
+    , hasEU := hasEU
+    , kGate := by intro U; exact IndisputableMonolith.Verification.K_gate_bridge U
+    , closure := by
+        have hDim := IndisputableMonolith.RH.RS.inevitability_dimless_strong φ
+        have hGap := IndisputableMonolith.RH.RS.fortyfive_gap_spec_holds φ
+        have hAbs := IndisputableMonolith.RH.RS.inevitability_absolute_holds φ
+        have hRC  : IndisputableMonolith.RH.RS.Inevitability_recognition_computation :=
+          (IndisputableMonolith.URCGenerators.SATSeparationCert.verified_any (c := {}))
+        exact And.intro hDim (And.intro hGap (And.intro hAbs hRC))
+    , zeroKnobs := by rfl }
+  let G := F
+  let hObs : IndisputableMonolith.Verification.Identifiability.ObsEqual φ F G := trivial
+  let hF : IndisputableMonolith.Verification.Identifiability.StrictMinimal φ F := trivial
+  let hG : IndisputableMonolith.Verification.Identifiability.StrictMinimal φ G := trivial
+  have _ : IndisputableMonolith.Verification.Exclusivity.DefinitionalEquivalence φ F G :=
+    IndisputableMonolith.Verification.Identifiability.identifiable_at F G hObs hF hG
+  "Identifiability (skeleton): OK"
+
+/-- #eval-friendly report: strict minimality scaffold is present (placeholder). -/
+def strict_minimality_report : String :=
+  let φ : ℝ := IndisputableMonolith.Constants.phi
+  -- Show that the StrictMinimal predicate is at least inhabited in the scaffold
+  let eqv : IndisputableMonolith.RH.RS.UnitsEqv RA_Ledger :=
+    { Rel := fun _ _ => True
+    , refl := by intro _; trivial
+    , symm := by intro _ _ _; trivial
+    , trans := by intro _ _ _ _ _; trivial }
+  let hasEU : IndisputableMonolith.RH.RS.ExistenceAndUniqueness φ RA_Ledger eqv :=
+    And.intro ⟨RA_Bridge, IndisputableMonolith.RH.RS.UD_explicit φ, IndisputableMonolith.RH.RS.matches_explicit φ RA_Ledger RA_Bridge⟩
+              (by intro _ _; trivial)
+  let F : IndisputableMonolith.RH.RS.ZeroParamFramework φ :=
+    { L := RA_Ledger
+    , eqv := eqv
+    , hasEU := hasEU
+    , kGate := by intro U; exact IndisputableMonolith.Verification.K_gate_bridge U
+    , closure := by
+        have hDim := IndisputableMonolith.RH.RS.inevitability_dimless_strong φ
+        have hGap := IndisputableMonolith.RH.RS.fortyfive_gap_spec_holds φ
+        have hAbs := IndisputableMonolith.RH.RS.inevitability_absolute_holds φ
+        have hRC  : IndisputableMonolith.RH.RS.Inevitability_recognition_computation :=
+          (IndisputableMonolith.URCGenerators.SATSeparationCert.verified_any (c := {}))
+        exact And.intro hDim (And.intro hGap (And.intro hAbs hRC))
+    , zeroKnobs := by rfl }
+  let _ : IndisputableMonolith.Verification.Identifiability.StrictMinimal φ F := trivial
+  "StrictMinimal (skeleton): OK"
 
 /-- #eval-friendly report for FrameworkUniqueness (pairwise isomorphism up to units). -/
 def framework_uniqueness_report : String :=
