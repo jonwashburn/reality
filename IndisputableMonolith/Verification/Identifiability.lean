@@ -57,5 +57,3 @@ theorem identifiable_at_any (φ : ℝ) : IdentifiableAt φ := by
 end Identifiability
 end Verification
 end IndisputableMonolith
-
-

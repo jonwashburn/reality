@@ -28,6 +28,7 @@ import IndisputableMonolith.RH.RS.Spec
 import IndisputableMonolith.Verification.Dimension
 import IndisputableMonolith.RSBridge.Anchor
 import IndisputableMonolith.Verification.Identifiability
+import IndisputableMonolith.URCGenerators.Exclusivity
 
 namespace IndisputableMonolith
 namespace URCAdapters
@@ -624,6 +625,8 @@ def certificates_manifest : String :=
     , phi_pinned_report
     , identifiability_report
     , strict_minimality_report
+    , exclusive_reality_report
+    , identifiability_cert_report
     , dimensional_rigidity_lite_report
     , generations_upper_bound_report
     , generations_lower_bound_report
@@ -807,6 +810,20 @@ def strict_minimality_report : String :=
     , zeroKnobs := by rfl }
   let _ : IndisputableMonolith.Verification.Identifiability.StrictMinimal φ F := trivial
   "StrictMinimal (skeleton): OK"
+
+/-- #eval-friendly report: ExclusiveReality meta-certificate. -/
+def exclusive_reality_report : String :=
+  let cert : URCGenerators.ExclusiveRealityCert := {}
+  have _ : URCGenerators.ExclusiveRealityCert.verified cert :=
+    URCGenerators.ExclusiveRealityCert.verified_any _
+  "ExclusiveReality: OK"
+
+/-- #eval-friendly report: Identifiability meta-certificate at φ. -/
+def identifiability_cert_report : String :=
+  let cert : URCGenerators.IdentifiabilityCert := {}
+  have _ : URCGenerators.IdentifiabilityCert.verified cert :=
+    URCGenerators.IdentifiabilityCert.verified_any _
+  "IdentifiabilityCert: OK"
 
 /-- #eval-friendly report for FrameworkUniqueness (pairwise isomorphism up to units). -/
 def framework_uniqueness_report : String :=
