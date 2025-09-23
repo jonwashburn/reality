@@ -95,7 +95,18 @@ def ObsEqual (φ : ℝ) (F G : ZeroParamFramework φ) : Prop :=
 
 /-- A simple universal cost functional on observed ledgers. -/
 noncomputable def defaultCost (φ : ℝ) (obs : ObservedLedger φ) : ℝ :=
-  ((obs.massRatios.length + obs.mixingAngles.length : Nat) : ℝ)
+  let U := UD_explicit φ
+  let l2 (x y : ℝ) : ℝ := (x - y) * (x - y)
+  let listPenalty (xs ys : List ℝ) : ℝ :=
+    let sse := (List.zip xs ys).foldl (fun acc (p : ℝ × ℝ) => acc + l2 p.fst p.snd) (0 : ℝ)
+    let m := xs.length
+    let n := ys.length
+    let len : ℝ := if h : m ≤ n then ((n - m : Nat) : ℝ) else ((m - n : Nat) : ℝ)
+    sse + len
+  l2 obs.alpha U.alpha0
+  + listPenalty obs.massRatios U.massRatios0
+  + listPenalty obs.mixingAngles U.mixingAngles0
+  + l2 obs.g2Muon U.g2Muon0
 
 /-- Cost of a framework under the default cost functional. -/
 noncomputable def costOf (φ : ℝ) (F : ZeroParamFramework φ) : ℝ :=
