@@ -624,6 +624,8 @@ def certificates_manifest : String :=
     , exclusivity_at_report
     , phi_pinned_report
     , identifiability_report
+    , identifiability_cost_report
+    , identifiability_faithfulness_report
     , strict_minimality_report
     , exclusive_reality_report
     , identifiability_cert_report
@@ -750,38 +752,68 @@ def zpf_isomorphism_report : String :=
     IndisputableMonolith.RH.RS.zpf_unitsQuot_onePoint F
   "ZeroParamFrameworkIsomorphic: OK"
 
-/-- #eval-friendly report: identifiability schema holds at φ under skeleton assumptions. -/
-def identifiability_report : String :=
-  let φ : ℝ := IndisputableMonolith.Constants.phi
-  -- Build a trivial zero-parameter framework witness as in zpf_isomorphism_report
+/-/ Helper: Route A zero-parameter scaffold reused by identifiability reports. -/
+noncomputable def routeAZeroParamFramework (φ : ℝ) : IndisputableMonolith.RH.RS.ZeroParamFramework φ :=
   let eqv : IndisputableMonolith.RH.RS.UnitsEqv RA_Ledger :=
     { Rel := fun _ _ => True
     , refl := by intro _; trivial
     , symm := by intro _ _ _; trivial
     , trans := by intro _ _ _ _ _; trivial }
   let hasEU : IndisputableMonolith.RH.RS.ExistenceAndUniqueness φ RA_Ledger eqv :=
-    And.intro ⟨RA_Bridge, IndisputableMonolith.RH.RS.UD_explicit φ, IndisputableMonolith.RH.RS.matches_explicit φ RA_Ledger RA_Bridge⟩
-              (by intro _ _; trivial)
-  let F : IndisputableMonolith.RH.RS.ZeroParamFramework φ :=
-    { L := RA_Ledger
-    , eqv := eqv
-    , hasEU := hasEU
-    , kGate := by intro U; exact IndisputableMonolith.Verification.K_gate_bridge U
-    , closure := by
-        have hDim := IndisputableMonolith.RH.RS.inevitability_dimless_strong φ
-        have hGap := IndisputableMonolith.RH.RS.fortyfive_gap_spec_holds φ
-        have hAbs := IndisputableMonolith.RH.RS.inevitability_absolute_holds φ
-        have hRC  : IndisputableMonolith.RH.RS.Inevitability_recognition_computation :=
-          (IndisputableMonolith.URCGenerators.SATSeparationCert.verified_any (c := {}))
-        exact And.intro hDim (And.intro hGap (And.intro hAbs hRC))
-    , zeroKnobs := by rfl }
+    IndisputableMonolith.URCAdapters.RouteA_existence_and_uniqueness φ
+  { L := RA_Ledger
+  , eqv := eqv
+  , hasEU := hasEU
+  , kGate := by intro U; exact IndisputableMonolith.Verification.K_gate_bridge U
+  , closure := by
+      have hDim := IndisputableMonolith.RH.RS.inevitability_dimless_strong φ
+      have hGap := IndisputableMonolith.RH.RS.fortyfive_gap_spec_holds φ
+      have hAbs := IndisputableMonolith.RH.RS.inevitability_absolute_holds φ
+      have hRC : IndisputableMonolith.RH.RS.Inevitability_recognition_computation :=
+        (IndisputableMonolith.URCGenerators.SATSeparationCert.verified_any (c := {}))
+      exact And.intro hDim (And.intro hGap (And.intro hAbs hRC))
+  , zeroKnobs := by rfl }
+
+/-- #eval-friendly report: identifiability schema holds at φ under skeleton assumptions. -/
+def identifiability_report : String :=
+  let φ : ℝ := IndisputableMonolith.Constants.phi
+  let F := routeAZeroParamFramework φ
   let G := F
-  let hObs : IndisputableMonolith.Verification.Identifiability.ObsEqual φ F G := trivial
-  let hF : IndisputableMonolith.Verification.Identifiability.StrictMinimal φ F := trivial
-  let hG : IndisputableMonolith.Verification.Identifiability.StrictMinimal φ G := trivial
+  let hObs : IndisputableMonolith.Verification.Identifiability.ObsEqual φ F G := rfl
+  let hF : IndisputableMonolith.Verification.Identifiability.StrictMinimal φ F :=
+    IndisputableMonolith.Verification.Identifiability.strict_minimality_default φ F
+  let hG : IndisputableMonolith.Verification.Identifiability.StrictMinimal φ G :=
+    IndisputableMonolith.Verification.Identifiability.strict_minimality_default φ G
   have _ : IndisputableMonolith.Verification.Exclusivity.DefinitionalEquivalence φ F G :=
     IndisputableMonolith.Verification.Identifiability.identifiable_at F G hObs hF hG
   "Identifiability (skeleton): OK"
+
+/-- #eval-friendly report: Identifiability.costOf lands at zero for the Route A scaffold. -/
+def identifiability_cost_report : String :=
+  let φ : ℝ := IndisputableMonolith.Constants.phi
+  let F := routeAZeroParamFramework φ
+  have _ : IndisputableMonolith.Verification.Identifiability.costOf φ F = 0 :=
+    IndisputableMonolith.Verification.Identifiability.costOf_eq_zero φ F
+  "IdentifiabilityCost: OK (costOf = 0)"
+
+/-- #eval-friendly report: faithfulness matches the strict-minimality witness pipeline. -/
+def identifiability_faithfulness_report : String :=
+  let φ : ℝ := IndisputableMonolith.Constants.phi
+  let F := routeAZeroParamFramework φ
+  let G := F
+  let hObs : IndisputableMonolith.Verification.Identifiability.ObsEqual φ F G := rfl
+  have _ : IndisputableMonolith.Verification.Exclusivity.DefinitionalEquivalence φ F G :=
+    IndisputableMonolith.Verification.Identifiability.faithfulness F G hObs
+  have hFmin : IndisputableMonolith.Verification.Identifiability.StrictMinimal φ F :=
+    IndisputableMonolith.Verification.Identifiability.strict_minimality_default φ F
+  have hGmin : IndisputableMonolith.Verification.Identifiability.StrictMinimal φ G :=
+    IndisputableMonolith.Verification.Identifiability.strict_minimality_default φ G
+  have witness : IndisputableMonolith.Verification.Exclusivity.DefinitionalWitness φ F G :=
+    IndisputableMonolith.Verification.Identifiability.strict_minimality_units_witness F G hObs hFmin hGmin
+  have _ : witness.obsShared = rfl := by
+    cases witness
+    rfl
+  "IdentifiabilityFaithfulness: OK"
 
 /-- #eval-friendly report: strict minimality scaffold is present (placeholder). -/
 def strict_minimality_report : String :=
