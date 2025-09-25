@@ -333,7 +333,7 @@ eight_tick_report: OK
 \section*{Executive Summary: What This Paper Claims}\label{sec:executive}
 \addcontentsline{toc}{section}{Executive Summary}
 
-\paragraph{The Central Claim.} We derive a parameter‑free physics framework from a single statement—"nothing cannot recognize itself"—and we prove (inside the instrument) a Minimal Axiom Theorem: the single statement alone suffices to derive the target bundle, and any assumptions that do the same must include it. All reported consequences are mathematically forced—not chosen, not fitted, not adjustable. The golden ratio $\varphi$ appears via a simple algebraic selection (the unique positive root of $x^2=x+1$). We present this as a reproducible formal scaffold, clearly separated from empirical comparisons.
+\paragraph{The Central Claim.} We derive a parameter‑free physics framework from a single statement—"nothing cannot recognize itself"—and we prove (inside the instrument) a Minimal Axiom Theorem: the single statement alone suffices to derive the target bundle, and any assumptions that do the same must include it. All reported consequences are mathematically forced—not chosen, not fitted, not adjustable. The golden ratio $\varphi$ appears via a simple algebraic selection (the unique positive root of $x^2=x+1$), and the instrument pins a unique scale $\varphi$ for which the recognition closure holds. At this pinned scale we prove an apex closure certificate, \emph{UltimateClosure}, combining \emph{ExclusiveRealityPlus}, units‑class coherence, and a categorical equivalence of zero‑parameter frameworks with a canonical skeleton. We present this as a reproducible formal scaffold, clearly separated from empirical comparisons.
 
 \paragraph{Why This Matters.} The Standard Model of particle physics requires at least 19 free parameters that must be measured experimentally. String theory introduces even more. Our framework derives all constants from first principles. If correct, this solves the parameter problem that has plagued physics since Newton: why do the constants of nature have the values they do?
 
@@ -345,7 +345,7 @@ eight_tick_report: OK
 \item \textbf{Multiple falsification routes:} Any failed prediction causes immediate, identifiable failure with no freedom to adjust.
 \end{enumerate}
 
-\paragraph{The Golden Ratio Connection.} The mathematical structure naturally organizes at $\varphi = (1+\sqrt{5})/2$. This is not an aesthetic choice—the golden ratio emerges from the mathematics. Mass ratios, timing relationships, and other observables organize around powers of $\varphi$. We prove algebraic $\varphi$‑selection uniqueness; we do not claim broader uniqueness across alternative criteria in this version.
+\paragraph{The Golden Ratio Connection.} The mathematical structure naturally organizes at $\varphi = (1+\sqrt{5})/2$. This is not an aesthetic choice—the golden ratio emerges from the mathematics. Mass ratios, timing relationships, and other observables organize around powers of $\varphi$. Inside the instrument we prove both algebraic uniqueness ($x^2=x+1$ has the unique positive root $\varphi$) and pinned‑scale uniqueness for the recognition closure; the helper reports confirm that the chosen $\varphi$ equals the constant $\texttt{Constants.phi}$. Broader uniqueness across alternative external criteria remains outside the scope of this version.
 
 \paragraph{How to Test This.} The framework makes precise predictions that can be tested experimentally. If any prediction fails, specific checks in the code will fail immediately. There is no room for adjustment—the theory either works completely or fails completely. This is falsifiability at its strongest.
 
@@ -1928,6 +1928,12 @@ There exists exactly one $\varphi : \mathbb{R}$ such that \(\mathsf{PhiSelection
 \end{theorem}
 \noindent Lean: \texttt{IndisputableMonolith/Verification/Exclusivity.lean} (\texttt{exclusive\_reality\_plus\_holds}).
 
+\paragraph{Apex certificate (UltimateClosure).} The single pinned scale $\varphi$ determined by selection+closure supports: (i) exclusivity (RecognitionReality, definitional uniqueness, bi‑interpretability), (ii) coherence of canonical units classes, and (iii) an explicit category‑theory equivalence to a one‑object skeleton. This bundle is exposed as $\mathsf{UltimateClosure}(\varphi)$ together with a one‑line report; see:
+\begin{itemize}[leftmargin=*]
+  \item Lean: \texttt{IndisputableMonolith/Verification/RecognitionReality.lean} (\texttt{UltimateClosure}, \texttt{ultimate\_closure\_holds}).
+  \item Report: \texttt{\#eval IndisputableMonolith.Verification.RecognitionReality.ultimate\_closure\_report}.
+\end{itemize}
+
 \paragraph{Classical fences (nonessential).} The only classical helper in this increment is
 \texttt{temporary\_isPreconnected\_assumption} in \texttt{IndisputableMonolith/Verification/Completeness.lean}, which uses Mathlib's \texttt{isConnected\_ball}. It is explicitly isolated and not used by \(\mathsf{RSCompleteness}\), \(\mathsf{PrimeClosure}\), or \(\mathsf{UltimateClosure}\).
 
@@ -2149,6 +2155,8 @@ The submission includes the full Lean~4 repository as supplementary material, pi
   \item \texttt{URCAdapters.eight\_tick\_report} $\leftrightarrow$ minimal $8$-beat coverage in 3D.
   \item \texttt{URCAdapters.cone\_bound\_report} $\leftrightarrow$ discrete light-cone inequality with slope $c$.
   \item \texttt{URCAdapters.lambda\_rec\_identity\_report} $\leftrightarrow$ $(c^3\lambda_{\mathrm{rec}}^2)/(\hbar G)=1/\pi$.
+  \item \texttt{Verification.RecognitionReality.UltimateClosure} $\leftrightarrow$ apex bundle at the pinned scale: exclusivity + units‑class coherence + categorical equivalence.
+  \item \texttt{URCAdapters.recognition\_phi\_eq\_constants\_report} $\leftrightarrow$ equality of the chosen pinned scale with the constant $\varphi$.
 \end{itemize}
 
 %----------------------------------------
