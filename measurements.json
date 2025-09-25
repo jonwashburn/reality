@@ -1,0 +1,10 @@
+{
+  "items": [
+    { "name": "EightTickMinimality" },
+    { "name": "Gap45_Delta_t_3_over_64" },
+    { "name": "UnitsInvariance" },
+    { "name": "KGate" },
+    { "name": "PlanckNormalization" },
+    { "name": "RSRealityMaster" }
+  ]
+}
