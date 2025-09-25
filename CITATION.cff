@@ -1,0 +1,33 @@
+cff-version: 1.2.0
+title: Recognition Science: A Lean 4, Certificates-First Verification Instrument
+authors:
+  - family-names: Washburn
+    given-names: Jonathan
+    orcid: https://orcid.org/0000-0000-0000-0000
+repository-code: https://github.com/jonwashburn/reality
+license: MIT
+version: 1.0.0
+preferred-citation:
+  type: article
+  title: Recognition Science: A Lean 4, Certificates-First Verification Instrument
+  authors:
+    - family-names: Washburn
+      given-names: Jonathan
+  year: 2025
+
+cff-version: 1.2.0
+title: Recognition Science: A Lean 4, Certificates-First Verification Instrument
+authors:
+  - family-names: Washburn
+    given-names: Jonathan
+    orcid: https://orcid.org/0000-0000-0000-0000
+repository-code: https://github.com/jonwashburn/reality
+license: MIT
+version: 1.0.0
+preferred-citation:
+  type: article
+  title: Recognition Science: A Lean 4, Certificates-First Verification Instrument
+  authors:
+    - family-names: Washburn
+      given-names: Jonathan
+  year: 2025

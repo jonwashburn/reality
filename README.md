@@ -1,5 +1,7 @@
 # recognition
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.TBD.svg)](https://doi.org/10.5281/zenodo.TBD)
+
 [![CI](https://github.com/jonwashburn/recognition/actions/workflows/ci.yml/badge.svg)](https://github.com/jonwashburn/recognition/actions/workflows/ci.yml)
 
 Recognition Science begins from a single logical observation: absolute nothingness cannot recognize itself. From that minimal starting point, a structure of recognition events is forced, and with it a ledger that counts, balances, and conserves the cost of alteration. When one demands that this structure be self‑similar across scales and minimally costly, a unique scaling constant emerges—the golden ratio φ—and with it a clock of eight ticks, a gauge‑rigid bridge from proofs to observables, and a separation between the cost of computing and the cost of recognizing outcomes. This repository is the mechanized realization of that story. It is not a loose collection of ideas or a numerical fit, but a Lean‑verified spine where every claim is wired to a proof, a check, or a certificate that can be elaborated on your machine.
@@ -38,6 +40,15 @@ See also `Measurement.txt` for the human‑readable derivation (ledger necessity
 - New bundle `BiInterpretability φ` lives in `IndisputableMonolith/Verification/BiInterpretability.lean`. It packages forward reconstruction, reverse reconstruction, canonical bridge matching, strict minimality, and zero-cost witnesses once Agent 1's reconstruction script lands.
 - Top-level `RecognitionReality φ` extends the existing `RSRealityMaster φ` with the bundle above, preparing for dual-agent handoff.
 - Remaining blockers before proclaiming "ultimate closure": ledger symmetry coherence under residual `UnitsQuotCarrier` actions, categorical equivalence between zero-parameter frameworks and universal dimensionless targets, and full Agent 1 ↔ Agent 2 reconciliation of the reconstruction scripts.
+
+## Quickstart (short)
+
+```bash
+elan toolchain install $(cat lean-toolchain)
+lake build
+lake exe ci_checks
+# in editor: #eval IndisputableMonolith.URCAdapters.reality_master_report
+```
 
 ## Validate in under a minute
 
