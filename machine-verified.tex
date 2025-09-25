@@ -401,8 +401,8 @@ For all $\varphi\in\mathbb{R}$, \(\mathsf{RSRealityMaster}(\varphi)\) holds in t
 \end{theorem}
 \noindent Lean: \texttt{IndisputableMonolith/Verification/Reality.lean:50--62} (\texttt{def RSRealityMaster}, \texttt{theorem rs\_reality\_master\_any}).
 
-\begin{remark}[Scope and no-uniqueness claim]
-The statement is realized by an explicit Lean witness that assembles (i) the reality bundle (absolute-layer acceptance, units quotient + K-gate, verified family) and (ii) the spec closure (dimensionless inevitability with parameter $\varphi$, 45-gap consequences, absolute inevitability, and a model-level recognition–computation split). Each conjunct is exported as a report (\texttt{\#eval}) and elaborates without external I/O on the pinned toolchain. Specialization to the golden ratio instantiates these parameterized interfaces at $\varphi=\phigr$. A formal uniqueness principle selecting $\phigr$ is not claimed or proved in this version; see \S\ref{sec:limitations-phi-unique}.
+\begin{remark}[Pinned-scale uniqueness inside the instrument]
+The statement is realized by an explicit Lean witness that assembles (i) the reality bundle (absolute-layer acceptance, units quotient + K-gate, verified family) and (ii) the spec closure (dimensionless inevitability with parameter $\varphi$, 45-gap consequences, absolute inevitability, and a model-level recognition–computation split). Each conjunct is exported as a report (\texttt{\#eval}) and elaborates without external I/O on the pinned toolchain. In addition to the algebraic uniqueness of $\varphi$ (unique positive root of $x^2=x+1$), the instrument proves pinned-scale uniqueness for selection+closure and provides a report that the chosen scale equals $\texttt{Constants.phi}$. See the upgraded results and one-click checks for the corresponding theorems and reports.
 \end{remark}
 
 \begin{lemma}[Bridge factorization]\label{lem:factorizes}
