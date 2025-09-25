@@ -1,6 +1,6 @@
 import Mathlib
 import IndisputableMonolith.RH.RS.Spec
-import IndisputableMonolith.RH.RS.Units
+-- import IndisputableMonolith.RH.RS.Units
 import IndisputableMonolith.Verification.Reality
 import IndisputableMonolith.Verification.Identifiability.Observations
 
@@ -93,18 +93,7 @@ structure BridgeInterpretation (φ : ℝ) (F : ZeroParamFramework φ) where
     packExplicit.boseFermi = (UD_explicit φ).boseFermi0
 
 /-- Canonical bridge interpretation obtained from the existence‑and‑uniqueness witness for
-    a zero‑parameter framework.
-
-Construction summary:
-
-- pick `bridge := someBridge φ F` from the existence part of `F.hasEU`,
-- take the matched universal `target` and `packTarget` from `someBridge_matches φ F`, and
-- take the explicit matching pack `packExplicit` against `UD_explicit φ` via
-  `matches_explicit φ F.L bridge`.
-
-These choices make subsequent reconstruction lemmas immediate: the observed ledger
-`observe φ F` agrees with the ledger built from `packExplicit`, and the chosen bridge
-matches `UD_explicit φ` (uniquely up to the units equivalence carried by `F.eqv`). -/
+    a zero‑parameter framework. -/
 noncomputable def canonicalInterpretation (φ : ℝ) (F : ZeroParamFramework φ) :
     BridgeInterpretation φ F := by
   classical
