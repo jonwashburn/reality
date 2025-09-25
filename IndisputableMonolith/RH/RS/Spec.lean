@@ -5,7 +5,7 @@ import IndisputableMonolith.RH.RS.Anchors
 import IndisputableMonolith.Verification
 import IndisputableMonolith.Constants
 import IndisputableMonolith.Constants.Alpha
-import IndisputableMonolith.Measurement
+-- import IndisputableMonolith.Measurement
 import IndisputableMonolith.Patterns
 -- import IndisputableMonolith.Quantum
 -- import IndisputableMonolith.Constants.KDisplay
@@ -649,7 +649,7 @@ theorem meetsBands_any_of_eval_rescaled (L : Ledger) (B : Bridge L) (X : Bands)
 
 /-- Conjunction `UniqueCalibration ∧ MeetsBands` is invariant under admissible rescalings
     of anchors (units). This is a Prop‑level invariance that follows from:
-    - UniqueCalibration: derived from K‑gate bridge + anchor invariance (dimensionless),
+    - UniqueCalibration: derived from K‑gate + anchor invariance, which are unit‑invariant.
     - MeetsBands: via `evalToBands_c_invariant` and the `meetsBands_any_of_eval` constructor. -/
 theorem absolute_layer_invariant
   {L : Ledger} {B : Bridge L} {A : Anchors} {X : Bands}

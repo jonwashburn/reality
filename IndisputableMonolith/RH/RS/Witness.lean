@@ -1,5 +1,5 @@
 import Mathlib
-import IndisputableMonolith.Measurement
+-- import IndisputableMonolith.Measurement
 import IndisputableMonolith.Patterns
 import IndisputableMonolith.RH.RS.Spec
 -- import IndisputableMonolith.Quantum

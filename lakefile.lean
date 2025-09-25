@@ -17,7 +17,7 @@ lean_exe core_audit {
 }
 
 lean_exe ok {
-  root := `IndisputableMonolith.URCAdapters.OK
+  root := `IndisputableMonolith.OKMini
 }
 
 lean_exe ci {

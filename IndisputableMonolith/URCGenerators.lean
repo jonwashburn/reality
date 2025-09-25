@@ -1,6 +1,5 @@
 import Mathlib
 import IndisputableMonolith.Verification
-import IndisputableMonolith.Constants.RSDisplay
 import IndisputableMonolith.RH.RS.Spec
 import IndisputableMonolith.PhiSupport.Lemmas
 import IndisputableMonolith.RSBridge.Anchor
@@ -361,7 +360,7 @@ structure GrayCodeCycleCert where
   -- Provided by the hypercube cover existence specialized to D=3
   simpa using (IndisputableMonolith.Patterns.cover_exact_pow (3))
 
-/‑! Discrete exactness: closed‑chain flux zero (T3) and potential uniqueness on components (T4). -/ 
+/‑! Discrete exactness: closed‑chain flux zero (T3) and potential uniqueness on components (T4). -/
 structure ExactnessCert where
   deriving Repr
 
@@ -730,7 +729,7 @@ structure AlphaPhiCert where
     exact hε this
   exact And.intro h1 (And.intro h2 hneg)
 
-/‑! DEC cochain exactness: d∘d=0 at successive degrees. -/ 
+/‑! DEC cochain exactness: d∘d=0 at successive degrees. -/
 structure DECDDZeroCert where
   deriving Repr
 
@@ -744,7 +743,7 @@ structure DECDDZeroCert where
   intro A _ X
   exact And.intro (X.dd01) (And.intro (X.dd12) (X.dd23))
 
-/‑! DEC Bianchi identity: dF=0 with F = d1 A1. -/ 
+/‑! DEC Bianchi identity: dF=0 with F = d1 A1. -/
 structure DECBianchiCert where
   deriving Repr
 
@@ -864,7 +863,7 @@ structure TimeKernelDimlessCert where
 
 @[simp] def TimeKernelDimlessCert.verified (_c : TimeKernelDimlessCert) : Prop :=
   (∀ c T τ, 0 < (c : ℝ) →
-    IndisputableMonolith.TruthCore.TimeKernel.w_time_ratio (c*T) (c*τ) = 
+    IndisputableMonolith.TruthCore.TimeKernel.w_time_ratio (c*T) (c*τ) =
     IndisputableMonolith.TruthCore.TimeKernel.w_time_ratio T τ) ∧
   (∀ (P : IndisputableMonolith.Gravity.ILG.Params) (τ0 : ℝ),
     τ0 ≠ 0 → IndisputableMonolith.Gravity.ILG.w_t P τ0 τ0 = 1)
@@ -955,7 +954,7 @@ structure RotationIdentityCert where
   · intro S r hr; exact IndisputableMonolith.Gravity.Rotation.vrot_sq S hr
   · intro S α hlin r hr; exact IndisputableMonolith.Gravity.Rotation.vrot_flat_of_linear_Menc S α (hlin) hr
 
-/‑! ILG controls/fairness: negative controls inflate medians, EFE bounded, identical masks. -/ 
+/‑! ILG controls/fairness: negative controls inflate medians, EFE bounded, identical masks. -/
 structure ControlsInflateCert where
   deriving Repr
 
