@@ -21,7 +21,23 @@ The codebase is organized so that a new reader can both grasp the high‑level p
 - RS measures reality (bundled): `IndisputableMonolith/Verification/Reality.lean` (`rs_measures_reality_any`).
 - Complexity split (exemplar): `IndisputableMonolith/URCGenerators.lean` (`FoldingComplexityCert.verified_any`).
 
+### Upgraded results (excerpts; citeable theorems)
+
+- Exclusivity coherence (canonical units classes): `IndisputableMonolith/Verification/Exclusivity.lean` (`units_class_coherence`).
+- Category equivalence at the pinned scale: `IndisputableMonolith/Verification/ExclusivityCategory.lean` (`frameworks_equiv_canonical`).
+- RecognitionReality bundle and pinned φ accessors: `IndisputableMonolith/Verification/RecognitionReality.lean`:
+  - `recognitionReality_exists_unique`
+  - `recognitionReality_phi`, `recognitionReality_at`, `recognitionReality_master`, `recognitionReality_definitionalUniqueness`, `recognitionReality_bi`
+  - `ultimate_closure_holds` and `ultimate_closure_report`
+  - φ equality: `recognitionReality_phi_eq_constants`
+
 See also `Measurement.txt` for the human‑readable derivation (ledger necessity, φ from self‑similarity, eight‑beat minimality).
+
+## Recognition Reality / Bi-Interpretability Layer
+
+- New bundle `BiInterpretability φ` lives in `IndisputableMonolith/Verification/BiInterpretability.lean`. It packages forward reconstruction, reverse reconstruction, canonical bridge matching, strict minimality, and zero-cost witnesses once Agent 1's reconstruction script lands.
+- Top-level `RecognitionReality φ` extends the existing `RSRealityMaster φ` with the bundle above, preparing for dual-agent handoff.
+- Remaining blockers before proclaiming "ultimate closure": ledger symmetry coherence under residual `UnitsQuotCarrier` actions, categorical equivalence between zero-parameter frameworks and universal dimensionless targets, and full Agent 1 ↔ Agent 2 reconciliation of the reconstruction scripts.
 
 ## Validate in under a minute
 
@@ -40,16 +56,54 @@ lake exe ci_checks
 # prints: CI smoke: toolchain OK, minimal URC intact.
 ```
 
-3) Optional: open `IndisputableMonolith/URCAdapters/Reports.lean` and evaluate report endpoints (editor `#eval`)
+3) Reproduce the proof summary (CLI)
+
+```bash
+lake exe ok
+# Prints a deterministic summary including:
+# - PhiSelection+Recognition_Closure (unique φ): OK
+# - PrimeClosure: OK (with component bullets)
+# - ExclusiveRealityPlus: OK
+# - RecognitionReality: OK (RSRealityMaster + Bi-Interpretability)
+# - RecognitionReality accessors: OK (phi/master/defUnique/bi)
+# - recognitionReality_phi = Constants.phi: OK
+
+# Also produce a JSON summary for automation:
+lake exe ok --json
+
+# Or write JSON to a file:
+lake exe ok --json --out proof_summary.json
+
+# Or use the helper script:
+scripts/proof_summary.sh               # writes proof_summary.json
+scripts/proof_summary.sh --out out.json
+```
+
+4) Optional: open `IndisputableMonolith/URCAdapters/Reports.lean` and evaluate report endpoints (editor `#eval`)
 
 ```lean
 #eval IndisputableMonolith.URCAdapters.reality_bridge_report
 #eval IndisputableMonolith.URCAdapters.recognition_closure_report
+#eval IndisputableMonolith.URCAdapters.phi_selection_unique_with_closure_report
+#eval IndisputableMonolith.URCAdapters.exclusive_reality_plus_report
+#eval IndisputableMonolith.URCAdapters.recognition_reality_accessors_report
 #eval IndisputableMonolith.URCAdapters.k_gate_report
 #eval IndisputableMonolith.URCAdapters.k_identities_report
 ```
 
 These report strings are wired through the proof spine and are convenient first‑look “OK” indicators in the editor.
+
+### Reproduction: upgraded checks (optional, #eval in editor)
+
+Evaluate these in `IndisputableMonolith/URCAdapters/Reports.lean`:
+
+```lean
+#eval IndisputableMonolith.URCAdapters.closed_theorem_stack_report           -- PrimeClosure: OK
+#eval IndisputableMonolith.URCAdapters.exclusive_reality_plus_report        -- ExclusiveRealityPlus: OK
+#eval IndisputableMonolith.URCAdapters.recognition_reality_report           -- RecognitionReality: OK
+#eval IndisputableMonolith.URCAdapters.recognition_reality_accessors_report -- Accessors: OK
+#eval IndisputableMonolith.URCAdapters.recognition_phi_eq_constants_report  -- φ equality: OK
+```
 
 ## Key modules to browse first
 
@@ -58,6 +112,15 @@ These report strings are wired through the proof spine and are convenient first�
 - Reports (human‑readable checks): `IndisputableMonolith/URCAdapters/Reports.lean`.
 - RS spec layer (structural obligations): `IndisputableMonolith/RH/RS/Spec.lean` and witnesses in `RH/RS/Witness.lean`.
 - Certificate catalog: `reference.md` (plain‑language claims and hooks) and `CERTIFICATES.md` (copy‑paste `#eval` manifest).
+
+## Classical fences and why they don’t affect PrimeClosure/UltimateClosure
+
+- The completeness layer isolates a nonessential classical helper:
+  - `IndisputableMonolith/Verification/Completeness.lean`:
+    - lemma `temporary_isPreconnected_assumption` (uses Mathlib `isConnected_ball`)
+    - explicitly marked as nonessential in comments; not used by `RSCompleteness`, `PrimeClosure`, or `UltimateClosure`.
+- PrimeClosure proof only uses constructive components: `rs_reality_master_any`, `framework_uniqueness`, `onlyD3_satisfies_RSCounting_Gap45_Absolute`, `genOf_surjective`, and `mp_minimal_holds`.
+- UltimateClosure uses: `exclusive_reality_plus_holds`, `units_class_coherence`, and `Exclusivity.Cat.frameworks_equiv_canonical` at the pinned φ, none depending on the classical helper.
 
 ## Core certificate families (sampler)
 

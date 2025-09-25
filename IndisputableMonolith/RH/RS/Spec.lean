@@ -179,7 +179,9 @@ theorem zpf_unitsQuot_nonempty {φ : ℝ} (F : ZeroParamFramework φ) :
 /-- Convenience alias for the units quotient carrier of a zero‑parameter framework. -/
 abbrev UnitsQuotCarrier {φ : ℝ} (F : ZeroParamFramework φ) := UnitsQuot F.L F.eqv
 
-/-- Construct an equivalence between two one‑point, nonempty carriers. -/
+/-- Construct an equivalence between two one‑point, nonempty carriers.
+    This is used to expose a concrete `Equiv` on `UnitsQuotCarrier`s from the
+    uniqueness‑up‑to‑units and existence witnesses. -/
 noncomputable def equiv_of_onePoint {α β : Sort _}
   (hαn : Nonempty α) (hα1 : OnePoint α)
   (hβn : Nonempty β) (hβ1 : OnePoint β) : α ≃ β :=
@@ -192,6 +194,48 @@ noncomputable def equiv_of_onePoint {α β : Sort _}
 , right_inv := by
     intro b
     exact (hβ1 b (Classical.choice hβn)).symm }
+
+/-- Explicit equivalence between the units quotients of two zero‑parameter frameworks.
+    This upgrades the uniqueness‑up‑to‑units witness to a reusable `Equiv` on
+    the `UnitsQuotCarrier`s, rather than a mere existence proof. -/
+noncomputable def unitsQuot_equiv {φ : ℝ}
+  (F G : ZeroParamFramework φ) :
+  UnitsQuotCarrier F ≃ UnitsQuotCarrier G :=
+  equiv_of_onePoint (zpf_unitsQuot_nonempty F) (zpf_unitsQuot_onePoint F)
+    (zpf_unitsQuot_nonempty G) (zpf_unitsQuot_onePoint G)
+
+@[simp] lemma unitsQuot_equiv_apply {φ : ℝ}
+  (F G : ZeroParamFramework φ) (x : UnitsQuotCarrier F) :
+  unitsQuot_equiv F G x = Classical.choice (zpf_unitsQuot_nonempty G) := rfl
+
+/-- Naturality at identity: the units‑quotient equivalence for `(F,F)` is the identity. -/
+@[simp] lemma unitsQuot_equiv_self_apply {φ : ℝ}
+  (F : ZeroParamFramework φ) (x : UnitsQuotCarrier F) :
+  unitsQuot_equiv F F x = x := by
+  have h1 : OnePoint (UnitsQuotCarrier F) := zpf_unitsQuot_onePoint F
+  -- both sides are equal by one‑pointness
+  simpa [unitsQuot_equiv_apply] using (h1 _ x)
+
+/-- Identity coherence for `unitsQuot_equiv`. -/
+@[simp] lemma unitsQuot_equiv_refl {φ : ℝ}
+  (F : ZeroParamFramework φ) :
+  unitsQuot_equiv F F = Equiv.refl (UnitsQuotCarrier F) := by
+  ext x; simpa using (unitsQuot_equiv_self_apply (φ:=φ) F x)
+
+/-- Composition coherence for `unitsQuot_equiv` (to‑fun level). -/
+@[simp] lemma unitsQuot_equiv_trans_apply {φ : ℝ}
+  (F G H : ZeroParamFramework φ) (x : UnitsQuotCarrier F) :
+  ((unitsQuot_equiv F G).trans (unitsQuot_equiv G H)) x
+    = unitsQuot_equiv F H x := by
+  -- Both sides evaluate to the chosen inhabitant of `UnitsQuotCarrier H`.
+  simp [Equiv.trans, unitsQuot_equiv_apply]
+
+/-- Composition coherence for `unitsQuot_equiv` as equivalences. -/
+@[simp] lemma unitsQuot_equiv_trans {φ : ℝ}
+  (F G H : ZeroParamFramework φ) :
+  (unitsQuot_equiv F G).trans (unitsQuot_equiv G H)
+    = unitsQuot_equiv F H := by
+  ext x; simp [Equiv.trans, unitsQuot_equiv_apply]
 
 /-- Any two zero‑parameter frameworks have isomorphic units quotients (unique up to units). -/
 theorem zpf_isomorphic {φ : ℝ}

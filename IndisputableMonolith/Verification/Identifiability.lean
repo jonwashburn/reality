@@ -8,7 +8,6 @@ namespace IndisputableMonolith
 namespace Verification
 namespace Identifiability
 
-open Classical
 open IndisputableMonolith
 open IndisputableMonolith.RH.RS
 open IndisputableMonolith.Verification
@@ -21,21 +20,29 @@ open IndisputableMonolith.Verification
 theorem faithfulness
     {φ : ℝ} (F G : ZeroParamFramework φ) (hObs : ObsEqual φ F G) :
     Exclusivity.DefinitionalEquivalence φ F G := by
-  classical
+  -- Classical reasoning is confined to the Exclusivity layer; this theorem
+  -- only orchestrates existing fenced lemmas.
   rcases zpf_isomorphic F G with ⟨unitsIso⟩
+  have hFobs := Exclusivity.canonicalInterpretation_observe_eq (φ:=φ) (F:=F)
+  have hGobs := Exclusivity.canonicalInterpretation_observe_eq (φ:=φ) (F:=G)
   have hFpack := Exclusivity.BridgeInterpretation.observedFromPack_explicit_eq_ud
     (φ:=φ) (F:=F) (Exclusivity.canonicalInterpretation φ F)
   have hGpack := Exclusivity.BridgeInterpretation.observedFromPack_explicit_eq_ud
     (φ:=φ) (F:=G) (Exclusivity.canonicalInterpretation φ G)
-  refine ⟨⟨
-    hObs
-  , unitsIso
-  , Exclusivity.canonicalInterpretation φ F
-  , Exclusivity.canonicalInterpretation φ G
-  , hFobs.trans hFpack.symm
-  , hGobs.trans hGpack.symm
-  , hFpack.trans hGpack.symm
-  ⟩⟩
+  have hOneG : OnePoint (UnitsQuotCarrier G) := zpf_unitsQuot_onePoint G
+  exact
+    ⟨
+      ⟨
+        hObs
+      , unitsIso
+      , by exact hOneG _ _
+      , Exclusivity.canonicalInterpretation φ F
+      , Exclusivity.canonicalInterpretation φ G
+      , hFobs.trans hFpack.symm
+      , hGobs.trans hGpack.symm
+      , hFpack.trans hGpack.symm
+      ⟩
+    ⟩
 
 /-! ### Strict minimality tightening -/
 
@@ -52,7 +59,6 @@ lemma strict_minimality_units_witness
     (hObs : ObsEqual φ F G)
     (hFmin : StrictMinimal φ F) (hGmin : StrictMinimal φ G) :
     Exclusivity.DefinitionalWitness φ F G := by
-  classical
   have hObsUD := strict_minimality_forces_ud (φ:=φ) F G hObs hFmin hGmin
   rcases hObsUD with ⟨hFobs, hGobs⟩
   rcases zpf_isomorphic F G with ⟨unitsIso⟩
@@ -67,6 +73,12 @@ lemma strict_minimality_units_witness
     obsEqual := by
       simpa [ObsEqual, hFobs, hGobs]
     , unitsIso := unitsIso
+  , unitsCanonical := by
+      simpa using
+        Exclusivity.canonicalInterpretation_matches_ud_unique_units
+          (φ:=φ) (F:=F)
+          (B':=interpF.bridge)
+          (Exclusivity.canonicalInterpretation_matches_ud (φ:=φ) (F:=F))
     , interpF := interpF
     , interpG := interpG
     , obsF := hFobs.trans hFpack.symm

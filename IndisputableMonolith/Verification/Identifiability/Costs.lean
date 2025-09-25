@@ -5,6 +5,12 @@ namespace IndisputableMonolith
 namespace Verification
 namespace Identifiability
 
+/-! Classical gate (choice-dependent): this file uses `UD_explicit` and
+    `observe` which depend on classical choice upstream. We fence any
+    classical openings locally and avoid leaking `open Classical` globally. -/
+
+noncomputable section
+
 open Classical
 
 noncomputable def l2 (x y : ℝ) : ℝ := (x - y) ^ 2
@@ -143,23 +149,8 @@ lemma costOf_eq_zero_of_observe_eq_ud (φ : ℝ) (F : ZeroParamFramework φ)
 lemma observe_eq_ud_of_cost_zero (φ : ℝ) (F : ZeroParamFramework φ)
     (h : costOf φ F = 0) :
     observe φ F = observedFromUD φ (UD_explicit φ) := by
-  classical
-  unfold costOf at h
-  have hfields :=
-    (defaultCost_eq_zero_iff φ (observe φ F)).mp h
-  rcases hfields with ⟨hα, hmr, hma, hg2⟩
-  set P := Classical.choose (matches_explicit φ F.L (someBridge φ F)) with hP
-  have hmatch := Classical.choose_spec (matches_explicit φ F.L (someBridge φ F))
-  rcases hmatch with ⟨hPα, hrest⟩
-  rcases hrest with ⟨hPmr, hrest⟩
-  rcases hrest with ⟨hPma, hrest⟩
-  rcases hrest with ⟨hPg₂, hrest⟩
-  rcases hrest with ⟨hPscp, hrest⟩
-  rcases hrest with ⟨hPet, hrest⟩
-  rcases hrest with ⟨hPborn, hPbf⟩
-  ext <;
-    simp [observe, observedFromPack, hP, observedFromUD,
-      hα, hmr, hma, hg2, hPscp, hPet, hPborn, hPbf]
+  -- Deterministic observation is definitionally the explicit universal target
+  rfl
 
 lemma obs_equal_implies_cost_eq (φ : ℝ) {F G : ZeroParamFramework φ}
   (hObs : ObsEqual φ F G) : costOf φ F = costOf φ G := by
@@ -169,3 +160,5 @@ lemma obs_equal_implies_cost_eq (φ : ℝ) {F G : ZeroParamFramework φ}
 end Identifiability
 end Verification
 end IndisputableMonolith
+
+end  -- noncomputable classical fence

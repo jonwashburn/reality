@@ -69,7 +69,7 @@ def blockSumAligned8 (k : Nat) (s : Stream) : Nat :=
   ∑ j : Fin k, subBlockSum8 s j.val
 
 lemma sum_const_nat {α} (s : Finset α) (c : Nat) :
-  (∑ _i in s, c) = s.card * c := by
+  (∑ _ in s, c) = s.card * c := by
   classical
   simpa using Finset.sum_const_nat c s
 
@@ -80,8 +80,9 @@ lemma blockSumAligned8_periodic (w : Pattern 8) (k : Nat) :
   unfold blockSumAligned8
   have hconst : ∀ j : Fin k, subBlockSum8 (extendPeriodic8 w) j.val = Z_of_window w := by
     intro j; simpa using subBlockSum8_periodic_eq_Z w j.val
-  have := congrArg (fun f => ∑ j : Fin k, f j) (funext hconst)
-  simpa [sum_const_nat, Finset.card_univ] using this
+  have hsum := congrArg (fun f : Fin k → Nat => ∑ j : Fin k, f j)
+    (funext fun j => (hconst j).symm)
+  simpa [sum_const_nat, Finset.card_univ] using hsum
 
 /-- Averaged (per‑window) observation equals `Z` on periodic extensions. -/
 def observeAvg8 (k : Nat) (s : Stream) : Nat :=
@@ -94,8 +95,9 @@ lemma observeAvg8_periodic_eq_Z {k : Nat} (hk : k ≠ 0) (w : Pattern 8) :
   classical
   unfold observeAvg8
   have hsum := blockSumAligned8_periodic w k
+  have hk' : 0 < k := Nat.pos_of_ne_zero hk
   have : (k * Z_of_window w) / k = Z_of_window w := by
-    exact Nat.mul_div_cancel_left (Z_of_window w) (Nat.pos_of_ne_zero hk)
+    simpa [Nat.mul_comm] using Nat.mul_div_cancel_left (Z_of_window w) hk'
   simpa [hsum, this]
 
 end Measurement
@@ -143,14 +145,17 @@ lemma score_mono_listens
   : score c ≤ score c' := by
   have h0 : c.opsPerSec ≠ 0 := ne_of_gt hops_pos
   have h0' : c'.opsPerSec ≠ 0 := by simpa [hops] using h0
-  simp [score, h0, h0', hops, hcoh] at *
-  have inv_nonneg : 0 ≤ (1 / c.opsPerSec) := by
-    have : 0 ≤ c.opsPerSec := le_of_lt hops_pos
-    exact one_div_nonneg.mpr this
-  have step : c.listensPerSec * (1 / c.opsPerSec)
-              ≤ c'.listensPerSec * (1 / c.opsPerSec) :=
-    mul_le_mul_of_nonneg_right hlist inv_nonneg
-  exact mul_le_mul_of_nonneg_right step (by simpa [hcoh] using hcoh_nonneg)
+  have hcoh_nonneg' : 0 ≤ c'.coherence8 := by simpa [hcoh] using hcoh_nonneg
+  have inv_nonneg : 0 ≤ (1 / c.opsPerSec) :=
+    one_div_nonneg.mpr (le_of_lt hops_pos)
+  have step : c.listensPerSec / c.opsPerSec ≤ c'.listensPerSec / c.opsPerSec := by
+    have := mul_le_mul_of_nonneg_right hlist inv_nonneg
+    simpa [div_eq_mul_inv, mul_comm, mul_left_comm, mul_assoc] using this
+  have : score c = (c.listensPerSec / c.opsPerSec) * c.coherence8 := by
+    simp [score, h0, div_eq_mul_inv]
+  have : score c' = (c'.listensPerSec / c'.opsPerSec) * c'.coherence8 := by
+    simp [score, h0', div_eq_mul_inv]
+  simp [score, h0, h0', hops, hcoh, div_eq_mul_inv, step]
 
 /-- Score is monotone in `coherence8` when opsPerSec>0 and listensPerSec is fixed and ≥0. -/
 lemma score_mono_coherence
@@ -163,9 +168,11 @@ lemma score_mono_coherence
   : score c ≤ score c' := by
   have h0 : c.opsPerSec ≠ 0 := ne_of_gt hops_pos
   have h0' : c'.opsPerSec ≠ 0 := by simpa [hops] using h0
-  simp [score, h0, h0', hlist, hops] at *
-  have : 0 ≤ c.listensPerSec / c.opsPerSec := div_nonneg hlist_nonneg (le_of_lt hops_pos)
-  exact mul_le_mul_of_nonneg_left hcoh this
+  have hlist_nonneg' : 0 ≤ c'.listensPerSec := by simpa [hlist] using hlist_nonneg
+  simp [score, h0, h0', hlist, hops, div_eq_mul_inv]
+  have base_nonneg : 0 ≤ c.listensPerSec / c.opsPerSec :=
+    div_nonneg hlist_nonneg (le_of_lt hops_pos)
+  exact mul_le_mul_of_nonneg_left hcoh base_nonneg
 
 end
 

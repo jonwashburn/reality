@@ -25,6 +25,30 @@ This says: RSRealityMaster is the conjunction (∧) of two major claims:
 1. **Reality Bundle**: Concrete physical predictions work
 2. **Recognition Closure**: Abstract mathematical necessity
 
+### Upgraded layer: RecognitionReality, Exclusivity coherence, Category equivalence
+
+- RecognitionReality (unique pinned scale and bundle):
+  - `IndisputableMonolith/Verification/RecognitionReality.lean`
+    - `recognitionReality_exists_unique`
+    - Accessors: `recognitionReality_phi`, `recognitionReality_at`, `recognitionReality_master`, `recognitionReality_definitionalUniqueness`, `recognitionReality_bi`
+    - Ultimate: `ultimate_closure_holds`, report `ultimate_closure_report`
+    - φ equality: `recognitionReality_phi_eq_constants`
+
+- Exclusivity coherence (canonical units classes):
+  - `IndisputableMonolith/Verification/Exclusivity.lean` (`units_class_coherence`)
+
+- Category equivalence at φ:
+  - `IndisputableMonolith/Verification/ExclusivityCategory.lean` (`frameworks_equiv_canonical`)
+
+Run-time checks (editor `#eval`):
+```lean
+#eval IndisputableMonolith.URCAdapters.closed_theorem_stack_report           -- PrimeClosure: OK
+#eval IndisputableMonolith.URCAdapters.exclusive_reality_plus_report        -- ExclusiveRealityPlus: OK
+#eval IndisputableMonolith.URCAdapters.recognition_reality_report           -- RecognitionReality: OK
+#eval IndisputableMonolith.URCAdapters.recognition_reality_accessors_report -- Accessors: OK
+#eval IndisputableMonolith.URCAdapters.recognition_phi_eq_constants_report  -- φ equality: OK
+```
+
 Let's trace each one.
 
 ## Part 1: Reality Bundle (`rs_measures_reality_any φ`)
@@ -209,6 +233,10 @@ This shows the structure is rigid. It's not a flexible framework that can fit an
 #eval IndisputableMonolith.URCAdapters.inevitability_dimless_report
 -- Shows dimensionless values are forced
 ```
+
+### Classical fences (nonessential)
+
+- `IndisputableMonolith/Verification/Completeness.lean` contains a helper lemma `temporary_isPreconnected_assumption` using Mathlib `isConnected_ball`. It is explicitly isolated and unused by `RSCompleteness`, `PrimeClosure`, or `UltimateClosure`.
 
 ## The Bottom Line
 

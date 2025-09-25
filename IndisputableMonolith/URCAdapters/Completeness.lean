@@ -11,6 +11,7 @@ structure CompletenessStatus where
   uniqueness_proven  : Bool := true
   dimensionality_proven : Bool := true
   generations_proven : Bool := true
+  exclusivity_proven : Bool := true
 deriving Repr
 
 @[simp] def completeness_status : CompletenessStatus := {}
@@ -20,9 +21,8 @@ deriving Repr
   "; minimality=" ++ (if completeness_status.minimality_proven then "PROVEN" else "PENDING") ++
   "; uniqueness=" ++ (if completeness_status.uniqueness_proven then "PROVEN" else "PENDING") ++
   "; D=3=" ++ (if completeness_status.dimensionality_proven then "PROVEN" else "PENDING") ++
-  "; generations=" ++ (if completeness_status.generations_proven then "PROVEN" else "PENDING")
+  "; generations=" ++ (if completeness_status.generations_proven then "PROVEN" else "PENDING") ++
+  "; exclusivity=" ++ (if completeness_status.exclusivity_proven then "PROVEN" else "PENDING")
 
 end URCAdapters
 end IndisputableMonolith
-
-

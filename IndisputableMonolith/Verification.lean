@@ -1,5 +1,6 @@
 import Mathlib
 import IndisputableMonolith.Constants
+import IndisputableMonolith.Verification.BiInterpretability
 
 namespace IndisputableMonolith
 namespace Verification

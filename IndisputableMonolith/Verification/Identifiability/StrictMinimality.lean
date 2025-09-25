@@ -5,7 +5,8 @@ namespace IndisputableMonolith
 namespace Verification
 namespace Identifiability
 
-open Classical
+/-! This file depends on `Costs`/`Observations` which are classical-fenced.
+    No global `open Classical`; we remain within the fenced APIs. -/
 
 def StrictMinimal (φ : ℝ) (F : ZeroParamFramework φ) : Prop :=
   ∀ G : ZeroParamFramework φ, ObsEqual φ F G → costOf φ F ≤ costOf φ G

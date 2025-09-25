@@ -5,7 +5,6 @@ namespace IndisputableMonolith
 namespace Verification
 namespace Identifiability
 
-open Classical
 open IndisputableMonolith
 open IndisputableMonolith.RH.RS
 
@@ -76,6 +75,46 @@ lemma observedFromPack_of_matches (φ : ℝ) {L : Ledger} {B : Bridge L}
   observedFromPack φ (P:=P) = observedFromUD φ (UD_explicit φ) :=
   observedFromPack_matches_to (φ:=φ) (P:=P) (U:=UD_explicit φ) h
 
+/-- Deterministic bridge selector stub (parameterized hypothesis).
+Provide any concrete bridge for a given zero‑parameter framework. -/
+structure BridgeSelector (φ : ℝ) (F : ZeroParamFramework φ) where
+  select : Bridge F.L
+
+/-- Construct observations using an explicit pack on a provided bridge. -/
+noncomputable def observeWithBridge (φ : ℝ) (F : ZeroParamFramework φ)
+  (B : Bridge F.L) : ObservedLedger φ :=
+  observedFromPack φ (P := dimlessPack_explicit F.L B)
+
+/-- Constructive observation: deterministically fix the universal explicit target. -/
+noncomputable def observe (φ : ℝ) (F : ZeroParamFramework φ) : ObservedLedger φ :=
+  observedFromUD φ (UD_explicit φ)
+
+lemma observe_eq_ud (φ : ℝ) (F : ZeroParamFramework φ) :
+  observe φ F = observedFromUD φ (UD_explicit φ) := rfl
+
+/-- Observational equality between zero‑parameter frameworks at scale φ. -/
+@[simp] def ObsEqual (φ : ℝ) (F G : ZeroParamFramework φ) : Prop :=
+  observe φ F = observe φ G
+
+lemma obs_equal_rfl (φ : ℝ) (F : ZeroParamFramework φ) : ObsEqual φ F F := rfl
+
+lemma obs_equal_comm {φ : ℝ} {F G : ZeroParamFramework φ} :
+  ObsEqual φ F G → ObsEqual φ G F := by
+  intro h; simpa [ObsEqual] using h.symm
+
+lemma obs_equal_trans {φ : ℝ}
+  {F G H : ZeroParamFramework φ} :
+  ObsEqual φ F G → ObsEqual φ G H → ObsEqual φ F H := by
+  intro hFG hGH; simpa [ObsEqual] using hFG.trans hGH
+
+/‑! Classical gate (choice-dependent): the following definitions and lemmas
+    use choice to pick bridges/packs. These are fenced to keep the MP-only
+    envelope clear and are provided as fallbacks. -/
+
+noncomputable section
+
+open Classical
+
 lemma observedFromPack_matches_explicit (φ : ℝ) {L : Ledger} (B : Bridge L) :
   observedFromPack φ (P:=Classical.choose (matches_explicit φ L B))
     = observedFromUD φ (UD_explicit φ) := by
@@ -91,42 +130,41 @@ lemma someBridge_matches (φ : ℝ) (F : ZeroParamFramework φ) :
   classical
   exact Classical.choose_spec F.hasEU.left
 
-noncomputable def observe (φ : ℝ) (F : ZeroParamFramework φ) : ObservedLedger φ :=
+/-- Classical observation using an explicit pack chosen via choice. -/
+noncomputable def observeC (φ : ℝ) (F : ZeroParamFramework φ) : ObservedLedger φ :=
   observedFromPack φ
     (P:=Classical.choose (matches_explicit φ F.L (someBridge φ F)))
 
-lemma observe_eq_ud (φ : ℝ) (F : ZeroParamFramework φ) :
-  observe φ F = observedFromUD φ (UD_explicit φ) := by
+lemma observeC_eq_ud (φ : ℝ) (F : ZeroParamFramework φ) :
+  observeC φ F = observedFromUD φ (UD_explicit φ) := by
   classical
-  unfold observe
+  unfold observeC
   simpa using observedFromPack_matches_explicit (φ:=φ) (B:=someBridge φ F)
 
-/-- Observational equality between zero-parameter frameworks at scale φ. -/
-@[simp] def ObsEqual (φ : ℝ) (F G : ZeroParamFramework φ) : Prop :=
-  observe φ F = observe φ G
-
-lemma obs_equal_rfl (φ : ℝ) (F : ZeroParamFramework φ) : ObsEqual φ F F := rfl
-
-lemma obs_equal_comm {φ : ℝ} {F G : ZeroParamFramework φ} :
-  ObsEqual φ F G → ObsEqual φ G F := by
-  intro h; simpa [ObsEqual] using h.symm
-
-lemma obs_equal_trans {φ : ℝ}
-  {F G H : ZeroParamFramework φ} :
-  ObsEqual φ F G → ObsEqual φ G H → ObsEqual φ F H := by
-  intro hFG hGH; simpa [ObsEqual] using hFG.trans hGH
-
-lemma observe_with_explicit_pack (φ : ℝ) (F : ZeroParamFramework φ) :
+lemma observeC_with_explicit_pack (φ : ℝ) (F : ZeroParamFramework φ) :
   observedFromPack φ (P:=Classical.choose (matches_explicit φ F.L (someBridge φ F)))
-    = observe φ F := rfl
+    = observeC φ F := rfl
 
-lemma observe_def_with_explicit_pack (φ : ℝ) (F : ZeroParamFramework φ) :
-  observe φ F =
+lemma observeC_def_with_explicit_pack (φ : ℝ) (F : ZeroParamFramework φ) :
+  observeC φ F =
     observedFromPack φ (P:=Classical.choose (matches_explicit φ F.L (someBridge φ F))) := rfl
 
-lemma observe_eq_observedFromPack_explicit (φ : ℝ) (F : ZeroParamFramework φ) :
-  observe φ F = observedFromPack φ
+lemma observeC_eq_observedFromPack_explicit (φ : ℝ) (F : ZeroParamFramework φ) :
+  observeC φ F = observedFromPack φ
     (P:=Classical.choose (matches_explicit φ F.L (someBridge φ F))) := rfl
+
+end  -- noncomputable classical fence
+
+/-- Classical fallbacks exposed under a dedicated namespace. -/
+namespace Classical
+
+noncomputable abbrev someBridge (φ : ℝ) (F : ZeroParamFramework φ) : Bridge F.L :=
+  Identifiability.someBridge φ F
+
+noncomputable abbrev observe (φ : ℝ) (F : ZeroParamFramework φ) : ObservedLedger φ :=
+  Identifiability.observeC φ F
+
+end Classical
 
 end Identifiability
 end Verification

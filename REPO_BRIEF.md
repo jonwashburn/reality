@@ -24,6 +24,7 @@ lake exe ci_checks
 - `lean-toolchain`: Lean version pin
 - `README.md`: quick start and CI notes
 - `IndisputableMonolith/Verification/Reality.lean`: reality bundle and theorem
+- `IndisputableMonolith/Verification/BiInterpretability.lean`: bi-interpretability bundle (forward/reverse reconstruction, canonical bridge, strict minimality, zero-cost) extending the master reality layer
 - `IndisputableMonolith/URCGenerators.lean`: certificate families and meta certificate
 - `CI/Checks.lean`: minimal executable main for CI
 - `URC/Minimal.lean`: minimal URC used by CI smoke
@@ -66,6 +67,7 @@ lake exe ci_checks
 - Measurement: removed placeholder wording; identity evolution and zero-cost defaults documented explicitly.
 - RS Spec: tightened FortyFive_gap_spec shape (removed vestigial trailing True at spec sites; constructors unchanged in meaning).
 - RS Spec: strengthened 45-gap sync to exact identity `Nat.lcm 8 45 = 360`.
+- Recognition Reality: new `BiInterpretability φ` bundle and `RecognitionReality φ` top layer; remaining blockers are ledger symmetry coherence under `UnitsQuotCarrier`, categorical equivalence between frameworks and universals, and dual-agent forward/reverse reconstruction alignment.
 
 ### How to Explore
 1) Open in a Lean 4–enabled editor (VS Code + Lean extension or Cursor).

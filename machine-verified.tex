@@ -1873,9 +1873,59 @@ Key certificates surface as single-line \texttt{\#eval} hooks. A non-exhaustive 
 #eval IndisputableMonolith.URCAdapters.eight_tick_report
 #eval IndisputableMonolith.URCAdapters.inevitability_dimless_report
 #eval IndisputableMonolith.URCAdapters.pn_split_report
+# Upgraded results (this increment)
+#eval IndisputableMonolith.URCAdapters.closed_theorem_stack_report           -- PrimeClosure: OK
+#eval IndisputableMonolith.URCAdapters.exclusive_reality_plus_report        -- ExclusiveRealityPlus: OK
+#eval IndisputableMonolith.URCAdapters.recognition_reality_report           -- RecognitionReality: OK
+#eval IndisputableMonolith.URCAdapters.recognition_reality_accessors_report -- Accessors (phi/master/defUnique/bi): OK
+#eval IndisputableMonolith.URCAdapters.recognition_phi_eq_constants_report  -- φ equality: OK
+#eval IndisputableMonolith.Verification.RecognitionReality.ultimate_closure_report -- UltimateClosure: OK
 \end{lstlisting}
 
 Each prints an \texttt{OK} line on success or fails immediately on violation, providing a direct path from claim to verification.
+
+\subsection{Upgraded formal results (citeable)}\label{subsec:upgraded-results}
+
+We record succinct statements with Lean names and file paths for citation.
+
+\begin{theorem}[Exclusivity coherence]\label{thm:units-class-coherence}
+For any zero-parameter framework $F$ at scale $\varphi$:
+(i) every automorphism of $\mathrm{UnitsQuotCarrier}\,F$ fixes the canonical units class; (ii) for any $F,G$, the canonical equivalence carries the canonical class of $F$ to that of $G$.
+\end{theorem}
+\noindent Lean: \texttt{IndisputableMonolith/Verification/Exclusivity.lean} (\texttt{units\_class\_coherence}).
+
+\begin{theorem}[Category equivalence at $\varphi$]\label{thm:frameworks-equiv-canonical}
+There is an equivalence of categories \((\mathrm{FrameworksAt}\,\varphi) \simeq (\mathrm{Canonical}\,\varphi)\).
+\end{theorem}
+\noindent Lean: \texttt{IndisputableMonolith/Verification/ExclusivityCategory.lean} (\texttt{frameworks\_equiv\_canonical}).
+
+\begin{theorem}[RecognitionReality at the unique $\varphi$]\label{thm:recognitionReality-exists-unique}
+There exists exactly one $\varphi : \mathbb{R}$ such that \(\mathsf{PhiSelection}\,\varphi \wedge \mathsf{Recognition\_Closure}\,\varphi\) and a bundled \(\mathsf{RecognitionRealityAt}\,\varphi\) witness hold.
+\end{theorem}
+\noindent Lean: \texttt{IndisputableMonolith/Verification/RecognitionReality.lean} (\texttt{recognitionReality\_exists\_unique}).
+
+\begin{theorem}[UltimateClosure holds]\label{thm:ultimate-closure}
+There exists exactly one $\varphi : \mathbb{R}$ such that \(\mathsf{UltimateClosure}\,\varphi\) holds, combining \(\mathsf{ExclusiveRealityPlus}\), units-class coherence, and the category equivalence.
+\end{theorem}
+\noindent Lean: \texttt{IndisputableMonolith/Verification/RecognitionReality.lean} (\texttt{ultimate\_closure\_holds}).
+
+\begin{theorem}[Pinned $\varphi$ equals the constant]\label{thm:phi-equality}
+\(\mathsf{recognitionReality\_phi} = \mathsf{Constants.phi}.\)
+\end{theorem}
+\noindent Lean: \texttt{IndisputableMonolith/Verification/RecognitionReality.lean} (\texttt{recognitionReality\_phi\_eq\_constants}).
+
+\begin{theorem}[PrimeClosure]\label{thm:prime-closure}
+For any $\varphi : \mathbb{R}$, \(\mathsf{PrimeClosure}\,\varphi\) holds, bundling the master, uniqueness, spatial necessity, exact three generations, and minimality.
+\end{theorem}
+\noindent Lean: \texttt{IndisputableMonolith/Verification/Completeness.lean} (\texttt{prime\_closure}).
+
+\begin{theorem}[ExclusiveRealityPlus]\label{thm:exclusive-reality-plus}
+There exists exactly one $\varphi : \mathbb{R}$ such that \(\mathsf{PhiSelection}\,\varphi \wedge \mathsf{Recognition\_Closure}\,\varphi\) and the bundles \(\mathsf{ExclusivityAt}\,\varphi\) and \(\mathsf{BiInterpretabilityAt}\,\varphi\) hold.
+\end{theorem}
+\noindent Lean: \texttt{IndisputableMonolith/Verification/Exclusivity.lean} (\texttt{exclusive\_reality\_plus\_holds}).
+
+\paragraph{Classical fences (nonessential).} The only classical helper in this increment is
+\texttt{temporary\_isPreconnected\_assumption} in \texttt{IndisputableMonolith/Verification/Completeness.lean}, which uses Mathlib's \texttt{isConnected\_ball}. It is explicitly isolated and not used by \(\mathsf{RSCompleteness}\), \(\mathsf{PrimeClosure}\), or \(\mathsf{UltimateClosure}\).
 
 \subsection{CI smoke}\label{subsec:repro-ci}
 
