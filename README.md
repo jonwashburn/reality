@@ -52,6 +52,20 @@ lake exe ci_checks
 
 ## Validate in under a minute
 
+## Unitless Audit (quickstart)
+
+```bash
+lake build
+lake exe audit
+./scripts/audit_compare.sh
+```
+
+- `lake exe audit` prints a JSON list of unitless invariants with category, status, value (when available), and provenance flags.
+- `scripts/audit_compare.sh` compares Proven items against `measurements.json` and fails if any |z| > 3 or exact checks fail; Scaffold/Planned are reported but do not gate.
+
+If CI breaks before the audit step (e.g., due to unrelated build/import issues), fix those first so the audit comparator can run.
+
+
 1) Install toolchain
 
 ```bash
