@@ -415,9 +415,9 @@ theorem fortyfive_gap_consequences_any (L : Ledger) (B : Bridge L)
 /-- Arithmetic helper: lcm(2^3,45) = 360. -/
 lemma lcm_pow2_45_at3 : Nat.lcm (2 ^ 3) 45 = 360 := by decide
 
-/-- Placeholder predicate for contradictions at D ≠ 3 (to be strengthened). -/
+/-- Placeholder predicate for dimensional rigidity (to be strengthened). Currently always true. -/
 def DimensionalRigidity (D : Nat) : Prop :=
-  if h : D = 3 then True else True
+  True
 
 /-- Arithmetic fact: lcm(2^D,45) equals 360 exactly when D=3 in this scaffold.
     This isolates the synchronization target used by 45-gap consequences. -/

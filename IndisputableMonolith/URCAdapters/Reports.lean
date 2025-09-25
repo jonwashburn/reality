@@ -3,7 +3,6 @@ import IndisputableMonolith.Constants.RSDisplay
 import IndisputableMonolith.Verification
 import IndisputableMonolith.Verification.Reality
 import IndisputableMonolith.Verification.RecognitionReality
-import IndisputableMonolith.RH.RS.Spec
 import IndisputableMonolith.RH.RS.Bands
 import IndisputableMonolith.Constants
 import IndisputableMonolith.URCGenerators
