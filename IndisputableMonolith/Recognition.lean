@@ -21,6 +21,13 @@ theorem mp_holds : MP := by
   rcases h with ⟨⟨r, _⟩, _⟩
   cases r
 
+/-- Alias used in the manuscript: "Nonexistence cannot recognize itself." -/
+abbrev NothingCannotRecognizeItself : Prop := MP
+
+/-- Direct alias proof of MP for the manuscript phrasing. -/
+theorem nothing_cannot_recognize_itself : NothingCannotRecognizeItself :=
+  mp_holds
+
 structure RecognitionStructure where
   U : Type
   R : U → U → Prop
