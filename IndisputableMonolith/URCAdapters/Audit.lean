@@ -82,7 +82,7 @@ def auditItems : List AuditItem :=
   , { name := "RSRealityMaster", category := "Bundle", status := "Proven", usesExternalInput := false, value := some "1" }
   , { name := "AlphaInvPrediction", category := "QED", status := "Proven", usesExternalInput := false, value := some alphaInvValue }
   -- EW/QCD scaffolding (placeholders; no numeric values yet)
-  , { name := "Sin2ThetaW_at_MZ", category := "EW", status := "Scaffold", usesExternalInput := true }
+  , { name := "Sin2ThetaW_at_MZ", category := "EW", status := "Planned", usesExternalInput := true }
   , { name := "MW_over_MZ", category := "EW", status := "Planned", usesExternalInput := true }
   , { name := "AlphaS_at_MZ", category := "QCD", status := "Planned", usesExternalInput := true }
   -- Flavor mixing (CKM): planned, external inputs for visibility
