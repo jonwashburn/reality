@@ -103,8 +103,8 @@ def auditItems : List AuditItem :=
   , { name := "FamilyRatio_Leptons_mu_over_tau", category := "MassRatios", status := "Scaffold", usesExternalInput := false,
       value := some (IndisputableMonolith.URCGenerators.Numeric.phiPowValueStr (-6) 12) }
   , { name := "ThetaBar_Bound", category := "QCD", status := "Proven", usesExternalInput := false, value := some "0" }
-  , { name := "ElectronG2", category := "QED", status := "Scaffold", usesExternalInput := false, value := some "0.001159652181" }
-  , { name := "MuonG2", category := "QED", status := "Scaffold", usesExternalInput := false, value := some "0.00116591810" }
+  , { name := "ElectronG2", category := "QED", status := "Scaffold", usesExternalInput := true, value := some "0.001159652181" }
+  , { name := "MuonG2", category := "QED", status := "Scaffold", usesExternalInput := true, value := some "0.00116591810" }
   ]
 
 def cosmologyItems : List AuditItem :=
