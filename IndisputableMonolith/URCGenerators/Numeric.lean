@@ -31,12 +31,14 @@ def ratToDecimal (n : Int) (m : Nat) (d : Nat) : String :=
 
 end NumFmt
 
-/-- Compute φ^k as a fixed-decimal string using rational φ ≈ 161803399/100000000.
+/-- Compute φ^k as a fixed-decimal string using a high-precision rational φ.
     Supports negative exponents by inversion. Deterministic and computable. -/
 def phiPowValueStr (k : Int) (digits : Nat := 12) : String :=
   -- φ as a rational
-  let φ_num : Int := 161803399
-  let φ_den : Nat := 100000000
+  -- Use Source.txt canonical value φ ≈ 1.6180339887498948 with 16 fractional digits
+  -- to reduce rounding error in comparator checks on φ^Δr ratios.
+  let φ_num : Int := 16180339887498948
+  let φ_den : Nat := 10000000000000000
   -- integer power helper for Int and Nat
   let rec powInt (a : Int) (n : Nat) : Int :=
     match n with
