@@ -23,3 +23,7 @@ lean_exe ok {
 lean_exe ci {
   root := `CI.Checks
 }
+
+lean_exe audit {
+  root := `IndisputableMonolith.URCAdapters.Audit
+}
