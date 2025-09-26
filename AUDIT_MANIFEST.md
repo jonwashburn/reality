@@ -28,7 +28,7 @@ This manifest enumerates the invariants surfaced by the instrument and their cur
 - PMNS: PMNS_theta13 (Planned, usesExternalInput)
 - PMNS: PMNS_deltaCP (Planned, usesExternalInput)
 - PMNS: PMNS_Jarlskog_J (Planned, usesExternalInput)
-- QCD: ThetaBar_Bound (Planned, upper bound, usesExternalInput)
+- QCD: ThetaBar_Bound (Scaffold; predicted 0; comparator upper-bound check)
 - Cosmology block (non-gating): Omega_b, Omega_c, Omega_Lambda, Omega_k, n_s, r, eta_B, N_eff (Planned, usesExternalInput)
 
 ## Entry points

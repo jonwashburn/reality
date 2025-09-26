@@ -31,6 +31,32 @@ def ratToDecimal (n : Int) (m : Nat) (d : Nat) : String :=
 
 end NumFmt
 
+/-- Compute φ^k as a fixed-decimal string using rational φ ≈ 161803399/100000000.
+    Supports negative exponents by inversion. Deterministic and computable. -/
+def phiPowValueStr (k : Int) (digits : Nat := 12) : String :=
+  -- φ as a rational
+  let φ_num : Int := 161803399
+  let φ_den : Nat := 100000000
+  -- integer power helper for Int and Nat
+  let rec powInt (a : Int) (n : Nat) : Int :=
+    match n with
+    | 0 => 1
+    | n+1 => (powInt a n) * a
+  let rec powNat (a : Nat) (n : Nat) : Nat :=
+    match n with
+    | 0 => 1
+    | n+1 => (powNat a n) * a
+  -- assemble numerator/denominator for φ^k
+  let (num, den) : (Int × Nat) :=
+    if k ≥ 0 then
+      let kk : Nat := Int.toNat k
+      (powInt φ_num kk, powNat φ_den kk)
+    else
+      let kk : Nat := Int.toNat (-k)
+      -- invert: (φ_den^kk) / (φ_num^kk)
+      ((powNat φ_den kk : Nat) |> fun n => (n : Int), (powInt φ_num kk).natAbs)
+  NumFmt.ratToDecimal num den digits
+
 /-- φ-only curvature pipeline evaluator (deterministic, computable):
     α^{-1} ≈ 4π·11 − (w8·ln φ + δ_κ),
     with π ≈ 104348/33215, φ ≈ 161803399/100000000,

@@ -97,10 +97,12 @@ def auditItems : List AuditItem :=
   , { name := "PMNS_theta13", category := "PMNS", status := "Planned", usesExternalInput := true }
   , { name := "PMNS_deltaCP", category := "PMNS", status := "Planned", usesExternalInput := true }
   , { name := "PMNS_Jarlskog_J", category := "PMNS", status := "Planned", usesExternalInput := true }
-  -- Mass ratio family (explicit φ-expressions; placeholders surfaced for visibility)
-  , { name := "FamilyRatio_Leptons_e_over_mu", category := "MassRatios", status := "Scaffold", usesExternalInput := false, value := some "phi^k_e_mu" }
-  , { name := "FamilyRatio_Leptons_mu_over_tau", category := "MassRatios", status := "Scaffold", usesExternalInput := false, value := some "phi^k_mu_tau" }
-  , { name := "ThetaBar_Bound", category := "QCD", status := "Planned", usesExternalInput := true }
+  -- Mass ratio family (explicit φ-powers). Example mapping from Source.txt RUNG_EXAMPLES
+  , { name := "FamilyRatio_Leptons_e_over_mu", category := "MassRatios", status := "Scaffold", usesExternalInput := false,
+      value := some (IndisputableMonolith.URCGenerators.Numeric.phiPowValueStr (-11) 12) }
+  , { name := "FamilyRatio_Leptons_mu_over_tau", category := "MassRatios", status := "Scaffold", usesExternalInput := false,
+      value := some (IndisputableMonolith.URCGenerators.Numeric.phiPowValueStr (-6) 12) }
+  , { name := "ThetaBar_Bound", category := "QCD", status := "Scaffold", usesExternalInput := false, value := some "0" }
   , { name := "ElectronG2", category := "QED", status := "Scaffold", usesExternalInput := false, value := some "0.001159652181" }
   , { name := "MuonG2", category := "QED", status := "Scaffold", usesExternalInput := false, value := some "0.00116591810" }
   ]
