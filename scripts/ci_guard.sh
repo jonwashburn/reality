@@ -79,35 +79,19 @@ if [ "$HAS_ISSUES" -ne 0 ]; then
   exit 1
 fi
 
-# Try ci_checks but do NOT gate on it yet; warn on failure
-echo "[ci_guard] Attempting ci_checks (non-gating)..."
-if lake build ci_checks >/dev/null 2>&1; then
-  if CI_OUT="$(lake exe ci_checks 2>/dev/null)"; then
-    req_markers=(
-      "PrimeClosure: OK"
-      "ExclusiveRealityPlus: OK"
-      "RecognitionRealityAccessors: OK"
-      "PhiUniqueness: OK"
-      "UltimateClosure: OK"
-    )
-    MISSING=0
-    for m in "${req_markers[@]}"; do
-      if ! printf "%s" "$CI_OUT" | grep -q "$m"; then
-        echo "[ci_guard][WARN] Missing CI marker: $m" >&2
-        MISSING=1
-      fi
-    done
-    if [ "$MISSING" -eq 0 ]; then
-      echo "[ci_guard] ci_checks markers present."
-    else
-      echo "[ci_guard][WARN] ci_checks ran but markers missing; continuing to audit gate." >&2
-    fi
-  else
-    echo "[ci_guard][WARN] ci_checks execution failed; continuing to audit gate." >&2
-  fi
-else
-  echo "[ci_guard][WARN] ci_checks build failed; continuing to audit gate." >&2
+# Gate on minimal ci_checks smoke
+echo "[ci_guard] Running ci_checks smoke..."
+if ! lake build ci_checks >/dev/null 2>&1; then
+  echo "[ci_guard][FAIL] ci_checks build failed." >&2
+  exit 1
 fi
+CI_OUT="$(lake exe ci_checks 2>/dev/null || true)"
+printf "%s\n" "$CI_OUT"
+if ! printf "%s" "$CI_OUT" | grep -q "CI smoke: toolchain OK"; then
+  echo "[ci_guard][FAIL] ci_checks smoke failed or marker missing." >&2
+  exit 1
+fi
+echo "[ci_guard] ci_checks smoke passed."
 
 # Hard gate: audit comparator
 echo "[ci_guard] Running audit and comparator..."

@@ -1,0 +1,37 @@
+{
+  "title": "Recognition Science: A Lean 4, Certificates‑First Verification Instrument",
+  "upload_type": "software",
+  "description": "Lean 4 verification instrument exposing a certificates‑first, reproducible proof spine for a parameter‑free physics framework (UltimateClosure, PrimeClosure, exclusivity/bi‑interpretability, φ‑only α evaluator). Includes machine‑readable audit and non‑interactive comparator as the hard CI gate.",
+  "creators": [
+    {
+      "name": "Washburn, Jonathan",
+      "affiliation": "Recognition Physics Institute",
+      "orcid": "0000-0000-0000-0000"
+    }
+  ],
+  "license": "mit",
+  "access_right": "open",
+  "version": "v1.0.0",
+  "keywords": [
+    "Lean 4",
+    "formal methods",
+    "verification",
+    "physics",
+    "reproducibility"
+  ],
+  "related_identifiers": [
+    {
+      "relation": "isSupplementTo",
+      "identifier": "https://github.com/jonwashburn/reality",
+      "scheme": "url"
+    },
+    {
+      "relation": "isSupplementTo",
+      "identifier": "https://github.com/jonwashburn/reality/tree/v1.0.0",
+      "scheme": "url"
+    }
+  ],
+  "notes": "This deposit archives the v1.0.0 release. See README.md and paper.md for installation, usage, and testability."
+}
+
+

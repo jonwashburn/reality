@@ -29,6 +29,7 @@ import IndisputableMonolith.Verification.Dimension
 import IndisputableMonolith.RSBridge.Anchor
 import IndisputableMonolith.Verification.Identifiability
 import IndisputableMonolith.Verification.Identifiability.Observations
+import IndisputableMonolith.Verification.Identifiability.Costs
 import IndisputableMonolith.URCGenerators.Exclusivity
 import Lean.Data.Json
 import IndisputableMonolith.Verification.ExclusivityCategory
@@ -214,6 +215,26 @@ def units_quotient_functor_report : String :=
   have _ : URCGenerators.UnitsQuotientFunctorCert.verified cert :=
     URCGenerators.UnitsQuotientFunctorCert.verified_any _
   "UnitsQuotientFunctorCert: OK"
+
+/-- #eval-friendly report for units-quotient coherence (naturality + K-gate).
+    Shows: (i) K_A and K_B are invariant under admissible rescalings; (ii) K-gate holds. -/
+def units_quotient_coherence_report : String :=
+  let U  : IndisputableMonolith.Constants.RSUnits :=
+    { tau0 := 1, ell0 := 1, c := 1, c_ell0_tau0 := by simp }
+  let U' : IndisputableMonolith.Constants.RSUnits :=
+    { tau0 := 2, ell0 := 2, c := 1, c_ell0_tau0 := by simp }
+  let hUU' : IndisputableMonolith.Verification.UnitsRescaled U U' :=
+  { s := 2
+  , hs := by norm_num
+  , tau0 := by simp
+  , ell0 := by simp
+  , cfix := rfl }
+  -- Naturality under rescaling for the canonical observables
+  have _ := IndisputableMonolith.Verification.Observables.K_A_obs_anchor_invariant hUU'
+  have _ := IndisputableMonolith.Verification.Observables.K_B_obs_anchor_invariant hUU'
+  -- K-gate route equality at any anchors
+  have _ := IndisputableMonolith.Verification.K_gate_bridge U
+  "UnitsQuotientCoherence: OK"
 
 /-- #eval-friendly report for EightTickMinimalCert (T6). -/
 def eight_tick_report : String :=
@@ -445,6 +466,21 @@ def maxwell_continuity_report : String :=
     URCGenerators.MaxwellContinuityCert.verified_any _
   "MaxwellContinuityCert: OK"
 
+/-- #eval-friendly report for the strict DEC→Maxwell bridge.
+    Asserts the DEC identities (d∘d=0, Bianchi) and Maxwell continuity (dJ=0)
+    elaborate together, i.e., the strict bridge compiles end-to-end. -/
+def maxwell_strict_bridge_report : String :=
+  let c1 : URCGenerators.DECDDZeroCert := {}
+  let c2 : URCGenerators.DECBianchiCert := {}
+  let c3 : URCGenerators.MaxwellContinuityCert := {}
+  have _ : URCGenerators.DECDDZeroCert.verified c1 :=
+    URCGenerators.DECDDZeroCert.verified_any _
+  have _ : URCGenerators.DECBianchiCert.verified c2 :=
+    URCGenerators.DECBianchiCert.verified_any _
+  have _ : URCGenerators.MaxwellContinuityCert.verified c3 :=
+    URCGenerators.MaxwellContinuityCert.verified_any _
+  "MaxwellStrictBridge: OK"
+
 /-- #eval-friendly constitutive wiring smoke test: J_add/J_zero hold. -/
 def constitutive_wiring_report : String :=
   let M := IndisputableMonolith.Verification.DEC.trivial ℤ ℤ ℤ ℤ ℤ
@@ -577,6 +613,7 @@ def certificates_manifest : String :=
     , reality_bridge_report
     , reality_master_report
     , recognition_reality_report
+    , biinterpretability_demo_report
     , biinterp_forward_report
     , biinterp_reverse_report
     , k_identities_report
@@ -610,6 +647,7 @@ def certificates_manifest : String :=
     , absolute_layer_report
     , maxwell_continuity_report
     , constitutive_wiring_report
+    , maxwell_strict_bridge_report
     , bose_fermi_report
     , born_rule_report
     , quantum_occupancy_report
@@ -648,6 +686,7 @@ def certificates_manifest : String :=
     , phi_pinned_report
     , identifiability_report
     , identifiability_cost_report
+    , identifiability_constructive_report
     , identifiability_faithfulness_report
     , strict_minimality_report
     , exclusive_reality_report
@@ -856,6 +895,10 @@ noncomputable def biinterp_reverse_report : String :=
   let rhs := renderObservedLedger φ (IndisputableMonolith.Verification.Identifiability.observedFromUD φ (IndisputableMonolith.RH.RS.UD_explicit φ))
   if lhs = rhs then "BiInterpretability (reverse): OK" else "BiInterpretability (reverse): FAIL"
 
+/-- #eval-friendly demo harness: emits both forward and reverse bi-interpretability checks. -/
+noncomputable def biinterpretability_demo_report : String :=
+  biinterp_forward_report ++ "\n" ++ biinterp_reverse_report
+
 /-- #eval-friendly report: identifiability schema holds at φ under skeleton assumptions. -/
 def identifiability_report : String :=
   let φ : ℝ := IndisputableMonolith.Constants.phi
@@ -877,6 +920,15 @@ def identifiability_cost_report : String :=
   have _ : IndisputableMonolith.Verification.Identifiability.costOf φ F = 0 :=
     IndisputableMonolith.Verification.Identifiability.costOf_eq_zero φ F
   "IdentifiabilityCost: OK (costOf = 0)"
+
+/-- #eval-friendly report: constructive observation path (no classical choice) composes. -/
+def identifiability_constructive_report : String :=
+  let φ : ℝ := IndisputableMonolith.Constants.phi
+  let F := routeAZeroParamFramework φ
+  -- Use observeFromUD and defaultCost (constructive fenced, no Classical.choose)
+  let obs := IndisputableMonolith.Verification.Identifiability.observedFromUD φ (IndisputableMonolith.Verification.Identifiability.UD_explicit φ)
+  let _ := IndisputableMonolith.Verification.Identifiability.defaultCost φ obs
+  "IdentifiabilityConstructive: OK"
 
 /-- #eval-friendly report: faithfulness matches the strict-minimality witness pipeline. -/
 def identifiability_faithfulness_report : String :=

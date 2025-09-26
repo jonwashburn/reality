@@ -163,7 +163,19 @@ All are aggregated in `CertFamily` and checked by `Verified φ C` (`URCGenerator
 ## Reproducibility
 
 - Toolchain: see `lean-toolchain`; dependencies in `lake-manifest.json`.
-- CI: GitHub Actions workflow installs elan, builds, and runs the smoke check.
+- CI: GitHub Actions workflow installs elan, builds, runs the smoke check, then gates on the unitless audit comparator for `Proven` items.
+
+## For Reviewers
+
+- See `REVIEWERS.md` for a 10–15 minute path to build, smoke-check, run the audit, and inspect proof reports.
+- See `SUBMISSION.md` for JOSS submission steps and links.
+- See `JOSS_PREP.md` for suggested reviewers and pre-review steps.
+
+## Release Notes
+
+- See `CHANGELOG.md` for versioned changes (current: v1.0.0).
+- See `RELEASE_NOTES_v1.0.0.md` for highlights and verification steps.
+- GitHub release post template: `.github/RELEASE_POST_TEMPLATE_v1.0.0.md`.
 
 ## Contributing
 
