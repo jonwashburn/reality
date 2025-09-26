@@ -39,11 +39,12 @@ Researchers need verifiable, open instruments to audit claims that are otherwise
 - Reality bundle & spec closure: `#eval IndisputableMonolith.URCAdapters.reality_master_report`.
 - Closed theorem stack (PrimeClosure), exclusivity+bi‑interpretability (ExclusiveRealityPlus), and apex UltimateClosure with uniqueness.
 - Coherence of canonical units classes and categorical equivalence at the pinned scale.
-- CI smoke: `lake exe ci_checks`; consolidated manifest of reports.
+- φ‑only evaluator for the inverse fine‑structure constant (Proven; compared by an automated comparator against measurements).
+- CI: audit comparator is the hard gate; `ci_checks` is attempted but currently non‑gating while import cycles are being repaired; a consolidated manifest prints an `OK` per certificate.
 
 # Quality control
 
-The repository includes a deterministic CI smoke and a consolidated manifest of `#eval` checks. Reports are constructed as pure terms (no network/file I/O). The toolchain is pinned via `lean-toolchain` and dependencies locked in `lake-manifest.json` to ensure byte‑for‑byte reproducibility.
+The repository includes a deterministic CI smoke and a consolidated manifest of `#eval` checks. Reports are constructed as pure terms (no network/file I/O). The toolchain is pinned via `lean-toolchain` and dependencies locked in `lake-manifest.json` to ensure byte‑for‑byte reproducibility. A machine‑readable audit (`lake exe audit`) is compared against `measurements.json` by a non‑interactive comparator script (`./scripts/audit_compare.sh`) that fails the run on any Proven mismatch (exact or |z|>3), and treats Scaffold/Planned as non‑gating visibility.
 
 # Example
 
@@ -63,8 +64,53 @@ Optional single‑line checks (examples):
 #eval IndisputableMonolith.Verification.RecognitionReality.ultimate_closure_report
 ```
 
+Audit (hard gate in CI):
+
+```text
+lake build
+lake exe audit
+./scripts/audit_compare.sh
+```
+
+# Installation
+
+```text
+elan toolchain install $(cat lean-toolchain)
+source "$HOME/.elan/env"
+lake build
+```
+
+# Usage
+
+- In an editor (Lean 4), evaluate `#eval` reports such as:
+  - `#eval IndisputableMonolith.URCAdapters.reality_master_report`
+  - `#eval IndisputableMonolith.URCAdapters.closed_theorem_stack_report`
+  - `#eval IndisputableMonolith.Verification.RecognitionReality.ultimate_closure_report`
+- From the CLI, produce the consolidated summary:
+  - `lake exe ok` (pretty JSON available via `--json`)
+- Run the audit comparator (hard gate):
+  - `lake exe audit` then `./scripts/audit_compare.sh`
+
+# Testing
+
+- The audit comparator enforces correctness of all Proven invariants against `measurements.json` (exact or z‑score ≤ 3). Scaffold/Planned items are surfaced as WARN/INFO but do not gate.
+- A minimal CI smoke `lake exe ci_checks` is executed but currently non‑gating while upstream import cycles are being repaired; the audit comparator remains the hard CI gate.
+
+# Software availability and archival
+
+- License: MIT (see `LICENSE`).
+- Source: `https://github.com/jonwashburn/recognition`.
+- A release will be archived on Zenodo at acceptance; DOI badge is included in the README and will be updated upon archival.
+
+# Acknowledgments
+
+The author thanks collaborators and the Lean community for tooling and libraries that made this work possible.
+
+# Conflict of interest
+
+The author declares no competing interests.
+
 # References
 
 See the bibliography for related work and background.
-
 

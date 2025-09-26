@@ -62,6 +62,7 @@ lake exe audit
 
 - `lake exe audit` prints a JSON list of unitless invariants with category, status, value (when available), and provenance flags.
 - `scripts/audit_compare.sh` compares Proven items against `measurements.json` and fails if any |z| > 3 or exact checks fail; Scaffold/Planned are reported but do not gate.
+- Cosmology appears under a separate `cosmology` block in the audit JSON and is non-gating by design.
 
 If CI breaks before the audit step (e.g., due to unrelated build/import issues), fix those first so the audit comparator can run.
 

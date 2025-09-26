@@ -1,10 +1,32 @@
 {
   "items": [
-    { "name": "EightTickMinimality" },
-    { "name": "Gap45_Delta_t_3_over_64" },
-    { "name": "UnitsInvariance" },
-    { "name": "KGate" },
-    { "name": "PlanckNormalization" },
-    { "name": "RSRealityMaster" }
+    { "name": "EightTickMinimality", "value": "1", "uncertainty": "0" },
+    { "name": "Gap45_Delta_t_3_over_64", "value": "0.046875", "uncertainty": "0" },
+    { "name": "UnitsInvariance", "value": "1", "uncertainty": "0" },
+    { "name": "KGate", "value": "1", "uncertainty": "0" },
+    { "name": "PlanckNormalization", "value": "0.31831", "uncertainty": "0" },
+    { "name": "RSRealityMaster", "value": "1", "uncertainty": "0" },
+    { "name": "AlphaInvPrediction", "value": "137.035999084", "uncertainty": "0.000000084" },
+    { "name": "Sin2ThetaW_at_MZ", "value": "0.23121", "uncertainty": "0.00004" },
+    { "name": "AlphaS_at_MZ", "value": "0.1179", "uncertainty": "0.0009" },
+    { "name": "ElectronG2", "value": "0.00115965218073", "uncertainty": "2.8e-13" },
+    { "name": "MuonG2", "value": "0.00116592062", "uncertainty": "4.1e-10" },
+    { "name": "MW_over_MZ", "value": "0.88153", "uncertainty": "0.00018" },
+    { "name": "ThetaBar_Bound", "value": "1.0e-10", "uncertainty": "0", "upper_bound": true },
+
+    { "name": "CKM_theta12_at_MZ", "value": "0.2265", "uncertainty": "0.0005" },
+    { "name": "CKM_theta23_at_MZ", "value": "0.0410", "uncertainty": "0.0010" },
+    { "name": "CKM_theta13_at_MZ", "value": "0.00365", "uncertainty": "0.00010" },
+    { "name": "CKM_deltaCP", "value": "1.20", "uncertainty": "0.10" },
+    { "name": "CKM_Jarlskog_J", "value": "3.00e-5", "uncertainty": "0.20e-5" },
+
+    { "name": "PMNS_theta12", "value": "0.584", "uncertainty": "0.010" },
+    { "name": "PMNS_theta23", "value": "0.830", "uncertainty": "0.020" },
+    { "name": "PMNS_theta13", "value": "0.149", "uncertainty": "0.003" },
+    { "name": "PMNS_deltaCP", "value": "3.49", "uncertainty": "0.20" },
+    { "name": "PMNS_Jarlskog_J", "value": "0.032", "uncertainty": "0.004" },
+
+    { "name": "FamilyRatio_Leptons_e_over_mu", "value": "0.00483633166", "uncertainty": "1.0e-10" },
+    { "name": "FamilyRatio_Leptons_mu_over_tau", "value": "0.0594649", "uncertainty": "1.0e-6" }
   ]
 }

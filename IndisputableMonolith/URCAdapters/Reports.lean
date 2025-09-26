@@ -643,6 +643,7 @@ def certificates_manifest : String :=
     , phi_selection_unique_with_closure_report
     , exclusive_reality_plus_report
     , recognition_reality_accessors_report
+    , units_class_coherence_report
     , exclusivity_at_report
     , phi_pinned_report
     , identifiability_report
@@ -706,6 +707,12 @@ def exclusivity_at_report : String :=
     IndisputableMonolith.Verification.Exclusivity.exclusivity_at_of_framework_uniqueness φ
       (IndisputableMonolith.RH.RS.framework_uniqueness φ)
   "ExclusivityAt: OK"
+
+/-- #eval-friendly report: units-class coherence at the pinned scale. -/
+def units_class_coherence_report : String :=
+  let φ : ℝ := IndisputableMonolith.Constants.phi
+  let _ := IndisputableMonolith.Verification.Exclusivity.units_class_coherence φ
+  "UnitsClassCoherence: OK"
 
 /-- #eval-friendly report: φ is pinned uniquely (selection + recognition closure). -/
 def phi_pinned_report : String :=

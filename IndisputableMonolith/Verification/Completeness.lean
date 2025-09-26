@@ -88,12 +88,17 @@ standalone utility; safe to delete without affecting completeness. -/
 
 section ClassicalNonessential
 
+open Classical
+noncomputable section
+
 /-- Nonessential classical helper: preconnectedness of metric balls via `isConnected_ball`.
 Not used by `RSCompleteness` or `PrimeClosure`. -/
 lemma temporary_isPreconnected_assumption {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   (x : E) {r : ℝ} (hr : 0 < r) :
   IsPreconnected (Metric.ball x r) :=
   (isConnected_ball x hr).isPreconnected
+
+end
 
 end ClassicalNonessential
 

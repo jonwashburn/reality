@@ -335,6 +335,14 @@ Representative consequences include exact 8-tick minimality (3D), a discrete lig
 \end{lstlisting}
 \end{importantbox}
 
+\paragraph{Audit Surface (unitless)} The artifact exposes a machine-readable audit of unitless invariants and an automated comparator. On the pinned toolchain:
+\begin{lstlisting}[language=bash]
+lake build
+lake exe audit              # emits JSON with items and cosmology blocks
+./scripts/audit_compare.sh  # compares Proven values vs measurements.json
+\end{lstlisting}
+The JSON includes fields: name, category, status (Proven/Scaffold/Planned), usesExternalInput (true/false), and optional value. The comparator treats items with an \texttt{upper\_bound} rule (e.g., $\bar{\theta}$) as bound checks and reports PASS/FAIL accordingly. External/Planned items are tracked for visibility but do not gate.
+
 \begin{resultbox}[Representative output]
 \small
 \begin{verbatim}
