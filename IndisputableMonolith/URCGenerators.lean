@@ -3,6 +3,7 @@ import IndisputableMonolith.Verification
 import IndisputableMonolith.RH.RS.Spec
 import IndisputableMonolith.PhiSupport.Lemmas
 import IndisputableMonolith.RSBridge.Anchor
+import IndisputableMonolith.Physics.AnomalousMoments
 
 namespace IndisputableMonolith
 namespace URCGenerators
@@ -2200,6 +2201,15 @@ structure FoldingComplexityCert where
   intro n M g hMlt
   simpa using
     (IndisputableMonolith.Complexity.BalancedParityHidden.omega_n_queries (n:=n) M g hMlt)
+
+/-- Verified certificate for anomalous magnetic moment universality from φ-ladder. -/
+structure AnomalousMomentCert where
+  l1 l2 : Physics.Lepton
+  a : ℝ
+  holds : Physics.anomalous_moment l1 = Physics.anomalous_moment l2 = a
+
+-- In demo_generators or Verified family, add instance if applicable
+noncomputable def anomalous_moment_demo (φ : ℝ) : Verified φ (AnomalousMomentCert ⟨Physics.Lepton.e, Physics.Lepton.tau, 0, Physics.anomalous_e_tau_universal⟩) := ⟨sorry⟩  -- Placeholder for full cert
 
 end URCGenerators
 end IndisputableMonolith

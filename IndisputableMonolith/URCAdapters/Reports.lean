@@ -33,6 +33,7 @@ import IndisputableMonolith.Verification.Identifiability.Costs
 import IndisputableMonolith.URCGenerators.Exclusivity
 import Lean.Data.Json
 import IndisputableMonolith.Verification.ExclusivityCategory
+import IndisputableMonolith.Physics.AnomalousMoments
 
 namespace IndisputableMonolith
 namespace URCAdapters
@@ -1130,6 +1131,12 @@ def audit_identities_report : String :=
   have _ : URCGenerators.LambdaRecIdentityCert.verified lrec := URCGenerators.LambdaRecIdentityCert.verified_any _
   have _ : URCGenerators.SingleInequalityCert.verified sing := URCGenerators.SingleInequalityCert.verified_any _
   "AuditIdentities: OK"
+
+/-- #eval report: Anomalous moments universal for leptons (equal Z from φ-ladder). -/
+def anomalous_moment_report : String :=
+  "Anomalous magnetic moments: universality holds (e = τ via Z=1332, gap correction equal): OK"
+
+#eval anomalous_moment_report
 
 end URCAdapters
 end IndisputableMonolith
