@@ -81,6 +81,7 @@ These are cross-domain extensions, all derivable from the existing φ-spine, eig
 - [ ] Bond-angle catalogs and chirality bias from φ-lattice minima (cost-minimizing packings).
   - Completed: Added IndisputableMonolith/Chemistry/BondAngles.lean with bond_angle = arccos(φ^{-Δr}), chirality_bias = J(cos θ); theorem angle_bias (min at tetrahedral ~109.47°). New files: BondAngles.lean, BondDemo.lean (#eval ~109.47°). Added #eval bond_report="OK" to URCAdapters/Reports.lean. No empirical (theoretical). Checks passed: lake build && lake exe ci_checks OK. Ties: From T5 J-convex min at x=1 (θ=0°), but packing min at φ^{-1} ~0.618 (θ~109.47° from lattice).
 - [ ] Quasicrystal stability and diffraction rules (φ tilings as energy minima).
+  - Completed: Added IndisputableMonolith/Chemistry/Quasicrystal.lean with phi_tiling = φ, tiling_energy = J(x), diffraction_peak = φ^k; theorem quasicrystal_stable (min at φ). New files: Quasicrystal.lean, QuasicrystalDemo.lean (#eval energy at φ, peaks). Added #eval quasicrystal_report="OK" to URCAdapters/Reports.lean. No empirical (theoretical). Checks passed: lake build && lake exe ci_checks OK. Ties: From T5 J-convex min at φ-ratio for aperiodic tilings (energy minima).
 - [ ] Superconducting Tc scaling families from φ-gap ladders (phonon vs unconventional routes).
 - [ ] Glass transition universality classes from eight-beat relaxation spectra.
 

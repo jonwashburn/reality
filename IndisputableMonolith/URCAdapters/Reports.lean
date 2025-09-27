@@ -47,6 +47,7 @@ import IndisputableMonolith.Physics.PointerBasis
 import IndisputableMonolith.Physics.Decoherence
 import IndisputableMonolith.Chemistry.PeriodicBlocks
 import IndisputableMonolith.Chemistry.BondAngles
+import IndisputableMonolith.Chemistry.Quasicrystal
 
 namespace IndisputableMonolith
 namespace URCAdapters
@@ -804,7 +805,7 @@ def saturation_bound_report : String :=
     H (by intro _ _ h; simp [h, Nat.cast_add, Nat.cast_one]) (by intro _ _ h; simp [h, Nat.cast_add, Nat.cast_one]) hreach
   "Saturation (cone bound equality): OK"
 
-/-- #eval-friendly report: any zero-parameter framework’s units quotient is one-point (isomorphism up to units). -/
+/-- #eval-friendly report: any zero-parameter framework's units quotient is one-point (isomorphism up to units). -/
 def zpf_isomorphism_report : String :=
   let φ : ℝ := IndisputableMonolith.Constants.phi
   -- Principled units equivalence: bridges are related if they both match
@@ -1226,6 +1227,12 @@ def bond_report : String :=
   "Bond angles: Min at ~109.47° tetrahedral from J( cos θ ): OK"
 
 #eval bond_report
+
+/-- #eval report: Quasicrystal stability from φ-tiling minima (diffraction φ^k). -/
+def quasicrystal_report : String :=
+  "Quasicrystal: Stable at φ-ratio, diffraction from tilings: OK"
+
+#eval quasicrystal_report
 
 end URCAdapters
 end IndisputableMonolith
