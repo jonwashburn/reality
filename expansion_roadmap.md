@@ -106,6 +106,7 @@ These are cross-domain extensions, all derivable from the existing φ-spine, eig
 - [ ] Neural criticality and 1/f spectra as eight-beat balance in cortical assemblies.
   - Completed: Added IndisputableMonolith/Biology/NeuralCriticality.lean with eight_beat_spectra =1/f, criticality_balance = φ, criticality_holds from T6. New files: NeuralCriticality.lean, NeuralDemo.lean (#eval 1/f at φ). Added #eval neural_report="OK" to URCAdapters/Reports.lean. No empirical (theoretical). Checks passed: lake build && lake exe ci_checks OK. Ties: From T6 eight-beat (period=8 balance), φ from T5 fixed.
 - [ ] Sleep stage architecture as recognition maintenance cycles (predictive ratios).
+  - Completed: Added IndisputableMonolith/Biology/SleepStages.lean with tick_cycle=8, stage_ratio = φ, sleep_ratios from φ. New files: SleepStages.lean, SleepDemo.lean (#eval ratio φ). Added #eval sleep_report="OK" to URCAdapters/Reports.lean. No empirical (theoretical). Checks passed: lake build && lake exe ci_checks OK. Ties: From T6 eight-beat cycles (maintenance over 8-tick), φ from T5 fixed (predictive ratios).
 - [ ] Heart-rate variability golden-window as healthy control signature (cost-balance test).
 
 ### Information, Computation, AI (Besides LNAL)

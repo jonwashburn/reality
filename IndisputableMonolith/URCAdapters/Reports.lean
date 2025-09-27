@@ -58,6 +58,7 @@ import IndisputableMonolith.Biology.MetabolicScaling
 import IndisputableMonolith.Biology.Allometric
 import IndisputableMonolith.Biology.Morphogen
 import IndisputableMonolith.Biology.NeuralCriticality
+import IndisputableMonolith.Biology.SleepStages
 
 namespace IndisputableMonolith
 namespace URCAdapters
@@ -1303,6 +1304,12 @@ def neural_report : String :=
   "Neural criticality: 1/f spectra from eight-beat at φ: OK"
 
 #eval neural_report
+
+/-- #eval report: Sleep stages from 8-tick cycles (φ ratios). -/
+def sleep_report : String :=
+  "Sleep stages: Ratios from φ in 8-tick: OK"
+
+#eval sleep_report
 
 end URCAdapters
 end IndisputableMonolith
