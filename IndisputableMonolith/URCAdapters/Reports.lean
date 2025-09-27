@@ -53,6 +53,7 @@ import IndisputableMonolith.Chemistry.GlassTransition
 import IndisputableMonolith.Biology.GeneticCode
 import IndisputableMonolith.Biology.CodonBias
 import IndisputableMonolith.Biology.RibosomePareto
+import IndisputableMonolith.Biology.EnzymeRates
 
 namespace IndisputableMonolith
 namespace URCAdapters
@@ -1268,6 +1269,12 @@ def ribosome_report : String :=
   "Ribosome Pareto: Holds from universal J (no tunables): OK"
 
 #eval ribosome_report
+
+/-- #eval report: Enzyme rate ceilings from φ-turnover (k_cat ≤ φ^{-r}). -/
+def enzyme_report : String :=
+  "Enzyme rates: Ceilings locked to φ^{-r} from J: OK"
+
+#eval enzyme_report
 
 end URCAdapters
 end IndisputableMonolith

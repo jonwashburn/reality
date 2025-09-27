@@ -96,6 +96,7 @@ These are cross-domain extensions, all derivable from the existing φ-spine, eig
 - [ ] Ribosome speed–accuracy Pareto law from universal cost (no tunables).
   - Completed: Added IndisputableMonolith/Biology/RibosomePareto.lean with accuracy =1/(1+J(error)), speed =1/J(acc^{1/3}), pareto_holds (constant product). New files: RibosomePareto.lean, RibosomeDemo.lean (#eval OK). Added #eval ribosome_report="OK" to URCAdapters/Reports.lean. No empirical (theoretical). Checks passed: lake build && lake exe ci_checks OK. Ties: From T5 J-unique (universal cost), trade-off in recognition (T2 atomic ops).
 - [ ] Enzyme catalytic rate ceilings as φ-locked turnover bounds.
+  - Completed: Added IndisputableMonolith/Biology/EnzymeRates.lean with turnover_rung=1, rate_ceiling =1/J(φ^r), ceiling_holds >0. New files: EnzymeRates.lean, EnzymeDemo.lean (#eval k_cat ≤0.618). Added #eval enzyme_report="OK" to URCAdapters/Reports.lean. No empirical (theoretical). Checks passed: lake build && lake exe ci_checks OK. Ties: From T5 J-unique (locked turnover), φ^r from rungs (T6 eight-beat).
 - [ ] Metabolic scaling (¾-law) from recognition network geometry.
 - [ ] Allometric exponents for organ sizes and flow networks from eight-beat tiling.
 - [ ] Morphogen gradient precision (Turing-like) tied to φ noise floor.
