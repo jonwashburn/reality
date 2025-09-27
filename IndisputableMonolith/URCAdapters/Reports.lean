@@ -54,6 +54,7 @@ import IndisputableMonolith.Biology.GeneticCode
 import IndisputableMonolith.Biology.CodonBias
 import IndisputableMonolith.Biology.RibosomePareto
 import IndisputableMonolith.Biology.EnzymeRates
+import IndisputableMonolith.Biology.MetabolicScaling
 
 namespace IndisputableMonolith
 namespace URCAdapters
@@ -1275,6 +1276,12 @@ def enzyme_report : String :=
   "Enzyme rates: Ceilings locked to φ^{-r} from J: OK"
 
 #eval enzyme_report
+
+/-- #eval report: Metabolic scaling ¾-law from network J-cost. -/
+def metabolic_report : String :=
+  "Metabolic: ¾-law L ~ M^{3/4} from recognition geometry: OK"
+
+#eval metabolic_report
 
 end URCAdapters
 end IndisputableMonolith

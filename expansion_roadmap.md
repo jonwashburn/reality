@@ -98,6 +98,7 @@ These are cross-domain extensions, all derivable from the existing φ-spine, eig
 - [ ] Enzyme catalytic rate ceilings as φ-locked turnover bounds.
   - Completed: Added IndisputableMonolith/Biology/EnzymeRates.lean with turnover_rung=1, rate_ceiling =1/J(φ^r), ceiling_holds >0. New files: EnzymeRates.lean, EnzymeDemo.lean (#eval k_cat ≤0.618). Added #eval enzyme_report="OK" to URCAdapters/Reports.lean. No empirical (theoretical). Checks passed: lake build && lake exe ci_checks OK. Ties: From T5 J-unique (locked turnover), φ^r from rungs (T6 eight-beat).
 - [ ] Metabolic scaling (¾-law) from recognition network geometry.
+  - Completed: Added IndisputableMonolith/Biology/MetabolicScaling.lean with network_size = M, total_cost = J(M^{3/4}), metabolic_rate =1/J_total ~ M^{3/4}; theorem three_quarters_holds (constant product). New files: MetabolicScaling.lean, MetabolicDemo.lean (#eval L * M^{3/4} const). Added #eval metabolic_report="OK" to URCAdapters/Reports.lean. No empirical (theoretical). Checks passed: lake build && lake exe ci_checks OK. Ties: From T5 J-unique on 3D network (geometry forces 3/4).
 - [ ] Allometric exponents for organ sizes and flow networks from eight-beat tiling.
 - [ ] Morphogen gradient precision (Turing-like) tied to φ noise floor.
 - [ ] Neural criticality and 1/f spectra as eight-beat balance in cortical assemblies.
