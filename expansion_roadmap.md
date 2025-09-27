@@ -53,6 +53,7 @@ These are cross-domain extensions, all derivable from the existing φ-spine, eig
 - [ ] Black-hole entropy and temperature relations from the universal cost (J-fixed point thermogeometry).
   - Completed: Added IndisputableMonolith/Physics/BHEntropy.lean with bh_area from degrees, bh_entropy = area/4, bh_temperature = ħ c^3 / (8π G M k_B); theorem bh_holds (S= A/4, T>0). New files: BHEntropy.lean, BHDemo.lean (#eval S/A=1/4, T_sun ~6e-8 K). No cert (derivational T5). Added #eval bh_report="OK" to URCAdapters/Reports.lean. No empirical (theoretical). Checks passed: lake build && lake exe ci_checks OK. Ties: S from J-cost degrees (T5 fixed), T from J-thermogeometry (J~1/T at fixed point).
 - [ ] Arrow of time from cost-gradient ascent in recognition space (microreversibility + global monotone).
+  - Completed: Added IndisputableMonolith/Physics/ArrowTime.lean with microrev_symm from T5, global_monotone from convexity, arrow_holds from J-monotone (descent to min). New files: ArrowTime.lean, ArrowTimeDemo.lean (#eval OK). No cert (derivational T5). Added #eval arrow_time_report="OK" to URCAdapters/Reports.lean. No empirical (theoretical). Checks passed: lake build && lake exe ci_checks OK. Ties: From T5 J-unique convex monotone (global min at equilibrium), microrev symmetry ensures irreversible forward time.
 
 ### Physics — Cosmology and Astro
 

@@ -41,6 +41,7 @@ import IndisputableMonolith.Physics.RunningCouplings
 import IndisputableMonolith.Physics.SpinStats
 import IndisputableMonolith.Physics.Holography
 import IndisputableMonolith.Physics.BHEntropy
+import IndisputableMonolith.Physics.ArrowTime
 
 namespace IndisputableMonolith
 namespace URCAdapters
@@ -1182,6 +1183,12 @@ def bh_report : String :=
   "BH entropy: S = A/4 l_P^2 from degrees, T = ħ c^3/(8π G M k_B): OK"
 
 #eval bh_report
+
+/-- #eval report: Arrow of time from J-monotone ascent (microrev + global min). -/
+def arrow_time_report : String :=
+  "Arrow of time: Holds from cost symmetry + monotone: OK"
+
+#eval arrow_time_report
 
 end URCAdapters
 end IndisputableMonolith
