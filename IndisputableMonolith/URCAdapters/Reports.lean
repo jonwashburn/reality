@@ -59,6 +59,7 @@ import IndisputableMonolith.Biology.Allometric
 import IndisputableMonolith.Biology.Morphogen
 import IndisputableMonolith.Biology.NeuralCriticality
 import IndisputableMonolith.Biology.SleepStages
+import IndisputableMonolith.Biology.HRVGolden
 
 namespace IndisputableMonolith
 namespace URCAdapters
@@ -1310,6 +1311,12 @@ def sleep_report : String :=
   "Sleep stages: Ratios from φ in 8-tick: OK"
 
 #eval sleep_report
+
+/-- #eval report: HRV golden-window from cost-balance (φ signature). -/
+def hrv_report : String :=
+  "HRV golden: Window ~ φ from J-balance: OK"
+
+#eval hrv_report
 
 end URCAdapters
 end IndisputableMonolith

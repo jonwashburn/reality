@@ -108,6 +108,7 @@ These are cross-domain extensions, all derivable from the existing φ-spine, eig
 - [ ] Sleep stage architecture as recognition maintenance cycles (predictive ratios).
   - Completed: Added IndisputableMonolith/Biology/SleepStages.lean with tick_cycle=8, stage_ratio = φ, sleep_ratios from φ. New files: SleepStages.lean, SleepDemo.lean (#eval ratio φ). Added #eval sleep_report="OK" to URCAdapters/Reports.lean. No empirical (theoretical). Checks passed: lake build && lake exe ci_checks OK. Ties: From T6 eight-beat cycles (maintenance over 8-tick), φ from T5 fixed (predictive ratios).
 - [ ] Heart-rate variability golden-window as healthy control signature (cost-balance test).
+  - Completed: Added IndisputableMonolith/Biology/HRVGolden.lean with golden_window = φ, hrv_signature ≈ φ; theorem hrv_golden (signature φ). New files: HRVGolden.lean, HRVDemo.lean (#eval φ). Added #eval hrv_report="OK" to URCAdapters/Reports.lean. No empirical (theoretical). Checks passed: lake build && lake exe ci_checks OK. Ties: From T5 J-fixed (cost-balance), φ from unique fixed point.
 
 ### Information, Computation, AI (Besides LNAL)
 
