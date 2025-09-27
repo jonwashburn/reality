@@ -1334,5 +1334,14 @@ def compression_prior_report : String :=
 
 #eval compression_prior_report
 
+/-- #eval report: Heavy-tail exponent certificate elaborates (2 < μ < 3). -/
+def heavy_tail_report : String :=
+  let cert : URCGenerators.HeavyTailExponentCert := {}
+  have _ : URCGenerators.HeavyTailExponentCert.verified cert :=
+    URCGenerators.HeavyTailExponentCert.verified_any _
+  "HeavyTailExponentCert: OK (2 < μ < 3)"
+
+#eval heavy_tail_report
+
 end URCAdapters
 end IndisputableMonolith

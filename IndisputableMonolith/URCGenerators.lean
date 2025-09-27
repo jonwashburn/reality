@@ -7,6 +7,7 @@ import IndisputableMonolith.Physics.AnomalousMoments
 import IndisputableMonolith.Physics.CKM
 import IndisputableMonolith.Physics.PMNS
 import IndisputableMonolith.Physics.RunningCouplings
+import IndisputableMonolith.Econ.HeavyTail
 
 namespace IndisputableMonolith
 namespace URCGenerators
@@ -2243,6 +2244,18 @@ noncomputable def running_demo (φ : ℝ) : Verified φ (RunningCouplingCert ⟨
     PMNSHierarchyCert.verified c := by
     -- Discharged directly by the theorem in Physics.PMNS
     simpa using (Physics.normal_order_holds)
+
+  /-- Certificate: Heavy-tail exponent lies strictly between 2 and 3. -/
+  structure HeavyTailExponentCert where
+    deriving Repr
+
+  @[simp] def HeavyTailExponentCert.verified (_c : HeavyTailExponentCert) : Prop :=
+    IndisputableMonolith.Econ.heavy_tail_holds
+
+  @[simp] theorem HeavyTailExponentCert.verified_any (c : HeavyTailExponentCert) :
+    HeavyTailExponentCert.verified c := by
+    -- Discharged by Econ.HeavyTail.heavy_tail_holds
+    simpa using (IndisputableMonolith.Econ.heavy_tail_holds)
 
 end URCGenerators
 end IndisputableMonolith
