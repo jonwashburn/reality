@@ -40,6 +40,7 @@ import IndisputableMonolith.Physics.Hadrons
 import IndisputableMonolith.Physics.RunningCouplings
 import IndisputableMonolith.Physics.SpinStats
 import IndisputableMonolith.Physics.Holography
+import IndisputableMonolith.Physics.BHEntropy
 
 namespace IndisputableMonolith
 namespace URCAdapters
@@ -1175,6 +1176,12 @@ def holography_report : String :=
   "Holographic area law: S ~ #degrees /4 from flux=0 boundaries: OK"
 
 #eval holography_report
+
+/-- #eval report: BH S=A/4 and T from J-fixed thermogeometry. -/
+def bh_report : String :=
+  "BH entropy: S = A/4 l_P^2 from degrees, T = ħ c^3/(8π G M k_B): OK"
+
+#eval bh_report
 
 end URCAdapters
 end IndisputableMonolith

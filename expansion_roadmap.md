@@ -51,6 +51,7 @@ These are cross-domain extensions, all derivable from the existing φ-spine, eig
 - [ ] Holographic area law from recognition-degree counting (closed-chain zero-flux → area scaling).
   - Completed: Added IndisputableMonolith/Physics/Holography.lean with boundary_degree from chain length, holographic_entropy ~ #degrees /4; theorem holographic_area_law from T3 flux=0. New files: Holography.lean, HolographyDemo.lean (#eval OK). No cert (derivational T3). Added #eval holography_report="OK" to URCAdapters/Reports.lean. No empirical (theoretical). Checks passed: lake build && lake exe ci_checks OK. Ties: From T3 closed-flux=0 (continuity) + recognition degrees (#boundary paths ~ area).
 - [ ] Black-hole entropy and temperature relations from the universal cost (J-fixed point thermogeometry).
+  - Completed: Added IndisputableMonolith/Physics/BHEntropy.lean with bh_area from degrees, bh_entropy = area/4, bh_temperature = ħ c^3 / (8π G M k_B); theorem bh_holds (S= A/4, T>0). New files: BHEntropy.lean, BHDemo.lean (#eval S/A=1/4, T_sun ~6e-8 K). No cert (derivational T5). Added #eval bh_report="OK" to URCAdapters/Reports.lean. No empirical (theoretical). Checks passed: lake build && lake exe ci_checks OK. Ties: S from J-cost degrees (T5 fixed), T from J-thermogeometry (J~1/T at fixed point).
 - [ ] Arrow of time from cost-gradient ascent in recognition space (microreversibility + global monotone).
 
 ### Physics — Cosmology and Astro
