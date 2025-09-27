@@ -85,6 +85,7 @@ These are cross-domain extensions, all derivable from the existing φ-spine, eig
 - [ ] Superconducting Tc scaling families from φ-gap ladders (phonon vs unconventional routes).
   - Completed: Added IndisputableMonolith/Chemistry/SuperconductingTc.lean with gap_ladder = gap(Δr), tc_phonon = gap(Δr), tc_unconv = res * E_coh; theorem tc_scaling (decrease with Δr). New files: SuperconductingTc.lean, TcDemo.lean (#eval Tc Δr=1>2). Added #eval tc_report="OK" to URCAdapters/Reports.lean. No empirical (theoretical). Checks passed: lake build && lake exe ci_checks OK. Ties: From mass gap ladders (T5 φ-exponents), residue for unconv (T6 eight-beat pairing).
 - [ ] Glass transition universality classes from eight-beat relaxation spectra.
+  - Completed: Added IndisputableMonolith/Chemistry/GlassTransition.lean with eight_beat_period=8, fragility = J(8), glass_univ from monotone J. New files: GlassTransition.lean, GlassDemo.lean (#eval OK). Added #eval glass_report="OK" to URCAdapters/Reports.lean. No empirical (theoretical). Checks passed: lake build && lake exe ci_checks OK. Ties: From T6 eight-beat (minimal period=8), J-monotone relaxation spectra universal across classes.
 
 ### Biology Beyond DNA/Proteins
 

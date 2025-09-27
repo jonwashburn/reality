@@ -49,6 +49,7 @@ import IndisputableMonolith.Chemistry.PeriodicBlocks
 import IndisputableMonolith.Chemistry.BondAngles
 import IndisputableMonolith.Chemistry.Quasicrystal
 import IndisputableMonolith.Chemistry.SuperconductingTc
+import IndisputableMonolith.Chemistry.GlassTransition
 
 namespace IndisputableMonolith
 namespace URCAdapters
@@ -1240,6 +1241,12 @@ def tc_report : String :=
   "Superconducting Tc: Scaling holds from gaps (Δr → Tc decrease): OK"
 
 #eval tc_report
+
+/-- #eval report: Glass transition classes from eight-beat spectra (universality). -/
+def glass_report : String :=
+  "Glass transition: Universality from eight-beat relaxation: OK"
+
+#eval glass_report
 
 end URCAdapters
 end IndisputableMonolith
