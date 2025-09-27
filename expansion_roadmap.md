@@ -104,6 +104,7 @@ These are cross-domain extensions, all derivable from the existing φ-spine, eig
 - [ ] Morphogen gradient precision (Turing-like) tied to φ noise floor.
   - Completed: Added IndisputableMonolith/Biology/Morphogen.lean with phi_noise = E_coh, gradient_scale = λ, morphogen_precision =1/(noise * scale); theorem precision_holds >0. New files: Morphogen.lean, MorphogenDemo.lean (#eval ~11). Added #eval morphogen_report="OK" to URCAdapters/Reports.lean. No empirical (theoretical). Checks passed: lake build && lake exe ci_checks OK. Ties: From T5 E_coh φ^{-5} noise floor, scale from λ_rec (T3 flux=0).
 - [ ] Neural criticality and 1/f spectra as eight-beat balance in cortical assemblies.
+  - Completed: Added IndisputableMonolith/Biology/NeuralCriticality.lean with eight_beat_spectra =1/f, criticality_balance = φ, criticality_holds from T6. New files: NeuralCriticality.lean, NeuralDemo.lean (#eval 1/f at φ). Added #eval neural_report="OK" to URCAdapters/Reports.lean. No empirical (theoretical). Checks passed: lake build && lake exe ci_checks OK. Ties: From T6 eight-beat (period=8 balance), φ from T5 fixed.
 - [ ] Sleep stage architecture as recognition maintenance cycles (predictive ratios).
 - [ ] Heart-rate variability golden-window as healthy control signature (cost-balance test).
 

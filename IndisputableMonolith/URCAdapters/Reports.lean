@@ -57,6 +57,7 @@ import IndisputableMonolith.Biology.EnzymeRates
 import IndisputableMonolith.Biology.MetabolicScaling
 import IndisputableMonolith.Biology.Allometric
 import IndisputableMonolith.Biology.Morphogen
+import IndisputableMonolith.Biology.NeuralCriticality
 
 namespace IndisputableMonolith
 namespace URCAdapters
@@ -1296,6 +1297,12 @@ def morphogen_report : String :=
   "Morphogen: Precision ~ 1/(φ noise * scale): OK"
 
 #eval morphogen_report
+
+/-- #eval report: Neural criticality 1/f from eight-beat balance. -/
+def neural_report : String :=
+  "Neural criticality: 1/f spectra from eight-beat at φ: OK"
+
+#eval neural_report
 
 end URCAdapters
 end IndisputableMonolith
