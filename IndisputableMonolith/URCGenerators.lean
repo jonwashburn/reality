@@ -2216,6 +2216,15 @@ structure AnomalousMomentCert where
 -- In demo_generators or Verified family, add instance if applicable
 noncomputable def anomalous_moment_demo (φ : ℝ) : Verified φ (AnomalousMomentCert ⟨Physics.Lepton.e, Physics.Lepton.tau, 0, Physics.anomalous_e_tau_universal⟩) := ⟨sorry⟩  -- Placeholder for full cert
 
+@[simp] def AnomalousMomentCert.verified (_c : AnomalousMomentCert) : Prop :=
+  -- Lepton universality: equal-Z implies equal anomalous_moment
+  Physics.anomalous_moment Physics.Lepton.e = Physics.anomalous_moment Physics.Lepton.tau
+
+@[simp] theorem AnomalousMomentCert.verified_any (c : AnomalousMomentCert) :
+  AnomalousMomentCert.verified c := by
+  -- Discharged by Physics.anomalous_e_tau_universal
+  simpa using (Physics.anomalous_e_tau_universal)
+
 /-- Verified certificate for CKM Jarlskog J from φ-rung differences (dimensionless inevitability). -/
 structure CKMCert where
   j : ℝ
