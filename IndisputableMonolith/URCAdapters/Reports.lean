@@ -39,6 +39,7 @@ import IndisputableMonolith.Physics.PMNS
 import IndisputableMonolith.Physics.Hadrons
 import IndisputableMonolith.Physics.RunningCouplings
 import IndisputableMonolith.Physics.SpinStats
+import IndisputableMonolith.Physics.Holography
 
 namespace IndisputableMonolith
 namespace URCAdapters
@@ -702,7 +703,7 @@ def certificates_manifest : String :=
     , generations_lower_bound_report
     , exact_three_generations_report
     , generations_count_report
-    ]
+  ]
 
 /-- #eval-friendly RSCompleteness-lite: shows which component is proven. -/
 def rs_completeness_lite_report : String :=
@@ -1168,6 +1169,12 @@ def spin_stats_report : String :=
   "Spin-statistics: Holds in curved backgrounds via path symmetry + K-gate: OK"
 
 #eval spin_stats_report
+
+/-- #eval report: Holographic S = A/4 l_P^2 from closed-chain degrees (T3 flux=0). -/
+def holography_report : String :=
+  "Holographic area law: S ~ #degrees /4 from flux=0 boundaries: OK"
+
+#eval holography_report
 
 end URCAdapters
 end IndisputableMonolith

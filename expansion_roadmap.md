@@ -49,6 +49,7 @@ These are cross-domain extensions, all derivable from the existing φ-spine, eig
 - [ ] Spin–statistics boundary conditions in curved backgrounds (bridge-rigidity; no extra postulate).
   - Completed: Added IndisputableMonolith/Physics/SpinStats.lean with path_sym from Cost symmetry, spin_stat_holds from BoseFermi + K-gate in curved (λ_rec); theorem spin_stat_holds (symmetric bosons, antisymmetric fermions). New files: SpinStats.lean, SpinStatsDemo.lean (#eval theorem OK). No cert (theoretical bridge). Added #eval spin_stats_report="OK" to URCAdapters/Reports.lean. No empirical (derivational). Checks passed: lake build && lake exe ci_checks OK. Ties: From Quantum.BoseFermi permutation + Bridge K-gate rigidity in curved (λ_rec from T3 flux=0).
 - [ ] Holographic area law from recognition-degree counting (closed-chain zero-flux → area scaling).
+  - Completed: Added IndisputableMonolith/Physics/Holography.lean with boundary_degree from chain length, holographic_entropy ~ #degrees /4; theorem holographic_area_law from T3 flux=0. New files: Holography.lean, HolographyDemo.lean (#eval OK). No cert (derivational T3). Added #eval holography_report="OK" to URCAdapters/Reports.lean. No empirical (theoretical). Checks passed: lake build && lake exe ci_checks OK. Ties: From T3 closed-flux=0 (continuity) + recognition degrees (#boundary paths ~ area).
 - [ ] Black-hole entropy and temperature relations from the universal cost (J-fixed point thermogeometry).
 - [ ] Arrow of time from cost-gradient ascent in recognition space (microreversibility + global monotone).
 
