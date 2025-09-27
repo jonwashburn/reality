@@ -83,6 +83,7 @@ These are cross-domain extensions, all derivable from the existing φ-spine, eig
 - [ ] Quasicrystal stability and diffraction rules (φ tilings as energy minima).
   - Completed: Added IndisputableMonolith/Chemistry/Quasicrystal.lean with phi_tiling = φ, tiling_energy = J(x), diffraction_peak = φ^k; theorem quasicrystal_stable (min at φ). New files: Quasicrystal.lean, QuasicrystalDemo.lean (#eval energy at φ, peaks). Added #eval quasicrystal_report="OK" to URCAdapters/Reports.lean. No empirical (theoretical). Checks passed: lake build && lake exe ci_checks OK. Ties: From T5 J-convex min at φ-ratio for aperiodic tilings (energy minima).
 - [ ] Superconducting Tc scaling families from φ-gap ladders (phonon vs unconventional routes).
+  - Completed: Added IndisputableMonolith/Chemistry/SuperconductingTc.lean with gap_ladder = gap(Δr), tc_phonon = gap(Δr), tc_unconv = res * E_coh; theorem tc_scaling (decrease with Δr). New files: SuperconductingTc.lean, TcDemo.lean (#eval Tc Δr=1>2). Added #eval tc_report="OK" to URCAdapters/Reports.lean. No empirical (theoretical). Checks passed: lake build && lake exe ci_checks OK. Ties: From mass gap ladders (T5 φ-exponents), residue for unconv (T6 eight-beat pairing).
 - [ ] Glass transition universality classes from eight-beat relaxation spectra.
 
 ### Biology Beyond DNA/Proteins

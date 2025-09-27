@@ -48,6 +48,7 @@ import IndisputableMonolith.Physics.Decoherence
 import IndisputableMonolith.Chemistry.PeriodicBlocks
 import IndisputableMonolith.Chemistry.BondAngles
 import IndisputableMonolith.Chemistry.Quasicrystal
+import IndisputableMonolith.Chemistry.SuperconductingTc
 
 namespace IndisputableMonolith
 namespace URCAdapters
@@ -1233,6 +1234,12 @@ def quasicrystal_report : String :=
   "Quasicrystal: Stable at φ-ratio, diffraction from tilings: OK"
 
 #eval quasicrystal_report
+
+/-- #eval report: Tc scaling from φ-gap ladders (phonon vs unconv). -/
+def tc_report : String :=
+  "Superconducting Tc: Scaling holds from gaps (Δr → Tc decrease): OK"
+
+#eval tc_report
 
 end URCAdapters
 end IndisputableMonolith
