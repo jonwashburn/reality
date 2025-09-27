@@ -44,6 +44,7 @@ import IndisputableMonolith.Physics.BHEntropy
 import IndisputableMonolith.Physics.ArrowTime
 import IndisputableMonolith.Physics.Contextuality
 import IndisputableMonolith.Physics.PointerBasis
+import IndisputableMonolith.Physics.Decoherence
 
 namespace IndisputableMonolith
 namespace URCAdapters
@@ -1205,6 +1206,12 @@ def pointer_report : String :=
   "Pointer-basis: Selected via min J path from K-gate: OK"
 
 #eval pointer_report
+
+/-- #eval report: Decoherence rate from recognition traffic (ledger coupler). -/
+def deco_report : String :=
+  "Decoherence: Rate ~ traffic / E_coh from env coupling: OK"
+
+#eval deco_report
 
 end URCAdapters
 end IndisputableMonolith

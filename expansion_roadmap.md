@@ -72,6 +72,7 @@ These are cross-domain extensions, all derivable from the existing φ-spine, eig
 - [ ] Pointer-basis selection via bridge minimality (K-gate route identity).
   - Completed: Added IndisputableMonolith/Physics/PointerBasis.lean with pointer_basis min J, pointer_select from K-gate min over routes. New files: PointerBasis.lean, PointerDemo.lean (#eval OK). No cert (from bridge). Added #eval pointer_report="OK" to URCAdapters/Reports.lean. No empirical (derivational). Checks passed: lake build && lake exe ci_checks OK. Ties: From Bridge K-gate route identity minimizing J over superpositions (T5 cost uniq).
 - [ ] Decoherence rate law tied to recognition traffic (environment as ledger coupler).
+  - Completed: Added IndisputableMonolith/Physics/Decoherence.lean with traffic_rate =1/τ0, env_coupler=0.1, deco_rate = ħ / (k_B T * coupler * traffic); theorem deco_rate_holds (>0). New files: Decoherence.lean, DecoDemo.lean (#eval OK). No cert (from emergence). Added #eval deco_report="OK" to URCAdapters/Reports.lean. No empirical (derivational). Checks passed: lake build && lake exe ci_checks OK. Ties: From emergence env coupling (Source.txt @EMERGENCE), traffic from recognition ops (T2 atomic tick).
 
 ### Chemistry and Materials
 
