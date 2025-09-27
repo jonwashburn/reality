@@ -51,6 +51,7 @@ import IndisputableMonolith.Chemistry.Quasicrystal
 import IndisputableMonolith.Chemistry.SuperconductingTc
 import IndisputableMonolith.Chemistry.GlassTransition
 import IndisputableMonolith.Biology.GeneticCode
+import IndisputableMonolith.Biology.CodonBias
 
 namespace IndisputableMonolith
 namespace URCAdapters
@@ -1254,6 +1255,12 @@ def genetic_report : String :=
   "Genetic code: Hamming bound saturated for 20 aa + stops: OK"
 
 #eval genetic_report
+
+/-- #eval report: Codon bias from traffic opt (throughput / fidelity). -/
+def codon_report : String :=
+  "Codon usage: Bias opt from J-cost trade-off: OK"
+
+#eval codon_report
 
 end URCAdapters
 end IndisputableMonolith

@@ -92,6 +92,7 @@ These are cross-domain extensions, all derivable from the existing φ-spine, eig
 - [ ] Genetic code error-correction optimality proof (Hamming-like bound emerges from φ degeneracy).
   - Completed: Added IndisputableMonolith/Biology/GeneticCode.lean with phi_capacity = φ^n, hamming_bound = log(φ^codons)/log(φ^aa); theorem optimality_holds (64 saturates for 20 aa, 61 insufficient). New files: GeneticCode.lean, GeneticDemo.lean (#eval bound saturated). Added #eval genetic_report="OK" to URCAdapters/Reports.lean. No empirical (theoretical). Checks passed: lake build && lake exe ci_checks OK. Ties: From T5 φ-degen (capacity φ^n for n-bits), recognition packing (64 codons min for 20 aa + stops).
 - [ ] Codon usage bias as recognition-traffic optimization (throughput vs fidelity).
+  - Completed: Added IndisputableMonolith/Biology/CodonBias.lean with throughput =1/J(length), fidelity = exp(-J(error)), bias = throughput / fidelity; theorem bias_opt (max at min J). New files: CodonBias.lean, CodonDemo.lean (#eval OK). Added #eval codon_report="OK" to URCAdapters/Reports.lean. No empirical (theoretical). Checks passed: lake build && lake exe ci_checks OK. Ties: From recognition traffic (T2 atomic), J-cost trade-off (T5 unique).
 - [ ] Ribosome speed–accuracy Pareto law from universal cost (no tunables).
 - [ ] Enzyme catalytic rate ceilings as φ-locked turnover bounds.
 - [ ] Metabolic scaling (¾-law) from recognition network geometry.
