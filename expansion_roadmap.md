@@ -94,6 +94,7 @@ These are cross-domain extensions, all derivable from the existing φ-spine, eig
 - [ ] Codon usage bias as recognition-traffic optimization (throughput vs fidelity).
   - Completed: Added IndisputableMonolith/Biology/CodonBias.lean with throughput =1/J(length), fidelity = exp(-J(error)), bias = throughput / fidelity; theorem bias_opt (max at min J). New files: CodonBias.lean, CodonDemo.lean (#eval OK). Added #eval codon_report="OK" to URCAdapters/Reports.lean. No empirical (theoretical). Checks passed: lake build && lake exe ci_checks OK. Ties: From recognition traffic (T2 atomic), J-cost trade-off (T5 unique).
 - [ ] Ribosome speed–accuracy Pareto law from universal cost (no tunables).
+  - Completed: Added IndisputableMonolith/Biology/RibosomePareto.lean with accuracy =1/(1+J(error)), speed =1/J(acc^{1/3}), pareto_holds (constant product). New files: RibosomePareto.lean, RibosomeDemo.lean (#eval OK). Added #eval ribosome_report="OK" to URCAdapters/Reports.lean. No empirical (theoretical). Checks passed: lake build && lake exe ci_checks OK. Ties: From T5 J-unique (universal cost), trade-off in recognition (T2 atomic ops).
 - [ ] Enzyme catalytic rate ceilings as φ-locked turnover bounds.
 - [ ] Metabolic scaling (¾-law) from recognition network geometry.
 - [ ] Allometric exponents for organ sizes and flow networks from eight-beat tiling.

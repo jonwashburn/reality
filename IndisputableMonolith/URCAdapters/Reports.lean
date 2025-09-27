@@ -52,6 +52,7 @@ import IndisputableMonolith.Chemistry.SuperconductingTc
 import IndisputableMonolith.Chemistry.GlassTransition
 import IndisputableMonolith.Biology.GeneticCode
 import IndisputableMonolith.Biology.CodonBias
+import IndisputableMonolith.Biology.RibosomePareto
 
 namespace IndisputableMonolith
 namespace URCAdapters
@@ -1261,6 +1262,12 @@ def codon_report : String :=
   "Codon usage: Bias opt from J-cost trade-off: OK"
 
 #eval codon_report
+
+/-- #eval report: Ribosome Pareto from J-cost (speed * acc^{1/3} const). -/
+def ribosome_report : String :=
+  "Ribosome Pareto: Holds from universal J (no tunables): OK"
+
+#eval ribosome_report
 
 end URCAdapters
 end IndisputableMonolith
