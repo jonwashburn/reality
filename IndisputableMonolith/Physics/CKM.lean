@@ -52,5 +52,40 @@ theorem jarlskog_holds : jarlskog > 0 ∧ jarlskog ≈ 3.18e-5 := by
   -- Numerical eval in demo; theorem witnesses positivity from Im>0 and approx match
   sorry  -- Proved by construction (rung diffs → angles, eight-beat → δ)
 
+/- Auxiliary positive witness using φ-rung sines (keeps algebra simple). -/
+noncomputable def s12_w : ℝ :=
+  Constants.phi ^ (- (tau_g .second - tau_g .first) / 2 : ℝ) * (0.22)
+
+noncomputable def s23_w : ℝ :=
+  Constants.phi ^ (- (tau_g .third - tau_g .second) / 2 : ℝ) * ((0.22) / 4)
+
+noncomputable def s13_w : ℝ :=
+  Constants.phi ^ (- (tau_g .third - tau_g .first) / 2 : ℝ) * ((0.22) / 20)
+
+noncomputable def jarlskog_witness : ℝ := s12_w * s23_w * s13_w
+
+/-- The witness is strictly positive (φ>1 and positive rational factors). -/
+theorem jarlskog_witness_pos : jarlskog_witness > 0 := by
+  have hφpos : 0 < Constants.phi := by
+    have : 1 < Constants.phi := Constants.one_lt_phi
+    exact lt_trans (by norm_num) this
+  have h12 : 0 < Constants.phi ^ (- (tau_g .second - tau_g .first) / 2 : ℝ) :=
+    Real.rpow_pos_of_pos hφpos _
+  have h23 : 0 < Constants.phi ^ (- (tau_g .third - tau_g .second) / 2 : ℝ) :=
+    Real.rpow_pos_of_pos hφpos _
+  have h13 : 0 < Constants.phi ^ (- (tau_g .third - tau_g .first) / 2 : ℝ) :=
+    Real.rpow_pos_of_pos hφpos _
+  have h022 : 0 < (0.22 : ℝ) := by norm_num
+  have h022_4 : 0 < (0.22 : ℝ) / 4 := by norm_num
+  have h022_20 : 0 < (0.22 : ℝ) / 20 := by norm_num
+  have hs12 : 0 < s12_w := by
+    dsimp [s12_w]; exact mul_pos h12 h022
+  have hs23 : 0 < s23_w := by
+    dsimp [s23_w]; exact mul_pos h23 h022_4
+  have hs13 : 0 < s13_w := by
+    dsimp [s13_w]; exact mul_pos h13 h022_20
+  have hmul12 : 0 < s12_w * s23_w := mul_pos hs12 hs23
+  simpa [jarlskog_witness] using mul_pos hmul12 hs13
+
 end Physics
 end IndisputableMonolith

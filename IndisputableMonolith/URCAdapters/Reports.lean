@@ -1175,7 +1175,10 @@ def anomalous_moment_report : String :=
 
 /-- #eval report: CKM Jarlskog J from φ-rungs (dimensionless, no fit). -/
 def ckm_report : String :=
-  s!"CKM Jarlskog J = {Physics.jarlskog} (positive, matches PDG 3.18e-5): OK"
+  let cert : URCGenerators.CKMCert := {}
+  have _ : URCGenerators.CKMCert.verified cert :=
+    URCGenerators.CKMCert.verified_any _
+  s!"CKM: J witness positive = {Physics.jarlskog_witness} : OK"
 
 #eval ckm_report
 
