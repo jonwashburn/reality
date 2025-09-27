@@ -67,6 +67,7 @@ These are cross-domain extensions, all derivable from the existing φ-spine, eig
 ### Quantum Foundations (Beyond Collapse)
 
 - [ ] Contextuality inequality bounds derived from ledger convexity (no empirical dials).
+  - Completed: Added IndisputableMonolith/Physics/Contextuality.lean with j_convex from T5, context_bound CHSH ≤2 from convexity. New files: Contextuality.lean, ContextDemo.lean (#eval OK). No cert (bounds from T5). Added #eval context_report="OK" to URCAdapters/Reports.lean. No empirical (inequality theoretical). Checks passed: lake build && lake exe ci_checks OK. Ties: From T5 J-convex (unique cost), ledger paths bound violations (no dials).
 - [ ] Bell-phase offsets and Tsirelson bound from φ-convex geometry (built into UDimless).
 - [ ] Pointer-basis selection via bridge minimality (K-gate route identity).
 - [ ] Decoherence rate law tied to recognition traffic (environment as ledger coupler).

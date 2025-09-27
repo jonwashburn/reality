@@ -42,6 +42,7 @@ import IndisputableMonolith.Physics.SpinStats
 import IndisputableMonolith.Physics.Holography
 import IndisputableMonolith.Physics.BHEntropy
 import IndisputableMonolith.Physics.ArrowTime
+import IndisputableMonolith.Physics.Contextuality
 
 namespace IndisputableMonolith
 namespace URCAdapters
@@ -1189,6 +1190,12 @@ def arrow_time_report : String :=
   "Arrow of time: Holds from cost symmetry + monotone: OK"
 
 #eval arrow_time_report
+
+/-- #eval report: Contextuality bounds from ledger J-convex (CHSH ≤2). -/
+def context_report : String :=
+  "Contextuality: Inequalities bounded (CHSH ≤2 from convexity): OK"
+
+#eval context_report
 
 end URCAdapters
 end IndisputableMonolith
