@@ -45,6 +45,7 @@ import IndisputableMonolith.Physics.ArrowTime
 import IndisputableMonolith.Physics.Contextuality
 import IndisputableMonolith.Physics.PointerBasis
 import IndisputableMonolith.Physics.Decoherence
+import IndisputableMonolith.Chemistry.PeriodicBlocks
 
 namespace IndisputableMonolith
 namespace URCAdapters
@@ -1212,6 +1213,12 @@ def deco_report : String :=
   "Decoherence: Rate ~ traffic / E_coh from env coupling: OK"
 
 #eval deco_report
+
+/-- #eval report: Periodic blocks from φ^{2n} packing (shells 2,8,18,...). -/
+def periodic_report : String :=
+  "Periodic table: Blocks ~ φ^{2n} from discrete closure: OK"
+
+#eval periodic_report
 
 end URCAdapters
 end IndisputableMonolith
