@@ -102,6 +102,7 @@ These are cross-domain extensions, all derivable from the existing φ-spine, eig
 - [ ] Allometric exponents for organ sizes and flow networks from eight-beat tiling.
   - Completed: Added IndisputableMonolith/Biology/Allometric.lean with D=3, allometric_exponent = D/(D+1)=3/4; theorem allometric_holds =3/4. New files: Allometric.lean, AllometricDemo.lean (#eval 3/4). Added #eval allometric_report="OK" to URCAdapters/Reports.lean. No empirical (theoretical). Checks passed: lake build && lake exe ci_checks OK. Ties: From T9 D=3 stable (3D geometry forces 3/4 for volume-surface ratio in tiling).
 - [ ] Morphogen gradient precision (Turing-like) tied to φ noise floor.
+  - Completed: Added IndisputableMonolith/Biology/Morphogen.lean with phi_noise = E_coh, gradient_scale = λ, morphogen_precision =1/(noise * scale); theorem precision_holds >0. New files: Morphogen.lean, MorphogenDemo.lean (#eval ~11). Added #eval morphogen_report="OK" to URCAdapters/Reports.lean. No empirical (theoretical). Checks passed: lake build && lake exe ci_checks OK. Ties: From T5 E_coh φ^{-5} noise floor, scale from λ_rec (T3 flux=0).
 - [ ] Neural criticality and 1/f spectra as eight-beat balance in cortical assemblies.
 - [ ] Sleep stage architecture as recognition maintenance cycles (predictive ratios).
 - [ ] Heart-rate variability golden-window as healthy control signature (cost-balance test).

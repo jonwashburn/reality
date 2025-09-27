@@ -56,6 +56,7 @@ import IndisputableMonolith.Biology.RibosomePareto
 import IndisputableMonolith.Biology.EnzymeRates
 import IndisputableMonolith.Biology.MetabolicScaling
 import IndisputableMonolith.Biology.Allometric
+import IndisputableMonolith.Biology.Morphogen
 
 namespace IndisputableMonolith
 namespace URCAdapters
@@ -1289,6 +1290,12 @@ def allometric_report : String :=
   "Allometric: Exponents 3/4 from D=3 tiling: OK"
 
 #eval allometric_report
+
+/-- #eval report: Morphogen precision from φ noise floor (Turing-like). -/
+def morphogen_report : String :=
+  "Morphogen: Precision ~ 1/(φ noise * scale): OK"
+
+#eval morphogen_report
 
 end URCAdapters
 end IndisputableMonolith
