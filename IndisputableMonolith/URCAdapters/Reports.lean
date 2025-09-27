@@ -1330,7 +1330,10 @@ def hrv_report : String :=
 
 /-- #eval report: φ-prior for compression MDL from ledger cost. -/
 def compression_prior_report : String :=
-  "φ-prior compression: MDL = J-cost universal: OK"
+  let cert : URCGenerators.CompressionPriorCert := {}
+  have _ : URCGenerators.CompressionPriorCert.verified cert :=
+    URCGenerators.CompressionPriorCert.verified_any _
+  "CompressionPriorCert: OK (MDL = J-cost)"
 
 #eval compression_prior_report
 

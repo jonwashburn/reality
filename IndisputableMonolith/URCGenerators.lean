@@ -8,6 +8,7 @@ import IndisputableMonolith.Physics.CKM
 import IndisputableMonolith.Physics.PMNS
 import IndisputableMonolith.Physics.RunningCouplings
 import IndisputableMonolith.Econ.HeavyTail
+import IndisputableMonolith.Information.CompressionPrior
 
 namespace IndisputableMonolith
 namespace URCGenerators
@@ -2256,6 +2257,18 @@ noncomputable def running_demo (φ : ℝ) : Verified φ (RunningCouplingCert ⟨
     HeavyTailExponentCert.verified c := by
     -- Discharged by Econ.HeavyTail.heavy_tail_holds
     simpa using (IndisputableMonolith.Econ.heavy_tail_holds)
+
+  /-- Certificate: φ-prior equals J-cost universally (MDL = J). -/
+  structure CompressionPriorCert where
+    deriving Repr
+
+  @[simp] def CompressionPriorCert.verified (_c : CompressionPriorCert) : Prop :=
+    ∀ model, IndisputableMonolith.Information.mdl_prior model = IndisputableMonolith.Cost.Jcost
+
+  @[simp] theorem CompressionPriorCert.verified_any (c : CompressionPriorCert) :
+    CompressionPriorCert.verified c := by
+    intro model
+    simpa using (IndisputableMonolith.Information.prior_holds (model))
 
 end URCGenerators
 end IndisputableMonolith
