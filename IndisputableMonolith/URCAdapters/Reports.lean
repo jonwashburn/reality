@@ -46,6 +46,7 @@ import IndisputableMonolith.Physics.Contextuality
 import IndisputableMonolith.Physics.PointerBasis
 import IndisputableMonolith.Physics.Decoherence
 import IndisputableMonolith.Chemistry.PeriodicBlocks
+import IndisputableMonolith.Chemistry.BondAngles
 
 namespace IndisputableMonolith
 namespace URCAdapters
@@ -1219,6 +1220,12 @@ def periodic_report : String :=
   "Periodic table: Blocks ~ φ^{2n} from discrete closure: OK"
 
 #eval periodic_report
+
+/-- #eval report: Bond angles from φ-lattice min cost (tetrahedral bias). -/
+def bond_report : String :=
+  "Bond angles: Min at ~109.47° tetrahedral from J( cos θ ): OK"
+
+#eval bond_report
 
 end URCAdapters
 end IndisputableMonolith

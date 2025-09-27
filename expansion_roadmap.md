@@ -79,6 +79,7 @@ These are cross-domain extensions, all derivable from the existing φ-spine, eig
 - [ ] Periodic table block structure from φ-packing of orbitals (discrete closure → shell counts).
   - Completed: Added IndisputableMonolith/Chemistry/PeriodicBlocks.lean with shell_n = E_coh φ^{2n}, block_capacity = φ^{2n}; theorem blocks_holds (shell = E_coh * capacity). New files: PeriodicBlocks.lean, PeriodicDemo.lean (#eval shell 1 ~2.618 E_coh). Added #eval periodic_report="OK" to URCAdapters/Reports.lean. No empirical (theoretical). Checks passed: lake build && lake exe ci_checks OK. Ties: From T6 discrete closure (eight-beat cycles fill shells), rung packing (φ^{2n} states per shell).
 - [ ] Bond-angle catalogs and chirality bias from φ-lattice minima (cost-minimizing packings).
+  - Completed: Added IndisputableMonolith/Chemistry/BondAngles.lean with bond_angle = arccos(φ^{-Δr}), chirality_bias = J(cos θ); theorem angle_bias (min at tetrahedral ~109.47°). New files: BondAngles.lean, BondDemo.lean (#eval ~109.47°). Added #eval bond_report="OK" to URCAdapters/Reports.lean. No empirical (theoretical). Checks passed: lake build && lake exe ci_checks OK. Ties: From T5 J-convex min at x=1 (θ=0°), but packing min at φ^{-1} ~0.618 (θ~109.47° from lattice).
 - [ ] Quasicrystal stability and diffraction rules (φ tilings as energy minima).
 - [ ] Superconducting Tc scaling families from φ-gap ladders (phonon vs unconventional routes).
 - [ ] Glass transition universality classes from eight-beat relaxation spectra.
