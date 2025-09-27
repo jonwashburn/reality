@@ -4,6 +4,8 @@ import IndisputableMonolith.RH.RS.Spec
 import IndisputableMonolith.PhiSupport.Lemmas
 import IndisputableMonolith.RSBridge.Anchor
 import IndisputableMonolith.Physics.AnomalousMoments
+import IndisputableMonolith.Physics.CKM
+import IndisputableMonolith.Physics.RunningCouplings
 
 namespace IndisputableMonolith
 namespace URCGenerators
@@ -2122,7 +2124,7 @@ def demo_generators (φ : ℝ) : VerifiedGenerators φ :=
       (And.intro h_fold (And.intro h_maxwell (And.intro h_pdg (And.intro h_unique (And.intro h_sector
       (And.intro h_timeDim (And.intro h_eff (And.intro h_rotId (And.intro h_abs (And.intro h_dd0
       (And.intro h_bianchi (And.intro h_inev (And.intro h_controls (And.intro h_lrecU
-      (And.intro h_ethicsPolicy (And.intro h_fairnessBatch (And.intro h_preferLex h_truthLedger))))))))))))))))))))))))))))))))))))))))))))))))))))))))
+      (And.intro h_ethicsPolicy (And.intro h_fairnessBatch (And.intro h_preferLex h_truthLedger))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
   ⟨C, hC⟩
 
 @[simp] def demo_generators_phi : VerifiedGenerators (0 : ℝ) :=
@@ -2210,6 +2212,24 @@ structure AnomalousMomentCert where
 
 -- In demo_generators or Verified family, add instance if applicable
 noncomputable def anomalous_moment_demo (φ : ℝ) : Verified φ (AnomalousMomentCert ⟨Physics.Lepton.e, Physics.Lepton.tau, 0, Physics.anomalous_e_tau_universal⟩) := ⟨sorry⟩  -- Placeholder for full cert
+
+/-- Verified certificate for CKM Jarlskog J from φ-rung differences (dimensionless inevitability). -/
+structure CKMCert where
+  j : ℝ
+  positive : j > 0
+  approx_pdg : j ≈ 3.18e-5
+
+-- In demo_generators or Verified family, add instance if applicable
+noncomputable def ckm_demo (φ : ℝ) : Verified φ (CKMCert ⟨Physics.jarlskog, Physics.jarlskog_holds.1, Physics.jarlskog_holds.2⟩) := ⟨sorry⟩  -- Placeholder for full cert
+
+/-- Verified certificate for running-coupling crossovers locked to φ^r thresholds. -/
+structure RunningCouplingCert where
+  threshold : ℝ
+  plateau : ℝ
+  locked : threshold > 0 ∧ plateau > 0  -- From rung masses and E_coh
+
+-- Placeholder demo
+noncomputable def running_demo (φ : ℝ) : Verified φ (RunningCouplingCert ⟨rung_threshold RSBridge.Fermion.c, eight_beat_plateau, crossover_holds RSBridge.Fermion.d RSBridge.Fermion.c sorry⟩) := ⟨sorry⟩
 
 end URCGenerators
 end IndisputableMonolith
