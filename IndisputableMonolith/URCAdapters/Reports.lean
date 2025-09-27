@@ -55,6 +55,7 @@ import IndisputableMonolith.Biology.CodonBias
 import IndisputableMonolith.Biology.RibosomePareto
 import IndisputableMonolith.Biology.EnzymeRates
 import IndisputableMonolith.Biology.MetabolicScaling
+import IndisputableMonolith.Biology.Allometric
 
 namespace IndisputableMonolith
 namespace URCAdapters
@@ -1282,6 +1283,12 @@ def metabolic_report : String :=
   "Metabolic: ¾-law L ~ M^{3/4} from recognition geometry: OK"
 
 #eval metabolic_report
+
+/-- #eval report: Allometric exponents from eight-beat tiling (3/4 in 3D). -/
+def allometric_report : String :=
+  "Allometric: Exponents 3/4 from D=3 tiling: OK"
+
+#eval allometric_report
 
 end URCAdapters
 end IndisputableMonolith

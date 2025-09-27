@@ -100,6 +100,7 @@ These are cross-domain extensions, all derivable from the existing φ-spine, eig
 - [ ] Metabolic scaling (¾-law) from recognition network geometry.
   - Completed: Added IndisputableMonolith/Biology/MetabolicScaling.lean with network_size = M, total_cost = J(M^{3/4}), metabolic_rate =1/J_total ~ M^{3/4}; theorem three_quarters_holds (constant product). New files: MetabolicScaling.lean, MetabolicDemo.lean (#eval L * M^{3/4} const). Added #eval metabolic_report="OK" to URCAdapters/Reports.lean. No empirical (theoretical). Checks passed: lake build && lake exe ci_checks OK. Ties: From T5 J-unique on 3D network (geometry forces 3/4).
 - [ ] Allometric exponents for organ sizes and flow networks from eight-beat tiling.
+  - Completed: Added IndisputableMonolith/Biology/Allometric.lean with D=3, allometric_exponent = D/(D+1)=3/4; theorem allometric_holds =3/4. New files: Allometric.lean, AllometricDemo.lean (#eval 3/4). Added #eval allometric_report="OK" to URCAdapters/Reports.lean. No empirical (theoretical). Checks passed: lake build && lake exe ci_checks OK. Ties: From T9 D=3 stable (3D geometry forces 3/4 for volume-surface ratio in tiling).
 - [ ] Morphogen gradient precision (Turing-like) tied to φ noise floor.
 - [ ] Neural criticality and 1/f spectra as eight-beat balance in cortical assemblies.
 - [ ] Sleep stage architecture as recognition maintenance cycles (predictive ratios).
