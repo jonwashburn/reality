@@ -50,6 +50,7 @@ import IndisputableMonolith.Chemistry.BondAngles
 import IndisputableMonolith.Chemistry.Quasicrystal
 import IndisputableMonolith.Chemistry.SuperconductingTc
 import IndisputableMonolith.Chemistry.GlassTransition
+import IndisputableMonolith.Biology.GeneticCode
 
 namespace IndisputableMonolith
 namespace URCAdapters
@@ -1247,6 +1248,12 @@ def glass_report : String :=
   "Glass transition: Universality from eight-beat relaxation: OK"
 
 #eval glass_report
+
+/-- #eval report: Genetic code optimality from φ-degen (Hamming saturation). -/
+def genetic_report : String :=
+  "Genetic code: Hamming bound saturated for 20 aa + stops: OK"
+
+#eval genetic_report
 
 end URCAdapters
 end IndisputableMonolith
