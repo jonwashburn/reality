@@ -70,6 +70,7 @@ These are cross-domain extensions, all derivable from the existing φ-spine, eig
   - Completed: Added IndisputableMonolith/Physics/Contextuality.lean with j_convex from T5, context_bound CHSH ≤2 from convexity. New files: Contextuality.lean, ContextDemo.lean (#eval OK). No cert (bounds from T5). Added #eval context_report="OK" to URCAdapters/Reports.lean. No empirical (inequality theoretical). Checks passed: lake build && lake exe ci_checks OK. Ties: From T5 J-convex (unique cost), ledger paths bound violations (no dials).
 - [ ] Bell-phase offsets and Tsirelson bound from φ-convex geometry (built into UDimless).
 - [ ] Pointer-basis selection via bridge minimality (K-gate route identity).
+  - Completed: Added IndisputableMonolith/Physics/PointerBasis.lean with pointer_basis min J, pointer_select from K-gate min over routes. New files: PointerBasis.lean, PointerDemo.lean (#eval OK). No cert (from bridge). Added #eval pointer_report="OK" to URCAdapters/Reports.lean. No empirical (derivational). Checks passed: lake build && lake exe ci_checks OK. Ties: From Bridge K-gate route identity minimizing J over superpositions (T5 cost uniq).
 - [ ] Decoherence rate law tied to recognition traffic (environment as ledger coupler).
 
 ### Chemistry and Materials

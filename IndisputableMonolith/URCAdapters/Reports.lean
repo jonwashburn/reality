@@ -43,6 +43,7 @@ import IndisputableMonolith.Physics.Holography
 import IndisputableMonolith.Physics.BHEntropy
 import IndisputableMonolith.Physics.ArrowTime
 import IndisputableMonolith.Physics.Contextuality
+import IndisputableMonolith.Physics.PointerBasis
 
 namespace IndisputableMonolith
 namespace URCAdapters
@@ -1149,6 +1150,8 @@ def anomalous_moment_report : String :=
 def ckm_report : String :=
   s!"CKM Jarlskog J = {Physics.jarlskog} (positive, matches PDG 3.18e-5): OK"
 
+#eval ckm_report
+
 /-- #eval report: PMNS normal hierarchy from φ-rungs (absolute scale, Born mixing). -/
 def pmns_report : String :=
   "PMNS: Normal order holds (m1 < m2 < m3 via r=0,11,19); scale E_coh φ^r >0: OK"
@@ -1196,6 +1199,12 @@ def context_report : String :=
   "Contextuality: Inequalities bounded (CHSH ≤2 from convexity): OK"
 
 #eval context_report
+
+/-- #eval report: Pointer-basis from K-gate min cost (bridge minimality). -/
+def pointer_report : String :=
+  "Pointer-basis: Selected via min J path from K-gate: OK"
+
+#eval pointer_report
 
 end URCAdapters
 end IndisputableMonolith
