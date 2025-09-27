@@ -5,6 +5,7 @@ import IndisputableMonolith.PhiSupport.Lemmas
 import IndisputableMonolith.RSBridge.Anchor
 import IndisputableMonolith.Physics.AnomalousMoments
 import IndisputableMonolith.Physics.CKM
+import IndisputableMonolith.Physics.PMNS
 import IndisputableMonolith.Physics.RunningCouplings
 
 namespace IndisputableMonolith
@@ -2230,6 +2231,18 @@ structure RunningCouplingCert where
 
 -- Placeholder demo
 noncomputable def running_demo (φ : ℝ) : Verified φ (RunningCouplingCert ⟨rung_threshold RSBridge.Fermion.c, eight_beat_plateau, crossover_holds RSBridge.Fermion.d RSBridge.Fermion.c sorry⟩) := ⟨sorry⟩
+
+  /-- Certificate: PMNS normal hierarchy holds (m1 < m2 < m3). -/
+  structure PMNSHierarchyCert where
+    deriving Repr
+
+  @[simp] def PMNSHierarchyCert.verified (_c : PMNSHierarchyCert) : Prop :=
+    Physics.normal_order_holds
+
+  @[simp] theorem PMNSHierarchyCert.verified_any (c : PMNSHierarchyCert) :
+    PMNSHierarchyCert.verified c := by
+    -- Discharged directly by the theorem in Physics.PMNS
+    simpa using (Physics.normal_order_holds)
 
 end URCGenerators
 end IndisputableMonolith

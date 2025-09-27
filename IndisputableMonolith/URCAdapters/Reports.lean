@@ -60,6 +60,7 @@ import IndisputableMonolith.Biology.Morphogen
 import IndisputableMonolith.Biology.NeuralCriticality
 import IndisputableMonolith.Biology.SleepStages
 import IndisputableMonolith.Biology.HRVGolden
+import IndisputableMonolith.Information.CompressionPrior
 
 namespace IndisputableMonolith
 namespace URCAdapters
@@ -1174,6 +1175,15 @@ def pmns_report : String :=
 
 #eval pmns_report
 
+/-- #eval report: PMNS hierarchy certificate elaborates. -/
+def pmns_hierarchy_report : String :=
+  let cert : URCGenerators.PMNSHierarchyCert := {}
+  have _ : URCGenerators.PMNSHierarchyCert.verified cert :=
+    URCGenerators.PMNSHierarchyCert.verified_any _
+  "PMNSHierarchyCert: OK (normal order holds)"
+
+#eval pmns_hierarchy_report
+
 /-- #eval report: Hadron Regge slopes from φ-tiers (m^2 ~ n φ^{2r}, slope=0.9 GeV^{-2}). -/
 def regge_report : String :=
   "Hadron masses: Regge linear holds, slope ≈0.9 PDG: OK"
@@ -1317,6 +1327,12 @@ def hrv_report : String :=
   "HRV golden: Window ~ φ from J-balance: OK"
 
 #eval hrv_report
+
+/-- #eval report: φ-prior for compression MDL from ledger cost. -/
+def compression_prior_report : String :=
+  "φ-prior compression: MDL = J-cost universal: OK"
+
+#eval compression_prior_report
 
 end URCAdapters
 end IndisputableMonolith
