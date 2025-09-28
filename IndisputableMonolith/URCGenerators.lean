@@ -27,6 +27,7 @@ import IndisputableMonolith.Biology.SleepStages
 import IndisputableMonolith.Biology.HRVGolden
 import IndisputableMonolith.Relativity.ILG.Action
 import IndisputableMonolith.Relativity.ILG.WeakField
+import IndisputableMonolith.Relativity.ILG.PPN
 import IndisputableMonolith.Information.CompressionPrior
 
 namespace IndisputableMonolith
@@ -2570,6 +2571,22 @@ structure RunningCouplingCert where
     WeakFieldToILGCert.verified c := by
     intro v_baryon2 Tdyn tau0 α n ζ ξ λ
     simpa using (IndisputableMonolith.Relativity.ILG.weakfield_ilg_weight v_baryon2 Tdyn tau0 α n ζ ξ λ)
+
+  /-- Certificate: PPN bounds (γ, β) are within illustrative Solar‑System margins. -/
+  structure PPNBoundsCert where
+    deriving Repr
+
+  @[simp] def PPNBoundsCert.verified (_c : PPNBoundsCert) : Prop :=
+    ∀ (C_lag α : ℝ),
+      |IndisputableMonolith.Relativity.ILG.ppn_gamma C_lag α - 1| ≤ (1/100000 : ℝ)
+      ∧ |IndisputableMonolith.Relativity.ILG.ppn_beta  C_lag α - 1| ≤ (1/100000 : ℝ)
+
+  @[simp] theorem PPNBoundsCert.verified_any (c : PPNBoundsCert) :
+    PPNBoundsCert.verified c := by
+    intro C_lag α
+    exact And.intro
+      (IndisputableMonolith.Relativity.ILG.ppn_gamma_bound C_lag α)
+      (IndisputableMonolith.Relativity.ILG.ppn_beta_bound  C_lag α)
 
 end URCGenerators
 end IndisputableMonolith

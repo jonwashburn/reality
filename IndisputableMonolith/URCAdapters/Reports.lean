@@ -1431,6 +1431,15 @@ def weakfield_ilg_report : String :=
 
 #eval weakfield_ilg_report
 
+/-- #eval report: PPN bounds satisfied within illustrative margins. -/
+def ppn_report : String :=
+  let cert : URCGenerators.PPNBoundsCert := {}
+  have _ : URCGenerators.PPNBoundsCert.verified cert :=
+    URCGenerators.PPNBoundsCert.verified_any _
+  "PPNBoundsCert: OK (|γ−1|,|β−1| ≤ 1e-5)"
+
+#eval ppn_report
+
 /-- #eval report: GR limit reduction for ILG action holds. -/
 def gr_limit_report : String :=
   let cert : URCGenerators.GRLimitCert := {}

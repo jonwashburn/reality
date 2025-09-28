@@ -22,5 +22,3 @@ theorem weakfield_ilg_weight (v_baryon2 Tdyn tau0 α n ζ ξ λ : ℝ) :
 end ILG
 end Relativity
 end IndisputableMonolith
-
-
