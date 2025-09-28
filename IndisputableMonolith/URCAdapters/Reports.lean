@@ -1343,7 +1343,10 @@ def ribosome_report : String :=
 
 /-- #eval report: Enzyme rate ceilings from φ-turnover (k_cat ≤ φ^{-r}). -/
 def enzyme_report : String :=
-  "Enzyme rates: Ceilings locked to φ^{-r} from J: OK"
+  let cert : URCGenerators.EnzymeRatesCert := {}
+  have _ : URCGenerators.EnzymeRatesCert.verified cert :=
+    URCGenerators.EnzymeRatesCert.verified_any _
+  "EnzymeRatesCert: OK (ceiling > 0 for all r)"
 
 #eval enzyme_report
 

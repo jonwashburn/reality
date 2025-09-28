@@ -18,6 +18,7 @@ import IndisputableMonolith.Chemistry.Quasicrystal
 import IndisputableMonolith.Biology.GeneticCode
 import IndisputableMonolith.Biology.CodonBias
 import IndisputableMonolith.Biology.RibosomePareto
+import IndisputableMonolith.Biology.EnzymeRates
 import IndisputableMonolith.Information.CompressionPrior
 
 namespace IndisputableMonolith
@@ -2452,6 +2453,17 @@ structure RunningCouplingCert where
   @[simp] theorem RibosomeParetoCert.verified_any (c : RibosomeParetoCert) :
     RibosomeParetoCert.verified c := by
     intro e; simpa using (IndisputableMonolith.Biology.RibosomePareto.pareto_holds e)
+
+  /-- Certificate: Enzyme rate ceiling is strictly positive. -/
+  structure EnzymeRatesCert where
+    deriving Repr
+
+  @[simp] def EnzymeRatesCert.verified (_c : EnzymeRatesCert) : Prop :=
+    ∀ r, IndisputableMonolith.Biology.EnzymeRates.rate_ceiling r > 0
+
+  @[simp] theorem EnzymeRatesCert.verified_any (c : EnzymeRatesCert) :
+    EnzymeRatesCert.verified c := by
+    intro r; simpa using (IndisputableMonolith.Biology.EnzymeRates.ceiling_holds r)
 
 end URCGenerators
 end IndisputableMonolith

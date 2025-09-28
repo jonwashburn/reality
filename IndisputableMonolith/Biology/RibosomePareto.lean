@@ -30,5 +30,3 @@ theorem pareto_holds (e : ℝ) : speed (accuracy e) * accuracy e = 1 ∧ speed (
 end RibosomePareto
 end Biology
 end IndisputableMonolith
-
-
