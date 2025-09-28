@@ -21,5 +21,3 @@ noncomputable def hrv_signature : ℝ := IndisputableMonolith.Constants.phi
 end HRVGolden
 end Biology
 end IndisputableMonolith
-
-
