@@ -25,6 +25,7 @@ import IndisputableMonolith.Biology.Morphogen
 import IndisputableMonolith.Biology.NeuralCriticality
 import IndisputableMonolith.Biology.SleepStages
 import IndisputableMonolith.Biology.HRVGolden
+import IndisputableMonolith.Relativity.ILG.Action
 import IndisputableMonolith.Information.CompressionPrior
 
 namespace IndisputableMonolith
@@ -2538,6 +2539,21 @@ structure RunningCouplingCert where
   @[simp] theorem HRVGoldenCert.verified_any (c : HRVGoldenCert) :
     HRVGoldenCert.verified c := by
     simpa using (IndisputableMonolith.Biology.HRVGolden.hrv_golden)
+
+  /-- Certificate: GR limit of the ILG action reduces to Einstein–Hilbert action. -/
+  structure GRLimitCert where
+    deriving Repr
+
+  @[simp] def GRLimitCert.verified (_c : GRLimitCert) : Prop :=
+    ∀ (g : IndisputableMonolith.Relativity.ILG.Metric)
+      (ψ : IndisputableMonolith.Relativity.ILG.RefreshField),
+      IndisputableMonolith.Relativity.ILG.S g ψ 0 0
+        = IndisputableMonolith.Relativity.ILG.EHAction g
+
+  @[simp] theorem GRLimitCert.verified_any (c : GRLimitCert) :
+    GRLimitCert.verified c := by
+    intro g ψ
+    simpa using (IndisputableMonolith.Relativity.ILG.gr_limit_reduces g ψ)
 
 end URCGenerators
 end IndisputableMonolith

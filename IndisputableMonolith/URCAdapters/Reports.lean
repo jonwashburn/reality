@@ -1422,5 +1422,14 @@ def heavy_tail_report : String :=
 
 #eval heavy_tail_report
 
+/-- #eval report: GR limit reduction for ILG action holds. -/
+def gr_limit_report : String :=
+  let cert : URCGenerators.GRLimitCert := {}
+  have _ : URCGenerators.GRLimitCert.verified cert :=
+    URCGenerators.GRLimitCert.verified_any _
+  "GRLimitCert: OK (S[g,ψ;0,0] = S_EH[g])"
+
+#eval gr_limit_report
+
 end URCAdapters
 end IndisputableMonolith
