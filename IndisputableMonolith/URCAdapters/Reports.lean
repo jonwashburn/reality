@@ -1388,7 +1388,10 @@ def neural_report : String :=
 
 /-- #eval report: Sleep stages from 8-tick cycles (φ ratios). -/
 def sleep_report : String :=
-  "Sleep stages: Ratios from φ in 8-tick: OK"
+  let cert : URCGenerators.SleepStagesCert := {}
+  have _ : URCGenerators.SleepStagesCert.verified cert :=
+    URCGenerators.SleepStagesCert.verified_any _
+  "SleepStagesCert: OK (ratio φ > 1)"
 
 #eval sleep_report
 

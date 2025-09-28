@@ -23,6 +23,7 @@ import IndisputableMonolith.Biology.MetabolicScaling
 import IndisputableMonolith.Biology.Allometric
 import IndisputableMonolith.Biology.Morphogen
 import IndisputableMonolith.Biology.NeuralCriticality
+import IndisputableMonolith.Biology.SleepStages
 import IndisputableMonolith.Information.CompressionPrior
 
 namespace IndisputableMonolith
@@ -2514,6 +2515,17 @@ structure RunningCouplingCert where
   @[simp] theorem NeuralCriticalityCert.verified_any (c : NeuralCriticalityCert) :
     NeuralCriticalityCert.verified c := by
     simpa using (IndisputableMonolith.Biology.NeuralCriticality.criticality_holds)
+
+  /-- Certificate: Sleep stage ratio φ exceeds 1. -/
+  structure SleepStagesCert where
+    deriving Repr
+
+  @[simp] def SleepStagesCert.verified (_c : SleepStagesCert) : Prop :=
+    IndisputableMonolith.Biology.SleepStages.sleep_ratios
+
+  @[simp] theorem SleepStagesCert.verified_any (c : SleepStagesCert) :
+    SleepStagesCert.verified c := by
+    simpa using (IndisputableMonolith.Biology.SleepStages.sleep_ratios)
 
 end URCGenerators
 end IndisputableMonolith

@@ -27,5 +27,3 @@ theorem criticality_holds : eight_beat_spectra criticality_balance > 0 := by
 end NeuralCriticality
 end Biology
 end IndisputableMonolith
-
-
