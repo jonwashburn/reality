@@ -17,6 +17,7 @@ import IndisputableMonolith.Chemistry.BondAngles
 import IndisputableMonolith.Chemistry.Quasicrystal
 import IndisputableMonolith.Biology.GeneticCode
 import IndisputableMonolith.Biology.CodonBias
+import IndisputableMonolith.Biology.RibosomePareto
 import IndisputableMonolith.Information.CompressionPrior
 
 namespace IndisputableMonolith
@@ -2438,6 +2439,19 @@ structure RunningCouplingCert where
     CodonBiasCert.verified c := by
     intro n e
     simpa using (IndisputableMonolith.Biology.CodonBias.bias_opt n e)
+
+  /-- Certificate: Ribosome Pareto constant-product proxy positive. -/
+  structure RibosomeParetoCert where
+    deriving Repr
+
+  @[simp] def RibosomeParetoCert.verified (_c : RibosomeParetoCert) : Prop :=
+    ∀ e, let P := IndisputableMonolith.Biology.RibosomePareto.speed (IndisputableMonolith.Biology.RibosomePareto.accuracy e)
+               * IndisputableMonolith.Biology.RibosomePareto.accuracy e
+         P = 1 ∧ P > 0
+
+  @[simp] theorem RibosomeParetoCert.verified_any (c : RibosomeParetoCert) :
+    RibosomeParetoCert.verified c := by
+    intro e; simpa using (IndisputableMonolith.Biology.RibosomePareto.pareto_holds e)
 
 end URCGenerators
 end IndisputableMonolith

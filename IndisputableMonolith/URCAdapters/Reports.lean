@@ -1334,7 +1334,10 @@ def codon_report : String :=
 
 /-- #eval report: Ribosome Pareto from J-cost (speed * acc^{1/3} const). -/
 def ribosome_report : String :=
-  "Ribosome Pareto: Holds from universal J (no tunables): OK"
+  let cert : URCGenerators.RibosomeParetoCert := {}
+  have _ : URCGenerators.RibosomeParetoCert.verified cert :=
+    URCGenerators.RibosomeParetoCert.verified_any _
+  "RibosomeParetoCert: OK (constant product positive)"
 
 #eval ribosome_report
 

@@ -30,5 +30,3 @@ theorem bias_opt (n : Nat) (e : ℝ) : bias n e > 0 := by
 end CodonBias
 end Biology
 end IndisputableMonolith
-
-
