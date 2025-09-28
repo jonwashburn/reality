@@ -41,5 +41,3 @@ theorem three_quarters_holds (M : ℝ) :
 end MetabolicScaling
 end Biology
 end IndisputableMonolith
-
-

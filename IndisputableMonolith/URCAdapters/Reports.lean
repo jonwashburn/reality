@@ -1361,7 +1361,10 @@ def metabolic_report : String :=
 
 /-- #eval report: Allometric exponents from eight-beat tiling (3/4 in 3D). -/
 def allometric_report : String :=
-  "Allometric: Exponents 3/4 from D=3 tiling: OK"
+  let cert : URCGenerators.AllometricCert := {}
+  have _ : URCGenerators.AllometricCert.verified cert :=
+    URCGenerators.AllometricCert.verified_any _
+  "AllometricCert: OK (exponent 3/4 at D=3)"
 
 #eval allometric_report
 

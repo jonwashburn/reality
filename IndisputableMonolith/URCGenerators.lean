@@ -20,6 +20,7 @@ import IndisputableMonolith.Biology.CodonBias
 import IndisputableMonolith.Biology.RibosomePareto
 import IndisputableMonolith.Biology.EnzymeRates
 import IndisputableMonolith.Biology.MetabolicScaling
+import IndisputableMonolith.Biology.Allometric
 import IndisputableMonolith.Information.CompressionPrior
 
 namespace IndisputableMonolith
@@ -2139,7 +2140,7 @@ def demo_generators (φ : ℝ) : VerifiedGenerators φ :=
       (And.intro h_fold (And.intro h_maxwell (And.intro h_pdg (And.intro h_unique (And.intro h_sector
       (And.intro h_timeDim (And.intro h_eff (And.intro h_rotId (And.intro h_abs (And.intro h_dd0
       (And.intro h_bianchi (And.intro h_inev (And.intro h_controls (And.intro h_lrecU
-      (And.intro h_ethicsPolicy (And.intro h_fairnessBatch (And.intro h_preferLex h_truthLedger))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
+      (And.intro h_ethicsPolicy (And.intro h_fairnessBatch (And.intro h_preferLex h_truthLedger))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
   ⟨C, hC⟩
 
 @[simp] def demo_generators_phi : VerifiedGenerators (0 : ℝ) :=
@@ -2478,6 +2479,17 @@ structure RunningCouplingCert where
   @[simp] theorem MetabolicScalingCert.verified_any (c : MetabolicScalingCert) :
     MetabolicScalingCert.verified c := by
     intro M; simpa using (IndisputableMonolith.Biology.MetabolicScaling.three_quarters_holds M)
+
+  /-- Certificate: Allometric exponent equals 3/4 for D=3. -/
+  structure AllometricCert where
+    deriving Repr
+
+  @[simp] def AllometricCert.verified (_c : AllometricCert) : Prop :=
+    IndisputableMonolith.Biology.Allometric.allometric_exponent 3 = (3 : ℝ) / 4
+
+  @[simp] theorem AllometricCert.verified_any (c : AllometricCert) :
+    AllometricCert.verified c := by
+    simpa using (IndisputableMonolith.Biology.Allometric.allometric_holds)
 
 end URCGenerators
 end IndisputableMonolith
