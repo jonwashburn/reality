@@ -15,6 +15,7 @@ import IndisputableMonolith.Chemistry.GlassTransition
 import IndisputableMonolith.Chemistry.PeriodicBlocks
 import IndisputableMonolith.Chemistry.BondAngles
 import IndisputableMonolith.Chemistry.Quasicrystal
+import IndisputableMonolith.Biology.GeneticCode
 import IndisputableMonolith.Information.CompressionPrior
 
 namespace IndisputableMonolith
@@ -2413,6 +2414,17 @@ structure RunningCouplingCert where
     QuasicrystalCert.verified c := by
     intro x
     simpa using (IndisputableMonolith.Chemistry.quasicrystal_stable x)
+
+  /-- Certificate: Genetic code optimality (64 codons bound > 61 for 20 aa). -/
+  structure GeneticCodeCert where
+    deriving Repr
+
+  @[simp] def GeneticCodeCert.verified (_c : GeneticCodeCert) : Prop :=
+    IndisputableMonolith.Biology.GeneticCode.optimality_holds
+
+  @[simp] theorem GeneticCodeCert.verified_any (c : GeneticCodeCert) :
+    GeneticCodeCert.verified c := by
+    simpa using (IndisputableMonolith.Biology.GeneticCode.optimality_holds)
 
 end URCGenerators
 end IndisputableMonolith

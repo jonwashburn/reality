@@ -27,5 +27,3 @@ theorem quasicrystal_stable (x : ℝ) : tiling_energy phi_ratio ≤ tiling_energ
 
 end Chemistry
 end IndisputableMonolith
-
-
