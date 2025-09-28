@@ -46,5 +46,3 @@ theorem crossover_holds (heavy light : RSBridge.Fermion)
 
 end Physics
 end IndisputableMonolith
-
-
