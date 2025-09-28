@@ -459,6 +459,13 @@ def ppn_derive_report : String :=
     URCGenerators.PPNDeriveCert.verified_any _
   "PPNDeriveCert: OK"
 
+/-- #eval-friendly report for ClusterLensingCert. -/
+def cluster_lensing_report : String :=
+  let cert : URCGenerators.ClusterLensingCert := {}
+  have _ : URCGenerators.ClusterLensingCert.verified cert :=
+    URCGenerators.ClusterLensingCert.verified_any _
+  "ClusterLensingCert: OK"
+
 /-- #eval-friendly report for FamilyRatioCert (mass ratios φ^(Δr) at matching scale). -/
 def family_ratio_report : String :=
   let cert : URCGenerators.FamilyRatioCert := {}

@@ -114,6 +114,30 @@ structure WLinkOCert where deriving Repr
 end URCGenerators
 end IndisputableMonolith
 
+/-! Cluster lensing band certificate using global-only constants -/
+
+namespace IndisputableMonolith
+namespace URCGenerators
+
+open IndisputableMonolith
+
+structure ClusterLensingCert where deriving Repr
+@[simp] def ClusterLensingCert.verified (_c : ClusterLensingCert) : Prop :=
+  ∀ (ψ : IndisputableMonolith.Relativity.ILG.RefreshField)
+    (p : IndisputableMonolith.Relativity.ILG.ILGParams) (κ : ℝ),
+      0 ≤ κ →
+      |IndisputableMonolith.Relativity.ILG.lensing_proxy ψ p
+        - IndisputableMonolith.Relativity.ILG.baseline_potential
+            (IndisputableMonolith.Relativity.ILG.Phi ψ p)
+            (IndisputableMonolith.Relativity.ILG.Psi ψ p)| ≤ κ
+@[simp] theorem ClusterLensingCert.verified_any (c : ClusterLensingCert) :
+  ClusterLensingCert.verified c := by
+  intro ψ p κ hκ; simpa using
+    (IndisputableMonolith.Relativity.ILG.lensing_band ψ p κ hκ)
+
+end URCGenerators
+end IndisputableMonolith
+
 /-! PPN derivation certificate - γ, β from solution within bands -/
 
 namespace IndisputableMonolith
