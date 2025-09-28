@@ -24,6 +24,7 @@ import IndisputableMonolith.Biology.Allometric
 import IndisputableMonolith.Biology.Morphogen
 import IndisputableMonolith.Biology.NeuralCriticality
 import IndisputableMonolith.Biology.SleepStages
+import IndisputableMonolith.Biology.HRVGolden
 import IndisputableMonolith.Information.CompressionPrior
 
 namespace IndisputableMonolith
@@ -2526,6 +2527,17 @@ structure RunningCouplingCert where
   @[simp] theorem SleepStagesCert.verified_any (c : SleepStagesCert) :
     SleepStagesCert.verified c := by
     simpa using (IndisputableMonolith.Biology.SleepStages.sleep_ratios)
+
+  /-- Certificate: HRV golden-window equals φ signature. -/
+  structure HRVGoldenCert where
+    deriving Repr
+
+  @[simp] def HRVGoldenCert.verified (_c : HRVGoldenCert) : Prop :=
+    IndisputableMonolith.Biology.HRVGolden.hrv_golden
+
+  @[simp] theorem HRVGoldenCert.verified_any (c : HRVGoldenCert) :
+    HRVGoldenCert.verified c := by
+    simpa using (IndisputableMonolith.Biology.HRVGolden.hrv_golden)
 
 end URCGenerators
 end IndisputableMonolith

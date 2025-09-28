@@ -1397,7 +1397,10 @@ def sleep_report : String :=
 
 /-- #eval report: HRV golden-window from cost-balance (φ signature). -/
 def hrv_report : String :=
-  "HRV golden: Window ~ φ from J-balance: OK"
+  let cert : URCGenerators.HRVGoldenCert := {}
+  have _ : URCGenerators.HRVGoldenCert.verified cert :=
+    URCGenerators.HRVGoldenCert.verified_any _
+  "HRVGoldenCert: OK (signature = φ)"
 
 #eval hrv_report
 
