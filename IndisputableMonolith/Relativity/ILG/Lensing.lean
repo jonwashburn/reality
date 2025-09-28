@@ -19,5 +19,3 @@ theorem lensing_band (Φ Ψ κ C_lag α : ℝ) (hκ : 0 ≤ κ) :
 end ILG
 end Relativity
 end IndisputableMonolith
-
-

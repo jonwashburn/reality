@@ -29,6 +29,7 @@ import IndisputableMonolith.Relativity.ILG.Action
 import IndisputableMonolith.Relativity.ILG.WeakField
 import IndisputableMonolith.Relativity.ILG.PPN
 import IndisputableMonolith.Relativity.ILG.Lensing
+import IndisputableMonolith.Relativity.ILG.FRW
 import IndisputableMonolith.Information.CompressionPrior
 
 namespace IndisputableMonolith
@@ -2604,6 +2605,27 @@ structure RunningCouplingCert where
     LensingBandCert.verified c := by
     intro Φ Ψ C_lag α
     simpa using (IndisputableMonolith.Relativity.ILG.lensing_band Φ Ψ c.κ C_lag α c.hκ)
+
+  /-- Certificate: FRW existence (scaffold) and healthy ψ kinetic sector. -/
+  structure FRWExistenceCert where
+    deriving Repr
+
+  @[simp] def FRWExistenceCert.verified (_c : FRWExistenceCert) : Prop :=
+    IndisputableMonolith.Relativity.ILG.frw_exists
+
+  @[simp] theorem FRWExistenceCert.verified_any (c : FRWExistenceCert) :
+    FRWExistenceCert.verified c := by
+    simpa using (IndisputableMonolith.Relativity.ILG.frw_existence)
+
+  structure NoGhostsCert where
+    deriving Repr
+
+  @[simp] def NoGhostsCert.verified (_c : NoGhostsCert) : Prop :=
+    IndisputableMonolith.Relativity.ILG.healthy_kinetic 1
+
+  @[simp] theorem NoGhostsCert.verified_any (c : NoGhostsCert) :
+    NoGhostsCert.verified c := by
+    simpa using (IndisputableMonolith.Relativity.ILG.healthy_default)
 
 end URCGenerators
 end IndisputableMonolith

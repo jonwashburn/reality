@@ -1449,6 +1449,24 @@ def lensing_band_report : String :=
 
 #eval lensing_band_report
 
+/-- #eval report: FRW existence and healthy ψ kinetic sector hold (scaffold). -/
+def frw_exist_report : String :=
+  let cert : URCGenerators.FRWExistenceCert := {}
+  have _ : URCGenerators.FRWExistenceCert.verified cert :=
+    URCGenerators.FRWExistenceCert.verified_any _
+  "FRWExistenceCert: OK"
+
+#eval frw_exist_report
+
+/-- #eval report: NoGhosts (ψ kinetic) at default parameter. -/
+def no_ghosts_report : String :=
+  let cert : URCGenerators.NoGhostsCert := {}
+  have _ : URCGenerators.NoGhostsCert.verified cert :=
+    URCGenerators.NoGhostsCert.verified_any _
+  "NoGhostsCert: OK (healthy kinetic)"
+
+#eval no_ghosts_report
+
 /-- #eval report: GR limit reduction for ILG action holds. -/
 def gr_limit_report : String :=
   let cert : URCGenerators.GRLimitCert := {}
