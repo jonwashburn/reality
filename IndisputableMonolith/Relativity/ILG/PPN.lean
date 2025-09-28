@@ -22,5 +22,3 @@ theorem ppn_beta_bound (C_lag α : ℝ) :
 end ILG
 end Relativity
 end IndisputableMonolith
-
-

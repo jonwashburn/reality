@@ -28,6 +28,7 @@ import IndisputableMonolith.Biology.HRVGolden
 import IndisputableMonolith.Relativity.ILG.Action
 import IndisputableMonolith.Relativity.ILG.WeakField
 import IndisputableMonolith.Relativity.ILG.PPN
+import IndisputableMonolith.Relativity.ILG.Lensing
 import IndisputableMonolith.Information.CompressionPrior
 
 namespace IndisputableMonolith
@@ -2587,6 +2588,22 @@ structure RunningCouplingCert where
     exact And.intro
       (IndisputableMonolith.Relativity.ILG.ppn_gamma_bound C_lag α)
       (IndisputableMonolith.Relativity.ILG.ppn_beta_bound  C_lag α)
+
+  /-- Certificate: Lensing proxy deviation lies within an admissible band κ. -/
+  structure LensingBandCert where
+    κ : ℝ
+    hκ : 0 ≤ κ
+    deriving Repr
+
+  @[simp] def LensingBandCert.verified (c : LensingBandCert) : Prop :=
+    ∀ (Φ Ψ C_lag α : ℝ),
+      |IndisputableMonolith.Relativity.ILG.lensing_proxy Φ Ψ C_lag α
+        - IndisputableMonolith.Relativity.ILG.baseline_potential Φ Ψ| ≤ c.κ
+
+  @[simp] theorem LensingBandCert.verified_any (c : LensingBandCert) :
+    LensingBandCert.verified c := by
+    intro Φ Ψ C_lag α
+    simpa using (IndisputableMonolith.Relativity.ILG.lensing_band Φ Ψ c.κ C_lag α c.hκ)
 
 end URCGenerators
 end IndisputableMonolith

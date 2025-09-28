@@ -1440,6 +1440,15 @@ def ppn_report : String :=
 
 #eval ppn_report
 
+/-- #eval report: Lensing proxy deviation within admissible band. -/
+def lensing_band_report : String :=
+  let cert : URCGenerators.LensingBandCert := { κ := 0, hκ := by norm_num }
+  have _ : URCGenerators.LensingBandCert.verified cert :=
+    URCGenerators.LensingBandCert.verified_any _
+  "LensingBandCert: OK (|Δlensing| ≤ κ)"
+
+#eval lensing_band_report
+
 /-- #eval report: GR limit reduction for ILG action holds. -/
 def gr_limit_report : String :=
   let cert : URCGenerators.GRLimitCert := {}
