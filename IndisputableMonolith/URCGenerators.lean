@@ -13,6 +13,7 @@ import IndisputableMonolith.Physics.SterileExclusion
 import IndisputableMonolith.Chemistry.SuperconductingTc
 import IndisputableMonolith.Chemistry.GlassTransition
 import IndisputableMonolith.Chemistry.PeriodicBlocks
+import IndisputableMonolith.Chemistry.BondAngles
 import IndisputableMonolith.Information.CompressionPrior
 
 namespace IndisputableMonolith
@@ -2387,6 +2388,17 @@ structure RunningCouplingCert where
     CompressionPriorCert.verified c := by
     intro model
     simpa using (IndisputableMonolith.Information.prior_holds (model))
+
+  /-- Certificate: Bond-angle chirality bias is strictly positive. -/
+  structure BondAnglesCert where
+    deriving Repr
+
+  @[simp] def BondAnglesCert.verified (_c : BondAnglesCert) : Prop :=
+    0 < IndisputableMonolith.Chemistry.tetra_bias
+
+  @[simp] theorem BondAnglesCert.verified_any (c : BondAnglesCert) :
+    BondAnglesCert.verified c := by
+    simpa using (IndisputableMonolith.Chemistry.angle_bias)
 
 end URCGenerators
 end IndisputableMonolith
