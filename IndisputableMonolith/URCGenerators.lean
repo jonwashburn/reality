@@ -90,6 +90,53 @@ structure SubstrateCert where deriving Repr
 
 end URCGenerators
 end IndisputableMonolith
+
+/-! Certificates for linearized w-link with BigO remainder -/
+
+namespace IndisputableMonolith
+namespace URCGenerators
+
+open IndisputableMonolith
+
+structure WLinkOCert where deriving Repr
+@[simp] def WLinkOCert.verified (_c : WLinkOCert) : Prop :=
+  ∀ (v base α : ℝ),
+    ∃ R : ℝ → ℝ,
+      IndisputableMonolith.Relativity.ILG.BigOControl R ∧
+      ∀ ε, IndisputableMonolith.Relativity.ILG.EpsApprox.eval
+              (IndisputableMonolith.Relativity.ILG.v_model2_eps v
+                (IndisputableMonolith.Relativity.ILG.w_lin base α)) ε
+            = v * (IndisputableMonolith.Relativity.ILG.EpsApprox.eval
+                (IndisputableMonolith.Relativity.ILG.w_lin base α) ε) + R ε
+@[simp] theorem WLinkOCert.verified_any (c : WLinkOCert) : WLinkOCert.verified c := by
+  intro v base α; simpa using IndisputableMonolith.Relativity.ILG.w_link_O v base α
+
+end URCGenerators
+end IndisputableMonolith
+
+/-! PPN derivation certificate - γ, β from solution within bands -/
+
+namespace IndisputableMonolith
+namespace URCGenerators
+
+open IndisputableMonolith
+
+structure PPNDeriveCert where deriving Repr
+@[simp] def PPNDeriveCert.verified (_c : PPNDeriveCert) : Prop :=
+  (∀ (ψ : IndisputableMonolith.Relativity.ILG.RefreshField)
+     (p : IndisputableMonolith.Relativity.ILG.ILGParams) (κ : ℝ),
+       0 ≤ κ →
+       |IndisputableMonolith.Relativity.ILG.gamma_from_solution ψ p - 1| ≤ κ
+       ∧ |IndisputableMonolith.Relativity.ILG.beta_from_solution  ψ p - 1| ≤ κ)
+@[simp] theorem PPNDeriveCert.verified_any (c : PPNDeriveCert) :
+  PPNDeriveCert.verified c := by
+  intro ψ p κ hκ
+  constructor
+  · simpa using IndisputableMonolith.Relativity.ILG.gamma_band_solution ψ p κ hκ
+  · simpa using IndisputableMonolith.Relativity.ILG.beta_band_solution  ψ p κ hκ
+
+end URCGenerators
+end IndisputableMonolith
 import Mathlib
 import IndisputableMonolith.Verification
 import IndisputableMonolith.RH.RS.Spec

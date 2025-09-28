@@ -445,6 +445,20 @@ def substrate_scaffold_report : String :=
     URCGenerators.SubstrateCert.verified_any _
   "SubstrateCert: OK"
 
+/-- #eval-friendly report for WLinkOCert. -/
+def w_link_O_report : String :=
+  let cert : URCGenerators.WLinkOCert := {}
+  have _ : URCGenerators.WLinkOCert.verified cert :=
+    URCGenerators.WLinkOCert.verified_any _
+  "WLinkOCert: OK"
+
+/-- #eval-friendly report for PPNDeriveCert. -/
+def ppn_derive_report : String :=
+  let cert : URCGenerators.PPNDeriveCert := {}
+  have _ : URCGenerators.PPNDeriveCert.verified cert :=
+    URCGenerators.PPNDeriveCert.verified_any _
+  "PPNDeriveCert: OK"
+
 /-- #eval-friendly report for FamilyRatioCert (mass ratios φ^(Δr) at matching scale). -/
 def family_ratio_report : String :=
   let cert : URCGenerators.FamilyRatioCert := {}

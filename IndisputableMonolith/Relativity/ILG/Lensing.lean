@@ -27,6 +27,14 @@ noncomputable def deflection (ψ : RefreshField) (p : ILGParams) (ℓ : ℝ) : �
   deflection ψ p 0 = 0 := by
   simp [deflection]
 
+/-- Shapiro-like time delay (toy): Δt ∝ (Φ+Ψ) along length ℓ. -/
+noncomputable def time_delay (ψ : RefreshField) (p : ILGParams) (ℓ : ℝ) : ℝ :=
+  (baseline_potential (Phi ψ p) (Psi ψ p)) * ℓ
+
+@[simp] theorem time_delay_zero_path (ψ : RefreshField) (p : ILGParams) :
+  time_delay ψ p 0 = 0 := by
+  simp [time_delay]
+
 /-- Band statement: deviation between ILG and GR lensing proxies is within κ ≥ 0. -/
 theorem lensing_band (ψ : RefreshField) (p : ILGParams) (κ : ℝ) (hκ : 0 ≤ κ) :
   |lensing_proxy ψ p - baseline_potential (Phi ψ p) (Psi ψ p)| ≤ κ := by

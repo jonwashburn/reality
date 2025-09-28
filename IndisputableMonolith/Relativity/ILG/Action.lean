@@ -32,6 +32,11 @@ structure ILGParams where
   cLag  : ℝ
   deriving Repr, Inhabited
 
+/-- Symbolic ILG Lagrangian density (toy): L = (∂ψ)^2/2 − m^2 ψ^2/2 + cLag·alpha.
+    Here we treat all terms as scalars to keep the scaffold compiling. -/
+noncomputable def L_density (_g : Metric) (_ψ : RefreshField) (p : ILGParams) : ℝ :=
+  (p.alpha ^ 2) / 2 - (p.cLag ^ 2) / 2 + p.cLag * p.alpha
+
 /-- Convenience total action using bundled params. -/
 noncomputable def S_total (g : Metric) (ψ : RefreshField) (p : ILGParams) : ℝ :=
   S g ψ p.cLag p.alpha

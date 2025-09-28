@@ -16,8 +16,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Lean
-        uses: leanprover/setup-lean@v1
+      - name: Install elan (Lean toolchain)
+        shell: bash
+        run: |
+          set -euxo pipefail
+          curl -sSfL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | bash -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> $GITHUB_PATH
 
       - name: Cache lake artifacts
         uses: actions/cache@v4
@@ -31,12 +35,15 @@ jobs:
             ${{ runner.os }}-lake-
 
       - name: Update deps
-        run: lake update
+        run: |
+          source $HOME/.elan/env
+          lake update
 
       - name: Head-only build (first 6000 lines)
         shell: bash
         run: |
           set -euxo pipefail
+          source $HOME/.elan/env
           cp IndisputableMonolith.lean IndisputableMonolith.full.lean
           head -n 6000 IndisputableMonolith.full.lean > IndisputableMonolith.lean
           lake build IndisputableMonolith
@@ -44,6 +51,7 @@ jobs:
 
       - name: Run CI checks
         run: |
+          source $HOME/.elan/env
           lake exe ci_checks
 
 
