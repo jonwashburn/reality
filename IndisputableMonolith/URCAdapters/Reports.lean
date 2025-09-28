@@ -1271,7 +1271,10 @@ def sterile_exclusion_report : String :=
 
 /-- #eval report: Periodic blocks from φ^{2n} packing (shells 2,8,18,...). -/
 def periodic_report : String :=
-  "Periodic table: Blocks ~ φ^{2n} from discrete closure: OK"
+  let cert : URCGenerators.PeriodicBlocksCert := {}
+  have _ : URCGenerators.PeriodicBlocksCert.verified cert :=
+    URCGenerators.PeriodicBlocksCert.verified_any _
+  "PeriodicBlocksCert: OK (shell = E_coh * φ^{2n})"
 
 #eval periodic_report
 

@@ -29,5 +29,3 @@ theorem glass_univ (k : Nat) : fragility k > 0 := by
 
 end Chemistry
 end IndisputableMonolith
-
-

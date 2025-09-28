@@ -12,6 +12,7 @@ import IndisputableMonolith.Physics.Hadrons
 import IndisputableMonolith.Physics.SterileExclusion
 import IndisputableMonolith.Chemistry.SuperconductingTc
 import IndisputableMonolith.Chemistry.GlassTransition
+import IndisputableMonolith.Chemistry.PeriodicBlocks
 import IndisputableMonolith.Information.CompressionPrior
 
 namespace IndisputableMonolith
@@ -2338,6 +2339,18 @@ structure RunningCouplingCert where
   @[simp] theorem GlassTransitionCert.verified_any (c : GlassTransitionCert) :
     GlassTransitionCert.verified c := by
     intro k; simpa using (IndisputableMonolith.Chemistry.glass_univ k)
+
+  /-- Certificate: Periodic blocks identity (shell = E_coh * capacity). -/
+  structure PeriodicBlocksCert where
+    deriving Repr
+
+  @[simp] def PeriodicBlocksCert.verified (_c : PeriodicBlocksCert) : Prop :=
+    ∀ n, IndisputableMonolith.Chemistry.shell n =
+      IndisputableMonolith.Constants.E_coh * IndisputableMonolith.Chemistry.block_capacity n
+
+  @[simp] theorem PeriodicBlocksCert.verified_any (c : PeriodicBlocksCert) :
+    PeriodicBlocksCert.verified c := by
+    intro n; simpa using (IndisputableMonolith.Chemistry.blocks_holds n)
 
   /-- Certificate: PMNS normal hierarchy holds (m1 < m2 < m3). -/
   structure PMNSHierarchyCert where
