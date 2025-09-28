@@ -10,6 +10,7 @@ import IndisputableMonolith.Physics.RunningCouplings
 import IndisputableMonolith.Econ.HeavyTail
 import IndisputableMonolith.Physics.Hadrons
 import IndisputableMonolith.Physics.SterileExclusion
+import IndisputableMonolith.Chemistry.SuperconductingTc
 import IndisputableMonolith.Information.CompressionPrior
 
 namespace IndisputableMonolith
@@ -2312,6 +2313,19 @@ structure RunningCouplingCert where
     intro h
     -- Contradiction placeholder (cannot hold in Fin 4 with Fin 3 source)
     exact False.elim (by cases' Classical.decEq (Fin 4) with _ _; cases h)
+
+  /-- Certificate: Superconducting Tc scaling decreases with ladder step. -/
+  structure SuperconductingTcCert where
+    deriving Repr
+
+  @[simp] def SuperconductingTcCert.verified (_c : SuperconductingTcCert) : Prop :=
+    ∀ n₁ n₂, n₁ < n₂ →
+      IndisputableMonolith.Chemistry.tc_phonon n₁ > IndisputableMonolith.Chemistry.tc_phonon n₂
+
+  @[simp] theorem SuperconductingTcCert.verified_any (c : SuperconductingTcCert) :
+    SuperconductingTcCert.verified c := by
+    intro n₁ n₂ h
+    simpa using (IndisputableMonolith.Chemistry.tc_scaling n₁ n₂ h)
 
   /-- Certificate: PMNS normal hierarchy holds (m1 < m2 < m3). -/
   structure PMNSHierarchyCert where
