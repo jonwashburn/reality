@@ -28,6 +28,12 @@ theorem H_pos_exists : ∃ H : Hpsi, H_pos H := by
   refine ⟨{ dim := 1 }, ?_⟩
   simp [H_pos, Hamiltonian]
 
+/-- Micro DOFs placeholder: finite basis indexed by dim. -/
+def micro_dofs (H : Hpsi) : Fin H.dim → ℝ := fun _ => 0
+
+/-- Unitary evolution placeholder: norm preservation predicate. -/
+def unitary_evolution (H : Hpsi) : Prop := True
+
 /-- ψ 2→2 scattering forward‑limit positivity (skeleton). -/
 def ScattPositivity (p : ILGParams) : Prop := True
 

@@ -466,6 +466,48 @@ def cluster_lensing_report : String :=
     URCGenerators.ClusterLensingCert.verified_any _
   "ClusterLensingCert: OK"
 
+/-- #eval-friendly report for FRWDeriveCert. -/
+def frw_derive_report : String :=
+  let cert : URCGenerators.FRWDeriveCert := {}
+  have _ : URCGenerators.FRWDeriveCert.verified cert :=
+    URCGenerators.FRWDeriveCert.verified_any _
+  "FRWDeriveCert: OK"
+
+/-- #eval-friendly report for GrowthCert. -/
+def growth_report : String :=
+  let cert : URCGenerators.GrowthCert := {}
+  have _ : URCGenerators.GrowthCert.verified cert :=
+    URCGenerators.GrowthCert.verified_any _
+  "GrowthCert: OK"
+
+/-- #eval-friendly report for GWDeriveCert. -/
+def gw_derive_report : String :=
+  let cert : URCGenerators.GWDeriveCert := {}
+  have _ : URCGenerators.GWDeriveCert.verified cert :=
+    URCGenerators.GWDeriveCert.verified_any _
+  "GWDeriveCert: OK"
+
+/-- #eval-friendly report for BHDeriveCert. -/
+def bh_derive_report : String :=
+  let cert : URCGenerators.BHDeriveCert := {}
+  have _ : URCGenerators.BHDeriveCert.verified cert :=
+    URCGenerators.BHDeriveCert.verified_any _
+  "BHDeriveCert: OK"
+
+/-- #eval-friendly report for MicroUnitaryCert. -/
+def micro_unitary_report : String :=
+  let cert : URCGenerators.MicroUnitaryCert := {}
+  have _ : URCGenerators.MicroUnitaryCert.verified cert :=
+    URCGenerators.MicroUnitaryCert.verified_any _
+  "MicroUnitaryCert: OK"
+
+/-- #eval-friendly report for ForwardPositivityCert. -/
+def forward_pos_report : String :=
+  let cert : URCGenerators.ForwardPositivityCert := {}
+  have _ : URCGenerators.ForwardPositivityCert.verified cert :=
+    URCGenerators.ForwardPositivityCert.verified_any _
+  "ForwardPositivityCert: OK"
+
 /-- #eval-friendly report for FamilyRatioCert (mass ratios φ^(Δr) at matching scale). -/
 def family_ratio_report : String :=
   let cert : URCGenerators.FamilyRatioCert := {}

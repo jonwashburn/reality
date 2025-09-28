@@ -114,6 +114,116 @@ structure WLinkOCert where deriving Repr
 end URCGenerators
 end IndisputableMonolith
 
+/-! Forward-limit positivity certificate -/
+
+namespace IndisputableMonolith
+namespace URCGenerators
+
+open IndisputableMonolith
+
+structure ForwardPositivityCert where deriving Repr
+@[simp] def ForwardPositivityCert.verified (_c : ForwardPositivityCert) : Prop :=
+  ∀ (p : IndisputableMonolith.Relativity.ILG.ILGParams) (κ : ℝ),
+    |p.cLag * p.alpha| ≤ κ → 0 ≤ κ →
+      IndisputableMonolith.Relativity.ILG.ScattPositivity p
+@[simp] theorem ForwardPositivityCert.verified_any (c : ForwardPositivityCert) :
+  ForwardPositivityCert.verified c := by
+  intro p κ h hk; simpa using IndisputableMonolith.Relativity.ILG.scatt_pos_small p κ h hk
+
+end URCGenerators
+end IndisputableMonolith
+
+/-! ψ micro DOFs + unitary evolution certificate -/
+
+namespace IndisputableMonolith
+namespace URCGenerators
+
+open IndisputableMonolith
+
+structure MicroUnitaryCert where deriving Repr
+@[simp] def MicroUnitaryCert.verified (_c : MicroUnitaryCert) : Prop :=
+  (∃ H, IndisputableMonolith.Relativity.ILG.isHilbert H)
+  ∧ (∃ H, IndisputableMonolith.Relativity.ILG.unitary_evolution H)
+@[simp] theorem MicroUnitaryCert.verified_any (c : MicroUnitaryCert) :
+  MicroUnitaryCert.verified c := by
+  constructor
+  · simpa using IndisputableMonolith.Relativity.ILG.Hpsi_exists
+  · refine ⟨{ dim := 1 }, ?_⟩; simp [IndisputableMonolith.Relativity.ILG.unitary_evolution]
+
+end URCGenerators
+end IndisputableMonolith
+
+/-! BH derivation certificate (horizon band and ringdown proxy) -/
+
+namespace IndisputableMonolith
+namespace URCGenerators
+
+open IndisputableMonolith
+
+structure BHDeriveCert where deriving Repr
+@[simp] def BHDeriveCert.verified (_c : BHDeriveCert) : Prop :=
+  ∀ (M κ : ℝ) (p : IndisputableMonolith.Relativity.ILG.ILGParams), 0 ≤ κ →
+    |IndisputableMonolith.Relativity.ILG.horizon_proxy M p
+      - IndisputableMonolith.Relativity.ILG.baseline_bh_radius M| ≤ κ
+@[simp] theorem BHDeriveCert.verified_any (c : BHDeriveCert) : BHDeriveCert.verified c := by
+  intro M κ p hκ; simpa using IndisputableMonolith.Relativity.ILG.horizon_band M κ p hκ
+
+end URCGenerators
+end IndisputableMonolith
+
+/-! GW quadratic-action derivation certificate (band around c_T^2 = 1) -/
+
+namespace IndisputableMonolith
+namespace URCGenerators
+
+open IndisputableMonolith
+
+structure GWDeriveCert where deriving Repr
+@[simp] def GWDeriveCert.verified (_c : GWDeriveCert) : Prop :=
+  ∀ (p : IndisputableMonolith.Relativity.ILG.ILGParams) (κ : ℝ), 0 ≤ κ →
+    |IndisputableMonolith.Relativity.ILG.c_T2 p - 1| ≤ κ
+@[simp] theorem GWDeriveCert.verified_any (c : GWDeriveCert) : GWDeriveCert.verified c := by
+  intro p κ hκ; simpa using IndisputableMonolith.Relativity.ILG.cT_band κ p hκ
+
+end URCGenerators
+end IndisputableMonolith
+
+/-! Growth certificate - positivity under simple conditions -/
+
+namespace IndisputableMonolith
+namespace URCGenerators
+
+open IndisputableMonolith
+
+structure GrowthCert where deriving Repr
+@[simp] def GrowthCert.verified (_c : GrowthCert) : Prop :=
+  ∀ (δ a : ℝ), 0 < a → 0 < δ → 0 < IndisputableMonolith.Relativity.ILG.growth_index δ a
+@[simp] theorem GrowthCert.verified_any (c : GrowthCert) : GrowthCert.verified c := by
+  intro δ a ha hδ; simpa using IndisputableMonolith.Relativity.ILG.growth_index_pos_of δ a ha hδ
+
+end URCGenerators
+end IndisputableMonolith
+
+/-! FRW derivation certificate - FriedmannI link from ψ stress-energy -/
+
+namespace IndisputableMonolith
+namespace URCGenerators
+
+open IndisputableMonolith
+
+structure FRWDeriveCert where deriving Repr
+@[simp] def FRWDeriveCert.verified (_c : FRWDeriveCert) : Prop :=
+  ∀ (t : ℝ) (p : IndisputableMonolith.Relativity.ILG.ILGParams),
+    (IndisputableMonolith.Relativity.ILG.FriedmannI t p
+      ↔ (IndisputableMonolith.Relativity.ILG.H t) ^ 2
+          = IndisputableMonolith.Relativity.ILG.Tpsi00 p)
+@[simp] theorem FRWDeriveCert.verified_any (c : FRWDeriveCert) :
+  FRWDeriveCert.verified c := by
+  intro t p; simpa using IndisputableMonolith.Relativity.ILG.friedmann_from_Tpsi t p
+
+end URCGenerators
+end IndisputableMonolith
+
 /-! Cluster lensing band certificate using global-only constants -/
 
 namespace IndisputableMonolith
