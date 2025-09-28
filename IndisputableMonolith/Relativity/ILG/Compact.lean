@@ -1,8 +1,14 @@
 import Mathlib
+import IndisputableMonolith/Relativity/ILG/Action
 
 namespace IndisputableMonolith
 namespace Relativity
 namespace ILG
+
+/-- Spherical static metric ansatz (toy): encoded by a single function f(r). -/
+structure SphericalAnsatz where
+  f : ℝ → ℝ
+  deriving Repr
 
 /-- Baseline static BH proxy (sketch): use a scalar invariant placeholder. -/
 noncomputable def baseline_bh (μ : ℝ) : ℝ := μ

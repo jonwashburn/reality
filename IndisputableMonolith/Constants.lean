@@ -30,6 +30,12 @@ lemma phi_ge_one : 1 ≤ phi := le_of_lt one_lt_phi
 lemma phi_ne_zero : phi ≠ 0 := ne_of_gt phi_pos
 lemma phi_ne_one : phi ≠ 1 := ne_of_gt one_lt_phi
 
+/-- ILG‑motivated α from φ: α = (1 − 1/φ)/2. -/
+@[simp] noncomputable def alpha_from_phi : ℝ := (1 - 1 / phi) / 2
+
+/-- ILG‑motivated C_lag from φ: C_lag = φ^{−5}. -/
+@[simp] noncomputable def Clag_from_phi : ℝ := phi ^ (-(5 : ℝ))
+
 /-- Minimal RS units used in Core. -/
 structure RSUnits where
   tau0 : ℝ

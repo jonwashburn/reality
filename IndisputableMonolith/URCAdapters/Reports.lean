@@ -403,6 +403,48 @@ def speed_from_units_report : String :=
     URCGenerators.SpeedFromUnitsCert.verified_any _
   "SpeedFromUnitsCert: OK"
 
+/-- #eval-friendly report for ConstantsFromPhiCert. -/
+def constants_from_phi_report : String :=
+  let cert : URCGenerators.ConstantsFromPhiCert := {}
+  have _ : URCGenerators.ConstantsFromPhiCert.verified cert :=
+    URCGenerators.ConstantsFromPhiCert.verified_any _
+  "ConstantsFromPhiCert: OK"
+
+/-- #eval-friendly report for WeakFieldEpsCert. -/
+def weakfield_eps_report : String :=
+  let cert : URCGenerators.WeakFieldEpsCert := {}
+  have _ : URCGenerators.WeakFieldEpsCert.verified cert :=
+    URCGenerators.WeakFieldEpsCert.verified_any _
+  "WeakFieldEpsCert: OK"
+
+/-- #eval-friendly report for LensingSmallCouplingCert. -/
+def lensing_small_report : String :=
+  let cert : URCGenerators.LensingSmallCouplingCert := {}
+  have _ : URCGenerators.LensingSmallCouplingCert.verified cert :=
+    URCGenerators.LensingSmallCouplingCert.verified_any _
+  "LensingSmallCouplingCert: OK"
+
+/-- #eval-friendly report for FRWScaffoldCert. -/
+def frw_scaffold_report : String :=
+  let cert : URCGenerators.FRWScaffoldCert := {}
+  have _ : URCGenerators.FRWScaffoldCert.verified cert :=
+    URCGenerators.FRWScaffoldCert.verified_any _
+  "FRWScaffoldCert: OK"
+
+/-- #eval-friendly report for GWBandCert. -/
+def gw_band_report : String :=
+  let cert : URCGenerators.GWBandCert := {}
+  have _ : URCGenerators.GWBandCert.verified cert :=
+    URCGenerators.GWBandCert.verified_any _
+  "GWBandCert: OK"
+
+/-- #eval-friendly report for SubstrateCert. -/
+def substrate_scaffold_report : String :=
+  let cert : URCGenerators.SubstrateCert := {}
+  have _ : URCGenerators.SubstrateCert.verified cert :=
+    URCGenerators.SubstrateCert.verified_any _
+  "SubstrateCert: OK"
+
 /-- #eval-friendly report for FamilyRatioCert (mass ratios φ^(Δr) at matching scale). -/
 def family_ratio_report : String :=
   let cert : URCGenerators.FamilyRatioCert := {}

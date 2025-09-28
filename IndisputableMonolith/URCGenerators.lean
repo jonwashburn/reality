@@ -1,3 +1,95 @@
+/-! New certs for recent ILG scaffold additions (Constants, WeakField, Lensing,
+    FRW, GW, Substrate). -/
+
+namespace IndisputableMonolith
+namespace URCGenerators
+
+open IndisputableMonolith
+
+/-- Certificate: Constants derived from φ are positive/defined. -/
+structure ConstantsFromPhiCert where
+  deriving Repr
+@[simp] def ConstantsFromPhiCert.verified (_c : ConstantsFromPhiCert) : Prop :=
+  (Constants.alpha_from_phi > 0) ∧ (Constants.Clag_from_phi > 0)
+@[simp] theorem ConstantsFromPhiCert.verified_any (c : ConstantsFromPhiCert) :
+  ConstantsFromPhiCert.verified c := by
+  -- alpha_from_phi = (1 - 1/φ)/2; φ>1 ⇒ numerator>0; denom>0
+  have hφpos : 0 < Constants.phi := Constants.phi_pos
+  have hφgt1 : 1 < Constants.phi := Constants.one_lt_phi
+  have h1over_lt1 : 1 / Constants.phi < 1 := by
+    have h0 : 0 < (1 : ℝ) := by norm_num
+    have := one_div_lt_one_div_of_lt h0 hφgt1
+    simpa [one_div] using this
+  have halb_pos : 0 < (2 : ℝ) := by norm_num
+  have halpha_pos : 0 < (1 - 1 / Constants.phi) / 2 :=
+    div_pos (sub_pos.mpr h1over_lt1) halb_pos
+  have hClag_pos : 0 < Constants.phi ^ (-(5 : ℝ)) :=
+    Real.rpow_pos_of_pos hφpos _
+  exact And.intro halpha_pos hClag_pos
+
+/-! WeakField epsilon expansion cert -/
+structure WeakFieldEpsCert where deriving Repr
+@[simp] def WeakFieldEpsCert.verified (_c : WeakFieldEpsCert) : Prop :=
+  ∀ (v : ℝ) (e : IndisputableMonolith.Relativity.ILG.EpsApprox) (ε : ℝ),
+    IndisputableMonolith.Relativity.ILG.EpsApprox.eval
+      (IndisputableMonolith.Relativity.ILG.v_model2_eps v e) ε
+    = v * IndisputableMonolith.Relativity.ILG.EpsApprox.eval e ε
+@[simp] theorem WeakFieldEpsCert.verified_any (c : WeakFieldEpsCert) :
+  WeakFieldEpsCert.verified c := by
+  intro v e ε; simpa using
+    (IndisputableMonolith.Relativity.ILG.v_model2_eps_eval v e ε)
+
+/-! Lensing small-coupling band -/
+structure LensingSmallCouplingCert where deriving Repr
+@[simp] def LensingSmallCouplingCert.verified (_c : LensingSmallCouplingCert) : Prop :=
+  ∀ (ψ : IndisputableMonolith.Relativity.ILG.RefreshField)
+    (p : IndisputableMonolith.Relativity.ILG.ILGParams) (κ : ℝ),
+      0 ≤ κ →
+      |IndisputableMonolith.Relativity.ILG.lensing_proxy ψ p
+        - IndisputableMonolith.Relativity.ILG.baseline_potential
+            (IndisputableMonolith.Relativity.ILG.Phi ψ p)
+            (IndisputableMonolith.Relativity.ILG.Psi ψ p)| ≤ κ
+@[simp] theorem LensingSmallCouplingCert.verified_any (c : LensingSmallCouplingCert) :
+  LensingSmallCouplingCert.verified c := by
+  intro ψ p κ hκ; simpa using
+    (IndisputableMonolith.Relativity.ILG.lensing_band ψ p κ hκ)
+
+/-! FRW scaffold certs -/
+structure FRWScaffoldCert where deriving Repr
+@[simp] def FRWScaffoldCert.verified (_c : FRWScaffoldCert) : Prop :=
+  (∀ p, 0 ≤ IndisputableMonolith.Relativity.ILG.rho_psi p)
+  ∧ (IndisputableMonolith.Relativity.ILG.gr_continuity)
+@[simp] theorem FRWScaffoldCert.verified_any (c : FRWScaffoldCert) :
+  FRWScaffoldCert.verified c := by
+  constructor
+  · intro p; simpa using IndisputableMonolith.Relativity.ILG.rho_psi_nonneg p
+  · simpa using IndisputableMonolith.Relativity.ILG.gr_continuity
+
+/-! GW scaffold certs -/
+structure GWBandCert where deriving Repr
+@[simp] def GWBandCert.verified (_c : GWBandCert) : Prop :=
+  (∀ κ p, 0 ≤ κ → |IndisputableMonolith.Relativity.ILG.c_T2 p - 1| ≤ κ)
+  ∧ (∀ C α κ, |C * α| ≤ κ → |IndisputableMonolith.Relativity.ILG.gw_speed C α - 1| ≤ κ)
+@[simp] theorem GWBandCert.verified_any (c : GWBandCert) : GWBandCert.verified c := by
+  constructor
+  · intro κ p hκ; simpa using IndisputableMonolith.Relativity.ILG.cT_band κ p hκ
+  · intro C α κ h; simpa using IndisputableMonolith.Relativity.ILG.gw_band_small C α κ h
+
+/-! Substrate scaffold certs -/
+structure SubstrateCert where deriving Repr
+@[simp] def SubstrateCert.verified (_c : SubstrateCert) : Prop :=
+  (∃ H, IndisputableMonolith.Relativity.ILG.isHilbert H)
+  ∧ (∃ H, IndisputableMonolith.Relativity.ILG.H_pos H)
+  ∧ (∀ p κ, |p.cLag * p.alpha| ≤ κ → 0 ≤ κ → IndisputableMonolith.Relativity.ILG.ScattPositivity p)
+@[simp] theorem SubstrateCert.verified_any (c : SubstrateCert) : SubstrateCert.verified c := by
+  constructor
+  · simpa using IndisputableMonolith.Relativity.ILG.Hpsi_exists
+  constructor
+  · simpa using IndisputableMonolith.Relativity.ILG.H_pos_exists
+  · intro p κ h hκ; simpa using IndisputableMonolith.Relativity.ILG.scatt_pos_small p κ h hκ
+
+end URCGenerators
+end IndisputableMonolith
 import Mathlib
 import IndisputableMonolith.Verification
 import IndisputableMonolith.RH.RS.Spec

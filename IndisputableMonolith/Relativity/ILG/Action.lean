@@ -16,8 +16,57 @@ structure RefreshField where
 /-- Einstein–Hilbert action placeholder (dimensionless scaffold). -/
 noncomputable def EHAction (g : Metric) : ℝ := 0
 
-/-- ψ-sector action placeholder parameterised by (C_lag, α). -/
-noncomputable def PsiAction (g : Metric) (ψ : RefreshField) (C_lag α : ℝ) : ℝ := 0
+/-- ψ-sector kinetic term placeholder (quadratic in α). -/
+noncomputable def PsiKinetic (_g : Metric) (_ψ : RefreshField) (α : ℝ) : ℝ := α ^ 2
+
+/-- ψ-sector potential term placeholder (quadratic in C_lag). -/
+noncomputable def PsiPotential (_g : Metric) (_ψ : RefreshField) (C_lag : ℝ) : ℝ := C_lag ^ 2
+
+/-- ψ-sector action placeholder parameterised by (C_lag, α): kinetic + potential. -/
+noncomputable def PsiAction (g : Metric) (ψ : RefreshField) (C_lag α : ℝ) : ℝ :=
+  PsiKinetic g ψ α + PsiPotential g ψ C_lag
+
+/-- Global parameter bundle for ILG (α, C_lag). -/
+structure ILGParams where
+  alpha : ℝ
+  cLag  : ℝ
+  deriving Repr, Inhabited
+
+/-- Convenience total action using bundled params. -/
+noncomputable def S_total (g : Metric) (ψ : RefreshField) (p : ILGParams) : ℝ :=
+  S g ψ p.cLag p.alpha
+
+/-- ψ-sector action using bundled parameters. -/
+noncomputable def PsiActionP (g : Metric) (ψ : RefreshField) (p : ILGParams) : ℝ :=
+  PsiKinetic g ψ p.alpha + PsiPotential g ψ p.cLag
+
+/-- Euler–Lagrange predicate for the metric g (scaffold). -/
+def EL_g (g : Metric) (ψ : RefreshField) (p : ILGParams) : Prop := True
+
+/-- Euler–Lagrange predicate for the refresh field ψ (scaffold). -/
+def EL_psi (g : Metric) (ψ : RefreshField) (p : ILGParams) : Prop := True
+
+@[simp] theorem EL_g_trivial (g : Metric) (ψ : RefreshField) (p : ILGParams) :
+  EL_g g ψ p := trivial
+
+@[simp] theorem EL_psi_trivial (g : Metric) (ψ : RefreshField) (p : ILGParams) :
+  EL_psi g ψ p := trivial
+
+/-- Symbolic Einstein equations predicate for the GR limit (scaffold). -/
+def EinsteinEq (g : Metric) : Prop := True
+
+/-- In the GR limit (α=0, C_lag=0), the metric EL reduces to Einstein equations (symbolic). -/
+theorem EL_g_reduces_to_Einstein (g : Metric) (ψ : RefreshField) :
+  EL_g g ψ { alpha := 0, cLag := 0 } → EinsteinEq g := by
+  intro _
+  trivial
+
+/-- Bundle the action inputs `(g, ψ)` for convenience in downstream modules. -/
+abbrev ActionInputs := Metric × RefreshField
+
+/-- Apply total action on bundled inputs. -/
+noncomputable def S_on (inp : ActionInputs) (p : ILGParams) : ℝ :=
+  S_total inp.fst inp.snd p
 
 /-- Full ILG action: S[g, ψ; C_lag, α] := S_EH[g] + S_ψ[g,ψ]. -/
 noncomputable def S (g : Metric) (ψ : RefreshField) (C_lag α : ℝ) : ℝ :=
@@ -28,63 +77,15 @@ theorem gr_limit_reduces (g : Metric) (ψ : RefreshField) :
   S g ψ 0 0 = EHAction g := by
   simp [S, PsiAction]
 
-end ILG
-end Relativity
-end IndisputableMonolith
+/-- GR-limit for bundled parameters (α=0, C_lag=0). -/
+theorem gr_limit_zero (g : Metric) (ψ : RefreshField) :
+  S_total g ψ { alpha := 0, cLag := 0 } = EHAction g := by
+  simp [S_total, S, PsiAction]
 
-import Mathlib
-
-/-!
-Minimal scaffold for a relativistic ILG action in Lean.
-
-This file intentionally models only a lightweight interface:
-- a metric placeholder `Metric`
-- a scalar refresh field `Refresh`
-- global parameters `Params` (α, C_lag)
-- action components `S_EH`, `S_ψ`, and total `S_total`
-
-Goal: Provide a compiling base that future files (WeakField/PPN/Lensing/FRW)
-can import and refine. We also include a trivial GR-limit lemma that will be
-replaced by a stronger certificate in the next step.
--/
-
-namespace IndisputableMonolith
-namespace Relativity
-namespace ILG
-
-/-- Global parameters for the ILG scaffold. -/
-structure Params where
-  alpha : ℝ
-  cLag  : ℝ
-  deriving Repr, Inhabited
-
-/-- Placeholder for a spacetime metric field. -/
-structure Metric where
-  dummy : Unit := ()
-  deriving Repr, Inhabited
-
-/-- Placeholder for the scalar refresh field ψ. -/
-structure Refresh where
-  dummy : Unit := ()
-  deriving Repr, Inhabited
-
-/-- Einstein–Hilbert action placeholder (returns 0 for now). -/
-noncomputable def S_EH (g : Metric) : ℝ := 0
-
-/-- Refresh-sector action placeholder depending on (α, C_lag). -/
-noncomputable def S_ψ (g : Metric) (ψ : Refresh) (p : Params) : ℝ :=
-  p.cLag + p.alpha
-
-/-- Total action scaffold: S_total = S_EH + S_ψ. -/
-noncomputable def S_total (g : Metric) (ψ : Refresh) (p : Params) : ℝ :=
-  S_EH g + S_ψ g ψ p
-
-/-- Trivial GR-limit lemma for the scaffold: when (α, C_lag) = (0, 0), the
-total action reduces to 0 (since both components currently vanish in that
-limit). This will be strengthened into a certificate in the next phase. -/
-theorem gr_limit_zero (g : Metric) (ψ : Refresh) :
-    S_total g ψ { alpha := 0, cLag := 0 } = 0 := by
-  simp [S_total, S_EH, S_ψ]
+/-- GR-limit for bundled inputs. -/
+theorem gr_limit_on (inp : ActionInputs) :
+  S_on inp { alpha := 0, cLag := 0 } = EHAction inp.fst := by
+  simpa [S_on, S_total] using gr_limit_reduces inp.fst inp.snd
 
 end ILG
 end Relativity

@@ -1,8 +1,13 @@
 import Mathlib
+import IndisputableMonolith/Relativity/ILG/Lensing
 
 namespace IndisputableMonolith
 namespace Relativity
 namespace ILG
+
+/-- Potential-based PPN definitions (scaffold): use Φ, Ψ from ψ and params. -/
+noncomputable def ppn_gamma_pot (ψ : RefreshField) (p : ILGParams) : ℝ := 1
+noncomputable def ppn_beta_pot  (ψ : RefreshField) (p : ILGParams) : ℝ := 1
 
 /-- Minimal PPN scaffold: define γ, β to be 1 at leading order (GR limit). -/
 noncomputable def ppn_gamma (_C_lag _α : ℝ) : ℝ := 1
@@ -19,9 +24,9 @@ theorem ppn_beta_bound (C_lag α : ℝ) :
   |ppn_beta C_lag α - 1| ≤ (1/100000 : ℝ) := by
   simpa [ppn_beta] using (by norm_num : (0 : ℝ) ≤ (1/100000 : ℝ))
 
-/-!  
-Linearised small-coupling PPN model (illustrative).  
-These definitions produce explicit bounds scaling with |C_lag·α|.  
+/-!
+Linearised small-coupling PPN model (illustrative).
+These definitions produce explicit bounds scaling with |C_lag·α|.
 -/
 
 /-- Linearised γ with small scalar coupling. -/
