@@ -508,6 +508,27 @@ def forward_pos_report : String :=
     URCGenerators.ForwardPositivityCert.verified_any _
   "ForwardPositivityCert: OK"
 
+/-- #eval-friendly report for FalsifiersCert. -/
+def falsifiers_report : String :=
+  let cert : URCGenerators.FalsifiersCert := {}
+  have _ : URCGenerators.FalsifiersCert.verified cert :=
+    URCGenerators.FalsifiersCert.verified_any _
+  "FalsifiersCert: OK"
+
+/-- #eval-friendly report for ELLimitCert. -/
+def el_limit_report : String :=
+  let cert : URCGenerators.ELLimitCert := {}
+  have _ : URCGenerators.ELLimitCert.verified cert :=
+    URCGenerators.ELLimitCert.verified_any _
+  "ELLimitCert: OK"
+
+/-- #eval-friendly report for LensingZeroPathCert. -/
+def lensing_zero_report : String :=
+  let cert : URCGenerators.LensingZeroPathCert := {}
+  have _ : URCGenerators.LensingZeroPathCert.verified cert :=
+    URCGenerators.LensingZeroPathCert.verified_any _
+  "LensingZeroPathCert: OK"
+
 /-- #eval-friendly report for FamilyRatioCert (mass ratios φ^(Δr) at matching scale). -/
 def family_ratio_report : String :=
   let cert : URCGenerators.FamilyRatioCert := {}

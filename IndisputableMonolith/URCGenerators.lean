@@ -114,6 +114,52 @@ structure WLinkOCert where deriving Repr
 end URCGenerators
 end IndisputableMonolith
 
+/-! EL limit and lensing zero-path certificates -/
+
+namespace IndisputableMonolith
+namespace URCGenerators
+
+open IndisputableMonolith
+
+structure ELLimitCert where deriving Repr
+@[simp] def ELLimitCert.verified (_c : ELLimitCert) : Prop :=
+  ∀ (inp : IndisputableMonolith.Relativity.ILG.ActionInputs),
+    (IndisputableMonolith.Relativity.ILG.EL_gr_limit inp)
+    ∧ (IndisputableMonolith.Relativity.ILG.dS_zero_gr_limit inp)
+@[simp] theorem ELLimitCert.verified_any (c : ELLimitCert) : ELLimitCert.verified c := by
+  intro inp; constructor <;> simp
+
+structure LensingZeroPathCert where deriving Repr
+@[simp] def LensingZeroPathCert.verified (_c : LensingZeroPathCert) : Prop :=
+  ∀ (ψ : IndisputableMonolith.Relativity.ILG.RefreshField)
+    (p : IndisputableMonolith.Relativity.ILG.ILGParams),
+      IndisputableMonolith.Relativity.ILG.deflection ψ p 0 = 0
+      ∧ IndisputableMonolith.Relativity.ILG.time_delay ψ p 0 = 0
+@[simp] theorem LensingZeroPathCert.verified_any (c : LensingZeroPathCert) :
+  LensingZeroPathCert.verified c := by
+  intro ψ p; constructor <;> simp
+
+end URCGenerators
+end IndisputableMonolith
+
+/-! Falsifiers certificate - default admissible bands -/
+
+namespace IndisputableMonolith
+namespace URCGenerators
+
+open IndisputableMonolith
+
+structure FalsifiersCert where deriving Repr
+@[simp] def FalsifiersCert.verified (_c : FalsifiersCert) : Prop :=
+  IndisputableMonolith.Relativity.ILG.falsifiers_ok
+    IndisputableMonolith.Relativity.ILG.falsifiers_default
+@[simp] theorem FalsifiersCert.verified_any (c : FalsifiersCert) :
+  FalsifiersCert.verified c := by
+  simpa using IndisputableMonolith.Relativity.ILG.falsifiers_default_ok
+
+end URCGenerators
+end IndisputableMonolith
+
 /-! Forward-limit positivity certificate -/
 
 namespace IndisputableMonolith
