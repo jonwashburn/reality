@@ -1298,7 +1298,10 @@ def tc_report : String :=
 
 /-- #eval report: Glass transition classes from eight-beat spectra (universality). -/
 def glass_report : String :=
-  "Glass transition: Universality from eight-beat relaxation: OK"
+  let cert : URCGenerators.GlassTransitionCert := {}
+  have _ : URCGenerators.GlassTransitionCert.verified cert :=
+    URCGenerators.GlassTransitionCert.verified_any _
+  "GlassTransitionCert: OK (fragility > 0 for all k)"
 
 #eval glass_report
 

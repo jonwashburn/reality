@@ -51,5 +51,3 @@ theorem tc_scaling (n₁ n₂ : Nat) (h : n₁ < n₂) : tc_phonon n₁ > tc_pho
 
 end Chemistry
 end IndisputableMonolith
-
-

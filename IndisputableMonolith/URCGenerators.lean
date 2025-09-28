@@ -11,6 +11,7 @@ import IndisputableMonolith.Econ.HeavyTail
 import IndisputableMonolith.Physics.Hadrons
 import IndisputableMonolith.Physics.SterileExclusion
 import IndisputableMonolith.Chemistry.SuperconductingTc
+import IndisputableMonolith.Chemistry.GlassTransition
 import IndisputableMonolith.Information.CompressionPrior
 
 namespace IndisputableMonolith
@@ -2326,6 +2327,17 @@ structure RunningCouplingCert where
     SuperconductingTcCert.verified c := by
     intro n₁ n₂ h
     simpa using (IndisputableMonolith.Chemistry.tc_scaling n₁ n₂ h)
+
+  /-- Certificate: Glass transition fragility is universally positive. -/
+  structure GlassTransitionCert where
+    deriving Repr
+
+  @[simp] def GlassTransitionCert.verified (_c : GlassTransitionCert) : Prop :=
+    ∀ k, IndisputableMonolith.Chemistry.fragility k > 0
+
+  @[simp] theorem GlassTransitionCert.verified_any (c : GlassTransitionCert) :
+    GlassTransitionCert.verified c := by
+    intro k; simpa using (IndisputableMonolith.Chemistry.glass_univ k)
 
   /-- Certificate: PMNS normal hierarchy holds (m1 < m2 < m3). -/
   structure PMNSHierarchyCert where
