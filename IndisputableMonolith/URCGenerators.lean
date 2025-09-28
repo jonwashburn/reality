@@ -16,6 +16,7 @@ import IndisputableMonolith.Chemistry.PeriodicBlocks
 import IndisputableMonolith.Chemistry.BondAngles
 import IndisputableMonolith.Chemistry.Quasicrystal
 import IndisputableMonolith.Biology.GeneticCode
+import IndisputableMonolith.Biology.CodonBias
 import IndisputableMonolith.Information.CompressionPrior
 
 namespace IndisputableMonolith
@@ -2425,6 +2426,18 @@ structure RunningCouplingCert where
   @[simp] theorem GeneticCodeCert.verified_any (c : GeneticCodeCert) :
     GeneticCodeCert.verified c := by
     simpa using (IndisputableMonolith.Biology.GeneticCode.optimality_holds)
+
+  /-- Certificate: Codon usage bias is strictly positive. -/
+  structure CodonBiasCert where
+    deriving Repr
+
+  @[simp] def CodonBiasCert.verified (_c : CodonBiasCert) : Prop :=
+    ∀ n e, IndisputableMonolith.Biology.CodonBias.bias n e > 0
+
+  @[simp] theorem CodonBiasCert.verified_any (c : CodonBiasCert) :
+    CodonBiasCert.verified c := by
+    intro n e
+    simpa using (IndisputableMonolith.Biology.CodonBias.bias_opt n e)
 
 end URCGenerators
 end IndisputableMonolith
