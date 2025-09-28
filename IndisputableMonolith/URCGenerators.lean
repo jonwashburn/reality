@@ -31,6 +31,7 @@ import IndisputableMonolith.Relativity.ILG.PPN
 import IndisputableMonolith.Relativity.ILG.Lensing
 import IndisputableMonolith.Relativity.ILG.FRW
 import IndisputableMonolith.Relativity.ILG.GW
+import IndisputableMonolith.Relativity.ILG.Compact
 import IndisputableMonolith.Information.CompressionPrior
 
 namespace IndisputableMonolith
@@ -2642,6 +2643,22 @@ structure RunningCouplingCert where
     GWPropagationCert.verified c := by
     intro C_lag α
     simpa using (IndisputableMonolith.Relativity.ILG.gw_band c.κ_gw C_lag α c.hκ_gw)
+
+  /-- Certificate (sketch): Static BH proxy deviation within admissible band κ_bh. -/
+  structure CompactLimitSketch where
+    κ_bh : ℝ
+    hκ_bh : 0 ≤ κ_bh
+    deriving Repr
+
+  @[simp] def CompactLimitSketch.verified (c : CompactLimitSketch) : Prop :=
+    ∀ (μ C_lag α : ℝ),
+      |IndisputableMonolith.Relativity.ILG.ilg_bh μ C_lag α -
+        IndisputableMonolith.Relativity.ILG.baseline_bh μ| ≤ c.κ_bh
+
+  @[simp] theorem CompactLimitSketch.verified_any (c : CompactLimitSketch) :
+    CompactLimitSketch.verified c := by
+    intro μ C_lag α
+    simpa using (IndisputableMonolith.Relativity.ILG.bh_static_band μ c.κ_bh C_lag α c.hκ_bh)
 
 end URCGenerators
 end IndisputableMonolith

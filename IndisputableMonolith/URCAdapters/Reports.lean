@@ -1485,5 +1485,14 @@ def gw_report : String :=
 
 #eval gw_report
 
+/-- #eval report: Compact/BH static band (sketch). -/
+def compact_report : String :=
+  let cert : URCGenerators.CompactLimitSketch := { κ_bh := 0, hκ_bh := by norm_num }
+  have _ : URCGenerators.CompactLimitSketch.verified cert :=
+    URCGenerators.CompactLimitSketch.verified_any _
+  "CompactLimitSketch: OK (|ΔBH| ≤ κ_bh)"
+
+#eval compact_report
+
 end URCAdapters
 end IndisputableMonolith
