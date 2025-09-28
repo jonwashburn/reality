@@ -22,6 +22,7 @@ import IndisputableMonolith.Biology.EnzymeRates
 import IndisputableMonolith.Biology.MetabolicScaling
 import IndisputableMonolith.Biology.Allometric
 import IndisputableMonolith.Biology.Morphogen
+import IndisputableMonolith.Biology.NeuralCriticality
 import IndisputableMonolith.Information.CompressionPrior
 
 namespace IndisputableMonolith
@@ -2502,6 +2503,17 @@ structure RunningCouplingCert where
   @[simp] theorem MorphogenCert.verified_any (c : MorphogenCert) :
     MorphogenCert.verified c := by
     simpa using (IndisputableMonolith.Biology.Morphogen.precision_holds)
+
+  /-- Certificate: Neural criticality 1/f > 0 at φ. -/
+  structure NeuralCriticalityCert where
+    deriving Repr
+
+  @[simp] def NeuralCriticalityCert.verified (_c : NeuralCriticalityCert) : Prop :=
+    IndisputableMonolith.Biology.NeuralCriticality.criticality_holds
+
+  @[simp] theorem NeuralCriticalityCert.verified_any (c : NeuralCriticalityCert) :
+    NeuralCriticalityCert.verified c := by
+    simpa using (IndisputableMonolith.Biology.NeuralCriticality.criticality_holds)
 
 end URCGenerators
 end IndisputableMonolith

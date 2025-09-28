@@ -35,5 +35,3 @@ theorem precision_holds : morphogen_precision phi_noise gradient_scale > 0 := by
 end Morphogen
 end Biology
 end IndisputableMonolith
-
-

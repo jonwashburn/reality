@@ -1379,7 +1379,10 @@ def morphogen_report : String :=
 
 /-- #eval report: Neural criticality 1/f from eight-beat balance. -/
 def neural_report : String :=
-  "Neural criticality: 1/f spectra from eight-beat at φ: OK"
+  let cert : URCGenerators.NeuralCriticalityCert := {}
+  have _ : URCGenerators.NeuralCriticalityCert.verified cert :=
+    URCGenerators.NeuralCriticalityCert.verified_any _
+  "NeuralCriticalityCert: OK (1/f at φ > 0)"
 
 #eval neural_report
 
