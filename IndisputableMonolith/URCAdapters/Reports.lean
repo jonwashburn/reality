@@ -1440,6 +1440,15 @@ def ppn_report : String :=
 
 #eval ppn_report
 
+/-- #eval report: PPN bounds under small coupling assumption. -/
+def ppn_small_report : String :=
+  let cert : URCGenerators.PPNSmallCouplingCert := { κ := (1/10000 : ℝ), hκ := by norm_num }
+  have _ : URCGenerators.PPNSmallCouplingCert.verified cert :=
+    URCGenerators.PPNSmallCouplingCert.verified_any _
+  "PPNSmallCouplingCert: OK (|γ−1| ≤ 0.1κ, |β−1| ≤ 0.05κ)"
+
+#eval ppn_small_report
+
 /-- #eval report: Lensing proxy deviation within admissible band. -/
 def lensing_band_report : String :=
   let cert : URCGenerators.LensingBandCert := { κ := 0, hκ := by norm_num }

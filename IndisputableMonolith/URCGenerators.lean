@@ -2593,6 +2593,24 @@ structure RunningCouplingCert where
       (IndisputableMonolith.Relativity.ILG.ppn_gamma_bound C_lag α)
       (IndisputableMonolith.Relativity.ILG.ppn_beta_bound  C_lag α)
 
+  /-- Certificate: PPN bounds under an explicit small-coupling assumption. -/
+  structure PPNSmallCouplingCert where
+    κ : ℝ
+    hκ : 0 ≤ κ
+    deriving Repr
+
+  @[simp] def PPNSmallCouplingCert.verified (c : PPNSmallCouplingCert) : Prop :=
+    ∀ (C_lag α : ℝ), |C_lag * α| ≤ c.κ →
+      |IndisputableMonolith.Relativity.ILG.ppn_gamma_lin C_lag α - 1| ≤ (1/10 : ℝ) * c.κ ∧
+      |IndisputableMonolith.Relativity.ILG.ppn_beta_lin  C_lag α - 1| ≤ (1/20 : ℝ) * c.κ
+
+  @[simp] theorem PPNSmallCouplingCert.verified_any (c : PPNSmallCouplingCert) :
+    PPNSmallCouplingCert.verified c := by
+    intro C_lag α hsmall
+    constructor
+    · exact IndisputableMonolith.Relativity.ILG.ppn_gamma_bound_small C_lag α c.κ hsmall
+    · exact IndisputableMonolith.Relativity.ILG.ppn_beta_bound_small  C_lag α c.κ hsmall
+
   /-- Certificate: Lensing proxy deviation lies within an admissible band κ. -/
   structure LensingBandCert where
     κ : ℝ

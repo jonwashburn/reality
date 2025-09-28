@@ -13,5 +13,3 @@ theorem substrate_ok : substrate_healthy := trivial
 end ILG
 end Relativity
 end IndisputableMonolith
-
-
