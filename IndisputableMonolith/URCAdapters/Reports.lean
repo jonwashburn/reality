@@ -1422,6 +1422,15 @@ def heavy_tail_report : String :=
 
 #eval heavy_tail_report
 
+/-- #eval report: Weak-field ILG mapping multiplies baryonic v² by weight. -/
+def weakfield_ilg_report : String :=
+  let cert : URCGenerators.WeakFieldToILGCert := {}
+  have _ : URCGenerators.WeakFieldToILGCert.verified cert :=
+    URCGenerators.WeakFieldToILGCert.verified_any _
+  "WeakFieldToILGCert: OK (v_model² = w * v_baryon²)"
+
+#eval weakfield_ilg_report
+
 /-- #eval report: GR limit reduction for ILG action holds. -/
 def gr_limit_report : String :=
   let cert : URCGenerators.GRLimitCert := {}

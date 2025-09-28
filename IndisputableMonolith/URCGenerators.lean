@@ -26,6 +26,7 @@ import IndisputableMonolith.Biology.NeuralCriticality
 import IndisputableMonolith.Biology.SleepStages
 import IndisputableMonolith.Biology.HRVGolden
 import IndisputableMonolith.Relativity.ILG.Action
+import IndisputableMonolith.Relativity.ILG.WeakField
 import IndisputableMonolith.Information.CompressionPrior
 
 namespace IndisputableMonolith
@@ -2554,6 +2555,21 @@ structure RunningCouplingCert where
     GRLimitCert.verified c := by
     intro g ψ
     simpa using (IndisputableMonolith.Relativity.ILG.gr_limit_reduces g ψ)
+
+  /-- Certificate: Weak-field ILG mapping multiplies baryonic v² by an effective weight. -/
+  structure WeakFieldToILGCert where
+    deriving Repr
+
+  @[simp] def WeakFieldToILGCert.verified (_c : WeakFieldToILGCert) : Prop :=
+    ∀ (v_baryon2 Tdyn tau0 α n ζ ξ λ : ℝ),
+      IndisputableMonolith.Relativity.ILG.v_model2 v_baryon2
+        (IndisputableMonolith.Relativity.ILG.w_eff Tdyn tau0 α n ζ ξ λ)
+      = (IndisputableMonolith.Relativity.ILG.w_eff Tdyn tau0 α n ζ ξ λ) * v_baryon2
+
+  @[simp] theorem WeakFieldToILGCert.verified_any (c : WeakFieldToILGCert) :
+    WeakFieldToILGCert.verified c := by
+    intro v_baryon2 Tdyn tau0 α n ζ ξ λ
+    simpa using (IndisputableMonolith.Relativity.ILG.weakfield_ilg_weight v_baryon2 Tdyn tau0 α n ζ ξ λ)
 
 end URCGenerators
 end IndisputableMonolith
