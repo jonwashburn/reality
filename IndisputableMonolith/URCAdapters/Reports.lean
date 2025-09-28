@@ -1494,5 +1494,14 @@ def compact_report : String :=
 
 #eval compact_report
 
+/-- #eval report: Quantum substrate health (placeholder). -/
+def substrate_report : String :=
+  let cert : URCGenerators.QGSubstrateSketch := {}
+  have _ : URCGenerators.QGSubstrateSketch.verified cert :=
+    URCGenerators.QGSubstrateSketch.verified_any _
+  "QGSubstrateSketch: OK"
+
+#eval substrate_report
+
 end URCAdapters
 end IndisputableMonolith

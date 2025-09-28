@@ -18,5 +18,3 @@ theorem bh_static_band (μ κ C_lag α : ℝ) (hκ : 0 ≤ κ) :
 end ILG
 end Relativity
 end IndisputableMonolith
-
-

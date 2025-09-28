@@ -32,6 +32,7 @@ import IndisputableMonolith.Relativity.ILG.Lensing
 import IndisputableMonolith.Relativity.ILG.FRW
 import IndisputableMonolith.Relativity.ILG.GW
 import IndisputableMonolith.Relativity.ILG.Compact
+import IndisputableMonolith.Relativity.ILG.Substrate
 import IndisputableMonolith.Information.CompressionPrior
 
 namespace IndisputableMonolith
@@ -2659,6 +2660,17 @@ structure RunningCouplingCert where
     CompactLimitSketch.verified c := by
     intro μ C_lag α
     simpa using (IndisputableMonolith.Relativity.ILG.bh_static_band μ c.κ_bh C_lag α c.hκ_bh)
+
+  /-- Certificate: Quantum substrate health (placeholder). -/
+  structure QGSubstrateSketch where
+    deriving Repr
+
+  @[simp] def QGSubstrateSketch.verified (_c : QGSubstrateSketch) : Prop :=
+    IndisputableMonolith.Relativity.ILG.substrate_healthy
+
+  @[simp] theorem QGSubstrateSketch.verified_any (c : QGSubstrateSketch) :
+    QGSubstrateSketch.verified c := by
+    simpa using (IndisputableMonolith.Relativity.ILG.substrate_ok)
 
 end URCGenerators
 end IndisputableMonolith
