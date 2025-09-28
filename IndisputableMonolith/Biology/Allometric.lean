@@ -21,5 +21,3 @@ noncomputable def allometric_exponent (D : Nat) : ℝ := (D : ℝ) / (D + 1 : �
 end Allometric
 end Biology
 end IndisputableMonolith
-
-

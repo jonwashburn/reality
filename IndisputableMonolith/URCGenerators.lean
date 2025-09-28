@@ -21,6 +21,7 @@ import IndisputableMonolith.Biology.RibosomePareto
 import IndisputableMonolith.Biology.EnzymeRates
 import IndisputableMonolith.Biology.MetabolicScaling
 import IndisputableMonolith.Biology.Allometric
+import IndisputableMonolith.Biology.Morphogen
 import IndisputableMonolith.Information.CompressionPrior
 
 namespace IndisputableMonolith
@@ -2490,6 +2491,17 @@ structure RunningCouplingCert where
   @[simp] theorem AllometricCert.verified_any (c : AllometricCert) :
     AllometricCert.verified c := by
     simpa using (IndisputableMonolith.Biology.Allometric.allometric_holds)
+
+  /-- Certificate: Morphogen precision positive under φ-noise and unit scale. -/
+  structure MorphogenCert where
+    deriving Repr
+
+  @[simp] def MorphogenCert.verified (_c : MorphogenCert) : Prop :=
+    IndisputableMonolith.Biology.Morphogen.precision_holds
+
+  @[simp] theorem MorphogenCert.verified_any (c : MorphogenCert) :
+    MorphogenCert.verified c := by
+    simpa using (IndisputableMonolith.Biology.Morphogen.precision_holds)
 
 end URCGenerators
 end IndisputableMonolith
