@@ -27,5 +27,3 @@ theorem ceiling_holds (r : Nat) : rate_ceiling r > 0 := by
 end EnzymeRates
 end Biology
 end IndisputableMonolith
-
-

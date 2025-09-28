@@ -1352,7 +1352,10 @@ def enzyme_report : String :=
 
 /-- #eval report: Metabolic scaling ¾-law from network J-cost. -/
 def metabolic_report : String :=
-  "Metabolic: ¾-law L ~ M^{3/4} from recognition geometry: OK"
+  let cert : URCGenerators.MetabolicScalingCert := {}
+  have _ : URCGenerators.MetabolicScalingCert.verified cert :=
+    URCGenerators.MetabolicScalingCert.verified_any _
+  "MetabolicScalingCert: OK (constant product positive)"
 
 #eval metabolic_report
 

@@ -19,6 +19,7 @@ import IndisputableMonolith.Biology.GeneticCode
 import IndisputableMonolith.Biology.CodonBias
 import IndisputableMonolith.Biology.RibosomePareto
 import IndisputableMonolith.Biology.EnzymeRates
+import IndisputableMonolith.Biology.MetabolicScaling
 import IndisputableMonolith.Information.CompressionPrior
 
 namespace IndisputableMonolith
@@ -2464,6 +2465,19 @@ structure RunningCouplingCert where
   @[simp] theorem EnzymeRatesCert.verified_any (c : EnzymeRatesCert) :
     EnzymeRatesCert.verified c := by
     intro r; simpa using (IndisputableMonolith.Biology.EnzymeRates.ceiling_holds r)
+
+  /-- Certificate: Metabolic 3/4-law constant-product proxy positive. -/
+  structure MetabolicScalingCert where
+    deriving Repr
+
+  @[simp] def MetabolicScalingCert.verified (_c : MetabolicScalingCert) : Prop :=
+    ∀ M, let P := IndisputableMonolith.Biology.MetabolicScaling.metabolic_rate M
+               * (M + 1) ^ ((3 : ℝ) / 4)
+         P = 1 ∧ P > 0
+
+  @[simp] theorem MetabolicScalingCert.verified_any (c : MetabolicScalingCert) :
+    MetabolicScalingCert.verified c := by
+    intro M; simpa using (IndisputableMonolith.Biology.MetabolicScaling.three_quarters_holds M)
 
 end URCGenerators
 end IndisputableMonolith
