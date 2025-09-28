@@ -26,5 +26,3 @@ theorem angle_bias : 0 < tetra_bias := by
 
 end Chemistry
 end IndisputableMonolith
-
-

@@ -14,6 +14,7 @@ import IndisputableMonolith.Chemistry.SuperconductingTc
 import IndisputableMonolith.Chemistry.GlassTransition
 import IndisputableMonolith.Chemistry.PeriodicBlocks
 import IndisputableMonolith.Chemistry.BondAngles
+import IndisputableMonolith.Chemistry.Quasicrystal
 import IndisputableMonolith.Information.CompressionPrior
 
 namespace IndisputableMonolith
@@ -2399,6 +2400,19 @@ structure RunningCouplingCert where
   @[simp] theorem BondAnglesCert.verified_any (c : BondAnglesCert) :
     BondAnglesCert.verified c := by
     simpa using (IndisputableMonolith.Chemistry.angle_bias)
+
+  /-- Certificate: Quasicrystal stability (energy minimized at golden ratio). -/
+  structure QuasicrystalCert where
+    deriving Repr
+
+  @[simp] def QuasicrystalCert.verified (_c : QuasicrystalCert) : Prop :=
+    ∀ x, IndisputableMonolith.Chemistry.tiling_energy IndisputableMonolith.Chemistry.phi_ratio
+          ≤ IndisputableMonolith.Chemistry.tiling_energy x
+
+  @[simp] theorem QuasicrystalCert.verified_any (c : QuasicrystalCert) :
+    QuasicrystalCert.verified c := by
+    intro x
+    simpa using (IndisputableMonolith.Chemistry.quasicrystal_stable x)
 
 end URCGenerators
 end IndisputableMonolith
