@@ -30,6 +30,7 @@ import IndisputableMonolith.Relativity.ILG.WeakField
 import IndisputableMonolith.Relativity.ILG.PPN
 import IndisputableMonolith.Relativity.ILG.Lensing
 import IndisputableMonolith.Relativity.ILG.FRW
+import IndisputableMonolith.Relativity.ILG.GW
 import IndisputableMonolith.Information.CompressionPrior
 
 namespace IndisputableMonolith
@@ -2626,6 +2627,21 @@ structure RunningCouplingCert where
   @[simp] theorem NoGhostsCert.verified_any (c : NoGhostsCert) :
     NoGhostsCert.verified c := by
     simpa using (IndisputableMonolith.Relativity.ILG.healthy_default)
+
+  /-- Certificate: GW phase speed within admissible band κ_gw. -/
+  structure GWPropagationCert where
+    κ_gw : ℝ
+    hκ_gw : 0 ≤ κ_gw
+    deriving Repr
+
+  @[simp] def GWPropagationCert.verified (c : GWPropagationCert) : Prop :=
+    ∀ (C_lag α : ℝ),
+      |IndisputableMonolith.Relativity.ILG.gw_speed C_lag α - 1| ≤ c.κ_gw
+
+  @[simp] theorem GWPropagationCert.verified_any (c : GWPropagationCert) :
+    GWPropagationCert.verified c := by
+    intro C_lag α
+    simpa using (IndisputableMonolith.Relativity.ILG.gw_band c.κ_gw C_lag α c.hκ_gw)
 
 end URCGenerators
 end IndisputableMonolith

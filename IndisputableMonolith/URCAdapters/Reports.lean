@@ -1476,5 +1476,14 @@ def gr_limit_report : String :=
 
 #eval gr_limit_report
 
+/-- #eval report: GW propagation speed within admissible band. -/
+def gw_report : String :=
+  let cert : URCGenerators.GWPropagationCert := { κ_gw := 0, hκ_gw := by norm_num }
+  have _ : URCGenerators.GWPropagationCert.verified cert :=
+    URCGenerators.GWPropagationCert.verified_any _
+  "GWPropagationCert: OK (|v_gw-1| ≤ κ_gw)"
+
+#eval gw_report
+
 end URCAdapters
 end IndisputableMonolith

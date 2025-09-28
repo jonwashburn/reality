@@ -19,5 +19,3 @@ theorem healthy_default : healthy_kinetic 1 := by norm_num
 end ILG
 end Relativity
 end IndisputableMonolith
-
-
