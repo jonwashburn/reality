@@ -209,6 +209,42 @@ Error budgeting is made explicit through a Big-O scaffold \lean{BigO2} and the l
 \subsection{Reports and gating}
 For rapid validation, the weak-field derivation and the remainder control are exposed as \#eval-friendly endpoints: \lean{weakfield_derive_report} and \lean{w_link_O_report}. These are included in the consolidated QG harness used to gate pull requests in continuous integration (see \cref{sec:falsifiers}).
 
+\section{Post-Newtonian parameters (PPN)}\label{sec:ppn}
+
+We extract 1PN post-Newtonian parameters $(\gamma,\beta)$ from the weak-field solutions and connect them to observational bounds. The Lean development provides typed accessors to the linearized potentials and explicit formulas for $\gamma$ and $\beta$ at 1PN order; small-coupling bands make contact with canonical solar-system constraints.
+
+\subsection{Definitions and small-coupling bands}
+In the mechanized scaffold, the 1PN parameters are defined by
+\begin{equation}
+  \gamma_{\mathrm{1PN}} \equiv \texttt{gamma1PN}(\psi; p), \qquad
+  \beta_{\mathrm{1PN}} \equiv \texttt{beta1PN}(\psi; p),
+\end{equation}
+where $p$ are global ILG parameters. Under the small-coupling regime $\lvert p.cLag \cdot p.\alpha\rvert \le \kappa$, Lean supplies the bounds
+\begin{align}
+  \bigl\lvert \gamma_{\mathrm{1PN}} - 1 \bigr\rvert &\le \tfrac{1}{10}\,\kappa, \\
+  \bigl\lvert \beta_{\mathrm{1PN}} - 1 \bigr\rvert &\le \tfrac{1}{20}\,\kappa,
+\end{align}
+ensuring consistency with solar-system tests provided $\kappa$ is within empirical tolerances. These theorems are compiled as part of the PPN derivation certificate and surfaced by a \#eval report.
+
+\subsection{Linkage to linear forms}
+For bookkeeping and cross-checks with linearized potentials, the scaffold provides exact equalities relating the 1PN quantities to linear forms:
+\begin{equation}
+  \gamma_{\mathrm{1PN}} = \texttt{ppn\_gamma\_lin}(p.cLag, p.\alpha), \quad
+  \beta_{\mathrm{1PN}}  = \texttt{ppn\_beta\_lin}(p.cLag, p.\alpha).
+\end{equation}
+These identities ensure the PPN mapping is consistent with the weak-field sector introduced in \cref{sec:weakfield} and that limits commute as expected.
+
+\subsection{Certificate and report endpoint}
+All statements above are packaged by the certificate \lean{PPNDeriveCert} with a \#eval-friendly endpoint \lean{ppn_derive_report}. Any breakage in the 1PN mapping or band inequalities would prevent elaboration and fail continuous integration via the consolidated QG harness (see \cref{sec:falsifiers}).
+
+\subsection{Placeholder for figure}
+\begin{figure}[t]
+  \centering
+  % TODO: includegraphics{ppn_bands.pdf}
+  \caption{PPN parameter bands for $(\gamma,\beta)$ as functions of the small-coupling proxy $\kappa = \lvert p.cLag \cdot p.\alpha\rvert$, compared with canonical solar-system constraints.}
+  \label{fig:ppn-bands}
+\end{figure}
+
 % --- Section stubs (content to be added in separate inputs) ---
 % \input{QG_intro}
 % \input{QG_action}
