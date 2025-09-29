@@ -123,6 +123,48 @@ To connect global parameters to observational checks, we expose a bands schema a
 \subsection{What is and is not assumed}
 Spine obligations provide global anchors and unit relations; ILG then adds a covariant scalar sector $\psi$ with globally fixed couplings. We \emph{do not} assume system-specific potentials, postulated dark components, or free functions added to fit individual datasets. Any remaining scaffolds are clearly marked and are designed to be tightened against data without changing public endpoints.
 
+\section{Covariant action and variational structure}\label{sec:action}
+
+This section defines the total covariant action used throughout the paper, fixes notation for variations, and records the mechanized GR-limit statements and unit/identity checks that guard the construction. Formal objects and proofs are implemented in Lean and exposed through named theorems and certificate-backed reports.
+
+\subsection{Definitions and notation}
+We denote the spacetime metric by $g_{\mu\nu}$ with determinant $g$ and use a real scalar field $\psi$ with globally fixed couplings. Variations with respect to $\psi$ and $g_{\mu\nu}$ are written $\delta_\psi$ and $\delta_g$. The Lagrangian density for the scalar sector is assembled from canonical pieces (kinetic, mass, potential, couplings) into a covariant integrand $\Lag_{\mathrm{cov}}(g,\psi)$; the Lean module \texttt{ILG/Action.lean} provides these components and their aggregation. For compactness we write the total action
+\begin{equation}
+  \Action_{\mathrm{total}}[g,\psi] 
+  = \int \dd^4x\,\sqrt{-g}\,\Big[\,\Lag_{\mathrm{EH}}(g)\;+
+    \Lag_{\mathrm{cov}}(g,\psi)\,\Big],
+  \label{eq:S-total}
+\end{equation}
+with $\Lag_{\mathrm{EH}}$ the Einstein--Hilbert term.
+
+\subsection{GR-limit guarantees}
+Mechanized GR-compatibility is ensured by the following Lean theorems:
+\begin{itemize}
+  \item \lean{gr_limit_cov}: the total covariant action \eqref{eq:S-total} reduces to the Einstein--Hilbert action in the appropriate GR limit.
+  \item \lean{EL_psi_gr_limit}: the Euler--Lagrange equation for $\psi$ reduces to its GR-limit form under the same conditions.
+  \item \lean{Tmunu_gr_limit_zero}: the stress--energy tensor contribution from the added sector vanishes in the GR limit.
+\end{itemize}
+These statements are used later when comparing to solar-system PPN bounds and binary tests where GR is tightly constrained.
+
+\subsection{Variations and stress--energy}
+Stationarity of $\Action_{\mathrm{total}}$ under independent variations yields the field equation for $\psi$ and the metric field equation via
+\begin{equation}
+  \delta_\psi\,\Action_{\mathrm{total}} = 0,\qquad
+  \delta_g\,\Action_{\mathrm{total}} = 0\;\Rightarrow\; T_{\mu\nu}[\psi,g]\,.
+\end{equation}
+The Lean development expresses these as symbolic predicates in \texttt{ILG/Variation.lean}, with GR-limit lemmas cited above. These predicates are the entry points for linearization (weak-field), cosmology (FRW background), and tensor-mode extraction (GW).
+
+\subsection{Unit consistency and identities}
+Dimensional and structural hygiene is guarded by unit/covariance certificates:
+\begin{itemize}
+  \item \lean{LPiecesUnitsCert} (report \lean{l_pieces_units_report}): unit-consistency across the scalar-sector Lagrangian pieces.
+  \item \lean{LCovIdentityCert} (report \lean{l_cov_identity_report}): coherence of the covariant aggregation used in \eqref{eq:S-total}.
+\end{itemize}
+Both are compiled as machine-checked certificates and surfaced by \#eval reports for fast verification during development and in CI.
+
+\subsection{Interfaces to downstream sections}
+The objects above feed directly into the remainder of the paper: linearized EL equations and the modified Poisson structure (\cref{sec:weakfield}); post-Newtonian mappings (\cref{sec:ppn}); relativistic lensing integrals (\cref{sec:lensing}); FRW restatements and growth (\cref{sec:frw}); and the quadratic action for gravitational waves (\cref{sec:gw}). All downstream claims depend on the mechanized guarantees summarized here.
+
 % --- Section stubs (content to be added in separate inputs) ---
 % \input{QG_intro}
 % \input{QG_action}
