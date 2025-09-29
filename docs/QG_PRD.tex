@@ -103,6 +103,26 @@ A quantum substrate with explicit microscopic degrees of freedom delivers unitar
 \subsection{Contributions}
 This paper contributes: (1) a covariant ILG action with GR-limit guarantees; (2) mechanized derivations for weak-field, PPN, lensing, cosmology, GW, and compact-object domains; (3) a quantum substrate with unitarity and microcausality predicates; (4) a fully reproducible artifact with certificate-backed \#eval reports; and (5) CI-enforced science gates. The remainder of the manuscript follows the structure in \cref{sec:action,sec:weakfield,sec:ppn,sec:lensing,sec:frw,sec:gw,sec:compact,sec:quantum,sec:falsifiers}, with each section anchored to explicit Lean artifacts and observational interfaces.
 
+\section{Recognition spine and ILG principle}\label{sec:context}
+
+ILG inherits global structure from a prior recognition-theoretic spine that pins a dimensionless scale and fixes bridge relationships between units, displays, and observational hooks. The essential point for this work is operational: global parameters are fixed by spine obligations and are not tuned per system. We summarize the guarantees and the specific hooks that ILG uses.
+
+\subsection{Spine guarantees and reports}
+The ``reality bundle'' witness combines a spec-level closure with a reality layer; in Lean this is exposed by the report
+\lean{reality_master_report}, which elaborates a witness of \emph{RSRealityMaster}. A meta-level closure is packaged by \lean{recognition_closure_report}. The uniqueness of the pinned dimensionless scale is surfaced by \lean{phi_selection_unique_with_closure_report}. These endpoints collectively certify that the foundational layer is internally consistent and that the global selection is unique.
+
+\subsection{Global-only configuration and provenance}
+Global couplings used by ILG are inherited from the recognition spine and recorded alongside their provenance (see the repository's \texttt{Source.txt}). No local, per-galaxy or per-cluster tuning is introduced in the theory or the proofs. Where a band or inequality is stated, it arises from global constraints or small-coupling regimes that are explicit in the Lean development.
+
+\subsection{Bridge and units hooks}
+ILG depends on unit/bridge coherence identities that are verified once at the spine and then reused everywhere. The K-gate and identity hooks are exercised by \lean{k_gate_report} and \lean{k_identities_report}; an equivalent lambda-identity witness is surfaced by \lean{lambda_rec_identity_report}. A route-A identity tying Planckian and recognition units is exposed by \lean{routeA_gate_identity_report}. These checks ensure that displays and conversions used in observational interfaces are dimensionally and structurally coherent.
+
+\subsection{Interface to ILG and observational bands}
+To connect global parameters to observational checks, we expose a bands schema and a certificate stating that the mapping from parameters to bands is well-formed. The consolidated mapping is certified by \lean{BandsFromParamsCert} with the report \lean{bands_from_params_report}. This allows ILG-generated quantities (e.g., PPN bands, lensing bands, $c_T^2$ bounds) to be referenced in a uniform way across the paper and in the falsifiers harness.
+
+\subsection{What is and is not assumed}
+Spine obligations provide global anchors and unit relations; ILG then adds a covariant scalar sector $\psi$ with globally fixed couplings. We \emph{do not} assume system-specific potentials, postulated dark components, or free functions added to fit individual datasets. Any remaining scaffolds are clearly marked and are designed to be tightened against data without changing public endpoints.
+
 % --- Section stubs (content to be added in separate inputs) ---
 % \input{QG_intro}
 % \input{QG_action}
