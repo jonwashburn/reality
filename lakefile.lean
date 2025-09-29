@@ -27,3 +27,7 @@ lean_exe ci {
 lean_exe audit {
   root := `IndisputableMonolith.URCAdapters.Audit
 }
+
+lean_exe qg_harness {
+  root := `CI.QGHarness
+}

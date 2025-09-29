@@ -82,3 +82,33 @@ jobs:
           set -euxo pipefail
           chmod +x scripts/ci_guard.sh
           ./scripts/ci_guard.sh
+
+  science_gates:
+    name: Science gates (QG harness)
+    runs-on: ubuntu-latest
+    needs: head_build
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install elan (Lean toolchain)
+        shell: bash
+        run: |
+          set -euxo pipefail
+          curl -sSfL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | bash -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> $GITHUB_PATH
+      - name: Cache Lake packages
+        uses: actions/cache@v4
+        with:
+          path: ./.lake/packages
+          key: ${{ runner.os }}-lake-${{ hashFiles('lake-manifest.json') }}
+          restore-keys: |
+            ${{ runner.os }}-lake-
+      - name: Build and run QG harness
+        shell: bash
+        run: |
+          set -euxo pipefail
+          source $HOME/.elan/env
+          lake update
+          lake build qg_harness
+          lake exe qg_harness | tee harness.out
+          grep -q "QGHarness: PASS" harness.out
+          grep -q "FalsifiersHarnessCert: OK" harness.out
