@@ -12,10 +12,10 @@
 \usepackage{xcolor}
 \usepackage{amsmath,amssymb,amsfonts,mathtools}
 \usepackage{bm}
-\usepackage{siunitx}
+
 \usepackage{booktabs}
 \usepackage{hyperref}
-\usepackage[capitalize,nameinlink]{cleveref}
+
 
 % --- Hyperref setup (APS friendly) ---
 \definecolor{linkblue}{RGB}{0,70,140}
@@ -31,12 +31,12 @@
 }
 
 % --- Cleveref names ---
-\crefname{section}{Sec.}{Secs.}
-\Crefname{section}{Section}{Sections}
-\crefname{figure}{Fig.}{Figs.}
-\Crefname{figure}{Figure}{Figures}
-\crefname{table}{Table}{Tables}
-
+% \crefname{section}{Sec.}{Secs.}
+% \Crefname{section}{Section}{Sections}
+% \crefname{figure}{Fig.}{Figs.}
+% \Crefname{figure}{Figure}{Figures}
+% \crefname{table}{Table}{Tables}
+%
 % --- Math and notation helpers ---
 \newcommand{\dd}{\mathrm{d}}
 \newcommand{\RR}{\mathbb{R}}
@@ -54,14 +54,13 @@
 \newcommand{\brak}[1]{\left[ #1 \right]}
 
 % --- Lean/Code formatting helper ---
-\newcommand{\lean}[1]{\texttt{#1}}
+\newcommand{\lean}[1]{\texttt{\detokenize{#1}}}
 
 % --- Graphics path (optional) ---
 \graphicspath{{./figs/}}
 
 % --- Title and author block (update before submission) ---
 \begin{document}
-
 \title{Information-Limited Gravity: A Mechanized, Covariant, Quantum-Consistent Framework with Observational Gates}
 
 \author{Jonathan Washburn}
@@ -85,476 +84,476 @@ All statements are compiled as machine-checked certificates with editor-friendly
 % \tableofcontents
 
 \section{Introduction}\label{sec:intro}
-
+%
 Mechanizing fundamental theory changes what counts as evidence. Ambitious proposals in gravitation often hinge on informal derivations, implicit assumptions, and ad hoc parameter choices, which can impede falsification and reuse. Here we present a covariant, quantum-consistent framework for gravity---Information-Limited Gravity (ILG)---that is constructed and verified end-to-end in the Lean theorem prover. Every structural claim we make is tied to a named Lean theorem or certificate and surfaced through editor-friendly \#eval reports and CI-enforced harnesses, providing a reproducible path from axioms to observables.
-
+%
 \subsection{Motivation and scope}
 Observational tensions across scales (galaxy rotation curves, cluster lensing time delays, growth and $\sigma_8$) suggest value in a minimally extended, globally constrained theory that preserves General Relativity (GR) where it is tested best, but that can systematically account for large-scale phenomenology. ILG introduces a globally configured scalar sector $\psi$ coupled covariantly to the metric, with couplings fixed at the global level. The theory is engineered to: (i) reduce to GR in the appropriate limit, (ii) produce predictive weak-field dynamics with a multiplicative $w(r)$ factor for baryonic acceleration and a controlled $\Order(\varepsilon^2)$ remainder, and (iii) deliver measurable consequences for post-Newtonian (PPN) parameters, lensing, cosmology, gravitational waves, and compact objects.
-
+%
 \subsection{Mechanized guarantees}
-At the action level, we define a total covariant action $\Action_{\mathrm{total}}[g,\psi]$ and prove a GR-limit theorem \lean{gr_limit_cov} ensuring reduction to the Einstein--Hilbert term in the relevant limit. Variational predicates deliver Euler--Lagrange equations and stress--energy with GR-consistency lemmas \lean{EL_psi_gr_limit} and \lean{Tmunu_gr_limit_zero}. Each construction is accompanied by unit/consistency checks (e.g., \lean{LPiecesUnitsCert}, \lean{LCovIdentityCert}) and surfaced by \#eval reports (e.g., \lean{l_pieces_units_report}, \lean{l_cov_identity_report}). These machine-checked artifacts ensure that the formal layer compiles before any phenomenological claims are made.
+At the action level, we define a total covariant action $\Action_{\mathrm{total}}[g,\psi]$ and prove a GR-limit theorem \lean{gr_limit_cov} ensuring reduction to the Einstein--Hilbert term in the relevant limit. Variational predicates deliver Euler--Lagrange equations and stress--energy with GR-consistency lemmas \lean{EL_psi_gr_limit} and \lean{Tmunu_gr_limit_zero}. Each construction is accompanied by unit/consistency checks (e.g., \lean{LPiecesUnitsCert}, \lean{LCovIdentityCert}) and surfaced by \#eval reports (e.g., \texttt{l\_pieces\_units\_report}, \texttt{l\_cov\_identity\_report}). These machine-checked artifacts ensure that the formal layer compiles before any phenomenological claims are made.
 
 \subsection{From fields to observables}
-In the weak-field regime, linearization yields a modified Poisson structure and a baryonic acceleration weight $w(r)$ derived from potentials, with an explicit $\Order(\varepsilon^2)$ control (\lean{WLinkOCert}; report \lean{w_link_O_report}), and a consolidated derivation certificate (\lean{WeakFieldDeriveCert}; report \lean{weakfield_derive_report}). Solved metric potentials map to PPN parameters $(\gamma,\beta)$ (certificate \lean{PPNDeriveCert}; report \lean{ppn_derive_report}) and to relativistic lensing deflection/time-delay proxies relevant for clusters (\lean{ClusterLensingDeriveCert}; report \lean{cluster_lensing_derive_report}). On cosmological backgrounds, a $\psi$ stress--energy construction restates Friedmann equations and connects scalar perturbation growth to $\sigma_8$, with bands spanning CMB/BAO/BBN consistency (\lean{FRWDeriveCert}, \lean{GrowthCert}, \lean{CMBBAOBBNBandsCert}; reports \lean{frw_derive_report}, \lean{growth_report}, \lean{cmb_bao_bbn_bands_report}). Around FRW, the quadratic action for tensor modes bounds $c_T^2$ via \lean{GWQuadraticCert} and \lean{GWDeriveCert} (reports \lean{gw_quadratic_report}, \lean{gw_derive_report}). For compact objects we provide horizon and ringdown proxies (\lean{BHDeriveCert}; report \lean{bh_derive_report}).
+In the weak-field regime, linearization yields a modified Poisson structure and a baryonic acceleration weight $w(r)$ derived from potentials, with an explicit $\Order(\varepsilon^2)$ control (\lean{WLinkOCert}; report \texttt{w\_link\_O\_report}), and a consolidated derivation certificate (\lean{WeakFieldDeriveCert}; report \texttt{weakfield\_derive\_report}). Solved metric potentials map to PPN parameters $(\gamma,\beta)$ (certificate \lean{PPNDeriveCert}; report \texttt{ppn\_derive\_report}) and to relativistic lensing deflection/time-delay proxies relevant for clusters (\lean{ClusterLensingDeriveCert}; report \texttt{cluster\_lensing\_derive\_report}). On cosmological backgrounds, a $\psi$ stress--energy construction restates Friedmann equations and connects scalar perturbation growth to $\sigma_8$, with bands spanning CMB/BAO/BBN consistency (\lean{FRWDeriveCert}, \lean{GrowthCert}, \lean{CMBBAOBBNBandsCert}; reports \texttt{frw\_derive\_report}, \texttt{growth\_report}, \texttt{cmb\_bao\_bbn\_bands\_report}). Around FRW, the quadratic action for tensor modes bounds $c_T^2$ via \lean{GWQuadraticCert} and \lean{GWDeriveCert} (reports \texttt{gw\_quadratic\_report}, \texttt{gw\_derive\_report}). For compact objects we provide horizon and ringdown proxies (\lean{BHDeriveCert}; report \texttt{bh\_derive\_report}).
 
 \subsection{Quantum consistency and gating}
-A quantum substrate with explicit microscopic degrees of freedom delivers unitary evolution and a microcausality predicate, certified by \lean{MicroUnitaryCert} and \lean{MicroUnitaryCompletionCert} (reports \lean{micro_unitary_report}, \lean{micro_unitary_completion_report}). To guarantee scientific hygiene, we expose a consolidated QG gate and a falsifiers harness that PRs must satisfy in CI: \lean{qg_harness_report} (``QGHarness: PASS'') and \lean{falsifiers_harness_report} (``FalsifiersHarnessCert: OK''). Together they ensure that any change that breaks a theorem, a certificate, or a dataset-linked constraint is immediately surfaced.
+A quantum substrate with explicit microscopic degrees of freedom delivers unitary evolution and a microcausality predicate, certified by \lean{MicroUnitaryCert} and \lean{MicroUnitaryCompletionCert} (reports \texttt{micro\_unitary\_report}, \texttt{micro\_unitary\_completion\_report}). To guarantee scientific hygiene, we expose a consolidated QG gate and a falsifiers harness that PRs must satisfy in CI: \texttt{qg\_harness\_report} (``QGHarness: PASS'') and \texttt{falsifiers\_harness\_report} (``FalsifiersHarnessCert: OK''). Together they ensure that any change that breaks a theorem, a certificate, or a dataset-linked constraint is immediately surfaced.
 
 \subsection{Contributions}
-This paper contributes: (1) a covariant ILG action with GR-limit guarantees; (2) mechanized derivations for weak-field, PPN, lensing, cosmology, GW, and compact-object domains; (3) a quantum substrate with unitarity and microcausality predicates; (4) a fully reproducible artifact with certificate-backed \#eval reports; and (5) CI-enforced science gates. The remainder of the manuscript follows the structure in \cref{sec:action,sec:weakfield,sec:ppn,sec:lensing,sec:frw,sec:gw,sec:compact,sec:quantum,sec:falsifiers}, with each section anchored to explicit Lean artifacts and observational interfaces.
-
-\section{Recognition spine and ILG principle}\label{sec:context}
-
+This paper contributes: (1) a covariant ILG action with GR-limit guarantees; (2) mechanized derivations for weak-field, PPN, lensing, cosmology, GW, and compact-object domains; (3) a quantum substrate with unitarity and microcausality predicates; (4) a fully reproducible artifact with certificate-backed \#eval reports; and (5) CI-enforced science gates. The remainder of the manuscript follows the structure in the action, weak-field, PPN, lensing, FRW, GW, compact, quantum, and falsifiers sections, with each section anchored to explicit Lean artifacts and observational interfaces.
+%
+%\section{Recognition spine and ILG principle}\label{sec:context}
+%
 ILG inherits global structure from a prior recognition-theoretic spine that pins a dimensionless scale and fixes bridge relationships between units, displays, and observational hooks. The essential point for this work is operational: global parameters are fixed by spine obligations and are not tuned per system. We summarize the guarantees and the specific hooks that ILG uses.
-
-\subsection{Spine guarantees and reports}
+%
+%\subsection{Spine guarantees and reports}
 The ``reality bundle'' witness combines a spec-level closure with a reality layer; in Lean this is exposed by the report
-\lean{reality_master_report}, which elaborates a witness of \emph{RSRealityMaster}. A meta-level closure is packaged by \lean{recognition_closure_report}. The uniqueness of the pinned dimensionless scale is surfaced by \lean{phi_selection_unique_with_closure_report}. These endpoints collectively certify that the foundational layer is internally consistent and that the global selection is unique.
-
-\subsection{Global-only configuration and provenance}
+%\texttt{reality\_master\_report}, which elaborates a witness of \emph{RSRealityMaster}. A meta-level closure is packaged by \texttt{recognition\_closure\_report}. The uniqueness of the pinned dimensionless scale is surfaced by \texttt{phi\_selection\_unique\_with\_closure\_report}. These endpoints collectively certify that the foundational layer is internally consistent and that the global selection is unique.
+%
+%\subsection{Global-only configuration and provenance}
 Global couplings used by ILG are inherited from the recognition spine and recorded alongside their provenance (see the repository's \texttt{Source.txt}). No local, per-galaxy or per-cluster tuning is introduced in the theory or the proofs. Where a band or inequality is stated, it arises from global constraints or small-coupling regimes that are explicit in the Lean development.
-
-\subsection{Bridge and units hooks}
-ILG depends on unit/bridge coherence identities that are verified once at the spine and then reused everywhere. The K-gate and identity hooks are exercised by \lean{k_gate_report} and \lean{k_identities_report}; an equivalent lambda-identity witness is surfaced by \lean{lambda_rec_identity_report}. A route-A identity tying Planckian and recognition units is exposed by \lean{routeA_gate_identity_report}. These checks ensure that displays and conversions used in observational interfaces are dimensionally and structurally coherent.
-
-\subsection{Interface to ILG and observational bands}
-To connect global parameters to observational checks, we expose a bands schema and a certificate stating that the mapping from parameters to bands is well-formed. The consolidated mapping is certified by \lean{BandsFromParamsCert} with the report \lean{bands_from_params_report}. This allows ILG-generated quantities (e.g., PPN bands, lensing bands, $c_T^2$ bounds) to be referenced in a uniform way across the paper and in the falsifiers harness.
-
-\subsection{What is and is not assumed}
+%
+%\subsection{Bridge and units hooks}
+ILG depends on unit/bridge coherence identities that are verified once at the spine and then reused everywhere. The K-gate and identity hooks are exercised by \texttt{k\_gate\_report} and \texttt{k\_identities\_report}; an equivalent lambda-identity witness is surfaced by \texttt{lambda\_rec\_identity\_report}. A route-A identity tying Planckian and recognition units is exposed by \texttt{routeA\_gate\_identity\_report}. These checks ensure that displays and conversions used in observational interfaces are dimensionally and structurally coherent.
+%
+%\subsection{Interface to ILG and observational bands}
+To connect global parameters to observational checks, we expose a bands schema and a certificate stating that the mapping from parameters to bands is well-formed. The consolidated mapping is certified by \lean{BandsFromParamsCert} with the report \texttt{bands\_from\_params\_report}. This allows ILG-generated quantities (e.g., PPN bands, lensing bands, $c_T^2$ bounds) to be referenced in a uniform way across the paper and in the falsifiers harness.
+%
+%\subsection{What is and is not assumed}
 Spine obligations provide global anchors and unit relations; ILG then adds a covariant scalar sector $\psi$ with globally fixed couplings. We \emph{do not} assume system-specific potentials, postulated dark components, or free functions added to fit individual datasets. Any remaining scaffolds are clearly marked and are designed to be tightened against data without changing public endpoints.
-
-\section{Covariant action and variational structure}\label{sec:action}
-
+%
+%\section{Covariant action and variational structure}\label{sec:action}
+%
 This section defines the total covariant action used throughout the paper, fixes notation for variations, and records the mechanized GR-limit statements and unit/identity checks that guard the construction. Formal objects and proofs are implemented in Lean and exposed through named theorems and certificate-backed reports.
-
-\subsection{Definitions and notation}
+%
+%\subsection{Definitions and notation}
 We denote the spacetime metric by $g_{\mu\nu}$ with determinant $g$ and use a real scalar field $\psi$ with globally fixed couplings. Variations with respect to $\psi$ and $g_{\mu\nu}$ are written $\delta_\psi$ and $\delta_g$. The Lagrangian density for the scalar sector is assembled from canonical pieces (kinetic, mass, potential, couplings) into a covariant integrand $\Lag_{\mathrm{cov}}(g,\psi)$; the Lean module \texttt{ILG/Action.lean} provides these components and their aggregation. For compactness we write the total action
-\begin{equation}
-  \Action_{\mathrm{total}}[g,\psi] 
-  = \int \dd^4x\,\sqrt{-g}\,\Big[\,\Lag_{\mathrm{EH}}(g)\;+
-    \Lag_{\mathrm{cov}}(g,\psi)\,\Big],
-  \label{eq:S-total}
-\end{equation}
-with $\Lag_{\mathrm{EH}}$ the Einstein--Hilbert term.
-
-\subsection{GR-limit guarantees}
+%\begin{equation}
+%  \Action_{\mathrm{total}}[g,\psi] 
+%  = \int \dd^4x\,\sqrt{-g}\,\Big[\,\Lag_{\mathrm{EH}}(g)\;+
+%    \Lag_{\mathrm{cov}}(g,\psi)\,\Big],
+%  \label{eq:S-total}
+%\end{equation}
+%with $\Lag_{\mathrm{EH}}$ the Einstein--Hilbert term.
+%
+%\subsection{GR-limit guarantees}
 Mechanized GR-compatibility is ensured by the following Lean theorems:
-\begin{itemize}
-  \item \lean{gr_limit_cov}: the total covariant action \eqref{eq:S-total} reduces to the Einstein--Hilbert action in the appropriate GR limit.
-  \item \lean{EL_psi_gr_limit}: the Euler--Lagrange equation for $\psi$ reduces to its GR-limit form under the same conditions.
-  \item \lean{Tmunu_gr_limit_zero}: the stress--energy tensor contribution from the added sector vanishes in the GR limit.
-\end{itemize}
+%\begin{itemize}
+%  \item \lean{gr_limit_cov}: the total covariant action \eqref{eq:S-total} reduces to the Einstein--Hilbert action in the appropriate GR limit.
+%  \item \lean{EL_psi_gr_limit}: the Euler--Lagrange equation for $\psi$ reduces to its GR-limit form under the same conditions.
+%  \item \lean{Tmunu_gr_limit_zero}: the stress--energy tensor contribution from the added sector vanishes in the GR limit.
+%\end{itemize}
 These statements are used later when comparing to solar-system PPN bounds and binary tests where GR is tightly constrained.
-
-\subsection{Variations and stress--energy}
+%
+%\subsection{Variations and stress--energy}
 Stationarity of $\Action_{\mathrm{total}}$ under independent variations yields the field equation for $\psi$ and the metric field equation via
-\begin{equation}
-  \delta_\psi\,\Action_{\mathrm{total}} = 0,\qquad
-  \delta_g\,\Action_{\mathrm{total}} = 0\;\Rightarrow\; T_{\mu\nu}[\psi,g]\,.
-\end{equation}
+%\begin{equation}
+%  \delta_\psi\,\Action_{\mathrm{total}} = 0,\qquad
+%  \delta_g\,\Action_{\mathrm{total}} = 0\;\Rightarrow\; T_{\mu\nu}[\psi,g]\,.
+%\end{equation}
 The Lean development expresses these as symbolic predicates in \texttt{ILG/Variation.lean}, with GR-limit lemmas cited above. These predicates are the entry points for linearization (weak-field), cosmology (FRW background), and tensor-mode extraction (GW).
-
-\subsection{Unit consistency and identities}
+%
+%\subsection{Unit consistency and identities}
 Dimensional and structural hygiene is guarded by unit/covariance certificates:
-\begin{itemize}
-  \item \lean{LPiecesUnitsCert} (report \lean{l_pieces_units_report}): unit-consistency across the scalar-sector Lagrangian pieces.
-  \item \lean{LCovIdentityCert} (report \lean{l_cov_identity_report}): coherence of the covariant aggregation used in \eqref{eq:S-total}.
-\end{itemize}
+%\begin{itemize}
+%  \item \lean{LPiecesUnitsCert} (report \texttt{l\_pieces\_units\_report}): unit-consistency across the scalar-sector Lagrangian pieces.
+%  \item \lean{LCovIdentityCert} (report \texttt{l\_cov\_identity\_report}): coherence of the covariant aggregation used in \eqref{eq:S-total}.
+%\end{itemize}
 Both are compiled as machine-checked certificates and surfaced by \#eval reports for fast verification during development and in CI.
-
-\subsection{Interfaces to downstream sections}
-The objects above feed directly into the remainder of the paper: linearized EL equations and the modified Poisson structure (\cref{sec:weakfield}); post-Newtonian mappings (\cref{sec:ppn}); relativistic lensing integrals (\cref{sec:lensing}); FRW restatements and growth (\cref{sec:frw}); and the quadratic action for gravitational waves (\cref{sec:gw}). All downstream claims depend on the mechanized guarantees summarized here.
-
-\section{Weak-field regime and modified Poisson}\label{sec:weakfield}
-
+%
+%\subsection{Interfaces to downstream sections}
+The objects above feed directly into the remainder of the paper: linearized EL equations and the modified Poisson structure (\ref{sec:weakfield}); post-Newtonian mappings (\ref{sec:ppn}); relativistic lensing integrals (\ref{sec:lensing}); FRW restatements and growth (\ref{sec:frw}); and the quadratic action for gravitational waves (\ref{sec:gw}). All downstream claims depend on the mechanized guarantees summarized here.
+%
+%\section{Weak-field regime and modified Poisson}\label{sec:weakfield}
+%
 We now linearize the field equations around a Minkowski background and work in the Newtonian gauge to obtain a modified Poisson structure for the potential $\Phi$. The baryonic acceleration picks up a multiplicative weight $w(r)$ derived from the linearized potentials. All steps are mechanized in Lean with explicit symbols and reports.
-
-\subsection{Gauge and perturbations}
+%
+%\subsection{Gauge and perturbations}
 We parameterize the metric perturbation and fix the Newtonian gauge as in the Lean scaffold \texttt{ILG/WeakField.lean}: the structures \lean{Perturbation}, \lean{NewtonianGauge}, and constructor \lean{mkNewtonian} provide typed accessors for $(\Phi,\Psi)$ and ensure gauge choices are respected downstream.
-
-\subsection{Linearized EL at $\Order(\varepsilon)$}
-From the variational predicates (\cref{sec:action}) we form their linearization about the background. The Lean module \texttt{ILG/Linearize.lean} provides a symbolic predicate \lean{LinearizedEL} and an $\Order(\varepsilon)$ statement \lean{linearized_EL_Oeps} that isolates terms relevant for weak-field dynamics.
-
-\subsection{Modified Poisson and effective sources}
-The scalar-sector source and the effective potential are assembled via \lean{Spsi_source} and \lean{PhiEff_from_sources}. The central linkage is the modified-Poisson statement \lean{derive_modified_poisson}, which ties the Laplacian of $\Phi$ to baryonic and $\psi$-sector contributions in the linear regime. This statement is used later to map to PPN and lensing observables.
-
-\subsection{Baryonic acceleration weight}
-We obtain a multiplicative weight $w(r)$ for baryonic acceleration from the potential, following the Lean definitions \lean{w_of_Phi} and \lean{w_r}; a velocity proxy \lean{v_model2_r} is used to compare against rotation-curve profiles without introducing per-system tuning. The consolidated certificate \lean{WeakFieldDeriveCert} is surfaced by the report \lean{weakfield_derive_report}.
-
-\subsection{Error control and $\Order(\varepsilon^2)$ remainder}
-Error budgeting is made explicit through a Big-O scaffold \lean{BigO2} and the linkage lemma \lean{w_link_O2}, guaranteeing that neglected terms are at most $\Order(\varepsilon^2)$. This guarantee is exposed to users and CI by the certificate \lean{WLinkOCert} with report \lean{w_link_O_report}.
-
-\subsection{Placeholders for figures and tables}
-\begin{figure}[t]
-  \centering
-  % TODO: includegraphics{rotation_curves_overlay.pdf}
-  \caption{Rotation-curve overlays comparing the baryonic baseline and the ILG prediction using the weight $w(r)$. No per-galaxy tuning is introduced; bands reflect global small-coupling regimes.}
-  \label{fig:rc}
-\end{figure}
-
-\begin{table}[b]
-  \centering
-  \begin{tabular}{l c}
-    \toprule
-    Contribution & Scaling \\
-    \midrule
-    Linear term & $\Order(\varepsilon)$ \\
-    Remainder & $\Order(\varepsilon^2)$ \\
-    \bottomrule
-  \end{tabular}
-  \caption{Schematic error budget for the weak-field expansion used to derive $w(r)$. Precise constants are provided by the Lean lemmas \lean{linearized_EL_Oeps} and \lean{w_link_O2}.}
-  \label{tab:weakfield-error}
-\end{table}
-
-\subsection{Reports and gating}
-For rapid validation, the weak-field derivation and the remainder control are exposed as \#eval-friendly endpoints: \lean{weakfield_derive_report} and \lean{w_link_O_report}. These are included in the consolidated QG harness used to gate pull requests in continuous integration (see \cref{sec:falsifiers}).
-
-\section{Post-Newtonian parameters (PPN)}\label{sec:ppn}
-
+%
+%\subsection{Linearized EL at $\Order(\varepsilon)$}
+From the variational predicates (\ref{sec:action}) we form their linearization about the background. The Lean module \texttt{ILG/Linearize.lean} provides a symbolic predicate \lean{LinearizedEL} and an $\Order(\varepsilon)$ statement \texttt{linearized\_EL\_Oeps} that isolates terms relevant for weak-field dynamics.
+%
+%\subsection{Modified Poisson and effective sources}
+The scalar-sector source and the effective potential are assembled via \texttt{Spsi\_source} and \texttt{PhiEff\_from\_sources}. The central linkage is the modified-Poisson statement \texttt{derive\_modified\_poisson}, which ties the Laplacian of $\Phi$ to baryonic and $\psi$-sector contributions in the linear regime. This statement is used later to map to PPN and lensing observables.
+%
+%\subsection{Baryonic acceleration weight}
+We obtain a multiplicative weight $w(r)$ for baryonic acceleration from the potential, following the Lean definitions \texttt{w\_of\_Phi} and \texttt{w\_r}; a velocity proxy \texttt{v\_model2\_r} is used to compare against rotation-curve profiles without introducing per-system tuning. The consolidated certificate \lean{WeakFieldDeriveCert} is surfaced by the report \texttt{weakfield\_derive\_report}.
+%
+%\subsection{Error control and $\Order(\varepsilon^2)$ remainder}
+Error budgeting is made explicit through a Big-O scaffold \lean{BigO2} and the linkage lemma \texttt{w\_link\_O2}, guaranteeing that neglected terms are at most $\Order(\varepsilon^2)$. This guarantee is exposed to users and CI by the certificate \lean{WLinkOCert} with report \texttt{w\_link\_O\_report}.
+%
+%\subsection{Placeholders for figures and tables}
+%\begin{figure}[t]
+%  \centering
+%  % TODO: includegraphics{rotation_curves_overlay.pdf}
+%  \caption{Rotation-curve overlays comparing the baryonic baseline and the ILG prediction using the weight $w(r)$. No per-galaxy tuning is introduced; bands reflect global small-coupling regimes.}
+%  \label{fig:rc}
+%\end{figure}
+%
+%\begin{table}[b]
+%  \centering
+%  \begin{tabular}{l c}
+%    \toprule
+%    Contribution & Scaling \\
+%    \midrule
+%    Linear term & $\Order(\varepsilon)$ \\
+%    Remainder & $\Order(\varepsilon^2)$ \\
+%    \bottomrule
+%  \end{tabular}
+%  \caption{Schematic error budget for the weak-field expansion used to derive $w(r)$. Precise constants are provided by the Lean lemmas \texttt{linearized\_EL\_Oeps} and \texttt{w\_link\_O2}.}
+%  \label{tab:weakfield-error}
+%\end{table}
+%
+%\subsection{Reports and gating}
+For rapid validation, the weak-field derivation and the remainder control are exposed as \#eval-friendly endpoints: \texttt{weakfield\_derive\_report} and \texttt{w\_link\_O\_report}. These are included in the consolidated QG harness used to gate pull requests in continuous integration (see \ref{sec:falsifiers}).
+%
+%\section{Post-Newtonian parameters (PPN)}\label{sec:ppn}
+%
 We extract 1PN post-Newtonian parameters $(\gamma,\beta)$ from the weak-field solutions and connect them to observational bounds. The Lean development provides typed accessors to the linearized potentials and explicit formulas for $\gamma$ and $\beta$ at 1PN order; small-coupling bands make contact with canonical solar-system constraints.
-
-\subsection{Definitions and small-coupling bands}
+%
+%\subsection{Definitions and small-coupling bands}
 In the mechanized scaffold, the 1PN parameters are defined by
-\begin{equation}
-  \gamma_{\mathrm{1PN}} \equiv \texttt{gamma1PN}(\psi; p), \qquad
-  \beta_{\mathrm{1PN}} \equiv \texttt{beta1PN}(\psi; p),
-\end{equation}
-where $p$ are global ILG parameters. Under the small-coupling regime $\lvert p.cLag \cdot p.\alpha\rvert \le \kappa$, Lean supplies the bounds
-\begin{align}
-  \bigl\lvert \gamma_{\mathrm{1PN}} - 1 \bigr\rvert &\le \tfrac{1}{10}\,\kappa, \\
-  \bigl\lvert \beta_{\mathrm{1PN}} - 1 \bigr\rvert &\le \tfrac{1}{20}\,\kappa,
-\end{align}
-ensuring consistency with solar-system tests provided $\kappa$ is within empirical tolerances. These theorems are compiled as part of the PPN derivation certificate and surfaced by a \#eval report.
-
-\subsection{Linkage to linear forms}
+%\begin{equation}
+%  \gamma_{\mathrm{1PN}} \equiv \lean{gamma1PN}(\psi; p), \qquad
+%  \beta_{\mathrm{1PN}} \equiv \lean{beta1PN}(\psi; p),
+%\end{equation}
+%where $p$ are global ILG parameters. Under the small-coupling regime $\lvert p.cLag \cdot p.\alpha\rvert \le \kappa$, Lean supplies the bounds
+%\begin{align}
+%  \bigl\lvert \gamma_{\mathrm{1PN}} - 1 \bigr\rvert &\le \tfrac{1}{10}\,\kappa, \\
+%  \bigl\lvert \beta_{\mathrm{1PN}} - 1 \bigr\rvert &\le \tfrac{1}{20}\,\kappa,
+%\end{align}
+%ensuring consistency with solar-system tests provided $\kappa$ is within empirical tolerances. These theorems are compiled as part of the PPN derivation certificate and surfaced by a \#eval report.
+%
+%\subsection{Linkage to linear forms}
 For bookkeeping and cross-checks with linearized potentials, the scaffold provides exact equalities relating the 1PN quantities to linear forms:
-\begin{equation}
-  \gamma_{\mathrm{1PN}} = \texttt{ppn\_gamma\_lin}(p.cLag, p.\alpha), \quad
-  \beta_{\mathrm{1PN}}  = \texttt{ppn\_beta\_lin}(p.cLag, p.\alpha).
-\end{equation}
-These identities ensure the PPN mapping is consistent with the weak-field sector introduced in \cref{sec:weakfield} and that limits commute as expected.
-
-\subsection{Certificate and report endpoint}
-All statements above are packaged by the certificate \lean{PPNDeriveCert} with a \#eval-friendly endpoint \lean{ppn_derive_report}. Any breakage in the 1PN mapping or band inequalities would prevent elaboration and fail continuous integration via the consolidated QG harness (see \cref{sec:falsifiers}).
-
-\subsection{Placeholder for figure}
-\begin{figure}[t]
-  \centering
-  % TODO: includegraphics{ppn_bands.pdf}
-  \caption{PPN parameter bands for $(\gamma,\beta)$ as functions of the small-coupling proxy $\kappa = \lvert p.cLag \cdot p.\alpha\rvert$, compared with canonical solar-system constraints.}
-  \label{fig:ppn-bands}
-\end{figure}
-
-\section{Relativistic lensing and time delays}\label{sec:lensing}
-
+%\begin{equation}
+%  \gamma_{\mathrm{1PN}} = \texttt{ppn\_gamma\_lin}(p.cLag, p.\alpha), \quad
+%  \beta_{\mathrm{1PN}}  = \texttt{ppn\_beta\_lin}(p.cLag, p.\alpha).
+%\end{equation}
+These identities ensure the PPN mapping is consistent with the weak-field sector introduced in \ref{sec:weakfield} and that limits commute as expected.
+%
+%\subsection{Certificate and report endpoint}
+All statements above are packaged by the certificate \lean{PPNDeriveCert} with a \#eval-friendly endpoint \texttt{ppn\_derive\_report}. Any breakage in the 1PN mapping or band inequalities would prevent elaboration and fail continuous integration via the consolidated QG harness (see \ref{sec:falsifiers}).
+%
+%\subsection{Placeholder for figure}
+%\begin{figure}[t]
+%  \centering
+%  % TODO: includegraphics{ppn_bands.pdf}
+%  \caption{PPN parameter bands for $(\gamma,\beta)$ as functions of the small-coupling proxy $\kappa = \lvert p.cLag \cdot p.\alpha\rvert$, compared with canonical solar-system constraints.}
+%  \label{fig:ppn-bands}
+%\end{figure}
+%
+%\section{Relativistic lensing and time delays}\label{sec:lensing}
+%
 We sketch the relativistic lensing pipeline used to compare ILG with strong-lensing observables. The Lean scaffold provides a spherical-profile abstraction and closed-form deflection proxy sufficient for band checks, along with a time-delay band theorem that captures the leading sensitivity to global couplings.
-
-\subsection{Spherical profiles and deflection}
-We package spherically symmetric lenses by a typed structure \lean{SphericalProfile} carrying the relevant potential radial profile $\Phi(r)$. The corresponding deflection for impact parameter $b$ and small-coupling proxy $\kappa$ is given by the noncomputable definition \lean{deflection_spherical}, with an evaluation lemma
-\begin{equation}
-  \texttt{deflection\_spherical\_eval}:\quad
-  \alpha(b) = \kappa\,\Phi_r(b),
-\end{equation}
-providing an analytic handle for cluster-scale estimates without per-system tuning.
-
-\subsection{Time-delay bands}
-For two images with path-length difference characterized by angular-momentum scale $\ell$, Lean supplies a band statement \lean{time_delay_band}(\,$\psi, p, \ell, \kappa$\,) that isolates the dependence on the global proxy $\kappa$ (with $\kappa\ge 0$). This result is wired into the cluster derivation certificate.
-
-\subsection{Certificate and report endpoint}
-The cluster-lensing derivation is packaged by \lean{ClusterLensingDeriveCert} with a \#eval-friendly endpoint \lean{cluster_lensing_derive_report}. Any inconsistency in the lensing linkage or time-delay band prevents elaboration and is caught by the QG harness in CI.
-
-\subsection{Placeholder for figure}
-\begin{figure}[t]
-  \centering
-  % TODO: includegraphics{cluster_time_delays.pdf}
-  \caption{Cluster time-delay band comparison: predicted delays versus observed values across a sample, expressed as a function of the global proxy $\kappa$.}
-  \label{fig:cluster-delays}
-\end{figure}
-
-\section{FRW cosmology and growth}\label{sec:frw}
-
+%
+%\subsection{Spherical profiles and deflection}
+We package spherically symmetric lenses by a typed structure \lean{SphericalProfile} carrying the relevant potential radial profile $\Phi(r)$. The corresponding deflection for impact parameter $b$ and small-coupling proxy $\kappa$ is given by the noncomputable definition \texttt{deflection\_spherical}, with an evaluation lemma
+%\begin{equation}
+%  \texttt{deflection\_spherical\_eval}:\quad
+%  \alpha(b) = \kappa\,\Phi_r(b),
+%\end{equation}
+%providing an analytic handle for cluster-scale estimates without per-system tuning.
+%
+%\subsection{Time-delay bands}
+For two images with path-length difference characterized by angular-momentum scale $\ell$, Lean supplies a band statement \texttt{time\_delay\_band}(\,$\psi, p, \ell, \kappa$\,) that isolates the dependence on the global proxy $\kappa$ (with $\kappa\ge 0$). This result is wired into the cluster derivation certificate.
+%
+%\subsection{Certificate and report endpoint}
+The cluster-lensing derivation is packaged by \lean{ClusterLensingDeriveCert} with a \#eval-friendly endpoint \texttt{cluster\_lensing\_derive\_report}. Any inconsistency in the lensing linkage or time-delay band prevents elaboration and is caught by the QG harness in CI.
+%
+%\subsection{Placeholder for figure}
+%\begin{figure}[t]
+%  \centering
+%  % TODO: includegraphics{cluster_time_delays.pdf}
+%  \caption{Cluster time-delay band comparison: predicted delays versus observed values across a sample, expressed as a function of the global proxy $\kappa$.}
+%  \label{fig:cluster-delays}
+%\end{figure}
+%
+%\section{FRW cosmology and growth}\label{sec:frw}
+%
 We outline the cosmological sector used to connect ILG to background expansion and linear growth observables. The Lean scaffold provides a symbolic stress--energy tensor for $\psi$, FRW restatements of the Friedmann equations, and simple growth-linkage definitions that can be tightened against data without changing public endpoints.
-
-\subsection{Stress--energy and Friedmann restatements}
+%
+%\subsection{Stress--energy and Friedmann restatements}
 Let $T_{\mu\nu}[\psi]$ denote the $\psi$-sector stress--energy. In the scaffold we work with a symbolic projector that exposes the $00$-component:
-\begin{equation}
-  T_{\psi}(0,0; p) \equiv \texttt{T\_psi}\,0\,0\,p,\qquad
-  \texttt{T\_psi\_00}(p):\; T_{\psi}(0,0; p) = \rho_{\psi}(p).
-\end{equation}
+%\begin{equation}
+%  T_{\psi}(0,0; p) \equiv \texttt{T\_psi}\,0\,0\,p,\qquad
+%  \texttt{T\_psi\_00}(p):\; T_{\psi}(0,0; p) = \rho_{\psi}(p).
+%\end{equation}
 Using this, the Friedmann I equation is restated as a predicate
-\begin{equation}
-  \texttt{FriedmannI}(t,p):\quad H(t)^2 = T_{\psi}(0,0; p),
-\end{equation}
-which is equivalent to the usual $\rho_{\psi}$ form by the Lean lemma
-\begin{equation}
-  \texttt{FriedmannI\_T\_equals\_rho}(t,p):\;
-  \texttt{FriedmannI}(t,p) \;\Leftrightarrow\; H(t)^2 = \rho_{\psi}(p).
-\end{equation}
+%\begin{equation}
+%  \lean{FriedmannI}(t,p):\quad H(t)^2 = T_{\psi}(0,0; p),
+%\end{equation}
+%which is equivalent to the usual $\rho_{\psi}$ form by the Lean lemma
+%\begin{equation}
+%  \texttt{FriedmannI\_T\_equals\_rho}(t,p):\;
+%  \lean{FriedmannI}(t,p) \;\Leftrightarrow\; H(t)^2 = \rho_{\psi}(p).
+%\end{equation}
 GR-limit consistency is recorded by
-\begin{align}
-  \texttt{FriedmannI\_gr\_limit}(t):&\quad
-  \texttt{FriedmannI}\!\left(t,\{ \alpha{=}0,\,cLag{=}0\}\right)
-  \;\Leftrightarrow\; H(t)^2 = 0,\\
-  \texttt{FriedmannII\_gr\_limit}(t):&\quad
-  \texttt{FriedmannII}\!\left(t,\{ \alpha{=}0,\,cLag{=}0\}\right).
-\end{align}
+%\begin{align}
+%  \texttt{FriedmannI\_gr\_limit}(t):&\quad
+%  \lean{FriedmannI}\!\left(t,\{ \alpha{=}0,\,cLag{=}0\}\right)
+%  \;\Leftrightarrow\; H(t)^2 = 0,\\
+%  \texttt{FriedmannII\_gr\_limit}(t):&\quad
+%  \lean{FriedmannII}\!\left(t,\{ \alpha{=}0,\,cLag{=}0\}\right).
+%\end{align}
 These symbolic restatements serve as typed anchors for downstream growth and perturbation analyses.
-
-\subsection{Scalar perturbations and growth linkage}
+%
+%\subsection{Scalar perturbations and growth linkage}
 For scalar perturbations we provide a typed placeholder predicate
-\begin{equation}
-  \texttt{ScalarPertEqs}(\psi, p, t, x),
-\end{equation}
-designed to be specialized to gauge-fixed linear equations. For growth observables we define a growth factor and derived quantities
-\begin{equation}
-  D(a) \equiv \texttt{growth\_factor}(a),\quad
-  f(a) \equiv \texttt{f\_of\_a}(a),\quad
-  \sigma_8(a) \equiv \texttt{sigma8\_of}(\sigma_{8,0}, a),
-\end{equation}
-with a scaffold evaluation lemma
-\begin{equation}
-  \texttt{sigma8\_of\_eval}:\quad
-  \sigma_8(a) = \sigma_{8,0}\,a,
-\end{equation}
+%\begin{equation}
+%  \lean{ScalarPertEqs}(\psi, p, t, x),
+%\end{equation}
+%designed to be specialized to gauge-fixed linear equations. For growth observables we define a growth factor and derived quantities
+%\begin{equation}
+%  D(a) \equiv \texttt{growth\_factor}(a),\quad
+%  f(a) \equiv \texttt{f\_of\_a}(a),\quad
+%  \sigma_8(a) \equiv \texttt{sigma8\_of}(\sigma_{8,0}, a),
+%\end{equation}
+%with a scaffold evaluation lemma
+%\begin{equation}
+%  \texttt{sigma8\_of\_eval}:\quad
+%  \sigma_8(a) = \sigma_{8,0}\,a,
+%\end{equation}
 to be tightened once linear-theory solutions are wired to $D(a)$.
-
-\subsection{Certificates, bands, and reports}
-The FRW restatement and growth linkage are certified by \lean{FRWDeriveCert} and \lean{GrowthCert} with \#eval endpoints \lean{frw_derive_report} and \lean{growth_report}. Cosmological bands (CMB/BAO/BBN) are exposed by \lean{CMBBAOBBNBandsCert} with report \lean{cmb_bao_bbn_bands_report}. These endpoints are included in the consolidated QG harness used to gate pull requests in CI and provide the interface for data-facing falsifiers.
-
-\subsection{Placeholder for table}
-\begin{table}[t]
-  \centering
-  \begin{tabular}{l c}
-    \toprule
-    Observable & Endpoint / status \\
-    \midrule
-    FRW restatement & \texttt{frw\_derive\_report} (OK) \\
-    Growth linkage & \texttt{growth\_report} (OK) \\
-    CMB/BAO/BBN bands & \texttt{cmb\_bao\_bbn\_bands\_report} (OK) \\
-    \bottomrule
-  \end{tabular}
-  \caption{Cosmological endpoints surfaced by \#eval reports and enforced by the QG harness.}
-  \label{tab:frw-endpoints}
-\end{table}
-
-\section{Gravitational waves}\label{sec:gw}
-
+%
+%\subsection{Certificates, bands, and reports}
+The FRW restatement and growth linkage are certified by \lean{FRWDeriveCert} and \lean{GrowthCert} with \#eval endpoints \texttt{frw\_derive\_report} and \texttt{growth\_report}. Cosmological bands (CMB/BAO/BBN) are exposed by \lean{CMBBAOBBNBandsCert} with report \texttt{cmb\_bao\_bbn\_bands\_report}. These endpoints are included in the consolidated QG harness used to gate pull requests in CI and provide the interface for data-facing falsifiers.
+%
+%\subsection{Placeholder for table}
+%\begin{table}[t]
+%  \centering
+%  \begin{tabular}{l c}
+%    \toprule
+%    Observable & Endpoint / status \\
+%    \midrule
+%    FRW restatement & \texttt{frw\_derive\_report} (OK) \\
+%    Growth linkage & \texttt{growth\_report} (OK) \\
+%    CMB/BAO/BBN bands & \texttt{cmb\_bao\_bbn\_bands\_report} (OK) \\
+%    \bottomrule
+%  \end{tabular}
+%  \caption{Cosmological endpoints surfaced by \#eval reports and enforced by the QG harness.}
+%  \label{tab:frw-endpoints}
+%\end{table}
+%
+%\section{Gravitational waves}\label{sec:gw}
+%
 Tensor perturbations around a cosmological background furnish a sharp test of modified-gravity scenarios. In ILG, the quadratic action for gravitational waves (GWs) is extracted around FRW and used to bound the tensor propagation speed $c_T^2$ against multi-messenger observations.
-
-\subsection{Quadratic action and tensor speed}
+%
+%\subsection{Quadratic action and tensor speed}
 Around an FRW background, the Lean development defines a predicate capturing the existence of a consistent quadratic action for tensor modes and links it to an effective propagation speed $c_T^2$. These statements are compiled in a dedicated certificate and surfaced by a \#eval report endpoint to facilitate rapid checks and CI gating.
-
-\subsection{Certificate and report endpoints}
+%
+%\subsection{Certificate and report endpoints}
 Two complementary endpoints are exposed:
-\begin{itemize}
-  \item \textbf{Quadratic action link:} certificate \lean{GWQuadraticCert} with report \lean{gw_quadratic_report}, asserting the quadratic-action predicate is satisfied and tying it to $c_T^2$.
-  \item \textbf{Domain derivation:} certificate \lean{GWDeriveCert} with report \lean{gw_derive_report}, bundling the FRW expansion, tensor-mode extraction, and observational consistency of $c_T^2$.
-\end{itemize}
+%\begin{itemize}
+%  \item \textbf{Quadratic action link:} certificate \lean{GWQuadraticCert} with report \texttt{gw\_quadratic\_report}, asserting the quadratic-action predicate is satisfied and tying it to $c_T^2$.
+%  \item \textbf{Domain derivation:} certificate \lean{GWDeriveCert} with report \texttt{gw\_derive\_report}, bundling the FRW expansion, tensor-mode extraction, and observational consistency of $c_T^2$.
+%\end{itemize}
 Either failure (quadratic action or observational band) will prevent elaboration and fail the consolidated QG harness in continuous integration.
-
-\subsection{Placeholder for figure}
-\begin{figure}[t]
-  \centering
-  % TODO: includegraphics{gw_ct2_constraints.pdf}
-  \caption{Constraints on the tensor speed $c_T^2$ relative to unity from multi-messenger observations. The ILG prediction lies within the displayed band.}
-  \label{fig:gw-ct2}
-\end{figure}
-
-\section{Compact objects}\label{sec:compact}
-
+%
+%\subsection{Placeholder for figure}
+%\begin{figure}[t]
+%  \centering
+%  % TODO: includegraphics{gw_ct2_constraints.pdf}
+%  \caption{Constraints on the tensor speed $c_T^2$ relative to unity from multi-messenger observations. The ILG prediction lies within the displayed band.}
+%  \label{fig:gw-ct2}
+%\end{figure}
+%
+%\section{Compact objects}\label{sec:compact}
+%
 Static and stationary compact-object spacetimes probe the strong-field regime. In ILG we introduce a static spherical ansatz as a scaffold, derive a horizon-consistency band, and expose a ringdown proxy sufficient to compare with spectroscopy measurements within global-coupling bands.
-
-\subsection{Static spherical ansatz and horizon condition}
+%
+%\subsection{Static spherical ansatz and horizon condition}
 We work with a typed static spherical ansatz for the metric (see \texttt{ILG/Compact.lean}), and define a horizon-consistency predicate
-\begin{equation}
-  \texttt{HorizonOK}(A,\mu),
-\end{equation}
-where $A$ denotes ansatz data and $\mu$ a mass scale. Lean provides a band theorem
-\begin{equation}
-  \texttt{horizon\_band}(A;\mu,\kappa,C_{\mathrm{lag}},\alpha):\;
-  \texttt{HorizonOK}(A,\mu)\ \wedge\
-  \bigl\lvert \mathrm{ilg\_bh}(\mu,C_{\mathrm{lag}},\alpha)-\mathrm{baseline\_bh}(\mu)\bigr\rvert\le\kappa,
-\end{equation}
-valid for $\kappa\ge 0$, which captures leading sensitivity to the global small-coupling proxy and yields a deviation band around the baseline horizon scale.
-
-\subsection{Ringdown proxy and bands}
+%\begin{equation}
+%  \lean{HorizonOK}(A,\mu),
+%\end{equation}
+%where $A$ denotes ansatz data and $\mu$ a mass scale. Lean provides a band theorem
+%\begin{equation}
+%  \texttt{horizon\_band}(A;\mu,\kappa,C_{\mathrm{lag}},\alpha):\;
+%  \lean{HorizonOK}(A,\mu)\ \wedge\
+%  \bigl\lvert \mathrm{ilg\_bh}(\mu,C_{\mathrm{lag}},\alpha)-\mathrm{baseline\_bh}(\mu)\bigr\rvert\le\kappa,
+%\end{equation}
+%valid for $\kappa\ge 0$, which captures leading sensitivity to the global small-coupling proxy and yields a deviation band around the baseline horizon scale.
+%
+%\subsection{Ringdown proxy and bands}
 To interface with spectroscopy, we define a ringdown proxy as a function of mass and global parameters,
-\begin{equation}
-  \omega_{\mathrm{RD}}(M;p)\ \equiv\ \texttt{ringdown\_proxy}(M,p),
-\end{equation}
-and provide a deviation band
-\begin{equation}
-  \texttt{ringdown\_band}(\mu,\kappa,C_{\mathrm{lag}},\alpha;\ \kappa\ge 0),
-\end{equation}
-sufficient to compare with observed overtones without introducing per-source tuning.
-
-\subsection{Certificate and report endpoint}
-The compact-object derivation is packaged by \lean{BHDeriveCert} and surfaced by the \#eval endpoint \lean{bh_derive_report}, which is included in the consolidated QG harness. Any failure of the horizon condition or ringdown band will prevent elaboration and fail CI.
-
-\subsection{Placeholder for figure}
-\begin{figure}[t]
-  \centering
-  % TODO: includegraphics{bh_ringdown_bands.pdf}
-  \caption{Black-hole ringdown band for the ILG proxy compared to baseline expectations as a function of mass $M$ and the small-coupling proxy $\kappa$.}
-  \label{fig:bh-rd}
-\end{figure}
-
-\section{Quantum substrate and consistency}\label{sec:quantum}
-
+%\begin{equation}
+%  \omega_{\mathrm{RD}}(M;p)\ \equiv\ \texttt{ringdown\_proxy}(M,p),
+%\end{equation}
+%and provide a deviation band
+%\begin{equation}
+%  \texttt{ringdown\_band}(\mu,\kappa,C_{\mathrm{lag}},\alpha;\ \kappa\ge 0),
+%\end{equation}
+%sufficient to compare with observed overtones without introducing per-source tuning.
+%
+%\subsection{Certificate and report endpoint}
+The compact-object derivation is packaged by \lean{BHDeriveCert} and surfaced by the \#eval endpoint \texttt{bh\_derive\_report}, which is included in the consolidated QG harness. Any failure of the horizon condition or ringdown band will prevent elaboration and fail CI.
+%
+%\subsection{Placeholder for figure}
+%\begin{figure}[t]
+%  \centering
+%  % TODO: includegraphics{bh_ringdown_bands.pdf}
+%  \caption{Black-hole ringdown band for the ILG proxy compared to baseline expectations as a function of mass $M$ and the small-coupling proxy $\kappa$.}
+%  \label{fig:bh-rd}
+%\end{figure}
+%
+%\section{Quantum substrate and consistency}\label{sec:quantum}
+%
 A quantum-mechanical substrate underlies the classical ILG sector. Our goal in this section is modest but essential: specify explicit microscopic degrees of freedom, exhibit unitary time evolution, and state a locality predicate consistent with microcausality in the small-coupling regime. These ingredients are compiled in Lean as certificate-backed statements and exercised by \#eval reports.
-
-\subsection{Microscopic degrees of freedom and Hamiltonian}
-We model the $\psi$-sector Hilbert space by a typed object $H_\psi$ with a finite (or effectively truncated) basis and define explicit basis vectors and operators as programmatic objects,\footnote{All such objects are represented as total functions in the Lean development; truncations are explicit.}
-\begin{equation}
-  \texttt{micro\_dofs}(H):\ \mathrm{Fin}(H.\mathrm{dim}) \to \mathbb{R},
-\end{equation}
-serving as a concrete handle for later scattering and perturbative constructions. The Hamiltonian and its positivity are tracked to guarantee a well-posed unitary flow.
-
-\subsection{Unitary evolution}
+%
+%\subsection{Microscopic degrees of freedom and Hamiltonian}
+We model the $\psi$-sector Hilbert space by a typed object $H_\psi$ with a finite (or effectively truncated) basis and define explicit basis vectors and operators as programmatic objects,\footnote{All such objects are represented as total functions in the Lean development; truncations are explicit,}
+%\begin{equation}
+%  \texttt{micro\_dofs}(H):\ \mathrm{Fin}(H.\mathrm{dim}) \to \mathbb{R},
+%\end{equation}
+%serving as a concrete handle for later scattering and perturbative constructions. The Hamiltonian and its positivity are tracked to guarantee a well-posed unitary flow.
+%
+%\subsection{Unitary evolution}
 The substrate provides a witness of unitary dynamics:
-\begin{equation}
-  \texttt{unitary\_evolution\_exists}:\ \exists\,H_\psi,\ \texttt{unitary\_evolution}(H_\psi),
-\end{equation}
-ensuring a norm-preserving time evolution on the microscopic space. This predicate is compiled into a certificate and surfaced by a \#eval report that is part of the consolidated QG harness.
-
-\subsection{Locality and microcausality (predicate)}
+%\begin{equation}
+%  \texttt{unitary\_evolution\_exists}:\ \exists\,H_\psi,\ \texttt{unitary\_evolution}(H_\psi),
+%\end{equation}
+%ensuring a norm-preserving time evolution on the microscopic space. This predicate is compiled into a certificate and surfaced by a \#eval report that is part of the consolidated QG harness.
+%
+%\subsection{Locality and microcausality (predicate)}
 We include a locality predicate suitable for small-coupling regimes and future tightening to a full microcausality proof. In the present scaffold this is a typed predicate over spacetime-separated observables with the intended reading ``commutators vanish outside the light cone''; its concrete realization can be strengthened without changing public endpoints. This predicate is exercised in the quantum certificates and wired into the CI harness.
-
-\subsection{Certificates and reports}
+%
+%\subsection{Certificates and reports}
 Two endpoints carry the substrate checks:
-\begin{itemize}
-  \item \textbf{Unitary substrate:} \lean{MicroUnitaryCert} with report \lean{micro_unitary_report}, establishing the existence of a unitary flow with the declared microscopic DOFs.
-  \item \textbf{Completion witness:} \lean{MicroUnitaryCompletionCert} with report \lean{micro_unitary_completion_report}, bundling unitary evolution with the locality predicate for use in gates and falsifiers.
-\end{itemize}
+%\begin{itemize}
+%  \item \textbf{Unitary substrate:} \lean{MicroUnitaryCert} with report \texttt{micro\_unitary\_report}, establishing the existence of a unitary flow with the declared microscopic DOFs.
+%  \item \textbf{Completion witness:} \lean{MicroUnitaryCompletionCert} with report \texttt{micro\_unitary\_completion\_report}, bundling unitary evolution with the locality predicate for use in gates and falsifiers.
+%\end{itemize}
 Breakage of either endpoint fails the consolidated QG harness and blocks pull requests until the microscopic consistency is restored.
-
-\subsection{Placeholder for table}
-\begin{table}[t]
-  \centering
-  \begin{tabular}{l c}
-    \toprule
-    Check & Endpoint / status \\
-    \midrule
-    Unitary evolution & \texttt{micro\_unitary\_report} (OK) \\
-    Completion (unitary + locality) & \texttt{micro\_unitary\_completion\_report} (OK) \\
-    \bottomrule
-  \end{tabular}
-  \caption{Quantum substrate endpoints surfaced by \#eval reports and enforced by the QG harness.}
-  \label{tab:quantum-endpoints}
-\end{table}
-
-\section{Falsifiers and automated harness}\label{sec:falsifiers}
-
+%
+%\subsection{Placeholder for table}
+%\begin{table}[t]
+%  \centering
+%  \begin{tabular}{l c}
+%    \toprule
+%    Check & Endpoint / status \\
+%    \midrule
+%    Unitary evolution & \texttt{micro\_unitary\_report} (OK) \\
+%    Completion (unitary + locality) & \texttt{micro\_unitary\_completion\_report} (OK) \\
+%    \bottomrule
+%  \end{tabular}
+%  \caption{Quantum substrate endpoints surfaced by \#eval reports and enforced by the QG harness.}
+%  \label{tab:quantum-endpoints}
+%\end{table}
+%
+%\section{Falsifiers and automated harness}\label{sec:falsifiers}
+%
 To ensure that mechanized statements are scientifically meaningful, we connect ILG's global parameters to observational bands and enforce pass/fail gates in continuous integration (CI). The falsifiers layer binds datasets to band checks and exposes consolidated endpoints that must elaborate for any change to be merged.
-
-\subsection{Dataset schemas and band mapping}
+%
+%\subsection{Dataset schemas and band mapping}
 We encode band-level observational constraints through a typed schema (``Bands'') and a mapping from ILG parameters to bands. The correctness and nonnegativity properties of this mapping are compiled into a certificate with a \#eval report endpoint. Concretely:
-\begin{itemize}
-  \item Mapping certificate: \lean{BandsFromParamsCert} with report \lean{bands_from_params_report}.
-\end{itemize}
+%\begin{itemize}
+%  \item Mapping certificate: \lean{BandsFromParamsCert} with report \texttt{bands\_from\_params\_report}.
+%\end{itemize}
 This mechanism provides a uniform handle for PPN, lensing, cosmology, GW, and compact-object bands across the paper and within the falsifiers.
-
-\subsection{Falsifiers harness (pass/fail rules)}
+%
+%\subsection{Falsifiers harness (pass/fail rules)}
 Automated dataset checks are consolidated in a harness certificate that elaborates if and only if all declared band constraints are satisfied under the global parameters:
-\begin{itemize}
-  \item Falsifiers harness: \lean{FalsifiersHarnessCert} with report \lean{falsifiers_harness_report}.
-\end{itemize}
+%\begin{itemize}
+%  \item Falsifiers harness: \lean{FalsifiersHarnessCert} with report \texttt{falsifiers\_harness\_report}.
+%\end{itemize}
 Any violation of the encoded constraints prevents elaboration and raises a hard failure in CI.
-
-\subsection{Consolidated QG gate and CI}
+%
+%\subsection{Consolidated QG gate and CI}
 A separate consolidated gate aggregates representative theory-side certificates (weak-field, PPN, lensing, cosmology, GW, bands mapping) to ensure structural integrity:
-\begin{itemize}
-  \item QG gate: \lean{qg_harness_report}, which prints ``QGHarness: PASS'' on success.
-\end{itemize}
+%\begin{itemize}
+%  \item QG gate: \texttt{qg\_harness\_report}, which prints ``QGHarness: PASS'' on success.
+%\end{itemize}
 In CI we build and execute the harness executable, then grep for the expected strings (``QGHarness: PASS'', ``FalsifiersHarnessCert: OK''). Missing strings or failed elaboration block the pull request.
-
-\subsection{Placeholder for table}
-\begin{table}[t]
-  \centering
-  \begin{tabular}{l c}
-    \toprule
-    Check & Endpoint / expected output \\
-    \midrule
-    Bands mapping & \texttt{bands\_from\_params\_report} / OK \\
-    Falsifiers harness & \texttt{falsifiers\_harness\_report} / OK \\
-    Consolidated QG gate & \texttt{qg\_harness\_report} / QGHarness: PASS \\
-    \bottomrule
-  \end{tabular}
-  \caption{Falsifiers and consolidated gates surfaced by \#eval reports and enforced in CI.}
-  \label{tab:falsifiers-endpoints}
-\end{table}
-
-\section{Results summary}\label{sec:results}
-
+%
+%\subsection{Placeholder for table}
+%\begin{table}[t]
+%  \centering
+%  \begin{tabular}{l c}
+%    \toprule
+%    Check & Endpoint / expected output \\
+%    \midrule
+%    Bands mapping & \texttt{bands\_from\_params\_report} / OK \\
+%    Falsifiers harness & \texttt{falsifiers\_harness\_report} / OK \\
+%    Consolidated QG gate & \texttt{qg\_harness\_report} / QGHarness: PASS \\
+%    \bottomrule
+%  \end{tabular}
+%  \caption{Falsifiers and consolidated gates surfaced by \#eval reports and enforced in CI.}
+%  \label{tab:falsifiers-endpoints}
+%\end{table}
+%
+%\section{Results summary}\label{sec:results}
+%
 We collect the mechanized statements established by the ILG scaffold and summarize their report endpoints as exercised in the CI gates. All entries below refer to Lean artifacts that elaborate at the current commit and are guarded by the consolidated QG harness and falsifiers.
-
-\subsection{Mechanized guarantees (structural)}
-\begin{itemize}
-  \item GR-compatibility: \lean{gr_limit_cov}, \lean{EL_psi_gr_limit}, \lean{Tmunu_gr_limit_zero} (\cref{sec:action}).
-  \item Unit/covariance hygiene: \lean{LPiecesUnitsCert} (\lean{l_pieces_units_report}), \lean{LCovIdentityCert} (\lean{l_cov_identity_report}).
-\end{itemize}
-
-\subsection{Domain summaries (reports)}
-\begin{table}[t]
-  \centering
-  \begin{tabular}{l l l}
-    \toprule
-    Domain & Certificate(s) & Report endpoint \\
-    \midrule
-    Weak-field & \lean{WeakFieldDeriveCert}, \lean{WLinkOCert} & \lean{weakfield_derive_report}, \lean{w_link_O_report} \\
-    PPN & \lean{PPNDeriveCert} & \lean{ppn_derive_report} \\
-    Lensing & \lean{ClusterLensingDeriveCert} & \lean{cluster_lensing_derive_report} \\
-    FRW/growth & \lean{FRWDeriveCert}, \lean{GrowthCert} & \lean{frw_derive_report}, \lean{growth_report} \\
-    CMB/BAO/BBN & \lean{CMBBAOBBNBandsCert} & \lean{cmb_bao_bbn_bands_report} \\
-    GW & \lean{GWQuadraticCert}, \lean{GWDeriveCert} & \lean{gw_quadratic_report}, \lean{gw_derive_report} \\
-    Compact & \lean{BHDeriveCert} & \lean{bh_derive_report} \\
-    Quantum & \lean{MicroUnitaryCert}, \lean{MicroUnitaryCompletionCert} & \lean{micro_unitary_report}, \lean{micro_unitary_completion_report} \\
-    Bands map & \lean{BandsFromParamsCert} & \lean{bands_from_params_report} \\
-    Harness & \textit{aggregate} & \lean{qg_harness_report}, \lean{falsifiers_harness_report} \\
-    \bottomrule
-  \end{tabular}
-  \caption{Aggregate results and their \#eval endpoints. Endpoints marked as harness aggregate multiple certificates and are used directly in CI.}
-  \label{tab:summary-endpoints}
-\end{table}
-
-\subsection{Zero local tuning and provenance}
+%
+%\subsection{Mechanized guarantees (structural)}
+%\begin{itemize}
+%  \item GR-compatibility: \lean{gr_limit_cov}, \lean{EL_psi_gr_limit}, \lean{Tmunu_gr_limit_zero} (\ref{sec:action}).
+%  \item Unit/covariance hygiene: \lean{LPiecesUnitsCert} (\texttt{l\_pieces\_units\_report}), \lean{LCovIdentityCert} (\texttt{l\_cov\_identity\_report}).
+%\end{itemize}
+%
+%\subsection{Domain summaries (reports)}
+%\begin{table}[t]
+%  \centering
+%  \begin{tabular}{l l l}
+%    \toprule
+%    Domain & Certificate(s) & Report endpoint \\
+%    \midrule
+%    Weak-field & \lean{WeakFieldDeriveCert}, \lean{WLinkOCert} & \texttt{weakfield\_derive\_report}, \texttt{w\_link\_O\_report} \\
+%    PPN & \lean{PPNDeriveCert} & \texttt{ppn\_derive\_report} \\
+%    Lensing & \lean{ClusterLensingDeriveCert} & \texttt{cluster\_lensing\_derive\_report} \\
+%    FRW/growth & \lean{FRWDeriveCert}, \lean{GrowthCert} & \texttt{frw\_derive\_report}, \texttt{growth\_report} \\
+%    CMB/BAO/BBN & \lean{CMBBAOBBNBandsCert} & \texttt{cmb\_bao\_bbn\_bands\_report} \\
+%    GW & \lean{GWQuadraticCert}, \lean{GWDeriveCert} & \texttt{gw\_quadratic\_report}, \texttt{gw\_derive\_report} \\
+%    Compact & \lean{BHDeriveCert} & \texttt{bh\_derive\_report} \\
+%    Quantum & \lean{MicroUnitaryCert}, \lean{MicroUnitaryCompletionCert} & \texttt{micro\_unitary\_report}, \texttt{micro\_unitary\_completion\_report} \\
+%    Bands map & \lean{BandsFromParamsCert} & \texttt{bands\_from\_params\_report} \\
+%    Harness & \textit{aggregate} & \texttt{qg\_harness\_report}, \texttt{falsifiers\_harness\_report} \\
+%    \bottomrule
+%  \end{tabular}
+%  \caption{Aggregate results and their \#eval endpoints. Endpoints marked as harness aggregate multiple certificates and are used directly in CI.}
+%  \label{tab:summary-endpoints}
+%\end{table}
+%
+%\subsection{Zero local tuning and provenance}
 All statements compile under globally fixed parameters inherited from the recognition spine. No per-system adjustments are introduced. Parameter provenance and unit/bridge identities are recorded once and reused across domains, ensuring consistent observational interfaces.
-
-\subsection{Gating and failure modes}
+%
+%\subsection{Gating and failure modes}
 Pull requests are blocked unless both the consolidated theory gate prints ``QGHarness: PASS'' and the falsifiers harness prints ``FalsifiersHarnessCert: OK''. Any breakage (e.g., failure of a band inequality, a GR-limit lemma, or a unit identity) is surfaced immediately by CI.
-
-% --- Section stubs (content to be added in separate inputs) ---
-% \input{QG_intro}
-% \input{QG_action}
-% \input{QG_weakfield}
-% \input{QG_ppn}
-% \input{QG_lensing}
-% \input{QG_frw}
-% \input{QG_gw}
-% \input{QG_compact}
-% \input{QG_quantum}
-% \input{QG_falsifiers}
-% \input{QG_results}
-% \input{QG_discussion}
-
-% --- Acknowledgments ---
-\begin{acknowledgments}
+%
+%% --- Section stubs (content to be added in separate inputs) ---
+%% \input{QG_intro}
+%% \input{QG_action}
+%% \input{QG_weakfield}
+%% \input{QG_ppn}
+%% \input{QG_lensing}
+%% \input{QG_frw}
+%% \input{QG_gw}
+%% \input{QG_compact}
+%% \input{QG_quantum}
+%% \input{QG_falsifiers}
+%% \input{QG_results}
+%% \input{QG_discussion}
+%
+%% --- Acknowledgments ---
+%\begin{acknowledgments}
 We thank collaborators and contributors to the Lean mechanization and continuous-integration infrastructure. This work was supported in part by Recognition Physics. Any opinions expressed are those of the authors.
-\end{acknowledgments}
-
-% --- Data Availability Statement ---
-\section*{Data Availability}
+%\end{acknowledgments}
+%
+%% --- Data Availability Statement ---
+%\section*{Data Availability}
 All code and report endpoints used to generate the results are available in the public repository accompanying this manuscript. See the consolidated harnesses and certificates enumerated in the documentation for automated pass/fail checks.
-
-% --- Author Contributions ---
-\section*{Author Contributions}
+%
+%% --- Author Contributions ---
+%\section*{Author Contributions}
 Conceptualization, formalization, and writing: J.W. Artifact preparation and continuous-integration gates: J.W. All authors reviewed and approved the manuscript.
-
+%
 % --- Bibliography ---
 \bibliographystyle{apsrev4-2}
-% If your BibTeX file is named paper.bib and lives in docs/ with this .tex:
+% If your BibTeX file is named paper.bib and lives alongside this .tex:
 \bibliography{paper}
 
 \end{document}
-
-
+%
+%
