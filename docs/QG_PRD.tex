@@ -443,6 +443,47 @@ Breakage of either endpoint fails the consolidated QG harness and blocks pull re
   \label{tab:quantum-endpoints}
 \end{table}
 
+\section{Falsifiers and automated harness}\label{sec:falsifiers}
+
+To ensure that mechanized statements are scientifically meaningful, we connect ILG's global parameters to observational bands and enforce pass/fail gates in continuous integration (CI). The falsifiers layer binds datasets to band checks and exposes consolidated endpoints that must elaborate for any change to be merged.
+
+\subsection{Dataset schemas and band mapping}
+We encode band-level observational constraints through a typed schema (``Bands'') and a mapping from ILG parameters to bands. The correctness and nonnegativity properties of this mapping are compiled into a certificate with a \#eval report endpoint. Concretely:
+\begin{itemize}
+  \item Mapping certificate: \lean{BandsFromParamsCert} with report \lean{bands_from_params_report}.
+\end{itemize}
+This mechanism provides a uniform handle for PPN, lensing, cosmology, GW, and compact-object bands across the paper and within the falsifiers.
+
+\subsection{Falsifiers harness (pass/fail rules)}
+Automated dataset checks are consolidated in a harness certificate that elaborates if and only if all declared band constraints are satisfied under the global parameters:
+\begin{itemize}
+  \item Falsifiers harness: \lean{FalsifiersHarnessCert} with report \lean{falsifiers_harness_report}.
+\end{itemize}
+Any violation of the encoded constraints prevents elaboration and raises a hard failure in CI.
+
+\subsection{Consolidated QG gate and CI}
+A separate consolidated gate aggregates representative theory-side certificates (weak-field, PPN, lensing, cosmology, GW, bands mapping) to ensure structural integrity:
+\begin{itemize}
+  \item QG gate: \lean{qg_harness_report}, which prints ``QGHarness: PASS'' on success.
+\end{itemize}
+In CI we build and execute the harness executable, then grep for the expected strings (``QGHarness: PASS'', ``FalsifiersHarnessCert: OK''). Missing strings or failed elaboration block the pull request.
+
+\subsection{Placeholder for table}
+\begin{table}[t]
+  \centering
+  \begin{tabular}{l c}
+    \toprule
+    Check & Endpoint / expected output \\
+    \midrule
+    Bands mapping & \texttt{bands\_from\_params\_report} / OK \\
+    Falsifiers harness & \texttt{falsifiers\_harness\_report} / OK \\
+    Consolidated QG gate & \texttt{qg\_harness\_report} / QGHarness: PASS \\
+    \bottomrule
+  \end{tabular}
+  \caption{Falsifiers and consolidated gates surfaced by \#eval reports and enforced in CI.}
+  \label{tab:falsifiers-endpoints}
+\end{table}
+
 % --- Section stubs (content to be added in separate inputs) ---
 % \input{QG_intro}
 % \input{QG_action}
