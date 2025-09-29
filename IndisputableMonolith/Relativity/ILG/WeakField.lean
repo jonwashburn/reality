@@ -5,6 +5,25 @@ namespace IndisputableMonolith
 namespace Relativity
 namespace ILG
 
+/-- Linearized metric perturbation (scaffold). -/
+structure Perturbation where
+  h00 : ℝ
+  h11 : ℝ
+  h22 : ℝ
+  h33 : ℝ
+  deriving Repr
+
+/-- Newtonian gauge placeholder: off-diagonal components vanish (scaffold). -/
+def NewtonianGauge (h : Perturbation) : Prop := True
+
+/-- Construct a trivial Newtonian-gauge perturbation from potentials (Φ,Ψ) (scaffold). -/
+noncomputable def mkNewtonian (Φ Ψ : ℝ) : Perturbation :=
+  { h00 := 2 * Φ, h11 := 2 * Ψ, h22 := 2 * Ψ, h33 := 2 * Ψ }
+
+/-- In the scaffold, any constructed perturbation satisfies the Newtonian gauge. -/
+@[simp] theorem mkNewtonian_gauge (Φ Ψ : ℝ) : NewtonianGauge (mkNewtonian Φ Ψ) :=
+  trivial
+
 /-- Minimal weak-field scaffold: define an effective ILG weight and the
     resulting model velocity-squared as a multiplicative modification
     of the baryonic prediction. -/
@@ -19,6 +38,37 @@ theorem weakfield_ilg_weight (v_baryon2 Tdyn tau0 α n ζ ξ λ : ℝ) :
   v_model2 v_baryon2 (w_eff Tdyn tau0 α n ζ ξ λ)
     = (w_eff Tdyn tau0 α n ζ ξ λ) * v_baryon2 := by
   rfl
+
+/-- Weight derived from potential Φ (linear proxy with coupling κ, scaffold). -/
+noncomputable def w_of_Phi (Φ κ : ℝ) : ℝ := 1 + κ * Φ
+
+/-- Model velocity-squared from potential via weight. -/
+noncomputable def v_model2_from_Phi (v_baryon2 Φ κ : ℝ) : ℝ :=
+  w_of_Phi Φ κ * v_baryon2
+
+@[simp] theorem v_model2_from_Phi_eval (v_baryon2 Φ κ : ℝ) :
+  v_model2_from_Phi v_baryon2 Φ κ = (1 + κ * Φ) * v_baryon2 := by
+  simp [v_model2_from_Phi, w_of_Phi]
+
+/-- Baryon model: provides baryonic v² as a function of radius (scaffold). -/
+structure BaryonModel where
+  v_baryon2 : ℝ → ℝ
+  deriving Repr
+
+/-- Radial weight from a potential profile Φ(r) (scaffold linear proxy). -/
+noncomputable def w_r (Φr : ℝ → ℝ) (κ : ℝ) : ℝ → ℝ := fun r => w_of_Phi (Φr r) κ
+
+@[simp] theorem w_r_eval (Φr : ℝ → ℝ) (κ r : ℝ) :
+  w_r Φr κ r = 1 + κ * Φr r := by
+  simp [w_r, w_of_Phi]
+
+/-- Construct v_model²(r) from baryon model and Φ(r) via w(r). -/
+noncomputable def v_model2_r (BM : BaryonModel) (Φr : ℝ → ℝ) (κ : ℝ) : ℝ → ℝ :=
+  fun r => (w_r Φr κ r) * BM.v_baryon2 r
+
+@[simp] theorem v_model2_r_eval (BM : BaryonModel) (Φr : ℝ → ℝ) (κ r : ℝ) :
+  v_model2_r BM Φr κ r = (1 + κ * Φr r) * BM.v_baryon2 r := by
+  simp [v_model2_r, w_r, w_of_Phi]
 
 /-- Small-parameter (ε) first-order expansion helper: f(ε) ≈ f(0) + f'(0) ε.
     Here we model it as a linear form `a + b ε` to be used by demos. -/

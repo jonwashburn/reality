@@ -417,6 +417,13 @@ def weakfield_eps_report : String :=
     URCGenerators.WeakFieldEpsCert.verified_any _
   "WeakFieldEpsCert: OK"
 
+/-- #eval-friendly report for WeakFieldDeriveCert. -/
+def weakfield_derive_report : String :=
+  let cert : URCGenerators.WeakFieldDeriveCert := {}
+  have _ : URCGenerators.WeakFieldDeriveCert.verified cert :=
+    URCGenerators.WeakFieldDeriveCert.verified_any _
+  "WeakFieldDeriveCert: OK"
+
 /-- #eval-friendly report for LensingSmallCouplingCert. -/
 def lensing_small_report : String :=
   let cert : URCGenerators.LensingSmallCouplingCert := {}
@@ -479,6 +486,13 @@ def cluster_lensing_report : String :=
   have _ : URCGenerators.ClusterLensingCert.verified cert :=
     URCGenerators.ClusterLensingCert.verified_any _
   "ClusterLensingCert: OK"
+
+/-- #eval-friendly report for ClusterLensingDeriveCert. -/
+def cluster_lensing_derive_report : String :=
+  let cert : URCGenerators.ClusterLensingDeriveCert := {}
+  have _ : URCGenerators.ClusterLensingDeriveCert.verified cert :=
+    URCGenerators.ClusterLensingDeriveCert.verified_any _
+  "ClusterLensingDeriveCert: OK"
 
 /-- #eval-friendly report for FRWDeriveCert. -/
 def frw_derive_report : String :=

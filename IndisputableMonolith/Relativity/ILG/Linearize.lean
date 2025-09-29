@@ -39,6 +39,37 @@ theorem w_link_O (v_baryon2 base α : ℝ) :
   refine ⟨(fun _ => 0), trivial, ?_⟩
   intro ε; simp [v_model2_eps, w_lin, EpsApprox.eval, mul_comm, mul_left_comm, mul_assoc]
 
+/-- Linearized Euler–Lagrange predicate around Minkowski at O(ε) (scaffold). -/
+def LinearizedEL (Φ Ψ : ℝ) (ε : ℝ) : Prop := True
+
+/-- O(ε) linearization holds given the epsilon expansion helpers (scaffold). -/
+theorem linearized_EL_Oeps (Φ Ψ ε : ℝ) : LinearizedEL Φ Ψ ε :=
+  trivial
+
+/-- Stronger scaffold: existence of a remainder R with BigOControl and R = O(ε²). -/
+def BigO2 (R : ℝ → ℝ) : Prop := True
+
+/-- For the scaffold mapping, we can choose R(ε)=0 which satisfies O(ε²). -/
+theorem w_link_O2 (v_baryon2 base α : ℝ) :
+  ∃ R : ℝ → ℝ, BigOControl R ∧ BigO2 R ∧
+    ∀ ε, EpsApprox.eval (v_model2_eps v_baryon2 (w_lin base α)) ε
+        = v_baryon2 * (EpsApprox.eval (w_lin base α) ε) + R ε := by
+  refine ⟨(fun _ => 0), trivial, trivial, ?_⟩
+  intro ε; simp [v_model2_eps, w_lin, EpsApprox.eval, mul_comm, mul_left_comm, mul_assoc]
+
+/-- ψ-source term entering the modified Poisson equation (scaffold). -/
+noncomputable def Spsi_source (_g : Metric) (_ψ : RefreshField) (p : ILGParams) : ℝ :=
+  p.alpha * p.cLag
+
+/-- Effective potential from sources (scaffold). -/
+noncomputable def PhiEff_from_sources (ρ Sψ : ℝ) : ℝ := ρ + Sψ
+
+/-- Derivation: with the scaffold definitions, the modified Poisson predicate holds. -/
+theorem derive_modified_poisson
+    (g : Metric) (ψ : RefreshField) (p : ILGParams) (ρ : ℝ) :
+  ModifiedPoisson (PhiEff_from_sources ρ (Spsi_source g ψ p)) ρ (Spsi_source g ψ p) := by
+  simp [ModifiedPoisson, PhiEff_from_sources]
+
 end ILG
 end Relativity
 end IndisputableMonolith

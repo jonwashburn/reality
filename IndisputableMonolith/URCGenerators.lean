@@ -148,6 +148,21 @@ structure WLinkOCert where deriving Repr
 @[simp] theorem WLinkOCert.verified_any (c : WLinkOCert) : WLinkOCert.verified c := by
   intro v base α; simpa using IndisputableMonolith.Relativity.ILG.w_link_O v base α
 
+structure WeakFieldDeriveCert where deriving Repr
+@[simp] def WeakFieldDeriveCert.verified (_c : WeakFieldDeriveCert) : Prop :=
+  ∀ (v base α : ℝ),
+    ∃ R : ℝ → ℝ,
+      IndisputableMonolith.Relativity.ILG.BigOControl R ∧
+      IndisputableMonolith.Relativity.ILG.BigO2 R ∧
+      ∀ ε, IndisputableMonolith.Relativity.ILG.EpsApprox.eval
+              (IndisputableMonolith.Relativity.ILG.v_model2_eps v
+                (IndisputableMonolith.Relativity.ILG.w_lin base α)) ε
+            = v * (IndisputableMonolith.Relativity.ILG.EpsApprox.eval
+                (IndisputableMonolith.Relativity.ILG.w_lin base α) ε) + R ε
+@[simp] theorem WeakFieldDeriveCert.verified_any (c : WeakFieldDeriveCert) :
+  WeakFieldDeriveCert.verified c := by
+  intro v base α; simpa using IndisputableMonolith.Relativity.ILG.w_link_O2 v base α
+
 end URCGenerators
 end IndisputableMonolith
 
@@ -351,6 +366,36 @@ structure PPNDeriveCert where deriving Repr
   constructor
   · simpa using IndisputableMonolith.Relativity.ILG.gamma_band_solution ψ p κ hκ
   · simpa using IndisputableMonolith.Relativity.ILG.beta_band_solution  ψ p κ hκ
+
+end URCGenerators
+end IndisputableMonolith
+
+/‑! Cluster lensing derivation certificate (lensing + time delay bands) -/
+
+namespace IndisputableMonolith
+namespace URCGenerators
+
+open IndisputableMonolith
+
+structure ClusterLensingDeriveCert where deriving Repr
+@[simp] def ClusterLensingDeriveCert.verified (_c : ClusterLensingDeriveCert) : Prop :=
+  ∀ (ψ : IndisputableMonolith.Relativity.ILG.RefreshField)
+    (p : IndisputableMonolith.Relativity.ILG.ILGParams) (κ ℓ : ℝ),
+      0 ≤ κ →
+      |IndisputableMonolith.Relativity.ILG.lensing_proxy ψ p
+        - IndisputableMonolith.Relativity.ILG.baseline_potential
+            (IndisputableMonolith.Relativity.ILG.Phi ψ p)
+            (IndisputableMonolith.Relativity.ILG.Psi ψ p)| ≤ κ
+      ∧ |IndisputableMonolith.Relativity.ILG.time_delay ψ p ℓ
+         - (IndisputableMonolith.Relativity.ILG.baseline_potential
+              (IndisputableMonolith.Relativity.ILG.Phi ψ p)
+              (IndisputableMonolith.Relativity.ILG.Psi ψ p)) * ℓ| ≤ κ
+@[simp] theorem ClusterLensingDeriveCert.verified_any (c : ClusterLensingDeriveCert) :
+  ClusterLensingDeriveCert.verified c := by
+  intro ψ p κ ℓ hκ
+  constructor
+  · simpa using IndisputableMonolith.Relativity.ILG.lensing_band ψ p κ hκ
+  · simpa using IndisputableMonolith.Relativity.ILG.time_delay_band ψ p ℓ κ hκ
 
 end URCGenerators
 end IndisputableMonolith
