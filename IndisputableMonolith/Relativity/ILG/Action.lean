@@ -32,10 +32,45 @@ structure ILGParams where
   cLag  : ℝ
   deriving Repr, Inhabited
 
+/-- Index conventions (symbolic): use natural numbers as abstract tensor indices. -/
+abbrev Index : Type := Nat
+
+/-- Kronecker delta δᵤᵥ (symbolic). -/
+@[simp] noncomputable def kron (μ ν : Index) : ℝ := if μ = ν then 1 else 0
+
+/-- Raise/lower index placeholders (identity maps in the scaffold). -/
+@[simp] def raiseIndex (μ : Index) : Index := μ
+@[simp] def lowerIndex (μ : Index) : Index := μ
+
+/-- Variation notation scaffolding: delta of a scalar expression (symbolic identity). -/
+@[simp] noncomputable def deltaVar (x : ℝ) : ℝ := x
+
+/-- Functional derivative placeholder: ∂S/∂x for scalar S and variable x (symbolic 0). -/
+@[simp] noncomputable def dS_dx (_S _x : ℝ) : ℝ := 0
+
 /-- Symbolic ILG Lagrangian density (toy): L = (∂ψ)^2/2 − m^2 ψ^2/2 + cLag·alpha.
     Here we treat all terms as scalars to keep the scaffold compiling. -/
 noncomputable def L_density (_g : Metric) (_ψ : RefreshField) (p : ILGParams) : ℝ :=
   (p.alpha ^ 2) / 2 - (p.cLag ^ 2) / 2 + p.cLag * p.alpha
+
+/-- Covariant scalar Lagrangian pieces (symbolic). -/
+noncomputable def L_kin (_g : Metric) (_ψ : RefreshField) (p : ILGParams) : ℝ := (p.alpha ^ 2) / 2
+noncomputable def L_mass (_g : Metric) (_ψ : RefreshField) (p : ILGParams) : ℝ := (p.cLag ^ 2) / 2
+noncomputable def L_pot (_g : Metric) (_ψ : RefreshField) (p : ILGParams) : ℝ := 0
+noncomputable def L_coupling (_g : Metric) (_ψ : RefreshField) (p : ILGParams) : ℝ := p.cLag * p.alpha
+
+/-- Covariant scalar Lagrangian (toy): L_cov = L_kin − L_mass + L_pot + L_coupling. -/
+noncomputable def L_cov (g : Metric) (ψ : RefreshField) (p : ILGParams) : ℝ :=
+  L_kin g ψ p - L_mass g ψ p + L_pot g ψ p + L_coupling g ψ p
+
+/-- Covariant total action using L_cov: S_cov = S_EH + ∫ L_cov (toy: scalar sum). -/
+noncomputable def S_total_cov (g : Metric) (ψ : RefreshField) (p : ILGParams) : ℝ :=
+  S_EH g + L_cov g ψ p
+
+/-- GR-limit for S_total_cov (α=0, C_lag=0). -/
+theorem gr_limit_cov (g : Metric) (ψ : RefreshField) :
+  S_total_cov g ψ { alpha := 0, cLag := 0 } = S_EH g := by
+  simp [S_total_cov, L_cov, L_kin, L_mass, L_pot, L_coupling]
 
 /-- Convenience total action using bundled params. -/
 noncomputable def S_total (g : Metric) (ψ : RefreshField) (p : ILGParams) : ℝ :=

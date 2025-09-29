@@ -88,6 +88,43 @@ structure SubstrateCert where deriving Repr
   · simpa using IndisputableMonolith.Relativity.ILG.H_pos_exists
   · intro p κ h hκ; simpa using IndisputableMonolith.Relativity.ILG.scatt_pos_small p κ h hκ
 
+/‑! ILG Lagrangian units/consistency scaffolds ‑/
+
+structure LPiecesUnitsCert where deriving Repr
+@[simp] def LPiecesUnitsCert.verified (_c : LPiecesUnitsCert) : Prop :=
+  ∀ (g : IndisputableMonolith.Relativity.ILG.Metric)
+    (ψ : IndisputableMonolith.Relativity.ILG.RefreshField)
+    (p : IndisputableMonolith.Relativity.ILG.ILGParams),
+      0 ≤ IndisputableMonolith.Relativity.ILG.L_kin g ψ p ∧
+      0 ≤ IndisputableMonolith.Relativity.ILG.L_mass g ψ p
+@[simp] theorem LPiecesUnitsCert.verified_any (c : LPiecesUnitsCert) :
+  LPiecesUnitsCert.verified c := by
+  intro g ψ p; constructor
+  · -- (α^2)/2 ≥ 0
+    have : 0 ≤ p.alpha ^ 2 := by simpa using sq_nonneg p.alpha
+    have h2 : 0 ≤ (2 : ℝ) := by norm_num
+    simpa [IndisputableMonolith.Relativity.ILG.L_kin] using
+      (div_nonneg this h2)
+  · -- (C_lag^2)/2 ≥ 0
+    have : 0 ≤ p.cLag ^ 2 := by simpa using sq_nonneg p.cLag
+    have h2 : 0 ≤ (2 : ℝ) := by norm_num
+    simpa [IndisputableMonolith.Relativity.ILG.L_mass] using
+      (div_nonneg this h2)
+
+structure LCovIdentityCert where deriving Repr
+@[simp] def LCovIdentityCert.verified (_c : LCovIdentityCert) : Prop :=
+  ∀ (g : IndisputableMonolith.Relativity.ILG.Metric)
+    (ψ : IndisputableMonolith.Relativity.ILG.RefreshField)
+    (p : IndisputableMonolith.Relativity.ILG.ILGParams),
+      IndisputableMonolith.Relativity.ILG.L_cov g ψ p
+        = IndisputableMonolith.Relativity.ILG.L_kin g ψ p
+          - IndisputableMonolith.Relativity.ILG.L_mass g ψ p
+          + IndisputableMonolith.Relativity.ILG.L_pot g ψ p
+          + IndisputableMonolith.Relativity.ILG.L_coupling g ψ p
+@[simp] theorem LCovIdentityCert.verified_any (c : LCovIdentityCert) :
+  LCovIdentityCert.verified c := by
+  intro g ψ p; simp [IndisputableMonolith.Relativity.ILG.L_cov]
+
 end URCGenerators
 end IndisputableMonolith
 

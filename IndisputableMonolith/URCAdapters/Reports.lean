@@ -445,6 +445,20 @@ def substrate_scaffold_report : String :=
     URCGenerators.SubstrateCert.verified_any _
   "SubstrateCert: OK"
 
+/-- #eval-friendly report for LPiecesUnitsCert. -/
+def l_pieces_units_report : String :=
+  let cert : URCGenerators.LPiecesUnitsCert := {}
+  have _ : URCGenerators.LPiecesUnitsCert.verified cert :=
+    URCGenerators.LPiecesUnitsCert.verified_any _
+  "LPiecesUnitsCert: OK"
+
+/-- #eval-friendly report for LCovIdentityCert. -/
+def l_cov_identity_report : String :=
+  let cert : URCGenerators.LCovIdentityCert := {}
+  have _ : URCGenerators.LCovIdentityCert.verified cert :=
+    URCGenerators.LCovIdentityCert.verified_any _
+  "LCovIdentityCert: OK"
+
 /-- #eval-friendly report for WLinkOCert. -/
 def w_link_O_report : String :=
   let cert : URCGenerators.WLinkOCert := {}
