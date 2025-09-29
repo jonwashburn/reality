@@ -271,6 +271,72 @@ The cluster-lensing derivation is packaged by \lean{ClusterLensingDeriveCert} wi
   \label{fig:cluster-delays}
 \end{figure}
 
+\section{FRW cosmology and growth}\label{sec:frw}
+
+We outline the cosmological sector used to connect ILG to background expansion and linear growth observables. The Lean scaffold provides a symbolic stress--energy tensor for $\psi$, FRW restatements of the Friedmann equations, and simple growth-linkage definitions that can be tightened against data without changing public endpoints.
+
+\subsection{Stress--energy and Friedmann restatements}
+Let $T_{\mu\nu}[\psi]$ denote the $\psi$-sector stress--energy. In the scaffold we work with a symbolic projector that exposes the $00$-component:
+\begin{equation}
+  T_{\psi}(0,0; p) \equiv \texttt{T\_psi}\,0\,0\,p,\qquad
+  \texttt{T\_psi\_00}(p):\; T_{\psi}(0,0; p) = \rho_{\psi}(p).
+\end{equation}
+Using this, the Friedmann I equation is restated as a predicate
+\begin{equation}
+  \texttt{FriedmannI}(t,p):\quad H(t)^2 = T_{\psi}(0,0; p),
+\end{equation}
+which is equivalent to the usual $\rho_{\psi}$ form by the Lean lemma
+\begin{equation}
+  \texttt{FriedmannI\_T\_equals\_rho}(t,p):\;
+  \texttt{FriedmannI}(t,p) \;\Leftrightarrow\; H(t)^2 = \rho_{\psi}(p).
+\end{equation}
+GR-limit consistency is recorded by
+\begin{align}
+  \texttt{FriedmannI\_gr\_limit}(t):&\quad
+  \texttt{FriedmannI}\!\left(t,\{ \alpha{=}0,\,cLag{=}0\}\right)
+  \;\Leftrightarrow\; H(t)^2 = 0,\\
+  \texttt{FriedmannII\_gr\_limit}(t):&\quad
+  \texttt{FriedmannII}\!\left(t,\{ \alpha{=}0,\,cLag{=}0\}\right).
+\end{align}
+These symbolic restatements serve as typed anchors for downstream growth and perturbation analyses.
+
+\subsection{Scalar perturbations and growth linkage}
+For scalar perturbations we provide a typed placeholder predicate
+\begin{equation}
+  \texttt{ScalarPertEqs}(\psi, p, t, x),
+\end{equation}
+designed to be specialized to gauge-fixed linear equations. For growth observables we define a growth factor and derived quantities
+\begin{equation}
+  D(a) \equiv \texttt{growth\_factor}(a),\quad
+  f(a) \equiv \texttt{f\_of\_a}(a),\quad
+  \sigma_8(a) \equiv \texttt{sigma8\_of}(\sigma_{8,0}, a),
+\end{equation}
+with a scaffold evaluation lemma
+\begin{equation}
+  \texttt{sigma8\_of\_eval}:\quad
+  \sigma_8(a) = \sigma_{8,0}\,a,
+\end{equation}
+to be tightened once linear-theory solutions are wired to $D(a)$.
+
+\subsection{Certificates, bands, and reports}
+The FRW restatement and growth linkage are certified by \lean{FRWDeriveCert} and \lean{GrowthCert} with \#eval endpoints \lean{frw_derive_report} and \lean{growth_report}. Cosmological bands (CMB/BAO/BBN) are exposed by \lean{CMBBAOBBNBandsCert} with report \lean{cmb_bao_bbn_bands_report}. These endpoints are included in the consolidated QG harness used to gate pull requests in CI and provide the interface for data-facing falsifiers.
+
+\subsection{Placeholder for table}
+\begin{table}[t]
+  \centering
+  \begin{tabular}{l c}
+    \toprule
+    Observable & Endpoint / status \\
+    \midrule
+    FRW restatement & \texttt{frw\_derive\_report} (OK) \\
+    Growth linkage & \texttt{growth\_report} (OK) \\
+    CMB/BAO/BBN bands & \texttt{cmb\_bao\_bbn\_bands\_report} (OK) \\
+    \bottomrule
+  \end{tabular}
+  \caption{Cosmological endpoints surfaced by \#eval reports and enforced by the QG harness.}
+  \label{tab:frw-endpoints}
+\end{table}
+
 % --- Section stubs (content to be added in separate inputs) ---
 % \input{QG_intro}
 % \input{QG_action}
