@@ -1,0 +1,119 @@
+% PRD manuscript front matter and styling (REVTeX 4-2)
+% Compile with: pdflatex/bibtex/pdflatex/pdflatex (or latexmk)
+
+\documentclass[aps,prd,twocolumn,superscriptaddress,nofootinbib,floatfix,longbibliography]{revtex4-2}
+
+% --- Packages ---
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb,amsfonts,mathtools}
+\usepackage{bm}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage[capitalize,nameinlink]{cleveref}
+
+% --- Hyperref setup (APS friendly) ---
+\definecolor{linkblue}{RGB}{0,70,140}
+\definecolor{linkgreen}{RGB}{0,120,0}
+\definecolor{linkred}{RGB}{160,0,0}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=linkred,
+  citecolor=linkgreen,
+  urlcolor=linkblue,
+  pdftitle={Information-Limited Gravity: A Mechanized, Covariant, Quantum-Consistent Framework},
+  pdfauthor={Washburn et al.}
+}
+
+% --- Cleveref names ---
+\crefname{section}{Sec.}{Secs.}
+\Crefname{section}{Section}{Sections}
+\crefname{figure}{Fig.}{Figs.}
+\Crefname{figure}{Figure}{Figures}
+\crefname{table}{Table}{Tables}
+
+% --- Math and notation helpers ---
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\vect}[1]{\boldsymbol{#1}}
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\Tr}{\operatorname{Tr}}
+\newcommand{\sgn}{\operatorname{sgn}}
+\newcommand{\Order}{\mathcal{O}}
+\newcommand{\Lag}{\mathcal{L}}
+\newcommand{\Action}{\mathcal{S}}
+\newcommand{\grad}{\nabla}
+\newcommand{\abs}[1]{\left\lvert #1 \right\rvert}
+\newcommand{\braces}[1]{\left\{ #1 \right\}}
+\newcommand{\paren}[1]{\left( #1 \right)}
+\newcommand{\brak}[1]{\left[ #1 \right]}
+
+% --- Lean/Code formatting helper ---
+\newcommand{\lean}[1]{\texttt{#1}}
+
+% --- Graphics path (optional) ---
+\graphicspath{{./figs/}}
+
+% --- Title and author block (update before submission) ---
+\begin{document}
+
+\title{Information-Limited Gravity: A Mechanized, Covariant, Quantum-Consistent Framework with Observational Gates}
+
+\author{Jonathan Washburn}
+\email{washburn@recognitionphysics.org}
+\affiliation{Recognition Physics, USA}
+
+% \author{Second Author}
+% \affiliation{Institution, City, Country}
+
+\date{\today}
+
+\begin{abstract}
+We present a covariant, quantum-consistent gravitational framework derived from information-processing constraints and formalized end-to-end in the Lean theorem prover. The theory augments general relativity with a globally constrained scalar sector that preserves GR in the appropriate limit while enabling predictive weak-field dynamics, PPN/lensing/cosmology/gravitational-wave/compact-object phenomenology, and a quantum substrate with unitarity and microcausality predicates. All claims are enforced by machine-checked certificates and consolidated pass/fail harnesses that gate continuous integration. This manuscript outlines the formal construction, key results, and observational gates, with an accompanying artifact for full reproducibility.
+\end{abstract}
+
+\maketitle
+
+% --- Optional: Table of contents for drafts (remove before submission if desired) ---
+% \tableofcontents
+
+% --- Section stubs (content to be added in separate inputs) ---
+% \input{QG_intro}
+% \input{QG_action}
+% \input{QG_weakfield}
+% \input{QG_ppn}
+% \input{QG_lensing}
+% \input{QG_frw}
+% \input{QG_gw}
+% \input{QG_compact}
+% \input{QG_quantum}
+% \input{QG_falsifiers}
+% \input{QG_results}
+% \input{QG_discussion}
+
+% --- Acknowledgments ---
+\begin{acknowledgments}
+We thank collaborators and contributors to the Lean mechanization and continuous-integration infrastructure. This work was supported in part by Recognition Physics. Any opinions expressed are those of the authors.
+\end{acknowledgments}
+
+% --- Data Availability Statement ---
+\section*{Data Availability}
+All code and report endpoints used to generate the results are available in the public repository accompanying this manuscript. See the consolidated harnesses and certificates enumerated in the documentation for automated pass/fail checks.
+
+% --- Author Contributions ---
+\section*{Author Contributions}
+Conceptualization, formalization, and writing: J.W. Artifact preparation and continuous-integration gates: J.W. All authors reviewed and approved the manuscript.
+
+% --- Bibliography ---
+\bibliographystyle{apsrev4-2}
+% If your BibTeX file is named paper.bib and lives alongside this .tex:
+\bibliography{paper}
+
+\end{document}
+
+
