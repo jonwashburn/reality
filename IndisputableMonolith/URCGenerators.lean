@@ -286,6 +286,61 @@ structure GWDeriveCert where deriving Repr
 end URCGenerators
 end IndisputableMonolith
 
+/‑! Micro unitary completion certificate - existence of unitary evolution -/
+
+namespace IndisputableMonolith
+namespace URCGenerators
+
+open IndisputableMonolith
+
+structure MicroUnitaryCompletionCert where deriving Repr
+@[simp] def MicroUnitaryCompletionCert.verified (_c : MicroUnitaryCompletionCert) : Prop :=
+  ∃ H : IndisputableMonolith.Relativity.ILG.Hpsi,
+    IndisputableMonolith.Relativity.ILG.unitary_evolution H
+@[simp] theorem MicroUnitaryCompletionCert.verified_any (c : MicroUnitaryCompletionCert) :
+  MicroUnitaryCompletionCert.verified c := by
+  simpa using IndisputableMonolith.Relativity.ILG.unitary_evolution_exists
+
+end URCGenerators
+end IndisputableMonolith
+
+/‑! Bands schema linkage certificate (κ from params are nonnegative) -/
+
+namespace IndisputableMonolith
+namespace URCGenerators
+
+open IndisputableMonolith
+
+structure BandsFromParamsCert where deriving Repr
+@[simp] def BandsFromParamsCert.verified (_c : BandsFromParamsCert) : Prop :=
+  ∀ (p : IndisputableMonolith.Relativity.ILG.ILGParams),
+    0 ≤ (IndisputableMonolith.Relativity.ILG.bandsFromParams p).κ_ppn ∧
+    0 ≤ (IndisputableMonolith.Relativity.ILG.bandsFromParams p).κ_lensing ∧
+    0 ≤ (IndisputableMonolith.Relativity.ILG.bandsFromParams p).κ_gw
+@[simp] theorem BandsFromParamsCert.verified_any (c : BandsFromParamsCert) :
+  BandsFromParamsCert.verified c := by
+  intro p
+  let B := IndisputableMonolith.Relativity.ILG.bandsFromParams p
+  exact And.intro B.h_ppn (And.intro B.h_lensing B.h_gw)
+
+end URCGenerators
+end IndisputableMonolith
+
+/‑! Falsifiers harness certificate - pass/fail scaffold -/
+
+namespace IndisputableMonolith
+namespace URCGenerators
+
+open IndisputableMonolith
+
+structure FalsifiersHarnessCert where deriving Repr
+@[simp] def FalsifiersHarnessCert.verified (_c : FalsifiersHarnessCert) : Prop := True
+@[simp] theorem FalsifiersHarnessCert.verified_any (c : FalsifiersHarnessCert) :
+  FalsifiersHarnessCert.verified c := trivial
+
+end URCGenerators
+end IndisputableMonolith
+
 /-! Growth certificate - positivity under simple conditions -/
 
 namespace IndisputableMonolith

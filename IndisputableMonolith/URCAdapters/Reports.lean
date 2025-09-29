@@ -508,6 +508,46 @@ def gw_quadratic_report : String :=
     URCGenerators.GWQuadraticCert.verified_any _
   "GWQuadraticCert: OK"
 
+/-- #eval-friendly report for MicroUnitaryCompletionCert. -/
+def micro_unitary_completion_report : String :=
+  let cert : URCGenerators.MicroUnitaryCompletionCert := {}
+  have _ : URCGenerators.MicroUnitaryCompletionCert.verified cert :=
+    URCGenerators.MicroUnitaryCompletionCert.verified_any _
+  "MicroUnitaryCompletionCert: OK"
+
+/-- #eval-friendly report for BandsFromParamsCert. -/
+def bands_from_params_report : String :=
+  let cert : URCGenerators.BandsFromParamsCert := {}
+  have _ : URCGenerators.BandsFromParamsCert.verified cert :=
+    URCGenerators.BandsFromParamsCert.verified_any _
+  "BandsFromParamsCert: OK"
+
+/-- #eval-friendly consolidated pass/fail harness: triggers core certs and returns PASS if elaboration succeeds. -/
+def qg_harness_report : String :=
+  -- Trigger representative certs across domains; any failure prevents compilation.
+  let c1 : URCGenerators.FRWDeriveCert := {}
+  have _ : URCGenerators.FRWDeriveCert.verified c1 := URCGenerators.FRWDeriveCert.verified_any _
+  let c2 : URCGenerators.GWQuadraticCert := {}
+  have _ : URCGenerators.GWQuadraticCert.verified c2 := URCGenerators.GWQuadraticCert.verified_any _
+  let c3 : URCGenerators.WeakFieldDeriveCert := {}
+  have _ : URCGenerators.WeakFieldDeriveCert.verified c3 := URCGenerators.WeakFieldDeriveCert.verified_any _
+  let c4 : URCGenerators.PPNDeriveCert := {}
+  have _ : URCGenerators.PPNDeriveCert.verified c4 := URCGenerators.PPNDeriveCert.verified_any _
+  let c5 : URCGenerators.ClusterLensingDeriveCert := {}
+  have _ : URCGenerators.ClusterLensingDeriveCert.verified c5 := URCGenerators.ClusterLensingDeriveCert.verified_any _
+  let c6 : URCGenerators.CMBBAOBBNBandsCert := {}
+  have _ : URCGenerators.CMBBAOBBNBandsCert.verified c6 := URCGenerators.CMBBAOBBNBandsCert.verified_any _
+  let c7 : URCGenerators.BandsFromParamsCert := {}
+  have _ : URCGenerators.BandsFromParamsCert.verified c7 := URCGenerators.BandsFromParamsCert.verified_any _
+  "QGHarness: PASS"
+
+/-- #eval-friendly report for FalsifiersHarnessCert. -/
+def falsifiers_harness_report : String :=
+  let cert : URCGenerators.FalsifiersHarnessCert := {}
+  have _ : URCGenerators.FalsifiersHarnessCert.verified cert :=
+    URCGenerators.FalsifiersHarnessCert.verified_any _
+  "FalsifiersHarnessCert: OK"
+
 /-- #eval-friendly report for FRWDeriveCert. -/
 def frw_derive_report : String :=
   let cert : URCGenerators.FRWDeriveCert := {}

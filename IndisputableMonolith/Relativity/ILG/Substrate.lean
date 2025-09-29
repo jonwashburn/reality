@@ -48,6 +48,9 @@ theorem unitary_evolution_exists : ∃ H : Hpsi, unitary_evolution H := by
 /-- ψ 2→2 scattering forward‑limit positivity (skeleton). -/
 def ScattPositivity (p : ILGParams) : Prop := True
 
+/-- Microcausality predicate (scaffold). -/
+def microcausal (p : ILGParams) : Prop := True
+
 /-- Small‑coupling positivity: if |C_lag·α| ≤ κ with κ ≥ 0, then positivity holds (scaffold). -/
 theorem scatt_pos_small (p : ILGParams) (κ : ℝ)
   (h : |p.cLag * p.alpha| ≤ κ) (hκ : 0 ≤ κ) : ScattPositivity p := by

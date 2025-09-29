@@ -92,6 +92,24 @@ def EL_psi (g : Metric) (ψ : RefreshField) (p : ILGParams) : Prop := True
 @[simp] theorem EL_psi_trivial (g : Metric) (ψ : RefreshField) (p : ILGParams) :
   EL_psi g ψ p := trivial
 
+/-- Consolidated bands schema for observables (scaffold). -/
+structure Bands where
+  κ_ppn : ℝ
+  κ_lensing : ℝ
+  κ_gw : ℝ
+  h_ppn : 0 ≤ κ_ppn
+  h_lensing : 0 ≤ κ_lensing
+  h_gw : 0 ≤ κ_gw
+  deriving Repr
+
+/-- Map ILG parameters to a bands schema (toy: proportional to |C_lag·α|). -/
+noncomputable def bandsFromParams (p : ILGParams) : Bands :=
+  let κ := |p.cLag * p.alpha|
+  { κ_ppn := κ, κ_lensing := κ, κ_gw := κ
+  , h_ppn := by exact abs_nonneg _
+  , h_lensing := by exact abs_nonneg _
+  , h_gw := by exact abs_nonneg _ }
+
 /-- Symbolic Einstein equations predicate for the GR limit (scaffold). -/
 def EinsteinEq (g : Metric) : Prop := True
 
