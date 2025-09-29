@@ -494,6 +494,13 @@ def cluster_lensing_derive_report : String :=
     URCGenerators.ClusterLensingDeriveCert.verified_any _
   "ClusterLensingDeriveCert: OK"
 
+/-- #eval-friendly report for CMBBAOBBNBandsCert. -/
+def cmb_bao_bbn_bands_report : String :=
+  let cert : URCGenerators.CMBBAOBBNBandsCert := {}
+  have _ : URCGenerators.CMBBAOBBNBandsCert.verified cert :=
+    URCGenerators.CMBBAOBBNBandsCert.verified_any _
+  "CMBBAOBBNBandsCert: OK"
+
 /-- #eval-friendly report for FRWDeriveCert. -/
 def frw_derive_report : String :=
   let cert : URCGenerators.FRWDeriveCert := {}

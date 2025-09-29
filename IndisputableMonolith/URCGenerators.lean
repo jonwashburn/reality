@@ -399,6 +399,24 @@ structure ClusterLensingDeriveCert where deriving Repr
 
 end URCGenerators
 end IndisputableMonolith
+
+/‑! Cosmology bands certificate (CMB/BAO/BBN placeholders) -/
+
+namespace IndisputableMonolith
+namespace URCGenerators
+
+open IndisputableMonolith
+
+structure CMBBAOBBNBandsCert where deriving Repr
+@[simp] def CMBBAOBBNBandsCert.verified (_c : CMBBAOBBNBandsCert) : Prop :=
+  ∀ (B : IndisputableMonolith.Relativity.ILG.CosmologyBands),
+    IndisputableMonolith.Relativity.ILG.bands_hold B
+@[simp] theorem CMBBAOBBNBandsCert.verified_any (c : CMBBAOBBNBandsCert) :
+  CMBBAOBBNBandsCert.verified c := by
+  intro B; simpa using IndisputableMonolith.Relativity.ILG.bands_hold_any B
+
+end URCGenerators
+end IndisputableMonolith
 import Mathlib
 import IndisputableMonolith.Verification
 import IndisputableMonolith.RH.RS.Spec
