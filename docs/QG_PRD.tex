@@ -245,6 +245,32 @@ All statements above are packaged by the certificate \lean{PPNDeriveCert} with a
   \label{fig:ppn-bands}
 \end{figure}
 
+\section{Relativistic lensing and time delays}\label{sec:lensing}
+
+We sketch the relativistic lensing pipeline used to compare ILG with strong-lensing observables. The Lean scaffold provides a spherical-profile abstraction and closed-form deflection proxy sufficient for band checks, along with a time-delay band theorem that captures the leading sensitivity to global couplings.
+
+\subsection{Spherical profiles and deflection}
+We package spherically symmetric lenses by a typed structure \lean{SphericalProfile} carrying the relevant potential radial profile $\Phi(r)$. The corresponding deflection for impact parameter $b$ and small-coupling proxy $\kappa$ is given by the noncomputable definition \lean{deflection_spherical}, with an evaluation lemma
+\begin{equation}
+  \texttt{deflection\_spherical\_eval}:\quad
+  \alpha(b) = \kappa\,\Phi_r(b),
+\end{equation}
+providing an analytic handle for cluster-scale estimates without per-system tuning.
+
+\subsection{Time-delay bands}
+For two images with path-length difference characterized by angular-momentum scale $\ell$, Lean supplies a band statement \lean{time_delay_band}(\,$\psi, p, \ell, \kappa$\,) that isolates the dependence on the global proxy $\kappa$ (with $\kappa\ge 0$). This result is wired into the cluster derivation certificate.
+
+\subsection{Certificate and report endpoint}
+The cluster-lensing derivation is packaged by \lean{ClusterLensingDeriveCert} with a \#eval-friendly endpoint \lean{cluster_lensing_derive_report}. Any inconsistency in the lensing linkage or time-delay band prevents elaboration and is caught by the QG harness in CI.
+
+\subsection{Placeholder for figure}
+\begin{figure}[t]
+  \centering
+  % TODO: includegraphics{cluster_time_delays.pdf}
+  \caption{Cluster time-delay band comparison: predicted delays versus observed values across a sample, expressed as a function of the global proxy $\kappa$.}
+  \label{fig:cluster-delays}
+\end{figure}
+
 % --- Section stubs (content to be added in separate inputs) ---
 % \input{QG_intro}
 % \input{QG_action}
