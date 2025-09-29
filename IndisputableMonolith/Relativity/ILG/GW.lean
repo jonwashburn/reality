@@ -22,6 +22,14 @@ theorem cT_band (κ : ℝ) (p : ILGParams) (hκ : 0 ≤ κ) :
   |c_T2 p - 1| ≤ κ := by
   simpa [c_T2] using hκ
 
+/-- Quadratic action around FRW (scaffold): asserts the derived tensor speed.
+    In this scaffold, it links directly to c_T2 = 1. -/
+def QuadraticActionGW (p : ILGParams) : Prop := c_T2 p = 1
+
+@[simp] theorem quadratic_action_gw_link (p : ILGParams) :
+  QuadraticActionGW p := by
+  simp [QuadraticActionGW, c_T2]
+
 /-- Small-coupling band for GW speed: if |C_lag·α| ≤ κ, then |v_gw−1| ≤ κ (scaffold). -/
 theorem gw_band_small (C_lag α κ : ℝ) (h : |C_lag * α| ≤ κ) :
   |gw_speed C_lag α - 1| ≤ κ := by

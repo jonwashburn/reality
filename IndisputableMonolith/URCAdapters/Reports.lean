@@ -501,6 +501,13 @@ def cmb_bao_bbn_bands_report : String :=
     URCGenerators.CMBBAOBBNBandsCert.verified_any _
   "CMBBAOBBNBandsCert: OK"
 
+/-- #eval-friendly report for GWQuadraticCert. -/
+def gw_quadratic_report : String :=
+  let cert : URCGenerators.GWQuadraticCert := {}
+  have _ : URCGenerators.GWQuadraticCert.verified cert :=
+    URCGenerators.GWQuadraticCert.verified_any _
+  "GWQuadraticCert: OK"
+
 /-- #eval-friendly report for FRWDeriveCert. -/
 def frw_derive_report : String :=
   let cert : URCGenerators.FRWDeriveCert := {}

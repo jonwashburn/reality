@@ -34,6 +34,17 @@ def micro_dofs (H : Hpsi) : Fin H.dim → ℝ := fun _ => 0
 /-- Unitary evolution placeholder: norm preservation predicate. -/
 def unitary_evolution (H : Hpsi) : Prop := True
 
+/-- Explicit orthonormal basis (scaffold): canonical basis on Fin dim. -/
+noncomputable def onb (H : Hpsi) : Fin H.dim → ℝ := fun i => (if i.val = 0 then 1 else 0)
+
+/-- Creation/annihilation-like operators (scaffold zero maps). -/
+noncomputable def a_create (H : Hpsi) : (Fin H.dim → ℝ) → (Fin H.dim → ℝ) := fun _ => fun _ => 0
+noncomputable def a_annih  (H : Hpsi) : (Fin H.dim → ℝ) → (Fin H.dim → ℝ) := fun _ => fun _ => 0
+
+/-- Existence of unitary evolution witness (scaffold). -/
+theorem unitary_evolution_exists : ∃ H : Hpsi, unitary_evolution H := by
+  exact ⟨{ dim := 1 }, trivial⟩
+
 /-- ψ 2→2 scattering forward‑limit positivity (skeleton). -/
 def ScattPositivity (p : ILGParams) : Prop := True
 

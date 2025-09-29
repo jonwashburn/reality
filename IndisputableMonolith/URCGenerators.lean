@@ -417,6 +417,24 @@ structure CMBBAOBBNBandsCert where deriving Repr
 
 end URCGenerators
 end IndisputableMonolith
+
+/‑! GW quadratic action certificate - links quadratic predicate to c_T² -/
+
+namespace IndisputableMonolith
+namespace URCGenerators
+
+open IndisputableMonolith
+
+structure GWQuadraticCert where deriving Repr
+@[simp] def GWQuadraticCert.verified (_c : GWQuadraticCert) : Prop :=
+  ∀ (p : IndisputableMonolith.Relativity.ILG.ILGParams),
+    IndisputableMonolith.Relativity.ILG.QuadraticActionGW p
+@[simp] theorem GWQuadraticCert.verified_any (c : GWQuadraticCert) :
+  GWQuadraticCert.verified c := by
+  intro p; simpa using IndisputableMonolith.Relativity.ILG.quadratic_action_gw_link p
+
+end URCGenerators
+end IndisputableMonolith
 import Mathlib
 import IndisputableMonolith.Verification
 import IndisputableMonolith.RH.RS.Spec
