@@ -360,6 +360,45 @@ Either failure (quadratic action or observational band) will prevent elaboration
   \label{fig:gw-ct2}
 \end{figure}
 
+\section{Compact objects}\label{sec:compact}
+
+Static and stationary compact-object spacetimes probe the strong-field regime. In ILG we introduce a static spherical ansatz as a scaffold, derive a horizon-consistency band, and expose a ringdown proxy sufficient to compare with spectroscopy measurements within global-coupling bands.
+
+\subsection{Static spherical ansatz and horizon condition}
+We work with a typed static spherical ansatz for the metric (see \texttt{ILG/Compact.lean}), and define a horizon-consistency predicate
+\begin{equation}
+  \texttt{HorizonOK}(A,\mu),
+\end{equation}
+where $A$ denotes ansatz data and $\mu$ a mass scale. Lean provides a band theorem
+\begin{equation}
+  \texttt{horizon\_band}(A;\mu,\kappa,C_{\mathrm{lag}},\alpha):\;
+  \texttt{HorizonOK}(A,\mu)\ \wedge\
+  \bigl\lvert \mathrm{ilg\_bh}(\mu,C_{\mathrm{lag}},\alpha)-\mathrm{baseline\_bh}(\mu)\bigr\rvert\le\kappa,
+\end{equation}
+valid for $\kappa\ge 0$, which captures leading sensitivity to the global small-coupling proxy and yields a deviation band around the baseline horizon scale.
+
+\subsection{Ringdown proxy and bands}
+To interface with spectroscopy, we define a ringdown proxy as a function of mass and global parameters,
+\begin{equation}
+  \omega_{\mathrm{RD}}(M;p)\ \equiv\ \texttt{ringdown\_proxy}(M,p),
+\end{equation}
+and provide a deviation band
+\begin{equation}
+  \texttt{ringdown\_band}(\mu,\kappa,C_{\mathrm{lag}},\alpha;\ \kappa\ge 0),
+\end{equation}
+sufficient to compare with observed overtones without introducing per-source tuning.
+
+\subsection{Certificate and report endpoint}
+The compact-object derivation is packaged by \lean{BHDeriveCert} and surfaced by the \#eval endpoint \lean{bh_derive_report}, which is included in the consolidated QG harness. Any failure of the horizon condition or ringdown band will prevent elaboration and fail CI.
+
+\subsection{Placeholder for figure}
+\begin{figure}[t]
+  \centering
+  % TODO: includegraphics{bh_ringdown_bands.pdf}
+  \caption{Black-hole ringdown band for the ILG proxy compared to baseline expectations as a function of mass $M$ and the small-coupling proxy $\kappa$.}
+  \label{fig:bh-rd}
+\end{figure}
+
 % --- Section stubs (content to be added in separate inputs) ---
 % \input{QG_intro}
 % \input{QG_action}
