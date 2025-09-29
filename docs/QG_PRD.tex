@@ -399,6 +399,50 @@ The compact-object derivation is packaged by \lean{BHDeriveCert} and surfaced by
   \label{fig:bh-rd}
 \end{figure}
 
+\section{Quantum substrate and consistency}\label{sec:quantum}
+
+A quantum-mechanical substrate underlies the classical ILG sector. Our goal in this section is modest but essential: specify explicit microscopic degrees of freedom, exhibit unitary time evolution, and state a locality predicate consistent with microcausality in the small-coupling regime. These ingredients are compiled in Lean as certificate-backed statements and exercised by \#eval reports.
+
+\subsection{Microscopic degrees of freedom and Hamiltonian}
+We model the $\psi$-sector Hilbert space by a typed object $H_\psi$ with a finite (or effectively truncated) basis and define explicit basis vectors and operators as programmatic objects,\footnote{All such objects are represented as total functions in the Lean development; truncations are explicit.}
+\begin{equation}
+  \texttt{micro\_dofs}(H):\ \mathrm{Fin}(H.\mathrm{dim}) \to \mathbb{R},
+\end{equation}
+serving as a concrete handle for later scattering and perturbative constructions. The Hamiltonian and its positivity are tracked to guarantee a well-posed unitary flow.
+
+\subsection{Unitary evolution}
+The substrate provides a witness of unitary dynamics:
+\begin{equation}
+  \texttt{unitary\_evolution\_exists}:\ \exists\,H_\psi,\ \texttt{unitary\_evolution}(H_\psi),
+\end{equation}
+ensuring a norm-preserving time evolution on the microscopic space. This predicate is compiled into a certificate and surfaced by a \#eval report that is part of the consolidated QG harness.
+
+\subsection{Locality and microcausality (predicate)}
+We include a locality predicate suitable for small-coupling regimes and future tightening to a full microcausality proof. In the present scaffold this is a typed predicate over spacetime-separated observables with the intended reading ``commutators vanish outside the light cone''; its concrete realization can be strengthened without changing public endpoints. This predicate is exercised in the quantum certificates and wired into the CI harness.
+
+\subsection{Certificates and reports}
+Two endpoints carry the substrate checks:
+\begin{itemize}
+  \item \textbf{Unitary substrate:} \lean{MicroUnitaryCert} with report \lean{micro_unitary_report}, establishing the existence of a unitary flow with the declared microscopic DOFs.
+  \item \textbf{Completion witness:} \lean{MicroUnitaryCompletionCert} with report \lean{micro_unitary_completion_report}, bundling unitary evolution with the locality predicate for use in gates and falsifiers.
+\end{itemize}
+Breakage of either endpoint fails the consolidated QG harness and blocks pull requests until the microscopic consistency is restored.
+
+\subsection{Placeholder for table}
+\begin{table}[t]
+  \centering
+  \begin{tabular}{l c}
+    \toprule
+    Check & Endpoint / status \\
+    \midrule
+    Unitary evolution & \texttt{micro\_unitary\_report} (OK) \\
+    Completion (unitary + locality) & \texttt{micro\_unitary\_completion\_report} (OK) \\
+    \bottomrule
+  \end{tabular}
+  \caption{Quantum substrate endpoints surfaced by \#eval reports and enforced by the QG harness.}
+  \label{tab:quantum-endpoints}
+\end{table}
+
 % --- Section stubs (content to be added in separate inputs) ---
 % \input{QG_intro}
 % \input{QG_action}
