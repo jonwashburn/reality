@@ -165,6 +165,50 @@ Both are compiled as machine-checked certificates and surfaced by \#eval reports
 \subsection{Interfaces to downstream sections}
 The objects above feed directly into the remainder of the paper: linearized EL equations and the modified Poisson structure (\cref{sec:weakfield}); post-Newtonian mappings (\cref{sec:ppn}); relativistic lensing integrals (\cref{sec:lensing}); FRW restatements and growth (\cref{sec:frw}); and the quadratic action for gravitational waves (\cref{sec:gw}). All downstream claims depend on the mechanized guarantees summarized here.
 
+\section{Weak-field regime and modified Poisson}\label{sec:weakfield}
+
+We now linearize the field equations around a Minkowski background and work in the Newtonian gauge to obtain a modified Poisson structure for the potential $\Phi$. The baryonic acceleration picks up a multiplicative weight $w(r)$ derived from the linearized potentials. All steps are mechanized in Lean with explicit symbols and reports.
+
+\subsection{Gauge and perturbations}
+We parameterize the metric perturbation and fix the Newtonian gauge as in the Lean scaffold \texttt{ILG/WeakField.lean}: the structures \lean{Perturbation}, \lean{NewtonianGauge}, and constructor \lean{mkNewtonian} provide typed accessors for $(\Phi,\Psi)$ and ensure gauge choices are respected downstream.
+
+\subsection{Linearized EL at $\Order(\varepsilon)$}
+From the variational predicates (\cref{sec:action}) we form their linearization about the background. The Lean module \texttt{ILG/Linearize.lean} provides a symbolic predicate \lean{LinearizedEL} and an $\Order(\varepsilon)$ statement \lean{linearized_EL_Oeps} that isolates terms relevant for weak-field dynamics.
+
+\subsection{Modified Poisson and effective sources}
+The scalar-sector source and the effective potential are assembled via \lean{Spsi_source} and \lean{PhiEff_from_sources}. The central linkage is the modified-Poisson statement \lean{derive_modified_poisson}, which ties the Laplacian of $\Phi$ to baryonic and $\psi$-sector contributions in the linear regime. This statement is used later to map to PPN and lensing observables.
+
+\subsection{Baryonic acceleration weight}
+We obtain a multiplicative weight $w(r)$ for baryonic acceleration from the potential, following the Lean definitions \lean{w_of_Phi} and \lean{w_r}; a velocity proxy \lean{v_model2_r} is used to compare against rotation-curve profiles without introducing per-system tuning. The consolidated certificate \lean{WeakFieldDeriveCert} is surfaced by the report \lean{weakfield_derive_report}.
+
+\subsection{Error control and $\Order(\varepsilon^2)$ remainder}
+Error budgeting is made explicit through a Big-O scaffold \lean{BigO2} and the linkage lemma \lean{w_link_O2}, guaranteeing that neglected terms are at most $\Order(\varepsilon^2)$. This guarantee is exposed to users and CI by the certificate \lean{WLinkOCert} with report \lean{w_link_O_report}.
+
+\subsection{Placeholders for figures and tables}
+\begin{figure}[t]
+  \centering
+  % TODO: includegraphics{rotation_curves_overlay.pdf}
+  \caption{Rotation-curve overlays comparing the baryonic baseline and the ILG prediction using the weight $w(r)$. No per-galaxy tuning is introduced; bands reflect global small-coupling regimes.}
+  \label{fig:rc}
+\end{figure}
+
+\begin{table}[b]
+  \centering
+  \begin{tabular}{l c}
+    \toprule
+    Contribution & Scaling \\
+    \midrule
+    Linear term & $\Order(\varepsilon)$ \\
+    Remainder & $\Order(\varepsilon^2)$ \\
+    \bottomrule
+  \end{tabular}
+  \caption{Schematic error budget for the weak-field expansion used to derive $w(r)$. Precise constants are provided by the Lean lemmas \lean{linearized_EL_Oeps} and \lean{w_link_O2}.}
+  \label{tab:weakfield-error}
+\end{table}
+
+\subsection{Reports and gating}
+For rapid validation, the weak-field derivation and the remainder control are exposed as \#eval-friendly endpoints: \lean{weakfield_derive_report} and \lean{w_link_O_report}. These are included in the consolidated QG harness used to gate pull requests in continuous integration (see \cref{sec:falsifiers}).
+
 % --- Section stubs (content to be added in separate inputs) ---
 % \input{QG_intro}
 % \input{QG_action}
