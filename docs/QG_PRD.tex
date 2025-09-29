@@ -484,6 +484,45 @@ In CI we build and execute the harness executable, then grep for the expected st
   \label{tab:falsifiers-endpoints}
 \end{table}
 
+\section{Results summary}\label{sec:results}
+
+We collect the mechanized statements established by the ILG scaffold and summarize their report endpoints as exercised in the CI gates. All entries below refer to Lean artifacts that elaborate at the current commit and are guarded by the consolidated QG harness and falsifiers.
+
+\subsection{Mechanized guarantees (structural)}
+\begin{itemize}
+  \item GR-compatibility: \lean{gr_limit_cov}, \lean{EL_psi_gr_limit}, \lean{Tmunu_gr_limit_zero} (\cref{sec:action}).
+  \item Unit/covariance hygiene: \lean{LPiecesUnitsCert} (\lean{l_pieces_units_report}), \lean{LCovIdentityCert} (\lean{l_cov_identity_report}).
+\end{itemize}
+
+\subsection{Domain summaries (reports)}
+\begin{table}[t]
+  \centering
+  \begin{tabular}{l l l}
+    \toprule
+    Domain & Certificate(s) & Report endpoint \\
+    \midrule
+    Weak-field & \lean{WeakFieldDeriveCert}, \lean{WLinkOCert} & \lean{weakfield_derive_report}, \lean{w_link_O_report} \\
+    PPN & \lean{PPNDeriveCert} & \lean{ppn_derive_report} \\
+    Lensing & \lean{ClusterLensingDeriveCert} & \lean{cluster_lensing_derive_report} \\
+    FRW/growth & \lean{FRWDeriveCert}, \lean{GrowthCert} & \lean{frw_derive_report}, \lean{growth_report} \\
+    CMB/BAO/BBN & \lean{CMBBAOBBNBandsCert} & \lean{cmb_bao_bbn_bands_report} \\
+    GW & \lean{GWQuadraticCert}, \lean{GWDeriveCert} & \lean{gw_quadratic_report}, \lean{gw_derive_report} \\
+    Compact & \lean{BHDeriveCert} & \lean{bh_derive_report} \\
+    Quantum & \lean{MicroUnitaryCert}, \lean{MicroUnitaryCompletionCert} & \lean{micro_unitary_report}, \lean{micro_unitary_completion_report} \\
+    Bands map & \lean{BandsFromParamsCert} & \lean{bands_from_params_report} \\
+    Harness & \textit{aggregate} & \lean{qg_harness_report}, \lean{falsifiers_harness_report} \\
+    \bottomrule
+  \end{tabular}
+  \caption{Aggregate results and their \#eval endpoints. Endpoints marked as harness aggregate multiple certificates and are used directly in CI.}
+  \label{tab:summary-endpoints}
+\end{table}
+
+\subsection{Zero local tuning and provenance}
+All statements compile under globally fixed parameters inherited from the recognition spine. No per-system adjustments are introduced. Parameter provenance and unit/bridge identities are recorded once and reused across domains, ensuring consistent observational interfaces.
+
+\subsection{Gating and failure modes}
+Pull requests are blocked unless both the consolidated theory gate prints ``QGHarness: PASS'' and the falsifiers harness prints ``FalsifiersHarnessCert: OK''. Any breakage (e.g., failure of a band inequality, a GR-limit lemma, or a unit identity) is surfaced immediately by CI.
+
 % --- Section stubs (content to be added in separate inputs) ---
 % \input{QG_intro}
 % \input{QG_action}
