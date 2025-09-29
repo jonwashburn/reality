@@ -337,6 +337,29 @@ The FRW restatement and growth linkage are certified by \lean{FRWDeriveCert} and
   \label{tab:frw-endpoints}
 \end{table}
 
+\section{Gravitational waves}\label{sec:gw}
+
+Tensor perturbations around a cosmological background furnish a sharp test of modified-gravity scenarios. In ILG, the quadratic action for gravitational waves (GWs) is extracted around FRW and used to bound the tensor propagation speed $c_T^2$ against multi-messenger observations.
+
+\subsection{Quadratic action and tensor speed}
+Around an FRW background, the Lean development defines a predicate capturing the existence of a consistent quadratic action for tensor modes and links it to an effective propagation speed $c_T^2$. These statements are compiled in a dedicated certificate and surfaced by a \#eval report endpoint to facilitate rapid checks and CI gating.
+
+\subsection{Certificate and report endpoints}
+Two complementary endpoints are exposed:
+\begin{itemize}
+  \item \textbf{Quadratic action link:} certificate \lean{GWQuadraticCert} with report \lean{gw_quadratic_report}, asserting the quadratic-action predicate is satisfied and tying it to $c_T^2$.
+  \item \textbf{Domain derivation:} certificate \lean{GWDeriveCert} with report \lean{gw_derive_report}, bundling the FRW expansion, tensor-mode extraction, and observational consistency of $c_T^2$.
+\end{itemize}
+Either failure (quadratic action or observational band) will prevent elaboration and fail the consolidated QG harness in continuous integration.
+
+\subsection{Placeholder for figure}
+\begin{figure}[t]
+  \centering
+  % TODO: includegraphics{gw_ct2_constraints.pdf}
+  \caption{Constraints on the tensor speed $c_T^2$ relative to unity from multi-messenger observations. The ILG prediction lies within the displayed band.}
+  \label{fig:gw-ct2}
+\end{figure}
+
 % --- Section stubs (content to be added in separate inputs) ---
 % \input{QG_intro}
 % \input{QG_action}
