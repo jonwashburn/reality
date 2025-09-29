@@ -187,3 +187,45 @@ All are aggregated in `CertFamily` and checked by `Verified φ C` (`URCGenerator
 - Twitter: @jonwashburn
 - Or open issues/discussions on this repository.
 
+## Quantum Gravity (ILG) scaffold and reports
+
+The repository includes a covariant Information‑Limited Gravity (ILG) scaffold formalized in Lean with compiling certificates and #eval reports. This is an auditable, incremental path toward a covariant, quantum‑consistent framework.
+
+Status (high‑level, machine‑checked scaffolds)
+- Action/EL: Covariant scalar Lagrangian pieces and S[g,ψ]; GR‑limit theorems for action and EL predicates.
+- Variations/EL: Symbolic EL predicates for g, ψ; GR‑limit reductions.
+- Weak‑field: v_model² = w · v_baryon² with ε‑expansion and an O(ε²) remainder; modified‑Poisson and linearized EL scaffolds.
+- PPN: γ, β 1PN placeholders linked to linear forms with small‑coupling bounds; mapping from (Φ,Ψ); PPN derivation cert.
+- Lensing/time delay: Deflection/time‑delay proxies and bands; spherical‑profile deflection; cluster lensing/time‑delay derivation cert.
+- FRW/cosmology: ρψ ≥ 0; Friedmann I via Tψ(0,0) with GR‑limit; growth f(a) and σ8 linkage; FRW derivation cert; CMB/BAO/BBN band placeholders.
+- GW: c_T² scaffold = 1 with band; quadratic‑action predicate linked to c_T²; GW derivation and quadratic‑action certs.
+- Compact objects: Static spherical ansatz; horizon/ringdown deviation bands; BH derivation cert.
+- Quantum substrate: Hilbert space exists; Hamiltonian positivity; unitary evolution witness; small‑coupling scattering positivity; microcausality predicate; micro‑unitary completion cert.
+- Harness: Consolidated PASS harness plus falsifiers harness in reports.
+
+How to run the QG #eval reports (in editor)
+Open `IndisputableMonolith/URCAdapters/Reports.lean` and evaluate any of:
+
+```lean
+#eval IndisputableMonolith.URCAdapters.weakfield_derive_report
+#eval IndisputableMonolith.URCAdapters.ppn_derive_report
+#eval IndisputableMonolith.URCAdapters.cluster_lensing_derive_report
+#eval IndisputableMonolith.URCAdapters.frw_derive_report
+#eval IndisputableMonolith.URCAdapters.gw_derive_report
+#eval IndisputableMonolith.URCAdapters.gw_quadratic_report
+#eval IndisputableMonolith.URCAdapters.cmb_bao_bbn_bands_report
+#eval IndisputableMonolith.URCAdapters.micro_unitary_completion_report
+#eval IndisputableMonolith.URCAdapters.bands_from_params_report
+```
+
+Harness (consolidated PASS/FAIL)
+
+```lean
+#eval IndisputableMonolith.URCAdapters.qg_harness_report       -- "QGHarness: PASS" on success
+#eval IndisputableMonolith.URCAdapters.falsifiers_harness_report
+```
+
+Notes
+- All QG reports are minimal scaffolds designed to compile and gate future, tighter derivations. They do not inject tunable parameters beyond globally shared ILG knobs `(alpha, cLag)`.
+- The harness is intended for CI gating and quick local smoke checks; failures will prevent compilation or report non‑OK.
+
