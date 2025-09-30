@@ -26,8 +26,28 @@ noncomputable def dynamical_time_keplerian (M : ℝ) (r : ℝ) : ℝ :=
 theorem dynamical_time_scaling (M : ℝ) (r : ℝ) (hM : M > 0) (hr : r > 0) :
   dynamical_time_keplerian M r = 2 * Real.pi * Real.sqrt (r^3 / M) := by
   simp [dynamical_time_keplerian]
-  ring_nf
-  sorry  -- TODO: Algebraic simplification
+  -- Goal: 2π * r / √(M/r) = 2π * √(r³/M)
+  -- Simplify: r / √(M/r) = r * √(r/M) = √(r³/M)
+  
+  have hM_ne : M ≠ 0 := ne_of_gt hM
+  have hr_ne : r ≠ 0 := ne_of_gt hr
+  
+  congr 1  -- Reduce to showing r / √(M/r) = √(r³/M)
+  
+  -- Manipulate LHS: r / √(M/r)
+  calc r / Real.sqrt (M / r)
+      = r * Real.sqrt (r / M) := by
+          rw [div_eq_mul_inv, Real.sqrt_inv]
+          congr 1
+          field_simp [hM_ne, hr_ne]
+    _ = Real.sqrt (r^2 * (r / M)) := by
+          rw [← Real.sqrt_mul (sq_nonneg r)]
+          congr 1
+          ring
+    _ = Real.sqrt (r^3 / M) := by
+          congr 1
+          field_simp [hM_ne]
+          ring
 
 /-- Explicit w(r) formula for spherical systems. -/
 noncomputable def w_explicit (α C_lag : ℝ) (T_dyn tau0 : ℝ) : ℝ :=
