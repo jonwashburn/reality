@@ -35,7 +35,7 @@ noncomputable def T_00_explicit
     grad_ψ₀ i' * grad_sum i')
 
 /-- Factor ρ out of T_00. -/
-theorem T_00_factorization 
+theorem T_00_factorization
   (ψ₀ : ScalarField) (ng : NewtonianGaugeMetric) (ρ : (Fin 4 → ℝ) → ℝ) (α : ℝ) :
   ∀ x, ∃ correction : ℝ,
     T_00_explicit ψ₀ ng α x = ρ x * correction := by
@@ -64,7 +64,7 @@ noncomputable def w_of_r
   (ψ₀ : ScalarField) (ng : NewtonianGaugeMetric) (ρ : ℝ → ℝ) (α C_lag : ℝ) (r : ℝ) : ℝ :=
   -- w(r) = 1 + correction_term(r)
   -- where correction depends on ρ(r), dρ/dr, etc.
-  1 + w_correction_term ψ₀ ng (fun x => ρ (Real.sqrt (x 1^2 + x 2^2 + x 3^2))) α C_lag 
+  1 + w_correction_term ψ₀ ng (fun x => ρ (Real.sqrt (x 1^2 + x 2^2 + x 3^2))) α C_lag
         (fun i => if i = 1 then r else 0)
 
 /-- Modified Poisson with w(r). -/
