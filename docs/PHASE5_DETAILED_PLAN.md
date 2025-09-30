@@ -223,8 +223,20 @@ Ready for w(r) extraction in Week 3!
 
 ### **Week 3: Modified Poisson & Weight Extraction (Days 11-15)**
 
-#### Day 11: Effective Source Term
-Compute T_00[δψ(Φ,Ψ)] explicitly, factor out ρ, identify correction term.
+#### Day 11: Effective Source Term ✅ COMPLETE
+**File**: `IndisputableMonolith/Relativity/Perturbation/EffectiveSource.lean` (CREATED 2025-09-30)
+
+Implemented:
+- T_00_explicit: Full T_00 with δψ[Φ,Ψ] substituted
+- w_correction_term: Extract (T_00/ρ) as weight correction
+- w_of_r: Weight as function of radius for spherical ρ
+- modified_poisson_with_weight: ∇²Φ = 4πG ρ w(r)
+
+Proven:
+- w_gr_limit: w(r) → 1 when α,C_lag → 0 ✓
+
+**CRITICAL**: w(r) = 1 + (T_00_scalar/ρ) formula implemented!
+Next: Make w(r) explicit in terms of (α, C_lag, T_dyn)!
 
 #### Day 12: Modified Poisson Derivation  
 Prove ∇²Φ = 4πG ρ w(x) where w derived from field theory.
