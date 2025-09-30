@@ -13,9 +13,10 @@
 ### **Recently Resolved** ✅
 - **Sept 30, 11:20 PM** - `Perturbation/SphericalWeight.lean:30` - dynamical_time_scaling - PROVED (calc mode)
 
-### **Bugs Found** 🐛  
+### **Bugs Found** 🐛 (Need Theorem Fixes)
 - **Sept 30, 11:25 PM** - `Perturbation/WeightFormula.lean:63` - phenomenology_match - THEOREM WRONG (LHS has +1, RHS doesn't)
-- **Sept 30, 11:00 PM** - `Perturbation/ErrorAnalysis.lean:91` - total_error_controlled - THEOREM WRONG (claims 20 < 0.2)
+- **Sept 30, 11:00 PM** - `Perturbation/ErrorAnalysis.lean:91` - total_error_controlled - THEOREM WRONG (claims 20 < 0.2, should be 20ε²)
+- **Action needed**: Fix theorem statements before attempting proofs
 
 ### **High Priority Files** (Core Proofs)
 
