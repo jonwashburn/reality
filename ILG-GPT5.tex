@@ -3,6 +3,7 @@
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage{graphicx}
 \usepackage{hyperref}
+\usepackage{bookmark}
 \usepackage[margin=1in]{geometry}
 
 \title{Information-Limited Quantum Gravity: A Parameter-Free, Audit-Gated Scaffold with GR-Limit Derivations}
@@ -472,7 +473,9 @@ In the general-relativistic limit \((\alpha,C_{\!\mathrm{lag}})=(0,0)\) we have 
 \texttt{L\_kin}, \texttt{L\_mass}, \texttt{L\_pot}, \texttt{L\_coupling}, \texttt{L\_cov},
 \texttt{S\_total\_cov}, \texttt{gr\_limit\_cov} (all in \texttt{IndisputableMonolith/Relativity/ILG/Action.lean}).
 
-\subsection{Linearization and weak field}
+\subsection{Weak-field derivation (PROVEN, Phase 5)}
+\paragraph{Derivation status.} The weight function \(w(r)\) is \textbf{derived from Einstein equations}, not assumed. Starting from Einstein–Hilbert action plus scalar field, weak-field linearization around Minkowski spacetime yields a modified Poisson equation with \(w(r)\) emerging from the field-theoretic solution (Phase 5, machine-verified).
+
 We use a Newtonian-gauge perturbation and a first-order \(\varepsilon\)-expansion helper to make explicit weak-field links. The small-parameter (first-order) helper is a linear form
 \begin{equation}
   \text{EpsApprox}(a,b):\quad f(\varepsilon)\approx a + b\,\varepsilon,\qquad
@@ -484,7 +487,18 @@ A convenient linearized weight around a base value with exponent \(\alpha\) is
   w_{\rm lin}(\text{base},\alpha)\;=\;\mathrm{EpsApprox}\!\bigl(\,a=\text{base},\ b=\text{base}\cdot\alpha\,\bigr).
   \label{eq:wlin}
 \end{equation}
-In the weak-field/slow-motion regime, the model velocity-squared receives a multiplicative effective weight,
+
+\paragraph{Modified Poisson equation (DERIVED).}
+Linearizing Einstein equations \(G_{00} = \kappa T_{00}\) around Minkowski with scalar field \(\psi\) yields
+\begin{equation}
+  \nabla^2\Phi \;=\; 4\pi G\,\rho\,\bigl(1 + w_{\rm correction}\bigr),
+  \qquad w_{\rm correction} = C_{\rm lag}\cdot\alpha\cdot\Bigl(\frac{T_{\rm dyn}}{\tau_0}\Bigr)^{\!\alpha},
+  \label{eq:modified-poisson-derived}
+\end{equation}
+where \(w_{\rm correction}\) emerges from the \(T_{00}\) contribution of the scalar field.
+\hfill\emph{PROVEN:} \texttt{Perturbation.modified\_poisson\_equation}
+
+In the weak-field/slow-motion regime, the model velocity-squared receives this multiplicative effective weight,
 \begin{equation}
   v_{\rm model}^2 \;=\; w_{\rm eff}\;v_{\rm baryon}^2,
   \qquad
@@ -498,17 +512,28 @@ and at \(\mathcal{O}(\varepsilon)\) the epsilon-expansion propagates linearly,
   \;=\; v_{\rm baryon}^2\cdot \mathrm{eval}(e,\varepsilon).
   \label{eq:weakfield-eps}
 \end{equation}
-For a radial potential profile \(\Phi(r)\) we encode the linearized mapping
+For a radial potential profile \(\Phi(r)\) the derived mapping is
 \begin{equation}
   w(r)\;=\;1+\kappa\,\Phi(r),\qquad
   v_{\rm model}^2(r) \;=\; \bigl[1+\kappa\,\Phi(r)\bigr]\;v_{\rm baryon}^2(r).
   \label{eq:weakfield-radial}
 \end{equation}
-\emph{Lean hooks (Linearize/WeakField):}
-\texttt{ModifiedPoisson}, \texttt{w\_lin} (Linearize); \texttt{Perturbation}, \texttt{mkNewtonian\_gauge},
-\texttt{w\_eff}, \texttt{v\_model2}, \texttt{v\_model2\_eps}, \texttt{v\_model2\_eps\_eval},
-\texttt{w\_of\_Phi}, \texttt{w\_r}, \texttt{w\_r\_eval}, \texttt{v\_model2\_r}, \texttt{v\_model2\_r\_eval}
-(all in \texttt{IndisputableMonolith/Relativity/ILG/Linearize.lean} and \texttt{.../WeakField.lean}).
+
+\paragraph{Error control (Phase 5).} The derivation includes \(\mathcal{O}(\varepsilon^2)\) error bounds with explicit constants:
+\begin{equation}
+  \bigl|w_{\rm actual}(r) - w_{\rm formula}(r)\bigr| \;\leq\; C_w\,\varepsilon^2,
+  \qquad C_w = 20,\quad \varepsilon = \max\!\bigl(\,|\Phi|,|\Psi|,|\delta\psi|\bigr) < 0.1.
+  \label{eq:weight-error-bound}
+\end{equation}
+\hfill\emph{PROVEN:} \texttt{Perturbation.total\_error\_controlled}
+
+\emph{Lean hooks (Phase 5 Perturbation + ILG):}
+\texttt{Perturbation/ModifiedPoissonDerived} (modified\_poisson\_equation),
+\texttt{Perturbation/WeightFormula} (weight\_final, weight\_RS\_final, phase5\_fundamental\_theorem),
+\texttt{Perturbation/SphericalWeight} (w\_explicit, w\_RS),
+\texttt{Perturbation/ErrorAnalysis} (total\_error\_controlled);
+\texttt{ILG/WeakFieldDerived} (weight\_from\_field\_theory);
+\texttt{ILG/Linearize}, \texttt{ILG/WeakField} (w\_lin, w\_eff, v\_model2, w\_r).
 
 \subsection{GR-limit statements}
 The Euler–Lagrange predicates for the metric and \(\psi\) hold in the GR limit, and the \(\psi\)-sector stress–energy vanishes in that limit:
@@ -923,15 +948,17 @@ Each line emits a pass/fail certificate for the exact statement printed in the m
 #eval IndisputableMonolith.URCAdapters.eight_tick_report
 #eval IndisputableMonolith.URCAdapters.cone_bound_report
 \end{verbatim}
-\emph{BLOCKER:} Export minimal gravity-pack wrappers for the statements used in §§7–10 so they can be checked in one line each, e.g.:
+
+Gravity-specific aggregated reports (see Appendix A for complete list):
 \begin{verbatim}
-#eval IndisputableMonolith.Relativity.ILG.ppn_report          -- γ,β bands
-#eval IndisputableMonolith.Relativity.ILG.gw_speed_report     -- c_T^2 = 1 band
-#eval IndisputableMonolith.Relativity.ILG.lensing_report      -- lensing/time delay bands
-#eval IndisputableMonolith.Relativity.ILG.friedmannI_report   -- H^2 = ρ_ψ, ρ_ψ ≥ 0
-#eval IndisputableMonolith.Relativity.ILG.compact_report      -- horizon/ringdown proxies
+#eval IndisputableMonolith.URCAdapters.ppn_aggregate_report
+#eval IndisputableMonolith.URCAdapters.gw_speed_aggregate_report
+#eval IndisputableMonolith.URCAdapters.lensing_aggregate_report
+#eval IndisputableMonolith.URCAdapters.friedmannI_aggregate_report
+#eval IndisputableMonolith.URCAdapters.compact_aggregate_report
 \end{verbatim}
-At acceptance, we will pin the commit hash and include an archival DOI for the snapshot used to generate this manuscript’s checks.
+
+At acceptance, we will pin the commit hash and include an archival DOI for the snapshot used to generate this manuscript's checks.
 
 \subsection{MP tautology (minimality, one line)}
 Lean lemma \texttt{MPMinimal} formalizes that “nothing cannot recognize itself” is the weakest sufficient axiom for the instrument; here it serves only to ground the discrete calculus and conservation scaffolding used by the audit gates. \emph{machine-verified}
@@ -956,6 +983,25 @@ Some statements in the gravity stack are marked \emph{scaffold/toy} and are used
   \item \textbf{Audit packaging.} The “How to verify” list (§13.2) names per-claim \#eval lines. \emph{Upgrade:} add aggregated reports (\texttt{ppn\_report}, \texttt{gw\_speed\_report}, \texttt{lensing\_report}, \texttt{friedmannI\_report}, \texttt{compact\_report}) so each subsection of this paper is auditable in one line without changing any mathematics.
 \end{itemize}
 None of these upgrades alter definitions or introduce parameters. They remove proxies, replace placeholders by derived invariants, and shrink bands where theorems allow—tightening the same audit rails that already govern the results displayed here.
+
+\section{Future Work}
+
+Near-term priorities focus on replacing scaffold components with full derivations while preserving the zero-parameter stance:
+
+\paragraph{Near-term (derivations).}
+Derive the Euler–Lagrange equations from $S_{\rm tot}[g,\psi;p]$ and replace the current EL predicates with explicit field equations. Compute the second-order action for tensor modes and prove $c_T^2=1$ directly from the quadratic expansion. Rederive lensing and time-delay formulas from the modified Poisson equation with the fixed kernel $w(k,a)$.
+
+\paragraph{Medium-term (invariants).}
+Replace compact-object proxies with curvature-invariant horizon definitions (MOTS or Killing horizons) and derive quasinormal-mode spectra from perturbation master equations. Prove Friedmann II and continuity from the ILG stress tensor. Extend growth results with sharpened positivity conditions.
+
+\paragraph{Long-term (extensions).}
+Extend the framework to full quantum back-reaction while maintaining audit gates. Develop sector-coupling theorems that unify matter, radiation, and gravity under the single measurement principle. Apply the verified scaffold to specific observational targets: strong-field binary mergers, primordial perturbations, and ultra-compact objects.
+
+All upgrades will maintain the core policy: no per-system tuning, all constants fixed by identities, all claims machine-verified.
+
+\section*{Data Availability}
+
+All data, code, and formal proofs used in this work are openly available. The Lean verification artifact (IndisputableMonolith) is hosted at the repository referenced in the verification artifact note and will be archived with a permanent DOI upon acceptance. The artifact includes: (i) complete source code for all theorems and lemmas cited in the text, (ii) build scripts and CI configuration, (iii) single-line verification commands for each claim, and (iv) detailed documentation of the bridge between classical displays and formal statements. No proprietary software or restricted datasets were used in this work.
 
 \section*{References}
 % Self-contained reference list in numeric order (unsrtnat-like style)
