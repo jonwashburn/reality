@@ -1,0 +1,81 @@
+\begin{thebibliography}{10}
+
+\bibitem{Planck2018}
+Planck Collaboration.
+\newblock Planck 2018 results. vi. cosmological parameters.
+\newblock {\em Astron. Astrophys.}, 641:A6, 2020.
+
+\bibitem{Feynman1948}
+Richard~P. Feynman.
+\newblock Space-time approach to non-relativistic quantum mechanics.
+\newblock {\em Rev. Mod. Phys.}, 20(2):367--387, 1948.
+
+\bibitem{PDG2024}
+Particle~Data Group.
+\newblock Review of particle physics.
+\newblock {\em Prog. Theor. Exp. Phys.}, 2024(8):083C01, 2024.
+
+\bibitem{Hatcher2002}
+Allen Hatcher.
+\newblock {\em Algebraic Topology}.
+\newblock Cambridge University Press, 2002.
+
+\bibitem{Jackson1999}
+J.~D. Jackson.
+\newblock {\em Classical Electrodynamics}.
+\newblock Wiley, 3rd edition, 1999.
+
+\bibitem{Landau1976}
+L.~D. Landau and E.~M. Lifshitz.
+\newblock {\em Mechanics}.
+\newblock Butterworth--Heinemann, 3rd edition, 1976.
+
+\bibitem{Livio2002}
+Mario Livio.
+\newblock {\em The Golden Ratio: The Story of Phi, the World's Most Astonishing Number}.
+\newblock Broadway Books, 2002.
+
+\bibitem{Munkres2000}
+James~R. Munkres.
+\newblock {\em Topology}.
+\newblock Prentice Hall, 2nd edition, 2000.
+
+\bibitem{Noether1918}
+Emmy Noether.
+\newblock Invariante variationsprobleme.
+\newblock {\em Nachrichten von der Gesellschaft der Wissenschaften zu G{"o}ttingen, Mathematisch-Physikalische Klasse}, pages 235--257, 1918.
+
+\bibitem{Rolfsen1976}
+Dale Rolfsen.
+\newblock {\em Knots and Links}, volume~7 of {\em Mathematics Lecture Series}.
+\newblock Publish or Perish, 1976.
+
+\bibitem{Shannon1948}
+Claude~E. Shannon.
+\newblock A mathematical theory of communication.
+\newblock {\em Bell System Technical Journal}, 27:379--423, 623--656, 1948.
+
+\bibitem{Susskind2003}
+Leonard Susskind.
+\newblock The anthropic landscape of string theory.
+\newblock {\em arXiv preprint}, 2003.
+\newblock arXiv:hep-th/0302219.
+
+\bibitem{realityRepo}
+Jonathan Washburn.
+\newblock Recognition reality monolith (lean proofs, audit, and artifacts).
+\newblock \url{https://github.com/jonwashburn/reality}, 2025.
+\newblock Commit 06abeb5, MIT license, CI audit.
+
+\bibitem{Weinberg1987}
+Steven Weinberg.
+\newblock Anthropic bound on the cosmological constant.
+\newblock {\em Phys. Rev. Lett.}, 59:2607--2610, 1987.
+
+\bibitem{Zyla2022}
+P.~A. Zyla et~al.
+\newblock Review of particle physics.
+\newblock {\em Prog. Theor. Exp. Phys.}, 2020(8):083C01, 2020.
+\newblock and 2022 update; PDG.
+
+\end{thebibliography}

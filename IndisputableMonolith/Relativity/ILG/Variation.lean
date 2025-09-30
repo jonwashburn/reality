@@ -1,68 +1,84 @@
 import Mathlib
-import IndisputableMonolith/Relativity/ILG/Action
+import IndisputableMonolith.Relativity.ILG.Action
+import IndisputableMonolith.Relativity.Variation
 
 namespace IndisputableMonolith
 namespace Relativity
 namespace ILG
 
-/-- Symbolic Euler–Lagrange signatures for metric and scalar field. -/
-def EL_g_sig (g : Metric) (ψ : RefreshField) (p : ILGParams) : Prop := True
-def EL_psi_sig (g : Metric) (ψ : RefreshField) (p : ILGParams) : Prop := True
+open Variation
 
-/-- Variation helpers (symbolic): δS/δg = 0, δS/δψ = 0 placeholders. -/
-def dS_dg_zero (g : Metric) (ψ : RefreshField) (p : ILGParams) : Prop := True
-def dS_dpsi_zero (g : Metric) (ψ : RefreshField) (p : ILGParams) : Prop := True
+/-- Euler-Lagrange equation for ψ field. Now uses real Klein-Gordon equation! -/
+def EL_psi (g : Metric) (ψ : RefreshField) (p : ILGParams) : Prop :=
+  -- □ψ - m²ψ = 0 where m² = (p.cLag/p.alpha)²
+  let m_squared := if p.alpha = 0 then 0 else (p.cLag / p.alpha) ^ 2
+  EulerLagrange ψ g m_squared
 
-@[simp] theorem EL_g_sig_ok (g : Metric) (ψ : RefreshField) (p : ILGParams) :
-  EL_g_sig g ψ p := trivial
+/-- Einstein equations for metric. Now uses real Einstein tensor! -/
+def EL_g (g : Metric) (ψ : RefreshField) (p : ILGParams) : Prop :=
+  -- G_μν = κ T_μν where T_μν from ψ field
+  EinsteinEquations g ψ default_volume p.alpha (if p.alpha = 0 then 0 else (p.cLag / p.alpha) ^ 2)
 
-@[simp] theorem EL_psi_sig_ok (g : Metric) (ψ : RefreshField) (p : ILGParams) :
-  EL_psi_sig g ψ p := trivial
+/-- Stress-energy tensor from scalar field. Now uses actual T_μν formula! -/
+noncomputable def Tmunu (g : Metric) (ψ : RefreshField) (p : ILGParams) : Geometry.BilinearForm :=
+  let m_squared := if p.alpha = 0 then 0 else (p.cLag / p.alpha) ^ 2
+  stress_energy_scalar ψ g default_volume p.alpha m_squared
 
-@[simp] theorem dS_dg_zero_ok (g : Metric) (ψ : RefreshField) (p : ILGParams) :
-  dS_dg_zero g ψ p := trivial
+/-- ψ EL equation is satisfied (non-trivial now). -/
+theorem EL_psi_holds (g : Metric) (ψ : RefreshField) (p : ILGParams)
+    (h : FieldEquations g ψ default_volume p.alpha (if p.alpha = 0 then 0 else (p.cLag / p.alpha) ^ 2)) :
+  EL_psi g ψ p := by
+  exact h.scalar_eq
 
-@[simp] theorem dS_dpsi_zero_ok (g : Metric) (ψ : RefreshField) (p : ILGParams) :
-  dS_dpsi_zero g ψ p := trivial
+/-- Metric EL (Einstein equations) are satisfied (non-trivial now). -/
+theorem EL_g_holds (g : Metric) (ψ : RefreshField) (p : ILGParams)
+    (h : FieldEquations g ψ default_volume p.alpha (if p.alpha = 0 then 0 else (p.cLag / p.alpha) ^ 2)) :
+  EL_g g ψ p := by
+  exact h.einstein
 
-/-- If the ψ-variation vanishes (stationarity), then the ψ Euler–Lagrange predicate holds (scaffold). -/
-theorem EL_psi_from_stationarity (g : Metric) (ψ : RefreshField) (p : ILGParams)
-    (h : dS_dpsi_zero g ψ p) : EL_psi_sig g ψ p := by
-  -- In the scaffold both sides are True; this encodes the intended implication shape.
-  simpa using EL_psi_sig_ok g ψ p
+/-- In GR limit (α=0, C_lag=0), ψ EL reduces to massless wave equation. -/
+theorem EL_psi_gr_limit (g : Metric) (ψ : RefreshField) :
+  FieldEquations g ψ default_volume 0 0 → EL_psi g ψ { alpha := 0, cLag := 0 } := by
+  intro h
+  unfold EL_psi
+  simp
+  exact h.scalar_eq
 
-/-- Restatement: in the GR limit (α=0, C_lag=0), the ψ EL predicate holds (scaffold). -/
-theorem EL_psi_gr_limit (inp : ActionInputs) :
-  EL_psi_sig inp.fst inp.snd { alpha := 0, cLag := 0 } := by
-  -- Project the second component from the bundled EL_gr_limit lemma.
-  have h := EL_gr_limit inp
-  exact h.right
+/-- In GR limit, metric EL reduces to vacuum Einstein equations. -/
+theorem EL_g_gr_limit (g : Metric) (ψ : RefreshField) :
+  FieldEquations g ψ default_volume 0 0 → VacuumEinstein g := by
+  intro h
+  have := field_eqs_gr_limit g ψ default_volume h
+  exact this.left
 
-/-- Stress–energy tensor scaffold. -/
-noncomputable def Tmunu (_g : Metric) (_ψ : RefreshField) (_p : ILGParams) : ℝ := 0
-
-/-- If the metric variation vanishes, we record a symbolic nonnegativity on T00 (scaffold). -/
-theorem T00_nonneg_from_metric_stationarity (g : Metric) (ψ : RefreshField) (p : ILGParams)
-    (h : dS_dg_zero g ψ p) : 0 ≤ Tmunu g ψ p := by
-  -- Scaffold: T00 represented by scalar 0, so nonnegativity holds.
-  simpa [Tmunu]
-
-/-- GR-limit: with (α, C_lag) = (0,0) the stress–energy scaffold vanishes. -/
-theorem Tmunu_gr_limit_zero (inp : ActionInputs) :
-  Tmunu inp.fst inp.snd { alpha := 0, cLag := 0 } = 0 := by
-  simp [Tmunu]
-
-/-- GR-limit: with (α, C_lag) = (0,0) the EL predicates hold trivially (scaffold). -/
+/-- GR limit bundle: both equations reduce correctly. -/
 theorem EL_gr_limit (inp : ActionInputs) :
-  EL_g_sig inp.fst inp.snd { alpha := 0, cLag := 0 }
-  ∧ EL_psi_sig inp.fst inp.snd { alpha := 0, cLag := 0 } := by
-  constructor <;> simp
+  FieldEquations inp.fst inp.snd default_volume 0 0 →
+    (EL_g inp.fst inp.snd { alpha := 0, cLag := 0 } ∧ EL_psi inp.fst inp.snd { alpha := 0, cLag := 0 }) := by
+  intro h
+  constructor
+  · unfold EL_g; simp; exact h.einstein
+  · unfold EL_psi; simp; exact h.scalar_eq
 
-/-- GR-limit: variation conditions also hold at (0,0) (scaffold). -/
-theorem dS_zero_gr_limit (inp : ActionInputs) :
-  dS_dg_zero inp.fst inp.snd { alpha := 0, cLag := 0 }
-  ∧ dS_dpsi_zero inp.fst inp.snd { alpha := 0, cLag := 0 } := by
-  constructor <;> simp
+/-- Stress-energy vanishes in GR limit (α=0, m=0). -/
+theorem Tmunu_gr_limit_zero (g : Metric) (ψ : RefreshField) :
+  ∀ x μ ν,
+    (Tmunu g ψ { alpha := 0, cLag := 0 }) x (fun _ => 0) (fun i => if i.val = 0 then μ else ν) = 0 := by
+  intro x μ ν
+  exact stress_energy_gr_limit ψ g default_volume x μ ν
+
+/-- Stress-energy tensor is symmetric (inherited from variational structure). -/
+theorem Tmunu_symmetric (g : Metric) (ψ : RefreshField) (p : ILGParams) :
+  Geometry.IsSymmetric (Tmunu g ψ p) := by
+  let m_squared := if p.alpha = 0 then 0 else (p.cLag / p.alpha) ^ 2
+  exact stress_energy_symmetric ψ g default_volume p.alpha m_squared
+
+/-- T_00 component extraction (placeholder for energy density positivity). -/
+noncomputable def T00 (g : Metric) (ψ : RefreshField) (p : ILGParams) (x : Fin 4 → ℝ) : ℝ :=
+  (Tmunu g ψ p) x (fun _ => 0) (fun i => if i.val = 0 then (0 : Fin 4) else (0 : Fin 4))
+
+/-! Old placeholder theorems removed.
+    See Variation.lean for actual variational structure. -/
 
 end ILG
 end Relativity

@@ -1,6 +1,6 @@
 import Mathlib
-import IndisputableMonolith/Relativity/ILG/Action
-import IndisputableMonolith/Relativity/ILG/Lensing
+import IndisputableMonolith.Relativity/ILG/Action
+import IndisputableMonolith.Relativity/ILG/Lensing
 
 namespace IndisputableMonolith
 namespace Relativity

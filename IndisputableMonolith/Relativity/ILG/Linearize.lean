@@ -1,7 +1,7 @@
 import Mathlib
-import IndisputableMonolith/Relativity/ILG/Action
-import IndisputableMonolith/Relativity/ILG/Variation
-import IndisputableMonolith/Relativity/ILG/WeakField
+import IndisputableMonolith.Relativity/ILG/Action
+import IndisputableMonolith.Relativity/ILG/Variation
+import IndisputableMonolith.Relativity/ILG/WeakField
 
 namespace IndisputableMonolith
 namespace Relativity

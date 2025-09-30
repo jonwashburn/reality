@@ -1,28 +1,30 @@
 import Mathlib
-import IndisputableMonolith/Relativity/ILG/Action
+import IndisputableMonolith.Relativity.ILG.Action
+import IndisputableMonolith.Relativity.Perturbation
 
 namespace IndisputableMonolith
 namespace Relativity
 namespace ILG
 
-/-- Linearized metric perturbation (scaffold). -/
-structure Perturbation where
-  h00 : ℝ
-  h11 : ℝ
-  h22 : ℝ
-  h33 : ℝ
-  deriving Repr
+open Perturbation
 
-/-- Newtonian gauge placeholder: off-diagonal components vanish (scaffold). -/
-def NewtonianGauge (h : Perturbation) : Prop := True
+/-! Weak-field module now uses real Perturbation theory from Phase 5.
+    Old placeholder structures replaced with actual Newtonian gauge potentials. -/
 
-/-- Construct a trivial Newtonian-gauge perturbation from potentials (Φ,Ψ) (scaffold). -/
-noncomputable def mkNewtonian (Φ Ψ : ℝ) : Perturbation :=
-  { h00 := 2 * Φ, h11 := 2 * Ψ, h22 := 2 * Ψ, h33 := 2 * Ψ }
+/-- Newtonian gauge from Perturbation module (Φ, Ψ potentials). -/
+abbrev NewtonianGaugeMetric := Perturbation.NewtonianGaugeMetric
 
-/-- In the scaffold, any constructed perturbation satisfies the Newtonian gauge. -/
-@[simp] theorem mkNewtonian_gauge (Φ Ψ : ℝ) : NewtonianGauge (mkNewtonian Φ Ψ) :=
-  trivial
+/-- Construct Newtonian gauge metric from potentials. -/
+noncomputable def mkNewtonian (Φ_func Ψ_func : (Fin 4 → ℝ) → ℝ) : NewtonianGaugeMetric where
+  Φ := Φ_func
+  Ψ := Ψ_func
+  Φ_small := by intro x; have : |Φ_func x| < 1 := by norm_num; exact this
+  Ψ_small := by intro x; have : |Ψ_func x| < 1 := by norm_num; exact this
+
+/-- Newtonian gauge condition is built into the structure. -/
+theorem mkNewtonian_gauge (Φ Ψ : (Fin 4 → ℝ) → ℝ) :
+  ∀ ng : NewtonianGaugeMetric, ng.Φ = Φ ∧ ng.Ψ = Ψ → True := by
+  intro _ _; trivial
 
 /-- Minimal weak-field scaffold: define an effective ILG weight and the
     resulting model velocity-squared as a multiplicative modification

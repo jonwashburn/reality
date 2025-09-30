@@ -2,5 +2,3 @@ import IndisputableMonolith.URCAdapters.Reports
 
 #eval IndisputableMonolith.URCAdapters.qg_harness_report
 #eval IndisputableMonolith.URCAdapters.falsifiers_harness_report
-
-

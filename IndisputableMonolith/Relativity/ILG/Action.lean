@@ -1,26 +1,40 @@
 import Mathlib
+import IndisputableMonolith.Relativity.Geometry
+import IndisputableMonolith.Relativity.Fields
 
 namespace IndisputableMonolith
 namespace Relativity
 namespace ILG
 
-/-- Minimal ILG relativistic scaffold.
-    Fields: a placeholder metric `Metric` and a refresh scalar field `RefreshField`.
-    Actions: Einstein–Hilbert placeholder and ψ-sector placeholder combined into S. -/
-structure Metric where
-  dummy : Unit := ()
+/-- Re-export geometry and field types for ILG use. -/
+abbrev Metric := Geometry.MetricTensor
+abbrev RefreshField := Fields.ScalarField
+abbrev VolumeElement := Fields.VolumeElement
 
-structure RefreshField where
-  dummy : Unit := ()
+/-- Einstein–Hilbert action: S_EH = (M_P²/2) ∫ √(-g) R d^4x.
+    Scaffold: returns symbolic R evaluation (integration machinery pending). -/
+noncomputable def EHAction (g : Metric) : ℝ :=
+  -- Placeholder integration over spacetime volume
+  -- Should be: integral over manifold of √(-g(x)) * R(x)
+  let x₀ : Fin 4 → ℝ := fun _ => 0  -- Sample point
+  Geometry.ricci_scalar g x₀  -- Scaffold: use single-point value
 
-/-- Einstein–Hilbert action placeholder (dimensionless scaffold). -/
-noncomputable def EHAction (g : Metric) : ℝ := 0
+/-- Alias for consistency. -/
+noncomputable def S_EH := EHAction
 
-/-- ψ-sector kinetic term placeholder (quadratic in α). -/
-noncomputable def PsiKinetic (_g : Metric) (_ψ : RefreshField) (α : ℝ) : ℝ := α ^ 2
+/-- Default volume element for action integrals. -/
+noncomputable def default_volume : VolumeElement :=
+  { grid_spacing := 1.0, grid_spacing_pos := by norm_num }
 
-/-- ψ-sector potential term placeholder (quadratic in C_lag). -/
-noncomputable def PsiPotential (_g : Metric) (_ψ : RefreshField) (C_lag : ℝ) : ℝ := C_lag ^ 2
+/-- ψ-sector kinetic term: (α/2) ∫ √(-g) g^{μν} (∂_μ ψ)(∂_ν ψ) d^4x.
+    Now uses actual Fields.kinetic_action. -/
+noncomputable def PsiKinetic (g : Metric) (ψ : RefreshField) (α : ℝ) : ℝ :=
+  α * Fields.kinetic_action ψ g default_volume
+
+/-- ψ-sector mass/potential term: (C_lag/2) ∫ √(-g) ψ² d^4x.
+    Now uses actual Fields.potential_action. -/
+noncomputable def PsiPotential (g : Metric) (ψ : RefreshField) (C_lag : ℝ) : ℝ :=
+  Fields.potential_action ψ (C_lag ^ 2) g default_volume
 
 /-- ψ-sector action placeholder parameterised by (C_lag, α): kinetic + potential. -/
 noncomputable def PsiAction (g : Metric) (ψ : RefreshField) (C_lag α : ℝ) : ℝ :=
@@ -30,7 +44,7 @@ noncomputable def PsiAction (g : Metric) (ψ : RefreshField) (C_lag α : ℝ) : 
 structure ILGParams where
   alpha : ℝ
   cLag  : ℝ
-  deriving Repr, Inhabited
+  deriving Inhabited
 
 /-- Index conventions (symbolic): use natural numbers as abstract tensor indices. -/
 abbrev Index : Type := Nat
@@ -70,27 +84,19 @@ noncomputable def S_total_cov (g : Metric) (ψ : RefreshField) (p : ILGParams) :
 /-- GR-limit for S_total_cov (α=0, C_lag=0). -/
 theorem gr_limit_cov (g : Metric) (ψ : RefreshField) :
   S_total_cov g ψ { alpha := 0, cLag := 0 } = S_EH g := by
-  simp [S_total_cov, L_cov, L_kin, L_mass, L_pot, L_coupling]
+  unfold S_total_cov L_cov L_kin L_mass L_pot L_coupling
+  simp
 
 /-- Convenience total action using bundled params. -/
 noncomputable def S_total (g : Metric) (ψ : RefreshField) (p : ILGParams) : ℝ :=
-  S g ψ p.cLag p.alpha
+  S_EH g + PsiAction g ψ p.cLag p.alpha
 
 /-- ψ-sector action using bundled parameters. -/
 noncomputable def PsiActionP (g : Metric) (ψ : RefreshField) (p : ILGParams) : ℝ :=
   PsiKinetic g ψ p.alpha + PsiPotential g ψ p.cLag
 
-/-- Euler–Lagrange predicate for the metric g (scaffold). -/
-def EL_g (g : Metric) (ψ : RefreshField) (p : ILGParams) : Prop := True
-
-/-- Euler–Lagrange predicate for the refresh field ψ (scaffold). -/
-def EL_psi (g : Metric) (ψ : RefreshField) (p : ILGParams) : Prop := True
-
-@[simp] theorem EL_g_trivial (g : Metric) (ψ : RefreshField) (p : ILGParams) :
-  EL_g g ψ p := trivial
-
-@[simp] theorem EL_psi_trivial (g : Metric) (ψ : RefreshField) (p : ILGParams) :
-  EL_psi g ψ p := trivial
+/-! Euler-Lagrange predicates moved to ILG/Variation.lean (now use real equations).
+    EL_g and EL_psi now defined in Variation.lean with actual PDEs. -/
 
 /-- Consolidated bands schema for observables (scaffold). -/
 structure Bands where
@@ -100,7 +106,6 @@ structure Bands where
   h_ppn : 0 ≤ κ_ppn
   h_lensing : 0 ≤ κ_lensing
   h_gw : 0 ≤ κ_gw
-  deriving Repr
 
 /-- Map ILG parameters to a bands schema (toy: proportional to |C_lag·α|). -/
 noncomputable def bandsFromParams (p : ILGParams) : Bands :=
@@ -110,14 +115,8 @@ noncomputable def bandsFromParams (p : ILGParams) : Bands :=
   , h_lensing := by exact abs_nonneg _
   , h_gw := by exact abs_nonneg _ }
 
-/-- Symbolic Einstein equations predicate for the GR limit (scaffold). -/
-def EinsteinEq (g : Metric) : Prop := True
-
-/-- In the GR limit (α=0, C_lag=0), the metric EL reduces to Einstein equations (symbolic). -/
-theorem EL_g_reduces_to_Einstein (g : Metric) (ψ : RefreshField) :
-  EL_g g ψ { alpha := 0, cLag := 0 } → EinsteinEq g := by
-  intro _
-  trivial
+/-! Symbolic Einstein equations moved to Variation/Einstein.lean.
+    VacuumEinstein now defined with real G_μν = 0. -/
 
 /-- Bundle the action inputs `(g, ψ)` for convenience in downstream modules. -/
 abbrev ActionInputs := Metric × RefreshField
@@ -128,22 +127,25 @@ noncomputable def S_on (inp : ActionInputs) (p : ILGParams) : ℝ :=
 
 /-- Full ILG action: S[g, ψ; C_lag, α] := S_EH[g] + S_ψ[g,ψ]. -/
 noncomputable def S (g : Metric) (ψ : RefreshField) (C_lag α : ℝ) : ℝ :=
-  EHAction g + PsiAction g ψ C_lag α
+  S_EH g + PsiAction g ψ C_lag α
 
-/-- GR-limit reduction: when C_lag = 0 and α = 0, the action reduces to S_EH. -/
+/-- GR-limit reduction: when C_lag = 0 and α = 0, the ψ-sector vanishes. -/
 theorem gr_limit_reduces (g : Metric) (ψ : RefreshField) :
-  S g ψ 0 0 = EHAction g := by
-  simp [S, PsiAction]
+  S g ψ 0 0 = S_EH g := by
+  unfold S PsiAction PsiKinetic PsiPotential
+  simp [Fields.kinetic_action, Fields.potential_action]
 
 /-- GR-limit for bundled parameters (α=0, C_lag=0). -/
 theorem gr_limit_zero (g : Metric) (ψ : RefreshField) :
-  S_total g ψ { alpha := 0, cLag := 0 } = EHAction g := by
-  simp [S_total, S, PsiAction]
+  S_total g ψ { alpha := 0, cLag := 0 } = S_EH g := by
+  unfold S_total PsiAction PsiKinetic PsiPotential
+  simp [Fields.kinetic_action, Fields.potential_action]
 
 /-- GR-limit for bundled inputs. -/
 theorem gr_limit_on (inp : ActionInputs) :
-  S_on inp { alpha := 0, cLag := 0 } = EHAction inp.fst := by
-  simpa [S_on, S_total] using gr_limit_reduces inp.fst inp.snd
+  S_on inp { alpha := 0, cLag := 0 } = S_EH inp.fst := by
+  unfold S_on S_total
+  exact gr_limit_reduces inp.fst inp.snd
 
 end ILG
 end Relativity

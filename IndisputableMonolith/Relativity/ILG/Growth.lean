@@ -1,5 +1,5 @@
 import Mathlib
-import IndisputableMonolith/Relativity/ILG/FRW
+import IndisputableMonolith.Relativity/ILG/FRW
 
 namespace IndisputableMonolith
 namespace Relativity
