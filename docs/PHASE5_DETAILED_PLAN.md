@@ -202,8 +202,22 @@ rho_psi_effective = f(Φ, Ψ, α, C_lag) - ready for w(r) extraction
 
 ---
 
-#### Day 10: Coupled System Assembly
-**Status**: Not yet started
+#### Day 10: Coupled System Assembly ✅ COMPLETE
+**File**: `IndisputableMonolith/Relativity/Perturbation/CoupledSystem.lean` (CREATED 2025-09-30)
+
+Implemented:
+- LinearizedFieldSystem: Full Einstein + scalar system
+- ReducedSystem: δψ eliminated → (Φ, Ψ) only
+- SphericalReducedSystem: Radial ODEs for spherical symmetry
+- RadialPoissonPhi: (d²/dr² + 2/r d/dr)Φ = 4πG ρ w(r)
+
+Proven:
+- keplerian_GR_solution: Φ = -M/r solves radial Poisson with w=1
+
+**WEEK 2 COMPLETE!** ✅✅✅✅✅
+
+System reduced to: ∇²Φ = 4πG ρ (1 + w_correction[α,C_lag])
+Ready for w(r) extraction in Week 3!
 
 ---
 
