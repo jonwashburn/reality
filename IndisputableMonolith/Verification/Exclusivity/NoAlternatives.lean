@@ -339,7 +339,7 @@ theorem no_alternative_frameworks (F : PhysicsFramework)
   -- Extract components from proven necessities
   obtain ⟨L, hL_equiv⟩ := hLedger
   obtain ⟨φ, hφ_eq, hφ_sq, hφ_pos⟩ := hPhi
-  
+
   -- ========================================
   -- ASSEMBLY: ALL STEPS COMPLETE!
   -- ========================================
@@ -353,7 +353,7 @@ theorem no_alternative_frameworks (F : PhysicsFramework)
   -- ✅ Step 7: FrameworkEquiv proven (below)
   --
   -- ========================================
-  
+
   -- Step 5: Construct UnitsEqv
   -- Units equivalence is trivial for zero-parameter frameworks
   -- (all choices of units lead to the same physics)
@@ -391,7 +391,7 @@ theorem no_alternative_frameworks (F : PhysicsFramework)
 
   -- Step 8: Provide all components for the clean return type
   use φ, L, eqv
-  
+
   -- Construct the equivalent PhysicsFramework from RS components
   use {
     StateSpace := RS_framework.L.Carrier,
@@ -403,7 +403,7 @@ theorem no_alternative_frameworks (F : PhysicsFramework)
       obtain ⟨equiv⟩ := hL_equiv
       exact ⟨equiv.invFun (Classical.choice F.hasInitialState)⟩
   }
-  
+
   -- Prove framework equivalence
   constructor
   · -- Observable spaces are equivalent (trivially, since we share them)
@@ -514,11 +514,11 @@ theorem connects_to_exclusive_reality_plus :
     This is the ultimate completeness statement: there is no "better" theory possible.
 -/
 theorem RS_is_complete :
-  (∃ (F : PhysicsFramework) [Inhabited F.StateSpace], 
+  (∃ (F : PhysicsFramework) [Inhabited F.StateSpace],
     HasZeroParameters F ∧ DerivesObservables F ∧ HasSelfSimilarity F.StateSpace) →
   (∀ (G : PhysicsFramework) [Inhabited G.StateSpace],
     HasZeroParameters G ∧ DerivesObservables G ∧ HasSelfSimilarity G.StateSpace →
-    ∃ (φ : ℝ) (equiv_framework : PhysicsFramework), 
+    ∃ (φ : ℝ) (equiv_framework : PhysicsFramework),
       FrameworkEquiv G equiv_framework) := by
   intro ⟨F, _, hZero, hObs, hSelfSim⟩ G _ ⟨hGZero, hGObs, hGSelfSim⟩
   exact recognition_science_unique G hGZero hGObs hGSelfSim
