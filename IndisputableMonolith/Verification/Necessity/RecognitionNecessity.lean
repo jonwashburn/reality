@@ -75,11 +75,11 @@ theorem distinction_requires_comparison
   ∃ comp : ComparisonMechanism StateSpace, True := by
   -- Construct a comparison mechanism from the observable
   -- Strategy: Use the observable itself to compare states
-  
+
   -- Define comparison: two states are "equal" if observable values match
   let compare : StateSpace → StateSpace → Bool :=
     fun s₁ s₂ => obs.value s₁ = obs.value s₂
-  
+
   -- This is a valid ComparisonMechanism
   use {
     compare := compare
@@ -95,11 +95,11 @@ theorem distinction_requires_comparison
       simp [compare]
       -- If observable values differ, comparison should return false
       -- Our comparison is based on obs, but obs' might be different
-      
+
       -- For a general comparison mechanism to distinguish ALL observables,
       -- we'd need to incorporate all of them
       -- For this proof, we show the mechanism exists for the given observable
-      
+
       by_cases h : obs.value s₁ = obs.value s₂
       · -- If our obs says equal, but obs' says different
         -- This is a limitation of single-observable comparison
@@ -126,7 +126,7 @@ structure InternalComparison (StateSpace : Type) extends ComparisonMechanism Sta
     compare s₁ s₂ = f s₁ s₂
 
 /-- Internal comparison is mathematically equivalent to recognition.
-    
+
     The comparison mechanism constitutes a recognition event:
     - The comparing state is the "recognizer"
     - The compared state is the "recognized"
@@ -140,14 +140,14 @@ def ComparisonIsRecognition
     Nonempty (Recognition.Recognize Recognizer Recognized) := by
   -- The StateSpace itself provides both recognizer and recognized
   use StateSpace, StateSpace
-  
+
   -- We need to show Nonempty (Recognition.Recognize StateSpace StateSpace)
   -- This means there exists at least one recognition event
-  
+
   -- Take any two states (using Inhabited)
   let recognizer := default
   let recognized := default
-  
+
   -- Construct the recognition structure
   exact ⟨⟨recognizer, recognized⟩⟩
 
@@ -200,7 +200,7 @@ theorem zero_params_forces_internal_comparison
   : ∃ intComp : InternalComparison StateSpace, intComp.toComparisonMechanism = comp := by
   -- Without external parameters, comparison must use only internal structure
   -- The comparison function cannot reference any external constants
-  
+
   -- Construct InternalComparison from the given ComparisonMechanism
   use {
     compare := comp.compare
@@ -214,7 +214,7 @@ theorem zero_params_forces_internal_comparison
       use comp.compare
       rfl
   }
-  
+
   -- Show equality of the underlying mechanisms
   rfl
 
@@ -333,7 +333,7 @@ theorem distinction_symmetric
 /-- In quantum mechanics, measurement collapses the wave function.
     This is fundamentally a recognition event: the measurement apparatus
     "recognizes" which eigenstate was selected.
-    
+
     Note: This is an auxiliary result connecting to QM, not needed for main theorem.
 -/
 theorem measurement_is_recognition
@@ -368,7 +368,7 @@ theorem classical_observation_needs_recognition
       · norm_num
       · intro _; trivial
   }
-  
+
   -- Apply the main theorem
   exact observables_require_recognition obs hObs trivial
 
