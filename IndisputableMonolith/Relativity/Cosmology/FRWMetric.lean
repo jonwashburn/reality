@@ -23,7 +23,19 @@ noncomputable def metric_FRW (scale : ScaleFactor) : MetricTensor where
     else 0
   symmetric := by
     intro x μ ν
-    sorry
+    simp only []
+    -- Case analysis on the if-then-else structure
+    by_cases h1 : μ = 0 ∧ ν = 0
+    · by_cases h2 : ν = 0 ∧ μ = 0
+      · rfl
+      · simp [h1, h2]
+    · by_cases h2 : μ = ν ∧ μ.val > 0
+      · by_cases h3 : ν = μ ∧ ν.val > 0
+        · rfl
+        · cases h2; cases h3; simp_all
+      · by_cases h3 : ν = μ ∧ ν.val > 0
+        · cases h2; cases h3; simp_all
+        · rfl
 
 noncomputable def christoffel_FRW (scale : ScaleFactor) (t : ℝ) (μ ρ σ : Fin 4) : ℝ :=
   let H := deriv scale.a t / scale.a t
