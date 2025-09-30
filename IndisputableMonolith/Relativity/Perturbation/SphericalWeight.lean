@@ -22,7 +22,7 @@ open Calculus
 /-- For Keplerian rotation ρ ∝ M/r², velocity v² = GM/r, so T_dyn = 2πr/v ∝ r^{3/2}. -/
 noncomputable def dynamical_time_keplerian (M : ℝ) (r : ℝ) : ℝ :=
   2 * Real.pi * r / Real.sqrt (M / r)  -- T_dyn = 2πr / v_circ
-  
+
 theorem dynamical_time_scaling (M : ℝ) (r : ℝ) (hM : M > 0) (hr : r > 0) :
   dynamical_time_keplerian M r = 2 * Real.pi * Real.sqrt (r^3 / M) := by
   simp [dynamical_time_keplerian]
@@ -36,7 +36,7 @@ noncomputable def w_explicit (α C_lag : ℝ) (T_dyn tau0 : ℝ) : ℝ :=
   1 + C_lag * α * (T_dyn / tau0) ^ α
 
 /-- w_explicit matches w_correction_term for appropriate choice of T_dyn. -/
-theorem w_explicit_matches_correction 
+theorem w_explicit_matches_correction
   (ψ₀ : ScalarField) (ng : NewtonianGaugeMetric) (ρ : ℝ → ℝ) (α C_lag tau0 M : ℝ) :
   ∀ r, 0 < r → M > 0 → tau0 > 0 →
   let T_dyn := dynamical_time_keplerian M r
@@ -59,7 +59,7 @@ theorem w_RS_formula (T_dyn tau0 : ℝ) (htau0 : tau0 > 0) :
   simp [w_RS, w_explicit, alpha_RS, C_lag_RS]
 
 /-- For galaxies: T_dyn ~ 10^8 yr, tau0 ~ 10^{-14} s, ratio huge → w > 1. -/
-theorem w_enhancement_for_slow_systems (T_dyn tau0 : ℝ) 
+theorem w_enhancement_for_slow_systems (T_dyn tau0 : ℝ)
   (h_slow : T_dyn / tau0 > 10^20) (htau0 : tau0 > 0) :
   w_RS T_dyn tau0 > 1 := by
   simp [w_RS, w_explicit]
