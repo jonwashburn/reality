@@ -240,14 +240,18 @@ Completed:
 Module compiles successfully.
 Deflection angles computable!
 
-#### Step 8.4: Shapiro Time Delay
-**File**: `IndisputableMonolith/Relativity/Lensing/TimeDelay.lean` (NEW)
+#### Step 8.4: Shapiro Time Delay ✅ COMPLETE
+**File**: `IndisputableMonolith/Relativity/Lensing/TimeDelay.lean` (CREATED 2025-09-30)
 
-1. Compute proper time along geodesic
-2. Shapiro contribution: Δt ∝ ∫ (Φ + Ψ) dl
-3. For ILG: Δt = Δt_GR × (1 + correction[α, C_lag])
-4. Derive correction formula
-5. Test: GR limit gives standard Shapiro
+Completed:
+1. ✅ proper_time_along_path: Integral along geodesic
+2. ✅ shapiro_delay: Δt ∝ ∫(Φ+Ψ)dl
+3. ✅ time_delay_ILG_vs_GR: Deviation from GR
+4. ✅ time_delay_correction: With γ parameter
+5. ✅ GR_limit_time_delay: Standard Shapiro
+
+Module compiles successfully.
+Time delays computable!
 
 #### Step 8.5: Cluster Lensing Predictions
 **File**: `IndisputableMonolith/Relativity/Lensing/ClusterPredictions.lean` (NEW)
