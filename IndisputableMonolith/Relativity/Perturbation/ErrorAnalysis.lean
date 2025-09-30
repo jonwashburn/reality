@@ -46,7 +46,7 @@ theorem stress_energy_remainder_bounded
     let T_full := stress_energy_scalar (perturbed_scalar ψ₀ δψ) minkowski.toMetricTensor sorry α 0
     let T_linear := T_00_scalar_linear ψ₀ δψ minkowski.toMetricTensor α 0
     μ = 0 ∧ ν = 0 →
-    |T_full x (fun _ => 0) (fun i => if i.val = 0 then 0 else 0) - T_linear x| ≤ 
+    |T_full x (fun _ => 0) (fun i => if i.val = 0 then 0 else 0) - T_linear x| ≤
       C_T * (expansion_parameter sorry δψ x) ^ 2 := by
   refine ⟨5, by norm_num, ?_⟩
   intro h_00

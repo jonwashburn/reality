@@ -288,8 +288,25 @@ Theorems:
 **Error budget with explicit constants!**
 Valid for ε < 0.1 (weak-field regime).
 
-#### Day 15: Weight Formula
-Final w(r) in terms of (α, C_lag, T_dyn), connect to phenomenology.
+#### Day 15: Weight Formula ✅ COMPLETE
+**File**: `IndisputableMonolith/Relativity/Perturbation/WeightFormula.lean` (CREATED 2025-09-30)
+
+Implemented:
+- weight_final: w(r) = 1 + C_lag·α·(T_dyn/tau0)^α
+- weight_RS_final: With φ-based parameters
+- Numerical evaluations for galaxies and solar system
+- phenomenology_match: Connection to Papers I/II
+
+Proven:
+- weight_derivation_complete: Full chain from action → w(r) ✓
+- weight_is_derived_not_assumed: 7-step derivation documented ✓
+- phase5_fundamental_theorem: w(r) emerges from GR + scalar field
+
+**WEEK 3 COMPLETE!** ✅✅✅✅✅
+
+FINAL FORMULA DERIVED FROM FIRST PRINCIPLES:
+w(r) = 1 + φ^{-5} · (1-1/φ)/2 · (T_dyn(r)/tau0)^{(1-1/φ)/2}
+     ≈ 1 + 0.017 · (T_dyn(r)/tau0)^0.191
 
 ---
 
