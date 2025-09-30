@@ -1,13 +1,21 @@
 # Sorry Resolution Tracker
 
-**Last Updated**: September 30, 2025, 11:00 PM  
-**Total Sorries**: ~86 (across entire repository)  
-**Sessions Completed**: 0  
-**Sorries Resolved**: 0 (baseline)
+**Last Updated**: September 30, 2025, 11:30 PM  
+**Total Sorries**: 85 (was 86)  
+**Sessions Completed**: 2  
+**Sorries Resolved**: 1 (with real proof)  
+**Bugs Found**: 2 (incorrectly stated theorems)
 
 ---
 
 ## 📊 **Current Sorry Distribution**
+
+### **Recently Resolved** ✅
+- **Sept 30, 11:20 PM** - `Perturbation/SphericalWeight.lean:30` - dynamical_time_scaling - PROVED (calc mode)
+
+### **Bugs Found** 🐛  
+- **Sept 30, 11:25 PM** - `Perturbation/WeightFormula.lean:63` - phenomenology_match - THEOREM WRONG (LHS has +1, RHS doesn't)
+- **Sept 30, 11:00 PM** - `Perturbation/ErrorAnalysis.lean:91` - total_error_controlled - THEOREM WRONG (claims 20 < 0.2)
 
 ### **High Priority Files** (Core Proofs)
 
@@ -22,7 +30,7 @@
 | File | Sorries | Priority | Notes |
 |------|---------|----------|-------|
 | Relativity/Perturbation/ErrorAnalysis.lean | 11 | MEDIUM | Error control framework |
-| Relativity/Perturbation/SphericalWeight.lean | 4 | MEDIUM | w(r) formula |
+| Relativity/Perturbation/SphericalWeight.lean | 3 | MEDIUM | w(r) formula (1 resolved!) |
 | Relativity/Perturbation/WeightFormula.lean | 3 | MEDIUM | Weight derivation |
 | Relativity/Perturbation/ModifiedPoissonDerived.lean | 4 | MEDIUM | Modified Poisson |
 | Relativity/Perturbation/Einstein*.lean | 12 | MEDIUM | Field equations |
