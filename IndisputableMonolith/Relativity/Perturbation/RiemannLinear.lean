@@ -27,9 +27,9 @@ noncomputable def linearized_riemann
 
 /-- Riemann expansion theorem: R[g₀+h] = R[g₀] + δR[h] + O(h²). -/
 theorem riemann_expansion (g₀ : MetricTensor) (h : MetricPerturbation) (x : Fin 4 → ℝ) (ρ σ μ ν : Fin 4) :
-  |(riemann_tensor (perturbed_metric g₀ h)) x (fun _ => ρ) 
+  |(riemann_tensor (perturbed_metric g₀ h)) x (fun _ => ρ)
       (fun i => if i.val = 0 then σ else if i.val = 1 then μ else ν) -
-   ((riemann_tensor g₀) x (fun _ => ρ) 
+   ((riemann_tensor g₀) x (fun _ => ρ)
       (fun i => if i.val = 0 then σ else if i.val = 1 then μ else ν) +
     linearized_riemann g₀ h x ρ σ μ ν)| < 0.01 := by
   -- R = ∂Γ - ∂Γ + ΓΓ - ΓΓ
@@ -49,7 +49,7 @@ theorem riemann_minkowski_linear (h : MetricPerturbation) (x : Fin 4 → ℝ) (�
   exact h_exp
 
 /-- Linearized Ricci tensor: R_μν = δR^ρ_μρν (contraction). -/
-noncomputable def linearized_ricci 
+noncomputable def linearized_ricci
   (g₀ : MetricTensor) (h : MetricPerturbation) (x : Fin 4 → ℝ) (μ ν : Fin 4) : ℝ :=
   Finset.sum (Finset.univ : Finset (Fin 4)) (fun ρ =>
     linearized_riemann g₀ h x ρ μ ρ ν)
