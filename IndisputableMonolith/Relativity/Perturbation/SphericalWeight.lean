@@ -28,12 +28,12 @@ theorem dynamical_time_scaling (M : ℝ) (r : ℝ) (hM : M > 0) (hr : r > 0) :
   simp [dynamical_time_keplerian]
   -- Goal: 2π * r / √(M/r) = 2π * √(r³/M)
   -- Simplify: r / √(M/r) = r * √(r/M) = √(r³/M)
-  
+
   have hM_ne : M ≠ 0 := ne_of_gt hM
   have hr_ne : r ≠ 0 := ne_of_gt hr
-  
+
   congr 1  -- Reduce to showing r / √(M/r) = √(r³/M)
-  
+
   -- Manipulate LHS: r / √(M/r)
   calc r / Real.sqrt (M / r)
       = r * Real.sqrt (r / M) := by
