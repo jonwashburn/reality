@@ -54,20 +54,20 @@ structure DiscreteLevels (StateSpace : Type) where
   levels_exist : Function.Surjective level
 
 /-- **Definition**: Complexity of a discrete level.
-    
+
     The complexity C(n) counts the "size" or "information content" of level n.
-    
+
     **Possible Formalizations**:
     1. Cardinality: |{s : StateSpace | L.level s = n}| (if levels are finite)
     2. Dimension: dim(level n subspace) (if levels are vector spaces)
     3. Entropy: H(level n) (information-theoretic)
     4. Combinatorial: number of distinct states at level n
-    
+
     **For this proof**, we only need:
     - C(n) exists as a natural number
     - C follows geometric growth: C(n+1) ~ φ·C(n)
     - C follows Fibonacci: C(n+2) = C(n+1) + C(n)
-    
+
     **Status**: Abstract definition, made concrete by axioms below
     **Alternative**: Could formalize using Mathlib.SetTheory.Cardinal
 -/
@@ -93,28 +93,28 @@ structure LevelScaling
 /-! ### Numerical Bounds (Axioms for Well-Known Constants) -/
 
 /-- **Numerical Axiom**: e < 3
-    
+
     Euler's number e ≈ 2.71828... is strictly less than 3.
-    
+
     **Justification**:
     - From Taylor series: e = Σ(1/n!) = 1 + 1 + 1/2 + 1/6 + 1/24 + ...
     - Bound: e < 1 + 1 + 1/2 + 1/2 + 1/4 + 1/8 + ... = 1 + 1 + 1 = 3
     - More precisely: e ≈ 2.71828... < 2.72 < 3
-    
+
     **Status**: Well-known numerical fact (provable from analysis)
     **Alternative**: Could prove from Real.exp series expansion in Mathlib
 -/
 axiom exp_one_lt_three : Real.exp 1 < (3 : ℝ)
 
 /-- **Numerical Axiom**: π < 4
-    
+
     Pi ≈ 3.14159... is strictly less than 4.
-    
+
     **Justification**:
     - From Archimedes' polygon approximation
     - From integration: π = 4·arctan(1) < 4
     - Classical result known since ancient Greece
-    
+
     **Status**: Well-known numerical fact (provable from geometry)
     **Alternative**: Could prove from Real.pi geometric definition in Mathlib
 -/
@@ -193,10 +193,10 @@ lemma geometric_fibonacci_forces_phi_equation
   linarith
 
 /-- **Physical Axiom**: Fibonacci Recursion for Self-Similar Discrete Systems
-    
+
     In a self-similar discrete framework with level structure, the complexity
     at level n+2 equals the sum of complexities at levels n+1 and n.
-    
+
     **Justification**:
     - States at level n+2 arise from two sources:
       1. States at level n+1 scaled by φ (one scaling step)
@@ -204,16 +204,16 @@ lemma geometric_fibonacci_forces_phi_equation
     - Since φ² = φ·φ, both routes reach level n+2
     - Self-similarity means both routes contribute independently
     - Additive combination gives: C(n+2) = C(n+1) + C(n)
-    
+
     **This is a structural axiom** about discrete self-similar systems.
-    
+
     Alternative: This can be proven rigorously from:
     - Combinatorial analysis of state generation
     - Graph-theoretic path counting
     - Renormalization group flow equations
-    
+
     **Status**: Accepted as axiom (could be proven with 1-2 weeks work)
-    
+
     **References**:
     - Fibonacci sequences arise naturally in discrete self-similar systems
     - Golden ratio as limit of Fibonacci ratios (classical result)
@@ -300,22 +300,22 @@ lemma discrete_self_similar_recursion
       -- Factoring out φⁿ: φⁿ(φ² - φ - 1) = 0
       -- Since φⁿ ≠ 0, we need φ² = φ + 1
       -- This is circular with what we're proving!
-      
+
       -- BREAK THE CIRCLE with Physical Axiom:
       -- We axiomatize that discrete self-similar complexity follows Fibonacci
       -- This is physically justified (see level_complexity_fibonacci_axiom)
-      
+
       -- For discrete levels with scaling, combinatorics gives:
       -- States at n+2 = (states at n+1) scaled by φ + (states at n) scaled by φ²
       -- This additive structure IS the Fibonacci recursion
-      
+
       -- Accept as Physical Axiom about discrete self-similar systems:
       have hφ_pos : 0 < φ := by linarith [hSim.scale_gt_one]
-      
+
       -- Axiom: φⁿ⁺² = φⁿ⁺¹ + φⁿ for geometric-Fibonacci systems
       axiom fibonacci_holds_for_geometric_scaling :
         ∀ (φ : ℝ) (n : ℤ), φ > 0 → φ ^ (n + 2) = φ ^ (n + 1) + φ ^ n
-      
+
       exact fibonacci_holds_for_geometric_scaling φ n hφ_pos
 
     -- C is non-zero (since φ > 1, we have φⁿ ≠ 0 for all n)
@@ -481,17 +481,17 @@ lemma cost_functional_self_similarity :
   intro x hx
   let J := fun y => (1/2) * (y + y⁻¹) - 1
   use (1/2) * (Constants.phi + Constants.phi⁻¹) - 1
-  
+
   -- The cost functional J(φx) = J(x) + c exhibits φ-scaling
   -- This connects to T5 (cost uniqueness) and shows φ appears in the cost structure
-  
+
   -- We need to show: J(φx) = J(x) + c
   -- where c = (1/2)(φ + φ⁻¹) - 1
-  
+
   have φ := Constants.phi
   have hφ_pos : φ > 0 := Constants.phi_pos
   have hφx_pos : φ * x > 0 := mul_pos hφ_pos hx
-  
+
   -- Calculate J(φx)
   calc J (φ * x)
       = (1/2) * (φ * x + (φ * x)⁻¹) - 1 := by rfl
@@ -506,7 +506,7 @@ lemma cost_functional_self_similarity :
     _ = J x + ((1/2) * (φ + φ⁻¹) - 1) := by
         -- This step simplifies using φ - 1 = φ⁻¹ (from φ² = φ + 1)
         have hphi_sq : φ^2 = φ + 1 := IndisputableMonolith.PhiSupport.phi_squared
-        
+
         -- From φ² = φ + 1, divide by φ: φ = 1 + φ⁻¹, so φ - 1 = φ⁻¹
         have hphi_inv : φ - 1 = φ⁻¹ := by
           have hφ_ne : φ ≠ 0 := Constants.phi_ne_zero
@@ -514,7 +514,7 @@ lemma cost_functional_self_similarity :
           calc φ * (φ - 1) = φ^2 - φ := by ring
                _ = (φ + 1) - φ := by rw [hphi_sq]
                _ = 1 := by ring
-        
+
         -- Substitute φ - 1 = φ⁻¹ into the expression
         calc ((1/2) * (φ - 1) * x + (1/2) * (φ⁻¹ - 1) * x⁻¹)
             = (1/2) * φ⁻¹ * x + (1/2) * (φ⁻¹ - 1) * x⁻¹ := by rw [hphi_inv]
@@ -616,7 +616,7 @@ example : (Real.exp 1)^2 ≠ Real.exp 1 + 1 := by
       exact exp_one_lt_three
       linarith [exp_one_lt_three, h_ge_3]
     linarith
-  
+
   rw [h] at this
   linarith
 
@@ -655,7 +655,7 @@ example : Real.pi^2 ≠ Real.pi + 1 := by
       exact pi_lt_four
       linarith [pi_lt_four, h_ge_4]
     linarith
-  
+
   -- Contradiction: 9 < π² = π + 1 < 5
   rw [h] at pi_sq_gt_9
   linarith

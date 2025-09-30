@@ -1,11 +1,15 @@
 import Mathlib
 import Mathlib.Data.Real.Basic
 import Mathlib.Topology.MetricSpace.Basic
+import IndisputableMonolith.Verification.Exclusivity.Framework
 
 namespace IndisputableMonolith
 namespace Verification
 namespace Necessity
 namespace DiscreteNecessity
+
+-- Use shared definitions from Framework
+open Exclusivity.Framework (AlgorithmicSpec HasAlgorithmicSpec)
 
 /-!
 # Discrete Structure Necessity
@@ -50,19 +54,8 @@ A complete proof may require 1-2 months of dedicated work.
 
 /-! ### Algorithmic Specification -/
 
-/-- An algorithmic specification is a finite string that generates states. -/
-structure AlgorithmicSpec where
-  description : List Bool  -- Finite binary string
-  generates : ∀ n : ℕ, Option (List Bool)  -- Enumeration of states
-
-/-- A framework has zero parameters if it can be specified algorithmically
-    without any adjustable real numbers.
--/
-def HasAlgorithmicSpec (StateSpace : Type) : Prop :=
-  ∃ (spec : AlgorithmicSpec),
-    ∃ (decode : List Bool → Option StateSpace),
-      ∀ s : StateSpace, ∃ n : ℕ, ∃ code : List Bool,
-        spec.generates n = some code ∧ decode code = some s
+-- AlgorithmicSpec and HasAlgorithmicSpec are now imported from Framework.lean
+-- This avoids circular dependencies
 
 /-! ### Finite Description Theorem -/
 

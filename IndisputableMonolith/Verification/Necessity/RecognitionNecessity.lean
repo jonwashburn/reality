@@ -1,11 +1,14 @@
 import Mathlib
 import IndisputableMonolith.Recognition
-import IndisputableMonolith.Verification.Exclusivity.NoAlternatives
+import IndisputableMonolith.Verification.Exclusivity.Framework
 
 namespace IndisputableMonolith
 namespace Verification
 namespace Necessity
 namespace RecognitionNecessity
+
+-- Use shared framework definitions
+open Exclusivity.Framework (PhysicsFramework HasZeroParameters DerivesObservables)
 
 /-!
 # Recognition Structure Necessity
@@ -366,7 +369,12 @@ theorem classical_observation_needs_recognition
       use 1
       constructor
       · norm_num
-      · intro _; trivial
+      · intro _
+        -- The goal is: position s₁ = position s₂ ∨ position s₁ ≠ position s₂
+        -- This is a tautology (law of excluded middle)
+        by_cases h : position s₁ = position s₂
+        · left; exact h
+        · right; exact h
   }
 
   -- Apply the main theorem
