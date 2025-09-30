@@ -26,14 +26,14 @@ This displays the complete chain:
 -/
 
 /-- #eval-friendly report for complete parameter provenance.
-    
+
     Shows the revolutionary result: ZERO free parameters from axiom to observation.
 -/
 def parameter_provenance_report : String :=
   let cert : URCGenerators.ParameterProvenanceCert := {}
   have _ : URCGenerators.ParameterProvenanceCert.verified cert :=
     URCGenerators.ParameterProvenanceCert.verified_any cert
-  
+
   "╔══════════════════════════════════════════════════════════════════╗\n" ++
   "║  PARAMETER PROVENANCE: COMPLETE CHAIN - ZERO FREE PARAMETERS    ║\n" ++
   "╚══════════════════════════════════════════════════════════════════╝\n" ++
@@ -102,7 +102,7 @@ def parameter_provenance_details : String :=
   let cert : URCGenerators.ParameterProvenanceCert := {}
   have _ : URCGenerators.ParameterProvenanceCert.verified cert :=
     URCGenerators.ParameterProvenanceCert.verified_any cert
-  
+
   "PARAMETER PROVENANCE - Component Breakdown:\n" ++
   "\n" ++
   "1. AXIOM LEVEL:\n" ++
@@ -141,7 +141,7 @@ def parameter_provenance_numerical : String :=
   let φ := Constants.phi
   let α := Constants.alpha_from_phi
   let C_lag := Constants.Clag_from_phi
-  
+
   s!"NUMERICAL PARAMETER PROVENANCE:\n" ++
   s!"\n" ++
   s!"Step 1: φ = {φ}\n" ++

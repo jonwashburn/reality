@@ -48,7 +48,7 @@ Expected output: Complete chain from MP → observations
 -/
 
 /-- Certificate for complete parameter provenance.
-    
+
     This is the ULTIMATE certificate - it proves that every parameter
     in Recognition Science is derived from the Meta Principle with
     zero free parameters.
@@ -57,34 +57,34 @@ structure ParameterProvenanceCert where
   deriving Repr
 
 /-- Verification predicate for parameter provenance.
-    
+
     Returns True if the complete chain from MP to gravity predictions
     is proven with zero free parameters.
 -/
 @[simp] def ParameterProvenanceCert.verified (_c : ParameterProvenanceCert) : Prop :=
   -- Step 1: Meta Principle holds
   Recognition.MP ∧
-  
+
   -- Step 2: φ is unique (exclusivity proof complete)
   (∃ (_ : ExclusivityProofCert), True) ∧
-  
+
   -- Step 3: φ has the correct value
   Constants.phi = (1 + Real.sqrt 5) / 2 ∧
-  
+
   -- Step 4: α and C_lag are derived from φ
   Constants.alpha_from_phi = (1 - 1 / Constants.phi) / 2 ∧
   Constants.Clag_from_phi = Constants.phi ^ (-(5 : ℝ)) ∧
-  
+
   -- Step 5: Weight formula is defined
-  (∃ (α C_lag tau0 T_dyn : ℝ), 
-    Relativity.Perturbation.weight_final α C_lag tau0 T_dyn = 
+  (∃ (α C_lag tau0 T_dyn : ℝ),
+    Relativity.Perturbation.weight_final α C_lag tau0 T_dyn =
       1 + C_lag * α * (T_dyn / tau0) ^ α) ∧
-  
+
   -- Step 6: Derivation chain is documented
   (∃ (derivation : Relativity.Perturbation.weight_derivation_complete), True)
 
 /-- **Ultimate Theorem**: Complete parameter provenance is verified.
-    
+
     This establishes that every parameter in RS is derived from MP
     with zero adjustable constants.
 -/
@@ -176,7 +176,7 @@ structure GravityDerivationCert where
 @[simp] def GravityDerivationCert.verified (_c : GravityDerivationCert) : Prop :=
   -- Weight formula is derived from Einstein equations
   (∀ α C_lag tau0 T_dyn,
-    Relativity.Perturbation.weight_final α C_lag tau0 T_dyn = 
+    Relativity.Perturbation.weight_final α C_lag tau0 T_dyn =
       1 + C_lag * α * (T_dyn / tau0) ^ α) ∧
   -- Parameters come from recognition spine
   (∃ (_ : AlphaProvenanceCert), True) ∧
