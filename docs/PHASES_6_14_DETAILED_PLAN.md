@@ -35,14 +35,21 @@ Completed:
 Module compiles successfully.
 Provides framework for error analysis.
 
-#### Step 6.3: Ricci Tensor Error Proof
+#### Step 6.3: Ricci Tensor Error Proof ⏸️ BLOCKED
 **File**: `IndisputableMonolith/Relativity/Perturbation/ErrorAnalysis.lean` (UPDATE)
 
-1. Replace `ricci_remainder_bounded` axiom with proof
-2. Use Taylor expansion from Mathlib
-3. Compute explicit derivatives of R_μν[g+h]
-4. Bound second-order terms using ε bounds
+**Status**: Updated with Analysis imports, but blocked by build errors in:
+- Perturbation/MetricAlgebra.lean (proof goals)
+- Perturbation/ScalarLinearized.lean (ambiguous terms)
+
+**What's needed**:
+1. Fix MetricAlgebra proof goals
+2. Fix ScalarLinearized ambiguities
+3. Then can update ricci_remainder_bounded with IsBigOPower
+4. Use Taylor expansion
 5. Extract constant C_R
+
+**Deferred** until build issues resolved.
 
 #### Step 6.4: Stress-Energy Error Proof
 **File**: Same as 6.3
