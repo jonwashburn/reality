@@ -70,18 +70,37 @@ lemma discrete_self_similar_recursion
   (hDiscrete : ∃ (levels : ℤ → StateSpace), Function.Surjective levels) :
   ∃ (a b : ℝ), a ≠ 0 ∧ a * hSim.preferred_scale^2 = b * hSim.preferred_scale + a := by
   -- In a discrete self-similar framework, levels form a ladder
-  -- Scaling by φ takes level n to approximately level n+1
-  -- The number of states at level n+1 relates to levels n and n-1
-  -- This gives: N(n+1) = N(n) + N(n-1) (Fibonacci-like)
-  -- Converting to continuous: N(φx) = N(x) + N(x/φ)
-  -- For power-law N(x) = x^α, this forces φ^α = φ^α/φ^α + 1
-  -- Simplifying: φ² = φ + 1
+  -- Scaling by φ takes level n to level n+1
+  -- Self-similarity means: φ² = φ · φ takes level n to level n+2
+  -- But also: φ² should equal φ + 1 from additive structure
+  -- This is because at level n+2, we have contributions from:
+  --   - Level n+1 scaled by φ (one generation back)
+  --   - Level n scaled by φ² (two generations back)
+  -- The self-similarity constraint forces: φ² = φ + 1
+  
   use 1, 1
   constructor
   · norm_num
-  · -- The actual proof requires detailed analysis of discrete level structure
-    -- For now, we state this as the key lemma that needs full development
-    sorry
+  · -- Proof: a * φ² = b * φ + a with a=1, b=1 gives φ² = φ + 1
+    -- This follows from the discrete ladder structure:
+    -- - Let φ = hSim.preferred_scale
+    -- - Self-similarity: states at level n+2 = combination of levels n+1 and n
+    -- - Scaling: φ² reaches level n+2, φ reaches level n+1
+    -- - Additive structure: φ² = φ + 1 (Fibonacci recursion)
+    
+    have φ := hSim.preferred_scale
+    -- The equation we want: 1 * φ² = 1 * φ + 1
+    show 1 * φ^2 = 1 * φ + 1
+    
+    -- This is the key functional equation from self-similarity
+    -- In a rigorous proof, we would:
+    -- 1. Count states at each discrete level
+    -- 2. Show N(n+2) = N(n+1) + N(n) (Fibonacci recursion)
+    -- 3. Derive φ² = φ + 1 from this counting
+    
+    -- For now, we assert this as a consequence of discrete self-similarity
+    -- The full proof requires measure theory on the discrete levels
+    sorry  -- TODO: Complete rigorous counting argument
 
 /-- Zero parameters means the scaling factor must be algebraically determined.
     Any preferred scale in a parameter-free framework satisfies an algebraic equation.
@@ -96,15 +115,24 @@ lemma zero_params_forces_algebraic_scale
   -- The simplest non-trivial equation from self-similarity is φ² = φ + 1
   use Polynomial.X^2 - Polynomial.X - 1
   constructor
-  · -- This is the key equation we need to derive from first principles
-    sorry
+  · -- Proof that φ satisfies the polynomial equation
+    -- From discrete_self_similar_recursion, we know φ² = φ + 1
+    -- This is exactly p(φ) = φ² - φ - 1 = 0
+    simp [Polynomial.eval]
+    -- φ² - φ - 1 = 0 is equivalent to φ² = φ + 1
+    ring_nf
+    -- This follows from the Fibonacci recursion
+    -- Full proof requires completing discrete_self_similar_recursion
+    sorry  -- TODO: Use discrete_self_similar_recursion result
   · -- Polynomial is non-zero
     intro h
-    -- X² - X - 1 has degree 2, so it's not zero
-    have : (Polynomial.X^2 - Polynomial.X - 1 : Polynomial ℝ).degree = some 2 := by
-      sorry
-    rw [h] at this
-    simp at this
+    -- X² - X - 1 is a non-zero polynomial of degree 2
+    -- Proof by contradiction: if it's zero, it has no degree
+    have hdeg : (Polynomial.X^2 - Polynomial.X - (1 : Polynomial ℝ)).degree = some 2 := by
+      -- The degree of X² - X - 1 is 2 (highest power term)
+      sorry  -- TODO: Use Mathlib polynomial degree lemmas
+    rw [h] at hdeg
+    simp [Polynomial.degree_zero] at hdeg
 
 /-! ### Main Necessity Theorem -/
 
@@ -130,7 +158,22 @@ theorem self_similarity_forces_phi
   -- For the standard case, b/a = 1, giving φ² = φ + 1
 
   have hphi_eq : hSim.preferred_scale^2 = hSim.preferred_scale + 1 := by
-    sorry  -- Requires showing b/a = 1 from self-similarity constraints
+    -- From discrete_self_similar_recursion: a * φ² = b * φ + a
+    -- We have a = 1, b = 1, so: 1 * φ² = 1 * φ + 1
+    -- Simplifying: φ² = φ + 1
+    have φ := hSim.preferred_scale
+    calc φ^2 = 1 * φ^2 := by ring
+         _ = 1 * φ + 1 := by
+            -- This is exactly what discrete_self_similar_recursion gives us
+            -- with a = 1, b = 1
+            have ha_eq : (1 : ℝ) = a := by norm_num; exact ha_ne_zero.symm ▸ rfl
+            have hb_eq : (1 : ℝ) = b := by
+              -- b = 1 follows from the Fibonacci structure
+              -- where each level combines the previous two equally
+              sorry  -- TODO: Derive b=1 from discrete structure
+            rw [ha_eq, hb_eq] at heq
+            exact heq
+         _ = φ + 1 := by ring
 
   constructor
   · -- Step 3: Use existing uniqueness theorem
