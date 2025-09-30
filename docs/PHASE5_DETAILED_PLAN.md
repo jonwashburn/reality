@@ -108,19 +108,26 @@ Before starting Phase 5, verify:
 
 ---
 
-#### Day 4: Riemann Tensor Linearization
-**File**: `IndisputableMonolith/Relativity/Perturbation/RiemannLinear.lean` (NEW)
+#### Day 4: Riemann Tensor Linearization ✅ COMPLETE
+**File**: `IndisputableMonolith/Relativity/Perturbation/RiemannLinear.lean` (CREATED 2025-09-30)
 
-**Tasks**:
-1. Expand R^ρ_σμν = ∂_μΓ^ρ_νσ - ∂_νΓ^ρ_μσ + ... to O(h)
-2. Prove: R^ρ_σμν[η + h] = δR^ρ_σμν[h] + O(h²)
-3. Contract to get Ricci: R_μν[η + h] = δR_μν[h] + O(h²)  
-4. Derive explicit formula for δR_μν in terms of ∂∂h
-5. Test: Compute for h_μν = diag(2Φ, -2Ψ, -2Ψ, -2Ψ)
+Implemented linearized Riemann, Ricci, Ricci scalar. Proven for Minkowski background.
 
-**Success Criteria**:
-- [ ] Linearized Ricci tensor formula proven
-- [ ] Can compute R
+---
+
+#### Day 5: Newtonian Gauge Implementation ✅ COMPLETE  
+**File**: `IndisputableMonolith/Relativity/Perturbation/GaugeTransformation.lean` (CREATED 2025-09-30)
+
+Implemented:
+- gauge_transform: h' = h + ∂ξ + ∂ξ (Lie derivative)
+- find_gauge_vector_for_newtonian: Existence of gauge to eliminate h_0i
+- to_newtonian_gauge: Construction from general h
+- gauge_invariant_riemann: Physics preserved under gauge change
+
+Proven:
+- gauge_transform_symmetric: Gauge preserves symmetry
+
+**Week 1 COMPLETE** (Days 1-5) ✅
 
 ---
 
