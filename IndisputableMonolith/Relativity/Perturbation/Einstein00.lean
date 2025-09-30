@@ -22,7 +22,7 @@ open Fields
 open Variation
 
 /-- Linearized Einstein tensor 00-component. -/
-noncomputable def linearized_G_00 
+noncomputable def linearized_G_00
   (g₀ : MetricTensor) (h : MetricPerturbation) (x : Fin 4 → ℝ) : ℝ :=
   -- G_00 = R_00 - (1/2) g_00 R
   -- At first order: δG_00 = δR_00 - (1/2) g₀_00 δR
@@ -39,7 +39,7 @@ theorem G_00_is_laplacian_Phi (ng : NewtonianGaugeMetric) (x : Fin 4 → ℝ) :
 
 /-- Scalar field contribution to T_00 at first order. -/
 noncomputable def T_00_scalar_linear
-  (ψ₀ : ScalarField) (δψ : ScalarPerturbation) (g₀ : MetricTensor) 
+  (ψ₀ : ScalarField) (δψ : ScalarPerturbation) (g₀ : MetricTensor)
   (α m_squared : ℝ) (x : Fin 4 → ℝ) : ℝ :=
   -- T_00 = α (∂_0 ψ)² + α (∂_i ψ)² + m² ψ²
   -- At first order in δψ: T_00 ≈ 2α ∂_0ψ₀ ∂_0δψ + 2α ∂_iψ₀ ∂_iδψ + 2m² ψ₀ δψ
@@ -52,7 +52,7 @@ noncomputable def T_00_scalar_linear
   2 * m_squared * ψ₀.ψ x * δψ.δψ x
 
 /-- Einstein 00-equation: G_00 = κ T_00. -/
-def Einstein00Equation 
+def Einstein00Equation
   (ng : NewtonianGaugeMetric) (ψ₀ : ScalarField) (δψ : ScalarPerturbation)
   (ρ : (Fin 4 → ℝ) → ℝ) (α m_squared : ℝ) : Prop :=
   ∀ x : Fin 4 → ℝ,
@@ -60,11 +60,11 @@ def Einstein00Equation
     laplacian ng.Φ x = κ * (ρ x + T_00_scalar_linear ψ₀ δψ minkowski.toMetricTensor α m_squared x)
 
 /-- Poisson equation form: ∇²Φ = 4πG(ρ + ρ_ψ). -/
-theorem poisson_form_of_einstein_00 
+theorem poisson_form_of_einstein_00
   (ng : NewtonianGaugeMetric) (ψ₀ : ScalarField) (δψ : ScalarPerturbation)
   (ρ : (Fin 4 → ℝ) → ℝ) (α m_squared : ℝ) :
   Einstein00Equation ng ψ₀ δψ ρ α m_squared →
-  (∀ x, ∃ ρ_ψ : ℝ, 
+  (∀ x, ∃ ρ_ψ : ℝ,
     laplacian ng.Φ x = (4 * Real.pi) * (ρ x + ρ_ψ) ∧
     ρ_ψ = T_00_scalar_linear ψ₀ δψ minkowski.toMetricTensor α m_squared x) := by
   intro h_eq x
@@ -90,7 +90,7 @@ axiom spherical_source_test (M : ℝ) :
     Φ_small := by intro _; sorry,
     Ψ_small := by intro _; sorry
   }
-  ∀ x, x ≠ (fun _ => 0) → 
+  ∀ x, x ≠ (fun _ => 0) →
     |laplacian ng.Φ x| < 0.01  -- ∇²(1/r) = -4πM δ³(r), zero away from origin
 
 end Perturbation

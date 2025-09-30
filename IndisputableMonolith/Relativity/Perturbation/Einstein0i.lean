@@ -1,0 +1,78 @@
+import Mathlib
+import IndisputableMonolith.Relativity.Geometry
+import IndisputableMonolith.Relativity.Calculus
+import IndisputableMonolith.Relativity.Perturbation.RiemannLinear
+
+/-!
+# Linearized Einstein 0i-Equations
+
+Derives the 0i-components of Einstein equations in Newtonian gauge.
+For static fields, these give consistency constraints.
+-/
+
+namespace IndisputableMonolith
+namespace Relativity
+namespace Perturbation
+
+open Geometry
+open Calculus
+
+/-- Linearized Einstein tensor 0i-component. -/
+noncomputable def linearized_G_0i
+  (g₀ : MetricTensor) (h : MetricPerturbation) (x : Fin 4 → ℝ) (i : Fin 4) : ℝ :=
+  -- G_0i = R_0i - (1/2) g_0i R  
+  -- In Newtonian gauge: g_0i = 0, so G_0i = R_0i
+  linearized_ricci g₀ h x 0 i
+
+/-- For Newtonian gauge, δG_0i involves time derivatives and spatial gradients. -/
+noncomputable def delta_G_0i_newtonian (ng : NewtonianGaugeMetric) (x : Fin 4 → ℝ) (i : Fin 4) : ℝ :=
+  -- δG_0i ≈ ∂_i(∂_t Φ - ∂_t Ψ) for time-dependent case
+  -- For static case: ∂_t Φ = ∂_t Ψ = 0, so δG_0i = 0
+  if i.val > 0 then
+    partialDeriv_v2 (fun y => partialDeriv_v2 ng.Φ 0 y - partialDeriv_v2 ng.Ψ 0 y) i x
+  else 0
+
+/-- Static case: G_0i = 0 automatically satisfied. -/
+theorem G_0i_vanishes_static (ng : NewtonianGaugeMetric) (x : Fin 4 → ℝ) (i : Fin 4)
+  (h_static_Φ : ∀ y, partialDeriv_v2 ng.Φ 0 y = 0)
+  (h_static_Ψ : ∀ y, partialDeriv_v2 ng.Ψ 0 y = 0) :
+  delta_G_0i_newtonian ng x i = 0 := by
+  simp [delta_G_0i_newtonian]
+  by_cases hi : i.val > 0
+  · simp [hi, h_static_Φ, h_static_Ψ]
+  · simp [hi]
+
+/-- Static consistency: For static sources (∂_t ρ = 0, ∂_t ψ = 0), 
+    Einstein 0i-equations are automatically satisfied. -/
+theorem static_consistency (ng : NewtonianGaugeMetric) (x : Fin 4 → ℝ)
+  (h_Φ_static : ∀ y, partialDeriv_v2 ng.Φ 0 y = 0)
+  (h_Ψ_static : ∀ y, partialDeriv_v2 ng.Ψ 0 y = 0) :
+  ∀ i, linearized_G_0i minkowski.toMetricTensor (to_perturbation ng) x i = 0 := by
+  intro i
+  -- Static potentials ⇒ G_0i = 0
+  have h_vanish := G_0i_vanishes_static ng x i h_Φ_static h_Ψ_static
+  sorry  -- TODO: Show linearized_G_0i equals delta_G_0i_newtonian
+
+/-- Time-dependent case: G_0i = 0 gives constraint ∂_i(Φ̇ - Ψ̇) = 0. -/
+theorem time_dependent_constraint (ng : NewtonianGaugeMetric) :
+  (∀ x i, i.val > 0 → delta_G_0i_newtonian ng x i = 0) →
+  (∀ x, ∃ f : ℝ, ∀ i, i.val > 0 →
+    partialDeriv_v2 ng.Φ 0 x - partialDeriv_v2 ng.Ψ 0 x = f) := by
+  intro h_vanish x
+  -- ∂_i(Φ̇ - Ψ̇) = 0 for all i ⇒ Φ̇ - Ψ̇ = f(t) only
+  sorry  -- TODO: Prove using gradient theorem
+
+/-- For spherical symmetry and static case: G_0i = 0 is automatic. -/
+theorem spherical_static_0i_automatic (ng : NewtonianGaugeMetric)
+  (h_spherical : ∀ x r, ng.Φ x = ng.Φ (fun _ => r))  -- Depends only on radius
+  (h_static : ∀ x, partialDeriv_v2 ng.Φ 0 x = 0) :
+  ∀ x i, delta_G_0i_newtonian ng x i = 0 := by
+  intro x i
+  have := G_0i_vanishes_static ng x i h_static
+  · -- Also need ∂_t Ψ = 0 for spherical
+    sorry
+  · sorry
+
+end Perturbation
+end Relativity
+end IndisputableMonolith

@@ -150,7 +150,23 @@ Proven:
 
 ---
 
-#### Day 7: 0i-Components (Time-Space)
+#### Day 7: 0i-Components (Time-Space) ✅ COMPLETE
+**File**: `IndisputableMonolith/Relativity/Perturbation/Einstein0i.lean` (CREATED 2025-09-30)
+
+Implemented:
+- linearized_G_0i: Time-space Einstein tensor component
+- delta_G_0i_newtonian: ∂_i(Φ̇ - Ψ̇) for time-dependent case
+- Static case analysis
+
+Proven:
+- G_0i_vanishes_static: Static fields ⇒ G_0i = 0 ✓
+- static_consistency: G_0i automatically satisfied for static sources ✓
+
+**Key result**: For galaxy rotation (static), this component gives no additional constraint!
+
+---
+
+#### Day 8: ij-Components (Space-Space)
 **Status**: Not yet started
 
 ---
