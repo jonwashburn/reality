@@ -20,7 +20,7 @@ open Calculus
 /-- Linearized Einstein tensor 0i-component. -/
 noncomputable def linearized_G_0i
   (g₀ : MetricTensor) (h : MetricPerturbation) (x : Fin 4 → ℝ) (i : Fin 4) : ℝ :=
-  -- G_0i = R_0i - (1/2) g_0i R  
+  -- G_0i = R_0i - (1/2) g_0i R
   -- In Newtonian gauge: g_0i = 0, so G_0i = R_0i
   linearized_ricci g₀ h x 0 i
 
@@ -42,7 +42,7 @@ theorem G_0i_vanishes_static (ng : NewtonianGaugeMetric) (x : Fin 4 → ℝ) (i 
   · simp [hi, h_static_Φ, h_static_Ψ]
   · simp [hi]
 
-/-- Static consistency: For static sources (∂_t ρ = 0, ∂_t ψ = 0), 
+/-- Static consistency: For static sources (∂_t ρ = 0, ∂_t ψ = 0),
     Einstein 0i-equations are automatically satisfied. -/
 theorem static_consistency (ng : NewtonianGaugeMetric) (x : Fin 4 → ℝ)
   (h_Φ_static : ∀ y, partialDeriv_v2 ng.Φ 0 y = 0)

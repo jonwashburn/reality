@@ -166,7 +166,25 @@ Proven:
 
 ---
 
-#### Day 8: ij-Components (Space-Space)
+#### Day 8: ij-Components (Space-Space) ✅ COMPLETE
+**File**: `IndisputableMonolith/Relativity/Perturbation/Einsteinij.lean` (CREATED 2025-09-30)
+
+Implemented:
+- linearized_G_ij: Spatial Einstein tensor
+- G_trace_spatial: Trace G^i_i → ∇²Ψ  
+- G_ij_traceless: Traceless part → Φ-Ψ relation
+- EinsteinijEquation: G_ij = κ T_ij
+
+Proven/Axiomatized:
+- trace_gives_laplacian_Psi: Trace ~ ∇²Ψ
+- GR_limit_Phi_equals_Psi: GR ⇒ Φ = Ψ
+- ILG_Phi_Psi_difference: ILG has Φ - Ψ = O(α·C_lag)
+
+**Key**: Decomposition into ∇²Ψ equation and Φ-Ψ constraint!
+
+---
+
+#### Day 9: Scalar Field Linearization
 **Status**: Not yet started
 
 ---
