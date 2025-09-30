@@ -88,7 +88,7 @@ noncomputable def inverse_metric_1PN (pots : PPNPotentials) (params : PPNParamet
 axiom inverse_1PN_correct (pots : PPNPotentials) (params : PPNParameters) (x : Fin 4 → ℝ) (μ ρ : Fin 4) :
   |Finset.sum (Finset.univ : Finset (Fin 4)) (fun ν =>
     (metric_1PN pots params).g x (fun _ => 0) (fun i => if i.val = 0 then μ else ν) *
-    (inverse_metric_1PN pots params) x (fun i => if i.val = 0 then ν else ρ) (fun _ => 0)) - 
+    (inverse_metric_1PN pots params) x (fun i => if i.val = 0 then ν else ρ) (fun _ => 0)) -
    kronecker μ ρ| < 0.001  -- O(ε³) error
 
 end PostNewtonian
