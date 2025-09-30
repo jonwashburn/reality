@@ -18,7 +18,7 @@ open Geometry
 open Calculus
 
 /-- Linearized Christoffel symbol δΓ^ρ_μν to first order in h. -/
-noncomputable def linearized_christoffel 
+noncomputable def linearized_christoffel
   (g₀ : MetricTensor) (h : MetricPerturbation) (x : Fin 4 → ℝ) (ρ μ ν : Fin 4) : ℝ :=
   -- δΓ^ρ_μν = (1/2) g₀^{ρσ} (∂_μ h_νσ + ∂_ν h_μσ - ∂_σ h_μν)
   (1/2) * Finset.sum (Finset.univ : Finset (Fin 4)) (fun σ =>
