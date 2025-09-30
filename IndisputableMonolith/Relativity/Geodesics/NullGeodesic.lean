@@ -43,7 +43,7 @@ structure InitialConditions where
 
 /-- Existence of null geodesic with given initial conditions. -/
 axiom null_geodesic_exists (g : MetricTensor) (ic : InitialConditions) :
-  ∃ geo : NullGeodesic g, 
+  ∃ geo : NullGeodesic g,
     geo.path 0 = ic.position ∧
     (∀ μ, deriv (fun lam => geo.path lam μ) 0 = ic.direction μ)
 
