@@ -33,7 +33,7 @@ noncomputable def pressure_scalar (scale : ScaleFactor) (psi : ℝ → ℝ) (m_s
   (1/2) * (deriv psi t)^2 - (1/2) * m_squared * (psi t)^2
 
 theorem energy_pressure_relation (scale : ScaleFactor) (psi : ℝ → ℝ) (m_squared : ℝ) (t : ℝ) :
-  energy_density_scalar scale psi m_squared t + pressure_scalar scale psi m_squared t = 
+  energy_density_scalar scale psi m_squared t + pressure_scalar scale psi m_squared t =
     (deriv psi t)^2 := by
   simp [energy_density_scalar, pressure_scalar]
   ring
