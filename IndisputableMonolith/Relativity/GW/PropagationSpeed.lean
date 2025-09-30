@@ -42,7 +42,7 @@ axiom GW170817_bound_satisfied :
   |c_T_squared_RS - 1| < 1e-15
 
 theorem c_T_squared_derived :
-  c_T_squared 0 0 = 1 ∧ 
+  c_T_squared 0 0 = 1 ∧
   (∀ α C_lag, ∃ coeff, c_T_squared α C_lag = 1 + coeff * (α * C_lag)) := by
   constructor
   · exact c_T_squared_GR_limit

@@ -42,7 +42,7 @@ noncomputable def christoffel_FRW (scale : ScaleFactor) (t : ℝ) (μ ρ σ : Fi
   if μ = 0 ∧ ρ.val > 0 ∧ σ.val > 0 ∧ ρ = σ then
     H * (scale.a t)^2
   else if μ.val > 0 ∧ ρ = 0 ∧ σ = μ then H
-  else if μ.val > 0 ∧ ρ = μ ∧ σ = 0 then H  
+  else if μ.val > 0 ∧ ρ = μ ∧ σ = 0 then H
   else 0
 
 axiom christoffel_FRW_correct (scale : ScaleFactor) :
