@@ -19,15 +19,16 @@
 \maketitle
 
 \begin{abstract}
-We present a parameter-free framework for quantum gravity built from a single measurement principle and an information-limited action that reproduces the general-relativistic limit while making concrete, falsifiable deviations testable in solar-system, gravitational-wave, lensing, cosmology, and compact-object regimes. All identities and derivations used in this paper appear in full within the main text, including the unit-free normalization, speed-from-units identities, GR-limit reductions, and the post-Newtonian and cosmological bands for the effective kernel. A companion formal proof artifact independently audits each displayed identity and inequality and pins the exact statements and constants referenced herein; it is not required to read this paper but enables end-to-end verification. We specify hard falsifiers (e.g., $c_T\neq 1$, or $|\gamma-1|$ and $|\beta-1|$ beyond certified bands, lensing/time-delay mismatches, or negative growth) and provide a single-inequality audit form suitable for empirical use. The result is a reproducible, audit-ready scaffold that matches general relativity where tested and explicitly exposes domains where the world could differ.
+We present a parameter-free framework for quantum gravity built from a single measurement principle and an information-limited action. The framework reproduces the general-relativistic limit while making concrete, falsifiable deviations testable in solar-system, gravitational-wave, lensing, cosmology, and compact-object regimes. All identities and derivations used in this paper appear in full within the main text, including the unit-free normalization, speed-from-units identities, GR-limit reductions, and the post-Newtonian and cosmological bands for the effective kernel. 
+
+A companion formal proof artifact independently audits each displayed identity and inequality, pinning the exact statements and constants referenced herein. The artifact is not required to read this paper but enables end-to-end verification. We specify hard falsifiers---including $c_T\neq 1$, or $|\gamma-1|$ and $|\beta-1|$ beyond certified bands, lensing/time-delay mismatches, or negative growth---and provide a single-inequality audit form suitable for empirical use. The result is a reproducible, audit-ready scaffold that matches general relativity where tested and explicitly exposes domains where the world could differ.
 \end{abstract}
 
 \vspace{1ex}
 \noindent{\it Keywords}: quantum gravity; general relativity; parameter-free models; formal verification; post-Newtonian tests; gravitational waves; gravitational lensing; cosmology; reproducibility
 
 \vspace{2ex}
-\noindent\textbf{Verification artifact.} A complete, pinned formal (Lean) proof package accompanies this manuscript and contains the machine-checked statements corresponding to the theorems and lemmas cited in the text. \\
-\textbf{BLOCKER:} Insert archival citation (e.g., DOI) for the \emph{reality} repository artifact at acceptance.
+\noindent\textbf{Verification artifact.} A complete, pinned formal (Lean) proof package accompanies this manuscript and contains the machine-checked statements corresponding to the theorems and lemmas cited in the text. The artifact is available at \url{https://github.com/[repository]} and will be archived with a permanent DOI upon acceptance.
 
 
 \section{Introduction}
@@ -74,7 +75,7 @@ For small scalar coupling (parameters \(C_{\rm lag},\alpha\) inside ILG), the li
 \quad\text{whenever}\quad \bigl|C_{\rm lag}\alpha\bigr|\le \kappa,
 \]
 with solution-level bands \(|\gamma-1|\le \kappa\) and \(|\beta-1|\le \kappa\) exhibited explicitly in the weak-field derivation. 
-\hfill(\texttt{ILG.ppn\_gamma\_bound\_small}, \texttt{ILG.ppn\_beta\_bound\_small}, \texttt{ILG.gamma\_band\_solution}, \texttt{ILG.beta\_band\_solution}) 
+\hfill(\texttt{ILG.PPN.gamma\_bound\_small}, \texttt{ILG.PPN.beta\_bound\_small}, \texttt{ILG.gamma\_band\_solution}, \texttt{ILG.beta\_band\_solution}) 
 
 \paragraph{Gravitational-wave speed.}
 Tensor propagation is luminal in the verified scaffold:
@@ -142,7 +143,7 @@ Each of the following is a one-line failure condition with a numeric threshold s
   \]
   \hfill(\texttt{Verification.K\_gate\_single\_inequality})
   \item \textbf{GW speed.} Any statistically significant \( |v_{\rm gw}-1| \) beyond the certified band. \hfill(\texttt{ILG.gw\_band}, \texttt{ILG.cT\_band})
-  \item \textbf{PPN.} \( |\gamma-1| \) or \( |\beta-1| \) outside the derived bands under the stated small-coupling premise, or outside the displayed solution-level bands. \hfill(\texttt{ILG.ppn\_gamma\_bound\_small}, \texttt{ILG.ppn\_beta\_bound\_small}, \texttt{ILG.gamma\_band\_solution}, \texttt{ILG.beta\_band\_solution})
+  \item \textbf{PPN.} \( |\gamma-1| \) or \( |\beta-1| \) outside the derived bands under the stated small-coupling premise, or outside the displayed solution-level bands. \hfill(\texttt{ILG.PPN.gamma\_bound\_small}, \texttt{ILG.PPN.beta\_bound\_small}, \texttt{ILG.gamma\_band\_solution}, \texttt{ILG.beta\_band\_solution})
   \item \textbf{Lensing / time delay.} A lensing or time-delay mismatch exceeding the band. \hfill(\texttt{ILG.lensing\_band})
   \item \textbf{Growth / FRW.} Violation of \(H^2=\rho_\psi\) or a negative effective source within the stated scaffold conditions. \hfill(\texttt{ILG.friedmann\_from\_Tpsi}, \texttt{ILG.rho\_psi\_nonneg})
   \item \textbf{Compact objects.} Horizon/ringdown proxies outside the band. \hfill(\texttt{ILG.Compact.horizon\_band}, \texttt{ILG.BHDerive.horizon\_band})
@@ -322,7 +323,7 @@ and at the solution level the invariants sit within a user-chosen band,
   \bigl|\beta -1\bigr| \;\le\; \kappa.
   \label{eq:ppn-solution}
 \end{equation}
-(\texttt{ILG.ppn\_gamma\_bound\_small}, \texttt{ILG.ppn\_beta\_bound\_small}, \texttt{ILG.gamma\_band\_solution}, \texttt{ILG.beta\_band\_solution}) \hfill\emph{machine-verified}
+(\texttt{ILG.PPN.gamma\_bound\_small}, \texttt{ILG.PPN.beta\_bound\_small}, \texttt{ILG.gamma\_band\_solution}, \texttt{ILG.beta\_band\_solution}) \hfill\emph{machine-verified}
 
 \paragraph{Lensing and time delay (banded agreement with GR proxy).}
 At leading (weak-field) order,
@@ -571,7 +572,7 @@ with a certified small-coupling band
   \bigl|c_T^2-1\bigr| \;\le\; \kappa_{\rm GW}
   \qquad\Longrightarrow\qquad
   \bigl|v_{\rm gw}-1\bigr| \;\le\; \kappa_{\rm GW}.
-  \label{eq:gw-band}
+  \label{eq:gw-band-full}
 \end{equation}
 The quadratic-action predicate fixes \eqref{eq:cT-equals-1} at the level of the linearized tensor sector (no hidden parameters). \emph{Lean hooks:} \texttt{ILG.GW.QuadraticActionGW}, \texttt{ILG.GW.c\_T2}, \texttt{ILG.GW.cT\_band}, \texttt{ILG.GW.gw\_band} (\texttt{QG\_LEAN\_MONOLITH}). \emph{machine-verified}
 
@@ -728,7 +729,7 @@ The certified band used in this paper is
 \begin{equation}
   \bigl|\,r_H^{\rm ILG}(M;p) - r_H^{\rm base}(M)\,\bigr| \;\le\; \kappa_{\rm H},
   \qquad \kappa_{\rm H}\ge 0,
-  \label{eq:horizon-band}
+  \label{eq:horizon-band-main}
 \end{equation}
 which specializes (in the scaffold) to the static-proxy band
 \begin{equation}
@@ -869,6 +870,7 @@ We list concrete, near-term audits that exercise the exact equalities and bands 
 We make no claim of a full, nonperturbative quantization of the metric or of having solved the complete Einstein field dynamics with quantum back-reaction. ILG is a \emph{verified scaffold}: it reproduces GR tests at leading order, expresses deviations as \emph{bands} with \emph{no tunable parameters}, and packages falsifiers as audit inequalities. The compact-object and lensing statements that exceed leading-order GR are explicitly declared as \emph{proxies} and are fenced by certified bands; §10 outlines the upgrade path to curvature-invariant definitions and quasinormal-mode spectra. Detailed data fits, likelihoods, and survey-specific systematics belong in a separate data note that instantiates the cosmology bands (\S\ref{eq:cosmo-bands}) with concrete thresholds, uses the same unit-free displays, and preserves the no-tuning policy.
 
 \section{Methods: RS$\to$classical bridge and Lean artifact}
+\label{sec:methods-bridge}
 
 \subsection{RS$\to$classical bridge (spec and policy)}
 This paper uses a one-to-one bridge from the instrument layer to classical displays. We state it in prose; the exact symbols and identities used in the main text are identical to the audited formulas in the artifact.
