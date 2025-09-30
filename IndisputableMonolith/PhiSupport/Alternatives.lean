@@ -154,10 +154,11 @@ theorem sqrt5_fails_selection : ¬IndisputableMonolith.RH.RS.PhiSelection (Real.
     exact Real.sqrt_mul_self this
   -- √5 < 4, so √5 + 1 < 5
   have sqrt5_lt_four : Real.sqrt 5 < 4 := by
-    have : (5 : ℝ) < 16 := by norm_num
-    have : (5 : ℝ) < (4 : ℝ) ^ 2 := by norm_num
+    have h16 : (5 : ℝ) < 16 := by norm_num
     have h0 : (0 : ℝ) < 5 := by norm_num
-    sorry -- Real.sqrt_lt_sqrt bounds
+    calc Real.sqrt 5
+        < Real.sqrt 16 := Real.sqrt_lt_sqrt h0 h16
+      _ = 4 := by norm_num
   have : Real.sqrt 5 + 1 < 5 := by linarith [sqrt5_lt_four]
   have : (5 : ℝ) < 5 := by
     calc (5 : ℝ)

@@ -45,3 +45,12 @@
 Remaining type placeholders in ErrorAnalysis.lean cannot be resolved - they're parameter placeholders in type signatures, not proof sorries.
 
 **Session complete**.
+
+## Session - Sept 30, 11:50 PM
+
+Sorry: PhiSupport/Alternatives.lean:160
+Result: Resolved
+Method: Real.sqrt_lt_sqrt with calc
+Time: 5m
+
+Total resolved: 6 (was 5)

@@ -8,8 +8,7 @@ Sorries that cannot be resolved without external help or are in buggy theorems.
 
 - PhiSupport/Alternatives.lean:36 - `e > 2` - Needs: Real.exp numerical bounds
 - PhiSupport/Alternatives.lean:38 - `e > 2.7` - Needs: Tighter exp bound
-- PhiSupport/Alternatives.lean:39 - `e < 2.8` - Needs: Upper exp bound  
-- PhiSupport/Alternatives.lean:160 - `√5 < 4` - Needs: Real.sqrt_lt_sqrt bounds
+- PhiSupport/Alternatives.lean:39 - `e < 2.8` - Needs: Upper exp bound
 
 ---
 
