@@ -80,19 +80,19 @@ structure Flow (E : DiscreteEventSystem) (ev : EventEvolution E) where
   value : (e₁ e₂ : E.Event) → ev.evolves e₁ e₂ → ℤ
 
 /-- **Axiom**: Inflow to an event (sum of incoming edge values).
-    
+
     In a discrete event system, we sum flow values over all incoming edges.
-    
+
     **Justification**:
     - For finite degree (finitely many incoming edges), this is standard summation
     - For infinite degree, requires measure theory or limit definition
     - In physical systems, degree is typically finite (bounded by causality)
-    
+
     **Alternative**: Could formalize using:
     - Finsum over Fintype for finite degree
     - Measure theory for infinite case
     - Computable summation for algorithmic frameworks
-    
+
     **Status**: Accepted as definition (could formalize with 1-2 weeks)
 -/
 axiom inflow
@@ -102,11 +102,11 @@ axiom inflow
   (e : E.Event) : ℤ
 
 /-- **Axiom**: Outflow from an event (sum of outgoing edge values).
-    
+
     In a discrete event system, we sum flow values over all outgoing edges.
-    
+
     **Justification**: Same as inflow (see above)
-    
+
     **Status**: Accepted as definition
 -/
 axiom outflow
@@ -116,11 +116,11 @@ axiom outflow
   (e : E.Event) : ℤ
 
 /-- **Axiom**: Inflow/outflow satisfy expected properties.
-    
+
     For a single edge e₁ → e₂ with flow value v:
     - Contributes +v to outflow at e₁
     - Contributes +v to inflow at e₂
-    
+
     This captures the flow conservation principle.
 -/
 axiom flow_edge_contribution
@@ -191,19 +191,19 @@ theorem discrete_forces_ledger
 /-! ### Zero-Parameter Implication -/
 
 /-- **Physical Axiom**: In a zero-parameter framework, conservation laws hold.
-    
+
     Without adjustable parameters, flow values must be structurally determined.
     The unique parameter-free choice is balanced flow (conservation).
-    
+
     **Justification**:
     - Unbalanced flow requires specifying the imbalance amount (a parameter)
     - Zero parameters → no imbalance specification → balanced flow
     - Balanced flow = conservation law
-    
+
     **Alternative Formulation**:
     - Could prove: ∃ unique balanced flow (up to trivial scaling)
     - Uniqueness comes from zero-parameter constraint
-    
+
     **Status**: Physical axiom (provable from structural uniqueness, 1-2 weeks)
 -/
 axiom zero_params_implies_conservation
@@ -240,28 +240,28 @@ theorem RS_ledger_is_necessary
 /-! ### Chain Connection -/
 
 /-- **Axiom**: Recognition structures have countable carrier.
-    
+
     In a discrete recognition framework, the set of recognizable states is countable.
-    
+
     **Justification**:
     - Physical systems have finite information capacity
     - Recognizable states must be distinguishable
     - Distinguishability requires finite resources
     - Therefore: countably many recognizable states
-    
+
     **Status**: Physical axiom (reasonable for discrete systems)
 -/
 axiom recognition_structure_countable (M : RecognitionStructure) : Countable M.U
 
 /-- **Axiom**: Recognition evolution is well-founded.
-    
+
     There are no infinite backward chains of recognition events.
-    
+
     **Justification**:
     - Physical causality prevents infinite past
     - Recognition chains must terminate
     - Well-foundedness is standard in discrete event systems
-    
+
     **Status**: Physical axiom (standard causality assumption)
 -/
 axiom recognition_evolution_well_founded (M : RecognitionStructure) :
@@ -328,9 +328,9 @@ theorem no_ledger_no_conservation
   exact hNoLedger L hEquiv
 
 /-- **Theorem**: Continuous (uncountable) frameworks need parameters for conservation.
-    
+
     An uncountable state space with conservation laws requires parameters.
-    
+
     **Proof**: By construction - uncountable degrees of freedom exist.
 -/
 theorem continuous_needs_parameters_for_conservation
@@ -341,15 +341,15 @@ theorem continuous_needs_parameters_for_conservation
   -- Construct a parameter type from the uncountable structure
   -- The uncountable state space itself provides infinitely many "parameters"
   -- (choice of which states to include in the dynamics)
-  
+
   use StateSpace
-  
+
   -- StateSpace is nonempty (we can assume this for any physical framework)
   -- If it were empty, there would be no physics to describe
   classical
   by_contra hEmpty
   push_neg at hEmpty
-  
+
   -- If StateSpace is empty, it's countable (empty is countable)
   have : Countable StateSpace := by
     -- Empty type is countable
@@ -358,7 +358,7 @@ theorem continuous_needs_parameters_for_conservation
       intro x
       exact hEmpty.elim x
     exact Countable.of_isEmpty StateSpace
-  
+
   -- This contradicts hUncountable
   exact hUncountable this
 

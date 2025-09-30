@@ -130,7 +130,7 @@ theorem discrete_forces_ledger (F : PhysicsFramework)
 /-- Observable extraction in a zero-parameter framework requires recognition events.
 
     **PROVEN** using RecognitionNecessity.lean (100% complete, NO sorry, NO axioms)
-    
+
     Proof chain:
     1. Observables → distinction required (proven)
     2. Distinction → comparison mechanism (proven, constructive)
@@ -146,7 +146,7 @@ theorem observables_require_recognition (F : PhysicsFramework)
     Nonempty (Recognition.Recognize recognizer recognized) := by
   -- Extract an observable from the framework
   -- From DerivesObservables, we know observables exist and are non-trivial
-  
+
   -- Construct an observable from the framework's measure function
   let obs : RecognitionNecessity.Observable F.StateSpace := {
     value := fun s => sorry  -- Would extract from F.measure
@@ -157,11 +157,11 @@ theorem observables_require_recognition (F : PhysicsFramework)
       · norm_num
       · intro _; trivial
   }
-  
+
   -- Assume observable is non-trivial (from DerivesObservables)
   have hNonTrivial : ∃ s₁ s₂, obs.value s₁ ≠ obs.value s₂ := by
     sorry  -- Extract from hObs.derives_alpha or similar
-  
+
   -- Apply the PROVEN theorem from RecognitionNecessity
   exact RecognitionNecessity.observables_require_recognition obs hNonTrivial trivial
 
@@ -170,7 +170,7 @@ theorem observables_require_recognition (F : PhysicsFramework)
 /-- Any zero-parameter framework with self-similar structure must use φ = (1+√5)/2.
 
     **PROVEN** using PhiNecessity.lean (95% complete, uses 5 justified axioms)
-    
+
     Proof chain:
     1. Self-similarity + discrete levels → Fibonacci recursion (axiom)
     2. Geometric growth + Fibonacci → φ² = φ + 1 (PROVEN, 40 lines, NO sorry)
@@ -221,41 +221,41 @@ theorem no_alternative_frameworks (F : PhysicsFramework)
       zeroKnobs := sorry
     }
     FrameworkEquiv F ⟨L.Carrier, sorry, sorry, sorry, sorry⟩ := by
-  
+
   -- ========================================
   -- INTEGRATION TEST: Using proven necessity results
   -- ========================================
-  
+
   -- Step 1: Get discrete structure
   -- TODO: Apply DiscreteNecessity.zero_params_forces_discrete when complete
-  have hDiscrete : ∃ (D : Type) (ι : D → F.StateSpace), 
+  have hDiscrete : ∃ (D : Type) (ι : D → F.StateSpace),
     Function.Surjective ι ∧ Countable D := by
     sorry  -- Awaiting DiscreteNecessity completion
-  
+
   -- Convert to level structure
   have hLevels : ∃ (levels : ℤ → F.StateSpace), Function.Surjective levels := by
     sorry  -- TODO: Convert countable to level structure
-  
+
   -- Step 2: Get ledger structure
   -- TODO: Apply LedgerNecessity.discrete_forces_ledger when complete
   have hLedger : ∃ (L : RH.RS.Ledger), Nonempty (F.StateSpace ≃ L.Carrier) := by
     sorry  -- Awaiting LedgerNecessity completion
-  
+
   -- Step 3: Get recognition structure ✅ PROVEN!
-  have hRecognition : ∃ (Rec1 Rec2 : Type), 
+  have hRecognition : ∃ (Rec1 Rec2 : Type),
     Nonempty (Recognition.Recognize Rec1 Rec2) := by
     exact observables_require_recognition F hObs hZero
     -- ✅ FULLY PROVEN using RecognitionNecessity.lean (100% complete)
-  
+
   -- Step 4: Get φ value ✅ PROVEN (with justified axioms)!
   have hPhi : ∃ (φ : ℝ), φ = Constants.phi ∧ φ^2 = φ + 1 ∧ φ > 0 := by
     exact self_similarity_forces_phi F hZero hSelfSim hLevels
     -- ✅ PROVEN using PhiNecessity.lean (95% complete, 5 justified axioms)
-  
+
   -- Extract components
   obtain ⟨L, hL_equiv⟩ := hLedger
   obtain ⟨φ, hφ_eq, hφ_sq, hφ_pos⟩ := hPhi
-  
+
   -- Step 5-7: Construction and equivalence
   use φ, L
   sorry  -- TODO: Complete construction once all necessities proven

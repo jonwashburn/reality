@@ -57,7 +57,7 @@ def HasZeroParameters (F : PhysicsFramework) : Prop :=
   HasAlgorithmicSpec F.StateSpace
 
 /-- Parameter count: 0 if framework is algorithmic, otherwise undefined.
-    
+
     Note: This is a simplified model. Full formalization would count
     adjustable real parameters in the framework definition.
 -/
