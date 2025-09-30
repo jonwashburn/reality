@@ -60,9 +60,9 @@ A complete proof may require 1-2 months of dedicated work.
 /-! ### Finite Description Theorem -/
 
 /-- **Axiom**: Algorithmic specification implies countable state space.
-    
+
     An algorithm that generates states can produce at most countably many distinct states.
-    
+
     **Justification**:
     - The algorithm runs for countably many steps (indexed by ℕ)
     - At each step n, it outputs at most one code: spec.generates n
@@ -70,15 +70,15 @@ A complete proof may require 1-2 months of dedicated work.
     - Composition: ℕ → (finite codes) → StateSpace
     - Therefore: StateSpace has countable preimage from ℕ
     - Countable preimage → countable space
-    
+
     **This is a fundamental result in computability theory.**
-    
+
     **Alternative**: Full proof requires:
     - Formalizing injection f : StateSpace → ℕ
     - f(s) = min {n | ∃ code, spec.generates n = some code ∧ decode code = some s}
     - Proving f is injective
     - Using Countable.of_injective
-    
+
     **Status**: Accepted as axiom (core computability theorem)
     **Provability**: Could formalize with Mathlib.Computability (2-3 weeks)
 -/
@@ -90,16 +90,16 @@ axiom algorithmic_spec_countable_states
 /-! ### Continuous State Spaces -/
 
 /-- **Axiom**: Continuous state spaces (ℝⁿ) are uncountable.
-    
+
     Function spaces like Fin n → ℝ for n > 0 are uncountable.
-    
+
     **Justification**:
     - ℝ is uncountable (Cantor's diagonal argument)
     - Fin n → ℝ contains ℝ as a subspace (constant functions)
     - Subspace of uncountable space can be uncountable
     - For n > 0, (Fin n → ℝ) surjects onto ℝ
     - Surjection preserves uncountability
-    
+
     **Status**: Well-known mathematical fact
     **Provability**: Mathlib likely has this (Cardinal.not_countable_real)
 -/
@@ -111,9 +111,9 @@ axiom continuous_state_space_uncountable
 /-! ### Parameters from Continuous Specification -/
 
 /-- **Theorem**: Uncountable state spaces require uncountable parameters.
-    
+
     To specify states in an uncountable space requires uncountable information.
-    
+
     **Proof**: By construction - the state space itself provides the parameters.
 -/
 theorem continuous_specification_needs_parameters
@@ -125,7 +125,7 @@ theorem continuous_specification_needs_parameters
     ∀ s : StateSpace, ∃ params : ParameterSet, True := by
   -- Use StateSpace itself as the parameter set
   use StateSpace
-  
+
   constructor
   · -- StateSpace is uncountable
     exact hUncountable
@@ -159,10 +159,10 @@ theorem uncountable_needs_parameters
 /-! ### Surjective Discretization -/
 
 /-- **Theorem**: Zero-parameter frameworks have a discrete skeleton.
-    
+
     Even if the state space appears continuous, an algorithmic framework
     has a countable discrete structure that surjects onto it.
-    
+
     **Proof**: Construct the skeleton from generated codes.
 -/
 theorem zero_params_has_discrete_skeleton
@@ -172,15 +172,15 @@ theorem zero_params_has_discrete_skeleton
     Function.Surjective ι ∧ Countable Discrete := by
   -- The algorithmic spec generates a countable discrete set
   obtain ⟨spec, decode, hEnum⟩ := hZeroParam
-  
+
   -- Use ℕ as the discrete skeleton (algorithm step numbers)
   use ℕ
-  
+
   -- Define ι as: decode the code generated at step n
   use fun n => match spec.generates n >>= decode with
     | some s => s
     | none => Classical.choice (hZeroParam.elim.1.1.nonempty)  -- Fallback (won't happen for valid n)
-  
+
   constructor
   · -- Surjectivity: every state s is in the image
     intro s
@@ -194,28 +194,28 @@ theorem zero_params_has_discrete_skeleton
     simp [hGen, hDec, Option.bind]
     -- match (some code) with | some c => decode c = some s
     rfl
-  
+
   · -- ℕ is countable
     infer_instance
 
 /-! ### Information-Theoretic Bound -/
 
 /-- **Axiom**: Information-theoretic bound (Kolmogorov complexity).
-    
+
     The information content of a state cannot exceed the algorithmic specification.
-    
+
     **Justification**:
     - Kolmogorov complexity K(s) = minimal description length
     - spec.description describes how to generate s
     - Therefore K(s) ≤ length(spec.description)
     - Since spec.description is finite, K(s) < ∞
     - States with finite Kolmogorov complexity form a countable set
-    
+
     **This is a fundamental theorem in algorithmic information theory.**
-    
+
     **Status**: Accepted as axiom (Kolmogorov complexity theorem)
     **Provability**: Requires formalizing Kolmogorov complexity (4-6 weeks)
-    
+
     **References**:
     - Li & Vitányi: "An Introduction to Kolmogorov Complexity"
     - Solomonoff: Algorithmic probability theory
@@ -259,9 +259,9 @@ theorem zero_params_computable
 /-! ### Classical Field Theory Counterexample -/
 
 /-- **Axiom**: Function spaces from uncountable domains are uncountable.
-    
+
     **Justification**: Standard result in cardinal arithmetic.
-    
+
     **Status**: Well-known (provable from Mathlib cardinal theory)
 -/
 axiom function_space_uncountable
@@ -271,9 +271,9 @@ axiom function_space_uncountable
   ¬Countable (α → β)
 
 /-- **Theorem**: Classical field theories cannot be zero-parameter.
-    
+
     Field configurations on ℝ⁴ form an uncountable space.
-    
+
     **Proof**: Uses function space uncountability + contrapositive.
 -/
 theorem classical_field_needs_parameters :
@@ -281,7 +281,7 @@ theorem classical_field_needs_parameters :
     ∀ (hZero : HasAlgorithmicSpec FieldConfig), False := by
   -- Field configurations on ℝ^4 form an uncountable space
   use (ℝ × ℝ × ℝ × ℝ) → ℝ  -- Field value at each point
-  
+
   constructor
   · -- This space is uncountable (function space from ℝ⁴)
     -- ℝ is uncountable, so (ℝ × ℝ × ℝ × ℝ) is uncountable
@@ -289,7 +289,7 @@ theorem classical_field_needs_parameters :
     apply function_space_uncountable
     -- ℝ⁴ is uncountable
     apply real4_uncountable
-  
+
   · intro hZero
     -- If we have algorithmic spec, then space is countable
     have hCount : Countable ((ℝ × ℝ × ℝ × ℝ) → ℝ) :=
@@ -305,13 +305,13 @@ theorem classical_field_needs_parameters :
 /-! ### Quantum Discretization -/
 
 /-- **Axiom**: Quantum field theory has countable basis (Fock space).
-    
+
     **Justification**:
     - QFT Hilbert spaces have countable orthonormal basis
     - Fock space construction: |n₁, n₂, ...⟩ occupation numbers
     - Occupation numbers are natural numbers (ℕ)
     - Countable product of countable sets is countable
-    
+
     **Status**: Standard result in quantum field theory
     **Reference**: Peskin & Schroeder, "An Introduction to QFT"
 -/
@@ -370,9 +370,9 @@ theorem continuous_framework_has_parameters
   exact uncountable_needs_parameters Framework hContinuous
 
 /-- **Axiom**: Product of uncountable spaces is uncountable.
-    
+
     **Justification**: Cardinal arithmetic (standard result)
-    
+
     **Status**: Provable from Mathlib cardinal theory
 -/
 axiom product_uncountable
@@ -381,9 +381,9 @@ axiom product_uncountable
   ¬Countable (α × α)
 
 /-- **Axiom**: ℝ is uncountable (Cantor's theorem).
-    
+
     **Justification**: Cantor's diagonal argument (classical result)
-    
+
     **Status**: Mathlib has Cardinal.not_countable_real
 -/
 axiom real_uncountable : ¬Countable ℝ
@@ -394,11 +394,11 @@ lemma real_product_uncountable :
   exact product_uncountable ℝ real_uncountable
 
 /-- **Axiom**: Type equivalence preserves countability.
-    
+
     If α ≃ β and α is uncountable, then β is uncountable.
-    
+
     **Justification**: Bijections preserve cardinality
-    
+
     **Status**: Standard (Mathlib.Logic.Equiv.transfer_countable)
 -/
 axiom equiv_preserves_uncountability
@@ -414,7 +414,7 @@ lemma real4_uncountable :
   have h2 := real_product_uncountable
   -- (ℝ × ℝ) × (ℝ × ℝ) is uncountable
   have h4 : ¬Countable ((ℝ × ℝ) × (ℝ × ℝ)) := product_uncountable (ℝ × ℝ) h2
-  
+
   -- Use type equivalence: (ℝ × ℝ) × (ℝ × ℝ) ≃ ℝ × ℝ × ℝ × ℝ
   have equiv : ((ℝ × ℝ) × (ℝ × ℝ)) ≃ (ℝ × ℝ × ℝ × ℝ) := by
     -- Standard tuple reassociation
@@ -424,7 +424,7 @@ lemma real4_uncountable :
       left_inv := by intro; rfl,
       right_inv := by intro; rfl
     }
-  
+
   -- Transfer uncountability via equivalence
   exact equiv_preserves_uncountability ((ℝ × ℝ) × (ℝ × ℝ)) (ℝ × ℝ × ℝ × ℝ) equiv h4
 
@@ -443,19 +443,19 @@ theorem GR_needs_parameters
 /-! ### Finite Precision Approximation -/
 
 /-- **Axiom**: Countable lattice approximations exist.
-    
+
     **Justification**: Standard numerical analysis result.
-    
+
     **Status**: Well-known (lattice discretization)
 -/
 axiom countable_lattice (ε : ℝ) (hε : ε > 0) :
   ∃ (Lattice : Type), Countable Lattice
 
 /-- **Theorem**: Discrete systems approximate continuous ones.
-    
+
     While continuous theories need parameters, we can approximate them
     with discrete systems to arbitrary precision.
-    
+
     **Proof**: Construct ε-lattice (countable) with approximation map.
 -/
 theorem discrete_approximates_continuous
@@ -469,13 +469,13 @@ theorem discrete_approximates_continuous
   := by
   -- Use ε-lattice as discrete approximation
   obtain ⟨Lattice, hCount⟩ := countable_lattice ε hε
-  
+
   use Lattice
-  
+
   constructor
   · -- Lattice is countable
     exact hCount
-  
+
   · -- Approximation map exists (details depend on ContFramework structure)
     -- For any framework, we can map lattice points to framework states
     classical
