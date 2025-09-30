@@ -32,14 +32,14 @@ Recognition Science is the unique zero-parameter framework.
 -/
 
 /-- #eval-friendly report for the complete exclusivity proof.
-    
+
     Verifies that Recognition Science is proven as the exclusive framework.
 -/
 def exclusivity_proof_report : String :=
   let cert : URCGenerators.ExclusivityProofCert := {}
   have _ : URCGenerators.ExclusivityProofCert.verified cert :=
     URCGenerators.ExclusivityProofCert.verified_any cert
-  
+
   "ExclusivityProof: COMPLETE ✓\n" ++
   "  ├─ PhiNecessity: PROVEN (self-similarity → φ = (1+√5)/2)\n" ++
   "  ├─ RecognitionNecessity: PROVEN (observables → recognition)\n" ++

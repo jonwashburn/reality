@@ -1,6 +1,6 @@
 import Mathlib
 import IndisputableMonolith.Verification.Necessity.PhiNecessity
-import IndisputableMonolith.Verification.Necessity.RecognitionNecessity  
+import IndisputableMonolith.Verification.Necessity.RecognitionNecessity
 import IndisputableMonolith.Verification.Necessity.LedgerNecessity
 import IndisputableMonolith.Verification.Necessity.DiscreteNecessity
 import IndisputableMonolith.Verification.Exclusivity.NoAlternatives
@@ -34,14 +34,14 @@ This certificate can be #eval'd to verify that Recognition Science exclusivity i
 -/
 
 /-- Certificate for the complete exclusivity proof.
-    
+
     This bundles all 4 necessity proofs and verifies they integrate correctly.
 -/
 structure ExclusivityProofCert where
   deriving Repr
 
 /-- Verification predicate for exclusivity proof certificate.
-    
+
     Returns True if all 4 necessity proofs are complete and integrated.
 -/
 @[simp] def ExclusivityProofCert.verified (_c : ExclusivityProofCert) : Prop :=
@@ -54,7 +54,7 @@ structure ExclusivityProofCert where
   (∃ (_ : Verification.Exclusivity.NoAlternatives.PhysicsFramework), True)
 
 /-- Top-level theorem: exclusivity proof certificate verifies.
-    
+
     This establishes that all components of the exclusivity proof are in place.
 -/
 @[simp] theorem ExclusivityProofCert.verified_any (c : ExclusivityProofCert) :
