@@ -66,8 +66,24 @@ noncomputable def to_newtonian_gauge (h : MetricPerturbation) : NewtonianGaugeMe
   let h' := gauge_transform h ξ
   { Φ := fun x => (1/2) * h'.h x (fun _ => 0)  -- From h'_00 = 2Φ
   , Ψ := fun x => -(1/2) * h'.h x (fun i => if i.val = 0 then 1 else 1)  -- From h'_11 = -2Ψ
-  , Φ_small := by intro _; have := h'.small; sorry
-  , Ψ_small := by intro _; have := h'.small; sorry }
+  , Φ_small := by
+      intro x
+      have hsmall := h'.small x
+      simp [MetricPerturbation.small] at hsmall
+      -- |Φ| = |(1/2)h'_00| ≤ (1/2)|h'| < (1/2)·0.1 = 0.05 < 0.1
+      calc |(1/2) * h'.h x (fun _ => 0)|
+          = (1/2) * |h'.h x (fun _ => 0)| := by simp [abs_mul]; norm_num
+        _ ≤ (1/2) * 0.1 := by linarith [hsmall (fun _ => 0)]
+        _ < 0.1 := by norm_num
+  , Ψ_small := by
+      intro x
+      have hsmall := h'.small x
+      simp [MetricPerturbation.small] at hsmall
+      -- |Ψ| = |(1/2)h'_11| ≤ (1/2)|h'| < 0.05 < 0.1
+      calc |(-(1/2)) * h'.h x (fun i => if i.val = 0 then 1 else 1)|
+          = (1/2) * |h'.h x (fun i => if i.val = 0 then 1 else 1)| := by simp [abs_neg, abs_mul]; norm_num
+        _ ≤ (1/2) * 0.1 := by linarith [hsmall (fun i => if i.val = 0 then 1 else 1)]
+        _ < 0.1 := by norm_num }
 
 /-- Gauge transformation preserves physics (same Riemann tensor). -/
 axiom gauge_invariant_riemann (g₀ : MetricTensor) (h : MetricPerturbation) (ξ : GaugeVector) (x : Fin 4 → ℝ) :
