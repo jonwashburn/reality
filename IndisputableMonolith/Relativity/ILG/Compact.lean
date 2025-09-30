@@ -16,8 +16,14 @@ noncomputable def horizon_radius (μ : ℝ) : ℝ := 2 * μ
 /-- Baseline static BH proxy (sketch): use a scalar invariant placeholder. -/
 noncomputable def baseline_bh (μ : ℝ) : ℝ := μ
 
+/-- Baseline BH radius (for BHDerive module). -/
+noncomputable def baseline_bh_radius (M : ℝ) : ℝ := 2 * M
+
 /-- ILG static BH proxy (sketch): equals baseline at leading order. -/
 noncomputable def ilg_bh (μ C_lag α : ℝ) : ℝ := baseline_bh μ
+
+/-- ILG BH radius (for BHDerive module). -/
+noncomputable def ilg_bh_radius (M C_lag α : ℝ) : ℝ := baseline_bh_radius M
 
 /-- Band statement: static BH proxy deviation is within κ ≥ 0 (sketch). -/
 theorem bh_static_band (μ κ C_lag α : ℝ) (hκ : 0 ≤ κ) :

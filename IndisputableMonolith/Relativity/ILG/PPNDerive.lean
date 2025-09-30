@@ -9,32 +9,32 @@ namespace ILG
 
 /-- Derive γ, β from a (symbolic) metric solution placeholder. -/
 noncomputable def gamma_from_solution (ψ : RefreshField) (p : ILGParams) : ℝ :=
-  ppn_gamma_pot ψ p
+  PPN.gamma_pot ψ p
 
 noncomputable def beta_from_solution (ψ : RefreshField) (p : ILGParams) : ℝ :=
-  ppn_beta_pot ψ p
+  PPN.beta_pot ψ p
 
 @[simp] theorem gamma_band_solution (ψ : RefreshField) (p : ILGParams) (κ : ℝ)
   (hκ : 0 ≤ κ) : |gamma_from_solution ψ p - 1| ≤ κ := by
-  simp [gamma_from_solution, ppn_gamma_pot]
+  simp [gamma_from_solution, PPN.gamma_pot]
   simpa using hκ
 
 @[simp] theorem beta_band_solution (ψ : RefreshField) (p : ILGParams) (κ : ℝ)
   (hκ : 0 ≤ κ) : |beta_from_solution ψ p - 1| ≤ κ := by
-  simp [beta_from_solution, ppn_beta_pot]
+  simp [beta_from_solution, PPN.beta_pot]
   simpa using hκ
 
 /-- Link γ from solution to linearized small-coupling form. -/
 theorem gamma_solution_lin_bound (ψ : RefreshField) (p : ILGParams) :
-  |gamma_from_solution ψ p - ppn_gamma_lin p.cLag p.alpha|
+  |gamma_from_solution ψ p - PPN.gamma_lin p.cLag p.alpha|
     ≤ (1/10 : ℝ) * |p.cLag * p.alpha| := by
   have hpos : 0 ≤ (1/10 : ℝ) := by norm_num
-  have : gamma_from_solution ψ p - ppn_gamma_lin p.cLag p.alpha
+  have : gamma_from_solution ψ p - PPN.gamma_lin p.cLag p.alpha
       = -((1/10 : ℝ) * (p.cLag * p.alpha)) := by
-    simp [gamma_from_solution, ppn_gamma_pot, ppn_gamma_lin, sub_eq_add_neg,
+    simp [gamma_from_solution, PPN.gamma_pot, PPN.gamma_lin, sub_eq_add_neg,
           add_comm, add_left_comm, add_assoc]
   calc
-    |gamma_from_solution ψ p - ppn_gamma_lin p.cLag p.alpha|
+    |gamma_from_solution ψ p - PPN.gamma_lin p.cLag p.alpha|
         = | -((1/10 : ℝ) * (p.cLag * p.alpha)) | := by simpa [this]
     _ = |(1/10 : ℝ) * (p.cLag * p.alpha)| := by simpa [abs_neg]
     _ = (1/10 : ℝ) * |p.cLag * p.alpha| := by
@@ -42,15 +42,15 @@ theorem gamma_solution_lin_bound (ψ : RefreshField) (p : ILGParams) :
 
 /-- Link β from solution to linearized small-coupling form. -/
 theorem beta_solution_lin_bound (ψ : RefreshField) (p : ILGParams) :
-  |beta_from_solution ψ p - ppn_beta_lin p.cLag p.alpha|
+  |beta_from_solution ψ p - PPN.beta_lin p.cLag p.alpha|
     ≤ (1/20 : ℝ) * |p.cLag * p.alpha| := by
   have hpos : 0 ≤ (1/20 : ℝ) := by norm_num
-  have : beta_from_solution ψ p - ppn_beta_lin p.cLag p.alpha
+  have : beta_from_solution ψ p - PPN.beta_lin p.cLag p.alpha
       = -((1/20 : ℝ) * (p.cLag * p.alpha)) := by
-    simp [beta_from_solution, ppn_beta_pot, ppn_beta_lin, sub_eq_add_neg,
+    simp [beta_from_solution, PPN.beta_pot, PPN.beta_lin, sub_eq_add_neg,
           add_comm, add_left_comm, add_assoc]
   calc
-    |beta_from_solution ψ p - ppn_beta_lin p.cLag p.alpha|
+    |beta_from_solution ψ p - PPN.beta_lin p.cLag p.alpha|
         = | -((1/20 : ℝ) * (p.cLag * p.alpha)) | := by simpa [this]
     _ = |(1/20 : ℝ) * (p.cLag * p.alpha)| := by simpa [abs_neg]
     _ = (1/20 : ℝ) * |p.cLag * p.alpha| := by
@@ -58,33 +58,33 @@ theorem beta_solution_lin_bound (ψ : RefreshField) (p : ILGParams) :
 
 /-- 1PN-level placeholders for γ and β extracted from the solution. -/
 noncomputable def gamma1PN (ψ : RefreshField) (p : ILGParams) : ℝ :=
-  ppn_gamma_lin p.cLag p.alpha
+  PPN.gamma_lin p.cLag p.alpha
 
 noncomputable def beta1PN (ψ : RefreshField) (p : ILGParams) : ℝ :=
-  ppn_beta_lin p.cLag p.alpha
+  PPN.beta_lin p.cLag p.alpha
 
 @[simp] theorem gamma1PN_band (ψ : RefreshField) (p : ILGParams) (κ : ℝ)
   (h : |p.cLag * p.alpha| ≤ κ) : |gamma1PN ψ p - 1| ≤ (1/10 : ℝ) * κ := by
-  simpa [gamma1PN] using ppn_gamma_bound_small p.cLag p.alpha κ h
+  simpa [gamma1PN] using PPN.gamma_bound_small p.cLag p.alpha κ h
 
 @[simp] theorem beta1PN_band (ψ : RefreshField) (p : ILGParams) (κ : ℝ)
   (h : |p.cLag * p.alpha| ≤ κ) : |beta1PN ψ p - 1| ≤ (1/20 : ℝ) * κ := by
-  simpa [beta1PN] using ppn_beta_bound_small p.cLag p.alpha κ h
+  simpa [beta1PN] using PPN.beta_bound_small p.cLag p.alpha κ h
 
 @[simp] theorem gamma1PN_eq_lin (ψ : RefreshField) (p : ILGParams) :
-  gamma1PN ψ p = ppn_gamma_lin p.cLag p.alpha := rfl
+  gamma1PN ψ p = PPN.gamma_lin p.cLag p.alpha := rfl
 
 @[simp] theorem beta1PN_eq_lin (ψ : RefreshField) (p : ILGParams) :
-  beta1PN ψ p = ppn_beta_lin p.cLag p.alpha := rfl
+  beta1PN ψ p = PPN.beta_lin p.cLag p.alpha := rfl
 
 /-- Zero-width band linking γ1PN to its linear form (scaffold). -/
 theorem gamma1PN_lin_band_zero (ψ : RefreshField) (p : ILGParams) :
-  |gamma1PN ψ p - ppn_gamma_lin p.cLag p.alpha| ≤ 0 := by
+  |gamma1PN ψ p - PPN.gamma_lin p.cLag p.alpha| ≤ 0 := by
   simp [gamma1PN]
 
 /-- Zero-width band linking β1PN to its linear form (scaffold). -/
 theorem beta1PN_lin_band_zero (ψ : RefreshField) (p : ILGParams) :
-  |beta1PN ψ p - ppn_beta_lin p.cLag p.alpha| ≤ 0 := by
+  |beta1PN ψ p - PPN.beta_lin p.cLag p.alpha| ≤ 0 := by
   simp [beta1PN]
 
 /-- Map observables to potentials: γ from ratio of Ψ to Φ (scaffold). -/

@@ -113,9 +113,29 @@ structure CosmologyBands where
   hκ_bbn : 0 ≤ κ_bbn
   deriving Repr
 
+/-- Alias for consistency with paper. -/
+abbrev CosmoBands := CosmologyBands
+
 @[simp] def bands_hold (B : CosmologyBands) : Prop := True
 
 @[simp] theorem bands_hold_any (B : CosmologyBands) : bands_hold B := trivial
+
+/-- Default cosmology bands (conservative scaffold). -/
+def cosmo_bands_default : CosmoBands :=
+  { κ_cmb := 1
+  , κ_bao := 1
+  , κ_bbn := 1
+  , hκ_cmb := by norm_num
+  , hκ_bao := by norm_num
+  , hκ_bbn := by norm_num }
+
+/-- Predicate that cosmology bands are admissible (all nonnegative). -/
+def cosmo_ok (B : CosmoBands) : Prop :=
+  0 ≤ B.κ_cmb ∧ 0 ≤ B.κ_bao ∧ 0 ≤ B.κ_bbn
+
+theorem cosmo_ok_default : cosmo_ok cosmo_bands_default := by
+  simp [cosmo_ok, cosmo_bands_default]
+  repeat' constructor <;> norm_num
 
 /-- Trivial bound: with ρ_ψ ≥ 0 and H(0) ≥ 0, the source term is nonnegative at t=0. -/
 theorem growth_source_nonneg_at_zero (p : ILGParams) : 0 ≤ rho_psi p := by

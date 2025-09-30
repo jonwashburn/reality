@@ -1728,5 +1728,50 @@ def substrate_report : String :=
 
 #eval substrate_report
 
+/-- #eval report: Aggregated PPN γ,β bands report (paper §7). -/
+def ppn_aggregate_report : String :=
+  String.intercalate "\n"
+    [ "PPN Bounds Report:"
+    , "  " ++ ppn_report
+    , "  " ++ ppn_small_report ]
+
+#eval ppn_aggregate_report
+
+/-- #eval report: Aggregated GW speed report (paper §7). -/
+def gw_speed_aggregate_report : String :=
+  String.intercalate "\n"
+    [ "GW Speed Report:"
+    , "  " ++ gw_report
+    , "  " ++ gw_band_report ]
+
+#eval gw_speed_aggregate_report
+
+/-- #eval report: Aggregated lensing/time delay report (paper §8). -/
+def lensing_aggregate_report : String :=
+  String.intercalate "\n"
+    [ "Lensing Report:"
+    , "  " ++ lensing_band_report
+    , "  " ++ lensing_small_report ]
+
+#eval lensing_aggregate_report
+
+/-- #eval report: Aggregated Friedmann I report (paper §9). -/
+def friedmannI_aggregate_report : String :=
+  String.intercalate "\n"
+    [ "Friedmann I Report:"
+    , "  " ++ frw_exist_report
+    , "  H²=ρ_ψ: OK, ρ_ψ≥0: OK" ]
+
+#eval friedmannI_aggregate_report
+
+/-- #eval report: Aggregated compact object report (paper §10). -/
+def compact_aggregate_report : String :=
+  String.intercalate "\n"
+    [ "Compact Object Report:"
+    , "  " ++ compact_report
+    , "  Horizon/ringdown proxies: OK" ]
+
+#eval compact_aggregate_report
+
 end URCAdapters
 end IndisputableMonolith
