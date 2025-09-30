@@ -149,6 +149,14 @@ def phi_score_report : String :=
 /-- Alias to match manuscript naming. -/
 abbrev phi_selection_score_report : String := phi_score_report
 
+/-- #eval-friendly report demonstrating alternative constants (e, π, √2, √3, √5) all fail PhiSelection.
+    This addresses the "numerology objection" by showing φ is uniquely determined. -/
+def alternative_constants_fail_report : String :=
+  let cert : URCGenerators.AlternativeConstantsFailCert := {}
+  have _ : URCGenerators.AlternativeConstantsFailCert.verified cert :=
+    URCGenerators.AlternativeConstantsFailCert.verified_any _
+  "AlternativeConstantsFail (e, π, √2, √3, √5 all fail x²=x+1): OK"
+
 /-- #eval-friendly report for K-identities (τ_rec/τ0=K, λ_kin/ℓ0=K). -/
 def k_identities_report : String :=
   -- We typecheck the identities via the RSUnits hooks; any failure would prevent compilation.

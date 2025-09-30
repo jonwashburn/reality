@@ -494,6 +494,7 @@ import Mathlib
 import IndisputableMonolith.Verification
 import IndisputableMonolith.RH.RS.Spec
 import IndisputableMonolith.PhiSupport.Lemmas
+import IndisputableMonolith.PhiSupport.Alternatives
 import IndisputableMonolith.RSBridge.Anchor
 import IndisputableMonolith.Physics.AnomalousMoments
 import IndisputableMonolith.Physics.CKM
@@ -3253,6 +3254,28 @@ structure PhiSelectionSpecCert where
 @[simp] theorem PhiSelectionSpecCert.verified_any (c : PhiSelectionSpecCert) :
   PhiSelectionSpecCert.verified c := by
   exact phi_selection_unique_with_closure
+
+/-! ### Alternative Constants Exclusion Certificate
+
+This certificate demonstrates that common mathematical constants (e, π, √2, √3, √5)
+do NOT satisfy the PhiSelection criterion, addressing the "numerology objection" by
+showing that φ is uniquely determined by the mathematical structure.
+-/
+
+/-- Certificate asserting that common alternative constants all fail PhiSelection. -/
+structure AlternativeConstantsFailCert where
+  deriving Repr
+
+@[simp] def AlternativeConstantsFailCert.verified (_c : AlternativeConstantsFailCert) : Prop :=
+  ¬IndisputableMonolith.RH.RS.PhiSelection (Real.exp 1) ∧
+  ¬IndisputableMonolith.RH.RS.PhiSelection Real.pi ∧
+  ¬IndisputableMonolith.RH.RS.PhiSelection (Real.sqrt 2) ∧
+  ¬IndisputableMonolith.RH.RS.PhiSelection (Real.sqrt 3) ∧
+  ¬IndisputableMonolith.RH.RS.PhiSelection (Real.sqrt 5)
+
+@[simp] theorem AlternativeConstantsFailCert.verified_any (c : AlternativeConstantsFailCert) :
+  AlternativeConstantsFailCert.verified c := by
+  exact IndisputableMonolith.PhiSupport.Alternatives.common_constants_fail_selection
 
 end URCGenerators
 end IndisputableMonolith
