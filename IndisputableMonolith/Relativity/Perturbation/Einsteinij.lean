@@ -21,7 +21,7 @@ open Calculus
 noncomputable def linearized_G_ij
   (g₀ : MetricTensor) (h : MetricPerturbation) (x : Fin 4 → ℝ) (i j : Fin 4) : ℝ :=
   -- G_ij = R_ij - (1/2) g_ij R
-  linearized_ricci g₀ h x i j - 
+  linearized_ricci g₀ h x i j -
   (1/2) * g₀.g x (fun _ => 0) (fun k => if k.val = 0 then i else j) * linearized_ricci_scalar g₀ h x
 
 /-- Trace of spatial Einstein equations: G^i_i. -/
@@ -62,7 +62,7 @@ theorem GR_limit_Phi_equals_Psi (ng : NewtonianGaugeMetric) (x : Fin 4 → ℝ) 
 
 /-- ILG correction: Φ - Ψ = O(α·C_lag) × (coupling to scalar field). -/
 axiom ILG_Phi_Psi_difference (ng : NewtonianGaugeMetric) (α C_lag : ℝ) (x : Fin 4 → ℝ) :
-  ∃ correction : ℝ, 
+  ∃ correction : ℝ,
     ng.Φ x - ng.Ψ x = (α * C_lag) * correction ∧
     |correction| < 10  -- Bounded coupling
 

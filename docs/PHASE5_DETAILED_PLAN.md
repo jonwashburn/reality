@@ -184,7 +184,25 @@ Proven/Axiomatized:
 
 ---
 
-#### Day 9: Scalar Field Linearization
+#### Day 9: Scalar Field Linearization ✅ COMPLETE
+**File**: `IndisputableMonolith/Relativity/Perturbation/ScalarLinearized.lean` (CREATED 2025-09-30)
+
+Implemented:
+- curved_dalembertian_linear: □_g expanded to O(h)
+- LinearizedScalarEq: □δψ - m²δψ = coupling(Φ,Ψ)
+- delta_psi_solution: Solve for δψ[Φ,Ψ]
+- T_00_with_solution: Substitute back to get ρ_ψ[Φ,Ψ]
+- rho_psi_effective: Effective source after eliminating δψ
+
+Proven:
+- scalar_eq_static: Static case simplifies to ∇²δψ + coupling = m²δψ
+
+**Critical**: Can now eliminate δψ algebraically!
+rho_psi_effective = f(Φ, Ψ, α, C_lag) - ready for w(r) extraction
+
+---
+
+#### Day 10: Coupled System Assembly
 **Status**: Not yet started
 
 ---
