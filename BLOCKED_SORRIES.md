@@ -51,7 +51,7 @@ Sorries that cannot be resolved without external help or are in buggy theorems.
 
 ## Needs Proof Structure Debug
 
-- Einstein0i.lean:73,74 - G_0i static vanishing - Needs: Fix incomplete proof structure
+- Einstein0i.lean:73,74 - G_0i static vanishing - Blocked: Malformed proof (bullets after `have :=`), needs restructuring
 
 ---
 
