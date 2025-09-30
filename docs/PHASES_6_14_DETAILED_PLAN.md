@@ -352,13 +352,19 @@ Completed:
 Module compiles successfully.
 Cosmological observables computable!
 
-#### Step 9.7: Update ILG Modules
-**Files**: `ILG/FRW.lean`, `ILG/FRWDerive.lean`, `ILG/Growth.lean` (REPLACE)
+#### Step 9.7: Update ILG Modules ⏸️ DEFERRED
+**Status**: Steps 9.1-9.6 mathematically complete, integration deferred
 
-1. Import Cosmology modules
-2. Replace placeholders with actual solutions
-3. Update certificates
-4. Add tests: GR limit, observations
+**Phase 9 is 86% mathematically complete!**
+
+Cosmology framework established:
+- FRW metric
+- Scalar field dynamics
+- Modified Friedmann equations
+- Perturbations and growth
+- σ_8 predictions
+
+ILG module integration can be done separately.
 
 ---
 
