@@ -196,13 +196,21 @@ Compute deflection angles and time delays from null geodesic integration.
 
 ### Steps
 
-#### Step 8.1: Null Geodesic Structure
-**File**: `IndisputableMonolith/Relativity/Geodesics/NullGeodesic.lean` (NEW)
+#### Step 8.1: Null Geodesic Structure ✅ COMPLETE
+**File**: `IndisputableMonolith/Relativity/Geodesics/NullGeodesic.lean` (CREATED 2025-09-30)
 
-1. Define null geodesic: dx^μ/dλ where g_μν dx^μ dx^ν = 0
-2. Geodesic equation: d²x^μ/dλ² + Γ^μ_ρσ dx^ρ/dλ dx^σ/dλ = 0
-3. Affine parameter λ
-4. Initial conditions: position x₀, direction k^μ
+**PHASE 8 STARTED!**
+
+Completed:
+1. ✅ NullGeodesic structure: path with g_μν dx^μ dx^ν = 0
+2. ✅ Geodesic equation: d²x^μ/dlam² + Γ^μ_ρσ dx^ρ/dlam dx^σ/dlam = 0
+3. ✅ InitialConditions: position and direction
+4. ✅ null_geodesic_exists: Existence axiom
+5. ✅ Affine parameter transformations
+6. ✅ Minkowski straight line theorem
+
+Module compiles successfully.
+Foundation for lensing calculations!
 
 #### Step 8.2: Integration in Newtonian Gauge
 **File**: `IndisputableMonolith/Relativity/Geodesics/Integration.lean` (NEW)
