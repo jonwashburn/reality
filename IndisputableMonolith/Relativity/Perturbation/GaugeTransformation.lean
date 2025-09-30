@@ -25,7 +25,7 @@ noncomputable def gauge_transform (h : MetricPerturbation) (ξ : GaugeVector) : 
   h := fun x low =>
     let μ := low 0
     let ν := low 1
-    h.h x low + 
+    h.h x low +
     partialDeriv_v2 (fun y => (ξ.ξ y) ν) μ x +
     partialDeriv_v2 (fun y => (ξ.ξ y) μ) ν x
   small := by
@@ -54,7 +54,7 @@ axiom find_gauge_vector_for_newtonian (h : MetricPerturbation) :
 
 /-- After fixing h_0i = 0, can choose trace to make h_ij ∝ δ_ij. -/
 axiom spatial_trace_freedom (h : MetricPerturbation) (h_newt : InNewtonianGauge h) :
-  ∃ ξ : GaugeVector, 
+  ∃ ξ : GaugeVector,
     InNewtonianGauge (gauge_transform h ξ) ∧
     (∀ x i j, i.val > 0 → j.val > 0 → i ≠ j →
       (gauge_transform h ξ).h x (fun k => if k.val = 0 then i else j) = 0)

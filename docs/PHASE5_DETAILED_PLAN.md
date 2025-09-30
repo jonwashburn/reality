@@ -131,6 +131,30 @@ Proven:
 
 ---
 
+### **Week 2: Einstein Equations Linearization (Days 6-10)**
+
+#### Day 6: 00-Component (Time-Time) ✅ COMPLETE
+**File**: `IndisputableMonolith/Relativity/Perturbation/Einstein00.lean` (CREATED 2025-09-30)
+
+Implemented:
+- linearized_G_00: δG_00 = δR_00 - (1/2)g₀_00 δR
+- G_00_is_laplacian_Phi: δG_00 ≈ ∇²Φ in Newtonian gauge
+- T_00_scalar_linear: Scalar field contribution to energy density
+- Einstein00Equation: G_00 = κ T_00 (actual PDE!)
+
+Proven:
+- einstein_00_reduces_to_poisson: Zero scalar → standard Poisson ✓
+- poisson_form_of_einstein_00: Equation has form ∇²Φ = 4πG(ρ + ρ_ψ)
+
+**This is the key equation for deriving w(r)!**
+
+---
+
+#### Day 7: 0i-Components (Time-Space)
+**Status**: Not yet started
+
+---
+
 ### **Week 3: Modified Poisson & Weight Extraction (Days 11-15)**
 
 #### Day 11: Effective Source Term
