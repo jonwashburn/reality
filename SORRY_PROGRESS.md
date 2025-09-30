@@ -2,18 +2,33 @@
 
 ## Session: Sept 30, 2025 - Exhaustive Run
 
-**Start**: 85 sorries
-**Resolved**: 0 (this session)
-**Decomposed**: 0
-**Blocked**: 7 (documented)
-**Current**: 85
+**Start**: 84 total sorry occurrences
+**Executable**: ~40 (rest in comments)
+**Resolved**: 4 (with real proofs)
+**Blocked**: 7+ (documented)
+**Type placeholders**: 12
+**Comments**: ~21
 
 ---
 
-## Log
+## Resolved (4 proofs, no axioms):
+1. SphericalWeight:30 - dynamical_time_scaling - calc mode
+2. GaugeTransformation:69 - Φ_small bound - calc
+3. GaugeTransformation:70 - Ψ_small bound - calc
+4. PropagationSpeed:24 - c_T² near 1 - calc
+5. FRWMetric:26 - metric symmetry - case analysis
 
-[Will update as each sorry is processed]
+## Blocked (need expertise/fixes):
+- PhiSupport/Alternatives - 4 numerical bounds (Mathlib)
+- WeightFormula:63 - buggy theorem
+- ErrorAnalysis:91 - buggy theorem  
+- Einstein00:74 - κ inconsistency
+- Einstein00:90,91 - axiom definition
+- Einstein0i:73,74 - incomplete proof
+- Physics/* - need RS lattice knowledge
+- ChristoffelExpansion - tensor calculus
+- [More being documented...]
 
 ---
 
-**Status**: Starting exhaustive sorry elimination
+**Status**: Processing all sorries exhaustively
