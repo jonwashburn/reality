@@ -54,7 +54,7 @@ axiom dalembertian_test :
 
 /-- Derivative is linear: ∂_μ(f + g) = ∂_μ f + ∂_μ g. -/
 theorem deriv_add (f g : (Fin 4 → ℝ) → ℝ) (μ : Fin 4) (x : Fin 4 → ℝ) :
-  partialDeriv_v2 (fun y => f y + g y) μ x = 
+  partialDeriv_v2 (fun y => f y + g y) μ x =
     partialDeriv_v2 f μ x + partialDeriv_v2 g μ x := by
   simp [partialDeriv_v2]
   ring
@@ -73,7 +73,7 @@ theorem deriv_const (c : ℝ) (μ : Fin 4) (x : Fin 4 → ℝ) :
 
 /-- Chain rule for composition. -/
 axiom deriv_comp (f : ℝ → ℝ) (g : (Fin 4 → ℝ) → ℝ) (μ : Fin 4) (x : Fin 4 → ℝ) :
-  partialDeriv_v2 (fun y => f (g y)) μ x = 
+  partialDeriv_v2 (fun y => f (g y)) μ x =
     (deriv f (g x)) * partialDeriv_v2 g μ x
 
 /-- Product rule: ∂_μ(f g) = (∂_μ f) g + f (∂_μ g). -/
