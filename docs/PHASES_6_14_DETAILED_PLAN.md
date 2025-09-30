@@ -84,15 +84,23 @@ Derive γ and β from actual 1PN metric solutions.
 
 ### Steps
 
-#### Step 7.1: 1PN Metric Ansatz
-**File**: `IndisputableMonolith/Relativity/PostNewtonian/Metric1PN.lean` (NEW)
+#### Step 7.1: 1PN Metric Ansatz ✅ COMPLETE
+**File**: `IndisputableMonolith/Relativity/PostNewtonian/Metric1PN.lean` (CREATED 2025-09-30)
 
-1. Define 1PN metric structure:
-   - g_00 = -(1 - 2U + 2β U²) + O(ε³)
-   - g_0i = -(4γ+3)/2 V_i + O(ε^{5/2})
-   - g_ij = (1 + 2γ U) δ_ij + O(ε²)
-2. Define potentials: U (Newtonian), U_2 (1PN), V_i (gravitomagnetic)
-3. Implement index operations to O(ε³)
+**PHASE 7 STARTED!**
+
+Completed:
+1. ✅ PPNPotentials structure: U, U_2, V_i
+2. ✅ PPNParameters structure: γ, β
+3. ✅ metric_1PN: Full 1PN metric in PPN form
+   - g_00 = -(1 - 2U + 2β U²)
+   - g_0i = -(4γ+3)/2 V_i
+   - g_ij = (1 + 2γ U) δ_ij
+4. ✅ inverse_metric_1PN: Inverse to O(ε³)
+5. ✅ ppn_GR: GR values γ=1, β=1
+
+Module compiles successfully.
+Foundation for deriving γ, β from field equations!
 
 #### Step 7.2: 1PN Einstein Equations
 **File**: `IndisputableMonolith/Relativity/PostNewtonian/Einstein1PN.lean` (NEW)
