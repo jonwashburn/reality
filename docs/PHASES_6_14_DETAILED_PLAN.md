@@ -295,14 +295,18 @@ Completed:
 Module compiles successfully.
 Foundation for modified Friedmann!
 
-#### Step 9.2: Scalar Field on FRW
-**File**: `IndisputableMonolith/Relativity/Cosmology/ScalarOnFRW.lean` (NEW)
+#### Step 9.2: Scalar Field on FRW ✅ COMPLETE
+**File**: `IndisputableMonolith/Relativity/Cosmology/ScalarOnFRW.lean` (CREATED 2025-09-30)
 
-1. Assume homogeneous scalar: ψ = ψ(t) only
-2. Klein-Gordon on FRW: ψ̈ + 3H ψ̇ + m²ψ = 0
-3. Solve for ψ(t) given H(t)
-4. Compute energy density: ρ_ψ = (1/2)ψ̇² + (1/2)m²ψ²
-5. Compute pressure: p_ψ = (1/2)ψ̇² - (1/2)m²ψ²
+Completed:
+1. ✅ HomogeneousScalar: ψ = ψ(t) structure
+2. ✅ klein_gordon_FRW: ψ̈ + 3Hψ̇ + m²ψ = 0
+3. ✅ klein_gordon_solution_exists
+4. ✅ energy_density_scalar: ρ_ψ = (1/2)ψ̇² + (1/2)m²ψ²
+5. ✅ pressure_scalar: p_ψ = (1/2)ψ̇² - (1/2)m²ψ²
+6. ✅ energy_pressure_relation proven
+
+Module compiles successfully.
 
 #### Step 9.3: Modified Friedmann Equations
 **File**: `IndisputableMonolith/Relativity/Cosmology/Friedmann.lean` (NEW)
