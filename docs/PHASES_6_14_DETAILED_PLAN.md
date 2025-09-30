@@ -226,14 +226,19 @@ Completed:
 Module compiles successfully.
 Ready for deflection calculations!
 
-#### Step 8.3: Deflection Angle Calculation
-**File**: `IndisputableMonolith/Relativity/Lensing/Deflection.lean` (NEW)
+#### Step 8.3: Deflection Angle Calculation ✅ COMPLETE
+**File**: `IndisputableMonolith/Relativity/Lensing/Deflection.lean` (CREATED 2025-09-30)
 
-1. Integrate geodesic from r = -∞ to r = +∞
-2. Compute total angular deflection Δθ
-3. For small deflection: α(b) ≈ 2∫ (dΦ/dr + dΨ/dr) dr/√(r²-b²)
-4. Spherical lens: α(b) = 4GM(1+γ)/b for ILG
-5. Compare with Schwarzschild: α_GR = 4GM/b
+Completed:
+1. ✅ ImpactParameter structure
+2. ✅ deflection_angle: Compute from geodesic integration
+3. ✅ schwarzschild_deflection: Test case
+4. ✅ deflection_ILG_vs_GR: Difference from GR
+5. ✅ spherical_lens_deflection: α(b) = 4GM(1+γ)/b
+6. ✅ analytical_matches_numerical: Verification
+
+Module compiles successfully.
+Deflection angles computable!
 
 #### Step 8.4: Shapiro Time Delay
 **File**: `IndisputableMonolith/Relativity/Lensing/TimeDelay.lean` (NEW)
