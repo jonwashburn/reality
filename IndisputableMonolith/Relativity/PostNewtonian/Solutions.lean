@@ -40,7 +40,7 @@ axiom gravitomagnetic_solution_exists (ρ : (Fin 4 → ℝ) → ℝ) (v : (Fin 4
 axiom onePN_correction_exists (ρ : (Fin 4 → ℝ) → ℝ) (U : (Fin 4 → ℝ) → ℝ) :
   ∃ U_2 : (Fin 4 → ℝ) → ℝ,
     -- Equation involves U² and time derivatives
-    ∀ x, secondDeriv U_2 0 0 x - laplacian U_2 x = 
+    ∀ x, secondDeriv U_2 0 0 x - laplacian U_2 x =
          -(U x)^2 * (4 * Real.pi)  -- Simplified
 
 /-- Full 1PN solution with scalar field. -/
