@@ -1,6 +1,6 @@
 import Mathlib
 import IndisputableMonolith.Relativity.Geometry
-import IndisputableMonolith.Relativity.Calculus  
+import IndisputableMonolith.Relativity.Calculus
 import IndisputableMonolith.Relativity.Perturbation.SphericalWeight
 import IndisputableMonolith.Relativity.Perturbation.ErrorAnalysis
 import IndisputableMonolith.Constants
@@ -54,7 +54,7 @@ theorem phenomenology_match :
   ∀ (T_dyn tau0 n zeta xi lambda : ℝ),
     -- Derived form matches phenomenological with:
     -- λ ξ n ζ = normalization factors absorbing tau0 and geometric terms
-    weight_RS_final T_dyn tau0 = 
+    weight_RS_final T_dyn tau0 =
       lambda * xi * n * (T_dyn / tau0) ^ alpha_RS * zeta →
     -- Implied normalization:
     lambda * xi * n * zeta = C_lag_RS * alpha_RS := by
@@ -72,9 +72,9 @@ theorem weight_derivation_complete :
     w_formula = "w(r) = 1 + C_lag·α·(T_dyn/tau0)^α" ∧
     -- Derivation is: action → field_eqs → weak_field → w_formula
     True := by
-  refine ⟨"S[g,ψ]", "G_μν = κ T_μν, □ψ - m²ψ = 0", 
-          "Linearize around Minkowski", 
-          "w(r) = 1 + C_lag·α·(T_dyn/tau0)^α", 
+  refine ⟨"S[g,ψ]", "G_μν = κ T_μν, □ψ - m²ψ = 0",
+          "Linearize around Minkowski",
+          "w(r) = 1 + C_lag·α·(T_dyn/tau0)^α",
           rfl, rfl, rfl, rfl, trivial⟩
 
 /-- Summary: Weight is derived, not assumed. -/
@@ -82,7 +82,7 @@ theorem weight_is_derived_not_assumed :
   -- w(r) emerges from field theory
   ∀ α C_lag tau0 T_dyn,
     ∃ derivation_steps : List String,
-      derivation_steps = 
+      derivation_steps =
         ["Covariant action S[g,ψ]",
          "Vary → Einstein + scalar equations",
          "Linearize around Minkowski",
@@ -101,7 +101,7 @@ axiom phase5_fundamental_theorem :
   ∀ (α C_lag tau0 : ℝ) (ρ : ℝ → ℝ),
     -- From Einstein equations + scalar field coupling + weak-field limit
     -- We derive (not assume):
-    ∃ w : ℝ → ℝ, 
+    ∃ w : ℝ → ℝ,
       (∀ r, 0 < r → w r = weight_final α C_lag tau0 (dynamical_time_keplerian 1 r)) ∧
       (∀ Φ : ℝ → ℝ, RadialPoissonPhi Φ ρ w)
 
