@@ -40,7 +40,7 @@ noncomputable def G_0i_1PN (pots : PPNPotentials) (params : PPNParameters) (x : 
 
 /-- Einstein tensor ij-component to O(ε²). -/
 noncomputable def G_ij_1PN (pots : PPNPotentials) (params : PPNParameters) (x : Fin 4 → ℝ) (i j : Fin 4) : ℝ :=
-  -- G_ij = R_ij - (1/2)g_ij R  
+  -- G_ij = R_ij - (1/2)g_ij R
   -- At 1PN: involves ∇²U terms
   if i = j ∧ i.val > 0 then
     params.gamma * laplacian pots.U x
@@ -86,7 +86,7 @@ noncomputable def T_ij_1PN (ψ : Fields.ScalarField) (α m_squared : ℝ) (x : F
   else 0
 
 /-- 1PN Einstein equation (00-component): G_00 = κ T_00. -/
-def Einstein00_1PN (pots : PPNPotentials) (params : PPNParameters) (ψ : Fields.ScalarField) 
+def Einstein00_1PN (pots : PPNPotentials) (params : PPNParameters) (ψ : Fields.ScalarField)
   (ρ_matter : (Fin 4 → ℝ) → ℝ) (α m_squared : ℝ) : Prop :=
   ∀ x, let κ := (1 : ℝ)  -- 8πG/c⁴ in natural units
        G_00_1PN pots params x = κ * (ρ_matter x + T_00_1PN ψ pots α m_squared x)
@@ -102,7 +102,7 @@ def Einsteinij_1PN (pots : PPNPotentials) (params : PPNParameters) (ψ : Fields.
            G_ij_1PN pots params x i j = κ * T_ij_1PN ψ α m_squared x i j
 
 /-- Full 1PN field equations. -/
-structure FieldEquations1PN (pots : PPNPotentials) (params : PPNParameters) 
+structure FieldEquations1PN (pots : PPNPotentials) (params : PPNParameters)
   (ψ : Fields.ScalarField) (ρ : (Fin 4 → ℝ) → ℝ) (α m_squared : ℝ) : Prop where
   eq_00 : Einstein00_1PN pots params ψ ρ α m_squared
   eq_0i : Einstein0i_1PN pots params ψ α
