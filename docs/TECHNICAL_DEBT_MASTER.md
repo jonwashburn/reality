@@ -517,7 +517,7 @@ Many remaining sorries require:
 - 7 items marked with asterisks (structural blockers identified and documented)
 
 **Final Metrics**:
-- Sorries: 66 → **46** (−20, **30.3% reduction**) 🎯
+- Sorries: 66 → **44** (−22, **33.3% reduction**) 🎯
 - Axioms: 145 → ~126 (−19 replaced with proofs)
 - Commits this session: 14
 - Build: CLEAN
