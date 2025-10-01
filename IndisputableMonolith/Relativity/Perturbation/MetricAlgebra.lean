@@ -66,8 +66,27 @@ theorem test_minkowski_diagonal_pert :
     |(inverse_metric_first_order minkowski.toMetricTensor h) x (fun _ => μ) (fun _ => 0) -
      (inverse_metric minkowski.toMetricTensor) x (fun _ => μ) (fun _ => 0)| < 0.02 := by
   intro x μ
-  simp [inverse_metric_first_order, inverse_metric]
-  sorry  -- TODO: Numerical verification
+  -- Expand both inverse metrics; difference reduces to -h^{μ0}
+  dsimp [inverse_metric_first_order, inverse_metric]
+  -- Evaluate the perturbation component h.h at indices (μ,0)
+  by_cases hμ0 : μ = 0
+  · -- Diagonal time-time component: |−0.01| < 0.02
+    have : h.h x (fun i => if i.val = 0 then μ else 0) = 0.01 := by
+      -- low 0 = μ, low 1 = 0, so equal iff μ = 0
+      simp [hμ0]
+    have : |(inverse_metric minkowski.toMetricTensor) x (fun _ => μ) (fun _ => 0) -
+             (inverse_metric minkowski.toMetricTensor) x (fun _ => μ) (fun _ => 0) -
+             h.h x (fun i => if i.val = 0 then μ else 0)| = |-0.01| := by
+      simpa [this]
+    simpa [this] using (by norm_num : |(-0.01 : ℝ)| < 0.02)
+  · -- Off-diagonal or spatial-time: h component is zero
+    have : h.h x (fun i => if i.val = 0 then μ else 0) = 0 := by
+      simp [hμ0]
+    have : |(inverse_metric minkowski.toMetricTensor) x (fun _ => μ) (fun _ => 0) -
+             (inverse_metric minkowski.toMetricTensor) x (fun _ => μ) (fun _ => 0) -
+             h.h x (fun i => if i.val = 0 then μ else 0)| = 0 := by
+      simpa [this]
+    simpa [this] using (by norm_num : (0 : ℝ) < 0.02)
 
 /-- Index raising with perturbed metric (to first order). -/
 noncomputable def raise_index_perturbed (g₀ : MetricTensor) (h : MetricPerturbation)
