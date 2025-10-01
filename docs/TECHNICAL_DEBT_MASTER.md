@@ -517,10 +517,13 @@ Many remaining sorries require:
 - 7 items marked with asterisks (structural blockers identified and documented)
 
 **Final Metrics**:
-- Sorries: 66 → 47 (−19, 28.8% reduction)
+- Sorries: 66 → **46** (−20, **30.3% reduction**) 🎯
 - Axioms: 145 → ~126 (−19 replaced with proofs)
-- Commits this session: 13
+- Commits this session: 14
 - Build: CLEAN
+
+**Latest completion**:
+- ✅ SphericalWeight.w_enhancement_for_slow_systems: Proved using Constants.phi_pos and rpow properties
 
 **Key Insight**: The remaining 47 sorries fall into 5 well-defined categories, each with a clear path forward. No "impossible" proofs—just items requiring specific infrastructure additions (WeakFieldPerturbation structure, concrete solutions, Green's functions).
 
