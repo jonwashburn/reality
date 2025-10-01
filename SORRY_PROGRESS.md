@@ -152,3 +152,12 @@ Updated BLOCKED_SORRIES.md with circular dependency note.
 
 Total resolved: 8
 Blocked (cannot decompose further): 3
+
+## Session - Oct 1, 12:20 AM
+
+Sorry: GammaExtraction.lean:41
+Result: Resolved
+Method: calc mode with mul_lt_mul
+Time: 8m
+
+Total resolved: 9 (was 8)

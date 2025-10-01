@@ -38,7 +38,21 @@ theorem gamma_near_one (α C_lag : ℝ) (h_α : |α| < 0.3) (h_C : |C_lag| < 0.2
   |gamma_ILG α C_lag - 1| < 0.1 := by
   simp [gamma_ILG]
   -- |0.1·α·C_lag| < 0.1·0.3·0.2 = 0.006 < 0.1
-  sorry  -- TODO: Numerical bound
+  calc |0.1 * (α * C_lag)|
+      = 0.1 * |α * C_lag| := by simp [abs_mul]; norm_num
+    _ = 0.1 * |α| * |C_lag| := by rw [abs_mul]
+    _ < 0.1 * 0.3 * 0.2 := by
+        apply mul_lt_mul
+        · apply mul_lt_mul
+          · norm_num
+          · exact h_α
+          · exact abs_nonneg α
+          · norm_num
+        · exact h_C
+        · exact abs_nonneg C_lag
+        · apply mul_pos; norm_num; norm_num
+    _ = 0.006 := by norm_num
+    _ < 0.1 := by norm_num
 
 /-- Recognition spine value for γ. -/
 noncomputable def gamma_RS : ℝ :=
