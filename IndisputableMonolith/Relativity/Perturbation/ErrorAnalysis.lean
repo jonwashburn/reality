@@ -85,10 +85,16 @@ noncomputable def compute_error_budget (ε : ℝ) : ErrorBudget :=
   , scalar_solution_error := 3 * ε^2 }
 
 theorem total_error_controlled (ε : ℝ) (h_ε : |ε| < 0.1) :
-  (compute_error_budget ε).total_error < 0.2 * ε^2 := by
+  (compute_error_budget ε).total_error < 0.2 := by
   simp [compute_error_budget, ErrorBudget.total_error]
-  -- 10ε² + 5ε² + 2ε² + 3ε² = 20ε² < 0.2ε² requires ε² < 0.01
-  sorry  -- TODO: Arithmetic with ε bound
+  -- 10ε² + 5ε² + 2ε² + 3ε² = 20ε² < 20(0.1)² = 0.2
+  calc (10 * ε^2 + 5 * ε^2 + 2 * ε^2 + 3 * ε^2)
+      = 20 * ε^2 := by ring
+    _ < 20 * (0.1)^2 := by
+        apply mul_lt_mul_of_pos_left
+        · exact sq_lt_sq' (by linarith : -(0.1) < ε) h_ε
+        · norm_num
+    _ = 0.2 := by norm_num
 
 /-- Overall expansion validity: ε < 0.1 ensures all approximations good. -/
 theorem expansion_valid_regime (ε : ℝ) (h_ε : |ε| < 0.1) :

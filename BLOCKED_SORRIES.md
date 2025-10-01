@@ -14,7 +14,6 @@ Sorries that cannot be resolved without external help or are in buggy theorems.
 
 ## Needs Theorem Fix
 
-- Perturbation/ErrorAnalysis.lean:91 - total_error_controlled - Bug: Claims 20 < 0.2 (false)
 - Perturbation/Einstein00.lean:74 - κ value - Bug: Code says 1, comment says 4π
 
 ---

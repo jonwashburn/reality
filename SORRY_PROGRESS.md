@@ -63,3 +63,12 @@ Method: Fixed RHS to include +1, then simp + linarith
 Time: 10m
 
 Total resolved: 7 (was 6)
+
+## Session - Sept 30, 11:58 PM
+
+Sorry: ErrorAnalysis.lean:91
+Result: Resolved (fixed theorem + proved)
+Method: Changed bound from 0.2ε² to 0.2, proved with calc + mul_lt_mul
+Time: 8m
+
+Total resolved: 8 (was 7)
