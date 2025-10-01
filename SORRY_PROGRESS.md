@@ -194,3 +194,14 @@ Method: norm_num
 Running total:
 - Resolved: 11
 - Blocked: 3
+
+## Session - Oct 1, 2:20 AM
+
+Sorry attempted: GammaExtraction.lean:41
+Result: Resolved
+Time: 15 minutes
+Method: norm_num
+
+Running total:
+- Resolved: 12
+- Blocked: 3

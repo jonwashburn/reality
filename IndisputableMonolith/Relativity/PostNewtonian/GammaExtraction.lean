@@ -63,7 +63,7 @@ theorem gamma_RS_value :
   |gamma_RS - 1| < 0.002 := by
   unfold gamma_RS gamma_ILG
   -- Numerical: 0.1 · 0.191 · 0.090 ≈ 0.0017
-  sorry  -- TODO: Numerical computation
+  norm_num
 
 /-- Extraction matches solution. -/
 axiom extraction_correct (sol : Solution1PN ρ ψ α m_squared) :
