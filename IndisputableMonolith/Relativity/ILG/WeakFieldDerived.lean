@@ -40,7 +40,9 @@ theorem modified_poisson_proven (ng : NewtonianGaugeMetric) (ρ : ℝ → ℝ) (
     (∀ r, w r = weight_derived α C_lag 1 (2 * Real.pi * r)) := by
   -- From Phase 5 fundamental theorem
   have := phase5_fundamental_theorem α C_lag 1 ρ
-  sorry  -- TODO: Extract w from existence proof
+  -- phase5_fundamental_theorem is an axiom asserting existence
+  -- To extract w, we use Classical.choose on the existence statement
+  sorry  -- TODO: phase5_fundamental_theorem is axiomatized; needs actual Phase 5 derivation completed first
 
 /-- O(ε²) error control (proven in Phase 5 Day 14). -/
 theorem error_controlled (ψ₀ : Fields.ScalarField) (ng : NewtonianGaugeMetric) (δψ : ScalarPerturbation) (ρ : ℝ → ℝ) (α C_lag : ℝ) :
@@ -49,7 +51,10 @@ theorem error_controlled (ψ₀ : Fields.ScalarField) (ng : NewtonianGaugeMetric
   intro r h_small
   -- From ErrorAnalysis module
   have := weight_remainder_bounded ψ₀ ng δψ ρ α C_lag 1 r h_small
-  sorry  -- TODO: Extract C from existence proof
+  -- weight_remainder_bounded gives ∃ C > 0, ...
+  -- Extract C using Classical.choose
+  rcases this with ⟨C, hC_pos, hbound⟩
+  exact ⟨C, hC_pos, hbound⟩
 
 /-- GR limit: weight → 1 when parameters → 0. -/
 theorem weight_gr_limit (T_dyn tau0 : ℝ) :
