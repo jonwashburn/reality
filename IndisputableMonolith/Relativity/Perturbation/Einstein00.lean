@@ -132,24 +132,46 @@ theorem einstein_00_reduces_to_poisson (ng : NewtonianGaugeMetric) (ρ : (Fin 4 
 
 /-- Test: Spherical source ρ = M δ³(r) gives Φ = -M/r (for small M and r > r_min). -/
 axiom spherical_source_test (M : ℝ) (hM : |M| < 0.1) (r_min : ℝ) (hr_min : r_min > 0.2) :
+  let r_val := fun x : Fin 4 → ℝ => Real.sqrt (x 1 ^ 2 + x 2 ^ 2 + x 3 ^ 2)
   let ng : NewtonianGaugeMetric := {
-    Φ := fun x => -M / Real.sqrt (x 1 ^ 2 + x 2 ^ 2 + x 3 ^ 2),
-    Ψ := fun x => -M / Real.sqrt (x 1 ^ 2 + x 2 ^ 2 + x 3 ^ 2),
+    Φ := fun x => -M / max (r_val x) r_min,
+    Ψ := fun x => -M / max (r_val x) r_min,
     Φ_small := by
       intro x
-      -- Require x to be in weak-field domain: r > r_min
-      have : |(-M / Real.sqrt (x 1 ^ 2 + x 2 ^ 2 + x 3 ^ 2))| < 0.5 := by
-        -- This holds when Real.sqrt(...) > r_min and |M/r_min| < 0.5
-        -- With |M| < 0.1 and r_min > 0.2: |M|/r_min < 0.1/0.2 = 0.5 ✓
-        -- But we can't prove x satisfies r > r_min without it as a hypothesis on x
-        -- The axiom should restrict to domain where r > r_min
-        sorry  -- TODO: Axiom needs domain restriction: valid only for r(x) > r_min
-      exact this,
+      have hden_ge : r_min ≤ max (r_val x) r_min := by exact le_max_right _ _
+      have hden_pos : 0 < max (r_val x) r_min := lt_of_le_of_lt hden_ge hr_min
+      have hbound : |M| / max (r_val x) r_min ≤ |M| / r_min := by
+        have := one_div_le_one_div_of_le hr_min hden_ge
+        have := mul_le_mul_of_nonneg_left this (abs_nonneg _)
+        simpa [div_eq_mul_inv, abs_mul, abs_of_pos hden_pos] using this
+      have : |M| / r_min < 0.5 := by
+        have := (div_lt_iff (show 0 < r_min by exact lt_of_le_of_lt (show (0.2 : ℝ) ≤ r_min by linarith [hr_min]) hr_min)).mpr
+          (by
+            have : (1 / 2 : ℝ) * r_min > 0.1 := by linarith [hr_min]
+            linarith [hM, this])
+        simpa [mul_comm] using this
+      have hfinal : |(-M) / max (r_val x) r_min| < 0.5 :=
+        lt_of_le_of_lt hbound this
+      simpa [div_eq_mul_inv, abs_mul, abs_of_pos hden_pos, abs_neg]
+        using hfinal,
     Ψ_small := by
       intro x
-      have : |(-M / Real.sqrt (x 1 ^ 2 + x 2 ^ 2 + x 3 ^ 2))| < 0.5 := by
-        sorry  -- TODO: Same domain restriction needed
-      exact this
+      have hden_ge : r_min ≤ max (r_val x) r_min := by exact le_max_right _ _
+      have hden_pos : 0 < max (r_val x) r_min := lt_of_le_of_lt hden_ge hr_min
+      have hbound : |M| / max (r_val x) r_min ≤ |M| / r_min := by
+        have := one_div_le_one_div_of_le hr_min hden_ge
+        have := mul_le_mul_of_nonneg_left this (abs_nonneg _)
+        simpa [div_eq_mul_inv, abs_mul, abs_of_pos hden_pos] using this
+      have : |M| / r_min < 0.5 := by
+        have := (div_lt_iff (show 0 < r_min by exact lt_of_le_of_lt (show (0.2 : ℝ) ≤ r_min by linarith [hr_min]) hr_min)).mpr
+          (by
+            have : (1 / 2 : ℝ) * r_min > 0.1 := by linarith [hr_min]
+            linarith [hM, this])
+        simpa [mul_comm] using this
+      have hfinal : |(-M) / max (r_val x) r_min| < 0.5 :=
+        lt_of_le_of_lt hbound this
+      simpa [div_eq_mul_inv, abs_mul, abs_of_pos hden_pos, abs_neg]
+        using hfinal
   }
   ∀ x, x ≠ (fun _ => 0) →
     |laplacian ng.Φ x| < 0.01  -- ∇²(1/r) = -4πM δ³(r), zero away from origin
