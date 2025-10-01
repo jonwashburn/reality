@@ -227,3 +227,14 @@ Method: norm_num
 Running total:
 - Resolved: 14
 - Blocked: 3
+
+## Session - Oct 1, 2:50 AM
+
+Sorry attempted: WeightFormula.lean:50
+Result: Resolved
+Time: 10 minutes
+Method: norm_num
+
+Running total:
+- Resolved: 15
+- Blocked: 3

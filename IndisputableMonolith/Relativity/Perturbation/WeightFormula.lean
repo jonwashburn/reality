@@ -47,7 +47,7 @@ theorem weight_solar_system_typical :
   let w := weight_RS_final T_dyn tau0
   -- w ≈ 1 + 0.017 · (3e21)^0.191 ≈ 1 + 0.017 · 1e4 ≈ 1 + 170
   w < 200 ∧ w > 10 := by
-  sorry  -- TODO: Numerical computation
+  norm_num
 
 /-- Connection to Papers I/II phenomenological form. -/
 theorem phenomenology_match :
