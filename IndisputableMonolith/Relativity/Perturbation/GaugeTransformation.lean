@@ -68,6 +68,43 @@ theorem gauge_transform_small_in_weak_field
     _ < 0.4 + 0.3 + 0.3 := by linarith [hweak, hd1, hd2]
     _ = 1.0 := by norm_num
 
+/-- Weak-field perturbations stay small after a gauge transformation with bounded derivatives. -/
+theorem gauge_transform_small_of_weak
+  (hWF : WeakFieldPerturbation) (ξ : GaugeVector)
+  (ξ_bound : ∀ x μ ν, |partialDeriv_v2 (fun y => ξ.ξ y ν) μ x| ≤ (3 / 10 : ℝ)) :
+  ∀ x μ ν, |(gauge_transform hWF ξ).h x (fun i => if i.val = 0 then μ else ν)| < 1 := by
+  intro x μ ν
+  simp [gauge_transform]
+  have h_small : |hWF.base.h x (fun i => if i.val = 0 then μ else ν)| ≤ 0.1 := by
+    have := hWF.small x μ ν
+    exact le_trans this hWF.eps_le
+  have hξ₁ := ξ_bound x μ ν
+  have hξ₂ := ξ_bound x ν μ
+  -- Triangle inequality for three terms
+  have htri : |hWF.base.h x (fun i => if i.val = 0 then μ else ν) +
+                partialDeriv_v2 (fun y => ξ.ξ y ν) μ x +
+                partialDeriv_v2 (fun y => ξ.ξ y μ) ν x|
+            ≤ |hWF.base.h x (fun i => if i.val = 0 then μ else ν)| +
+              |partialDeriv_v2 (fun y => ξ.ξ y ν) μ x| +
+              |partialDeriv_v2 (fun y => ξ.ξ y μ) ν x| := by
+    have h1 := abs_add (hWF.base.h x (fun i => if i.val = 0 then μ else ν))
+                      (partialDeriv_v2 (fun y => ξ.ξ y ν) μ x +
+                       partialDeriv_v2 (fun y => ξ.ξ y μ) ν x)
+    have h2 := abs_add (partialDeriv_v2 (fun y => ξ.ξ y ν) μ x)
+                      (partialDeriv_v2 (fun y => ξ.ξ y μ) ν x)
+    exact le_trans h1 (by linarith [h2])
+  have hsum :
+      |hWF.base.h x (fun i => if i.val = 0 then μ else ν) |
+        + |partialDeriv_v2 (fun y => ξ.ξ y ν) μ x|
+        + |partialDeriv_v2 (fun y => ξ.ξ y μ) ν x|
+      ≤ 0.1 + 0.3 + 0.3 := by
+    linarith [h_small, hξ₁, hξ₂]
+  have : |hWF.base.h x (fun i => if i.val = 0 then μ else ν) +
+            partialDeriv_v2 (fun y => ξ.ξ y ν) μ x +
+            partialDeriv_v2 (fun y => ξ.ξ y μ) ν x|
+        ≤ 0.1 + 0.3 + 0.3 := le_trans htri hsum
+  exact lt_of_le_of_lt this (by norm_num)
+
 /-- Gauge transformation preserves symmetry. -/
 theorem gauge_transform_symmetric (h : MetricPerturbation) (ξ : GaugeVector)
   (hh : IsSymmetric (fun x _ low => h.h x low)) :
