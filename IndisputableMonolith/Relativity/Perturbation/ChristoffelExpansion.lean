@@ -68,10 +68,20 @@ theorem christoffel_small_when_h_small (h : MetricPerturbation) (x : Fin 4 → �
   (∀ y α β, |h.h y (fun i => if i.val = 0 then α else β)| < 0.1) →
   |linearized_christoffel minkowski.toMetricTensor h x ρ μ ν| < 1 := by
   intro h_small
-  simp [linearized_christoffel]
-  -- Γ ~ (1/2) g⁻¹ ∂h, with |∂h| ~ |h|/L and |g⁻¹| ~ 1
-  -- So |Γ| ~ |h| < 0.1
-  sorry  -- TODO: Bound each term in sum
+  -- δΓ = (1/2) η^{ρσ} (∂_μ h_νσ + ∂_ν h_μσ - ∂_σ h_μν)
+  -- With |η^{ρσ}| ≤ 1, |∂h| controlled by finite difference |h|/Δx
+  -- Sum over 4 values of σ; each term ~ |h|
+  have : |linearized_christoffel minkowski.toMetricTensor h x ρ μ ν|
+       ≤ (1/2) * Finset.sum (Finset.univ : Finset (Fin 4)) (fun σ =>
+           |(inverse_metric minkowski.toMetricTensor) x (fun i => if i.val = 0 then ρ else σ) (fun _ => 0)| *
+           (|partialDeriv_v2 (fun y => h.h y (fun i => if i.val = 0 then ν else σ)) μ x| +
+            |partialDeriv_v2 (fun y => h.h y (fun i => if i.val = 0 then μ else σ)) ν x| +
+            |partialDeriv_v2 (fun y => h.h y (fun i => if i.val = 0 then μ else ν)) σ x|)) := by
+    simp [linearized_christoffel]
+    have := abs_sum_le_sum_abs (Finset.univ : Finset (Fin 4)) _
+    sorry  -- TODO: Apply triangle inequality to the finite sum
+  -- Each derivative ~ |h|; with 4 σ values and 3 derivative terms: ~ (1/2)·1·4·3·0.1 = 0.6 < 1
+  sorry  -- TODO: Bound each derivative by |h| and sum
 
 end Perturbation
 end Relativity

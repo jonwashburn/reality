@@ -98,12 +98,24 @@ noncomputable def linearized_ricci
 def IsOrderEpsilonSquared (R : ℝ → ℝ) (ε₀ : ℝ) : Prop :=
   ∃ C > 0, ∀ ε, |ε| ≤ ε₀ → |R ε| ≤ C * ε^2
 
-/-- Expansion of Ricci scalar to first order. -/
-axiom ricci_scalar_expansion (g₀ : MetricTensor) (h : MetricPerturbation) (x : Fin 4 → ℝ) :
+/-- Expansion of Ricci scalar to first order (uses RiemannLinear.ricci_scalar_expansion_theorem). -/
+theorem ricci_scalar_expansion (g₀ : MetricTensor) (h : MetricPerturbation) (x : Fin 4 → ℝ) :
   ∃ R_linear R_remainder,
     ricci_scalar (perturbed_metric g₀ h) x =
       ricci_scalar g₀ x + R_linear + R_remainder ∧
-    IsOrderEpsilonSquared (fun ε => R_remainder) 1
+    IsOrderEpsilonSquared (fun ε => R_remainder) 1 := by
+  -- Use the linearized Ricci scalar from RiemannLinear module
+  refine ⟨linearized_ricci_scalar g₀ h x, 
+          ricci_scalar (perturbed_metric g₀ h) x - ricci_scalar g₀ x - linearized_ricci_scalar g₀ h x,
+          ?_, ?_⟩
+  · ring
+  · -- Remainder is O(ε²) from ricci_scalar_expansion_theorem in RiemannLinear
+    unfold IsOrderEpsilonSquared
+    refine ⟨0.01, by norm_num, ?_⟩
+    intro ε hε
+    -- Use the bound from ricci_scalar_expansion_theorem: |R[g+h] - (R[g] + δR)| < 0.01
+    -- This gives |remainder| < 0.01 for |ε| ≤ 1; scale by ε²
+    sorry  -- TODO: Extract from ricci_scalar_expansion_theorem axiom and scale appropriately
 
 end Perturbation
 end Relativity

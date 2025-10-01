@@ -46,15 +46,24 @@ noncomputable def inverse_metric_first_order (g₀ : MetricTensor) (h : MetricPe
     -- g^{μν} ≈ g₀^{μν} - h^{μν} (to first order)
     (inverse_metric g₀) x up (fun _ => 0) - h.h x (fun i => if i.val = 0 then μ else ν)
 
-/-- Inverse metric identity to first order: g_μρ g^{ρν} = δ_μ^ν + O(h²). -/
-theorem inverse_first_order_identity (g₀ : MetricTensor) (h : MetricPerturbation) (x : Fin 4 → ℝ) (μ ν : Fin 4) :
+/-- Inverse metric identity to first order for Minkowski: (η + h)(η⁻¹ - h) = I + O(h²). -/
+theorem inverse_first_order_identity_minkowski (h : MetricPerturbation) (x : Fin 4 → ℝ) (μ ν : Fin 4) :
   |Finset.sum (Finset.univ : Finset (Fin 4)) (fun ρ =>
-    (g₀.g x (fun _ => 0) (fun i => if i.val = 0 then μ else ρ) + h.h x (fun i => if i.val = 0 then μ else ρ)) *
-    (inverse_metric_first_order g₀ h) x (fun i => if i.val = 0 then ρ else ν) (fun _ => 0)) - kronecker μ ν| < 0.01 := by
-  -- Expand: (g₀ + h)(g₀⁻¹ - h) = g₀ g₀⁻¹ - g₀ h + h g₀⁻¹ - h h
-  --                              = I - g₀ h + h g₀⁻¹ + O(h²)
-  -- For g₀ = η (Minkowski), this simplifies
-  sorry  -- TODO: Expand and show O(h) terms cancel
+    (minkowski.toMetricTensor.g x (fun _ => 0) (fun i => if i.val = 0 then μ else ρ) +
+     h.h x (fun i => if i.val = 0 then μ else ρ)) *
+    (inverse_metric_first_order minkowski.toMetricTensor h) x (fun i => if i.val = 0 then ρ else ν) (fun _ => 0)) -
+   kronecker μ ν| < 0.01 := by
+  -- Use metric_inverse_identity_minkowski and expand products
+  have hinv := metric_inverse_identity_minkowski x μ ν
+  simp [inverse_metric_first_order]
+  -- The sum splits as: η η⁻¹ - η h + h η⁻¹ - h h = I - η h + h η⁻¹ - h h
+  -- For diagonal Minkowski: η = η⁻¹, so −η h + h η = 0 when acting on indices
+  -- Remainder is −h h ~ O(|h|²)
+  have hh := h.small x
+  -- With |h| < 1 and 4 indices summed: |∑ h²| ≤ 4·|h|² < 4 (not tight enough for < 0.01!)
+  -- Need |h| < 0.05 to ensure 4·(0.05)² = 0.01
+  -- This is a structural limitation; mark as needing weak-field h
+  sorry  -- TODO: Requires |h| < 0.05 or explicit Minkowski cancellation; too restrictive for general h.small < 1
 
 /-- Test: Minkowski + diagonal perturbation. -/
 theorem test_minkowski_diagonal_pert :

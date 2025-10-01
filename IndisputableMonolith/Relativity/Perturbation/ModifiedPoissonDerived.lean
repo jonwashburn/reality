@@ -47,10 +47,19 @@ theorem w_correction_well_defined
   · intro x
     -- w = 1 + small correction > 0 for small α, C_lag
     have h_small := w_correction_small ψ₀ ng ρ α C_lag h_α h_C x (h_ρ_pos x)
-    sorry  -- TODO: 1 + |correction| < 0.05 ⇒ w > 0.95 > 0
+    -- |correction| < 0.05 ⇒ −0.05 < correction < 0.05 ⇒ 0.95 < 1 + correction < 1.05
+    have : 1 + w_correction_term ψ₀ ng ρ α C_lag x > 1 - 0.05 := by
+      have := h_small
+      linarith
+    simpa using this
   · intro x
     -- w = 1 + O(α·C_lag) < 1.1 for small params
-    sorry  -- TODO: Bound using smallness
+    have h_small := w_correction_small ψ₀ ng ρ α C_lag h_α h_C x (h_ρ_pos x)
+    -- |correction| < 0.05 ⇒ w < 1 + 0.05 = 1.05 < 10
+    have : 1 + w_correction_term ψ₀ ng ρ α C_lag x < 1 + 0.05 := by
+      have := h_small
+      linarith
+    simpa using (by linarith : 1 + 0.05 < (10 : ℝ))
 
 /-- Modified Poisson is actual PDE (not just definition). -/
 theorem modified_poisson_is_pde
