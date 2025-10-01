@@ -526,10 +526,15 @@ Many remaining sorries require:
 **Latest completions (Session continuation)**:
 - ✅ EffectiveSource.lean: 5 → 1 (laplacian_of_radial_function, radial_to_cartesian_poisson, modified_poisson_with_weight, T_00_factorization)
 - ✅ Hadrons.lean: 2 → 0 (regge_holds positivity, hadron_equal_z_degenerate)
+- ✅ DiscreteNecessity.lean: 2 → 0 (Nonempty witnesses)
+- ✅ Alternatives.lean: 1 → 0 (e_fails_selection: ln(2) < 1)
 - ✅ ModifiedPoissonDerived: 2 → 1 (modified_vs_standard_poisson)
 - ✅ RiemannLinear: 3 → 2 (test_delta_R_00_newtonian)
+- ✅ WeakFieldDerived: 2 → 1 (error_controlled extraction)
 - ✅ Parameter threading: WeakFieldDerived, LinearizedEquations
 - ✅ SphericalWeight.w_enhancement_for_slow_systems
+
+**Files with all sorries marked with asterisks or completed**: 21/21 in TODO list ✅
 
 **Key Insight**: The remaining 47 sorries fall into 5 well-defined categories, each with a clear path forward. No "impossible" proofs—just items requiring specific infrastructure additions (WeakFieldPerturbation structure, concrete solutions, Green's functions).
 
