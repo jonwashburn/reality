@@ -85,9 +85,11 @@ theorem keplerian_GR_solution :
   let Phi_GR : ℝ → ℝ := fun r => -1 / r
   RadialPoissonPhi Phi_GR rho w := by
   intro r hr
-  -- d²/dr²(-1/r) + (2/r)d/dr(-1/r) = 2/r³ + (2/r)·(1/r²) = 4/r³
-  -- 4πG · (1/r²) · 1 = 4π/r² (matching for appropriate normalization)
-  sorry  -- TODO: Explicit derivative calculation
+  -- Conceptual issue: Φ = -1/r is the EXTERIOR solution satisfying ∇²Φ = 0 for r > 0
+  -- The Poisson equation ∇²Φ = 4πρ with ρ = δ³(r) is distributional at origin
+  -- For r > 0: deriv²(-1/r) + (2/r)deriv(-1/r) = 2/r³ - 2/r³ = 0 ≠ 4π/r²
+  -- This theorem statement is physically incorrect for r > 0
+  sorry  -- TODO: Statement error - exterior solution has ∇²Φ = 0, not 4πρ; needs distributional treatment
 
 end Perturbation
 end Relativity
