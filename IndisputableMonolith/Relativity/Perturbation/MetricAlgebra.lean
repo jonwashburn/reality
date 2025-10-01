@@ -16,6 +16,7 @@ namespace Relativity
 namespace Perturbation
 
 open Geometry
+open scoped BigOperators
 
 /-- If both background and perturbation are symmetric, sum is symmetric. -/
 theorem sum_of_symmetric_is_symmetric (g₀ : BilinearForm) (h : BilinearForm)
@@ -46,24 +47,184 @@ noncomputable def inverse_metric_first_order (g₀ : MetricTensor) (h : MetricPe
     -- g^{μν} ≈ g₀^{μν} - h^{μν} (to first order)
     (inverse_metric g₀) x up (fun _ => 0) - h.h x (fun i => if i.val = 0 then μ else ν)
 
-/-- Inverse metric identity to first order for Minkowski: (η + h)(η⁻¹ - h) = I + O(h²). -/
-theorem inverse_first_order_identity_minkowski (h : MetricPerturbation) (x : Fin 4 → ℝ) (μ ν : Fin 4) :
+/-- Inverse metric identity to first order for Minkowski: quantitative weak-field bound. -/
+theorem inverse_first_order_identity_minkowski
+  (h : WeakFieldPerturbation) (x : Fin 4 → ℝ) (μ ν : Fin 4) :
   |Finset.sum (Finset.univ : Finset (Fin 4)) (fun ρ =>
-    (minkowski.toMetricTensor.g x (fun _ => 0) (fun i => if i.val = 0 then μ else ρ) +
-     h.h x (fun i => if i.val = 0 then μ else ρ)) *
-    (inverse_metric_first_order minkowski.toMetricTensor h) x (fun i => if i.val = 0 then ρ else ν) (fun _ => 0)) -
-   kronecker μ ν| < 0.01 := by
-  -- Use metric_inverse_identity_minkowski and expand products
-  have hinv := metric_inverse_identity_minkowski x μ ν
-  simp [inverse_metric_first_order]
-  -- The sum splits as: η η⁻¹ - η h + h η⁻¹ - h h = I - η h + h η⁻¹ - h h
-  -- For diagonal Minkowski: η = η⁻¹, so −η h + h η = 0 when acting on indices
-  -- Remainder is −h h ~ O(|h|²)
-  have hh := h.small x
-  -- With |h| < 1 and 4 indices summed: |∑ h²| ≤ 4·|h|² < 4 (not tight enough for < 0.01!)
-  -- Need |h| < 0.05 to ensure 4·(0.05)² = 0.01
-  -- This is a structural limitation; mark as needing weak-field h
-  sorry  -- TODO: Requires |h| < 0.05 or explicit Minkowski cancellation; too restrictive for general h.small < 1
+      (minkowski.toMetricTensor.g x (fun _ => 0) (fun i => if i.val = 0 then μ else ρ) +
+        h.base.h x (fun i => if i.val = 0 then μ else ρ)) *
+      (inverse_metric_first_order minkowski.toMetricTensor h.base) x
+        (fun i => if i.val = 0 then ρ else ν) (fun _ => 0)) -
+    kronecker μ ν|
+    ≤ 8 * h.eps + 4 * h.eps ^ 2 := by
+  classical
+  have h_eps_nonneg : 0 ≤ h.eps := le_of_lt h.eps_pos
+  have h_eta_le : ∀ ρ,
+      |minkowski.toMetricTensor.g x (fun _ => 0)
+          (fun i => if i.val = 0 then μ else ρ)| ≤ 1 := by
+    intro ρ
+    by_cases hμρ : μ = ρ
+    · subst hμρ
+      by_cases hμ0 : μ = 0
+      · simp [Geometry.minkowski, hμ0]
+      · simp [Geometry.minkowski, hμ0]
+    · simp [Geometry.minkowski, hμρ]
+  have h_eta_inv_le : ∀ ρ,
+      |(inverse_metric minkowski.toMetricTensor) x (fun i => if i.val = 0 then ρ else ν) (fun _ => 0)| ≤ 1 := by
+    intro ρ
+    by_cases hρν : ρ = ν
+    · subst hρν
+      by_cases hν0 : ν = 0
+      · simp [inverse_metric, Geometry.minkowski, hν0]
+      · simp [inverse_metric, Geometry.minkowski, hν0]
+    · simp [inverse_metric, Geometry.minkowski, hρν]
+  have hrewrite :
+      Finset.sum (Finset.univ : Finset (Fin 4)) (fun ρ =>
+          (minkowski.toMetricTensor.g x (fun _ => 0) (fun i => if i.val = 0 then μ else ρ) +
+            h.base.h x (fun i => if i.val = 0 then μ else ρ)) *
+          (inverse_metric_first_order minkowski.toMetricTensor h.base) x
+            (fun i => if i.val = 0 then ρ else ν) (fun _ => 0)) -
+        kronecker μ ν
+      = Finset.sum (Finset.univ : Finset (Fin 4)) (fun ρ =>
+          -(minkowski.toMetricTensor.g x (fun _ => 0)
+              (fun i => if i.val = 0 then μ else ρ)) *
+            h.base.h x (fun i => if i.val = 0 then ρ else ν) +
+          h.base.h x (fun i => if i.val = 0 then μ else ρ) *
+            (inverse_metric minkowski.toMetricTensor) x
+              (fun i => if i.val = 0 then ρ else ν) (fun _ => 0) -
+          h.base.h x (fun i => if i.val = 0 then μ else ρ) *
+            h.base.h x (fun i => if i.val = 0 then ρ else ν)) := by
+    have hinv := metric_inverse_identity_minkowski x μ ν
+    simp [inverse_metric_first_order, add_comm, add_left_comm, add_assoc, sub_eq_add_neg,
+      mul_add, add_mul, mul_comm, mul_left_comm, mul_assoc, hinv] 
+  have hsum_bound :
+      |Finset.sum (Finset.univ : Finset (Fin 4)) (fun ρ =>
+          -(minkowski.toMetricTensor.g x (fun _ => 0)
+                (fun i => if i.val = 0 then μ else ρ)) *
+              h.base.h x (fun i => if i.val = 0 then ρ else ν) +
+            h.base.h x (fun i => if i.val = 0 then μ else ρ) *
+              (inverse_metric minkowski.toMetricTensor) x
+                (fun i => if i.val = 0 then ρ else ν) (fun _ => 0) -
+            h.base.h x (fun i => if i.val = 0 then μ else ρ) *
+              h.base.h x (fun i => if i.val = 0 then ρ else ν))|
+        ≤ Finset.sum (Finset.univ : Finset (Fin 4)) (fun ρ =>
+            |h.base.h x (fun i => if i.val = 0 then ρ else ν)| +
+            |h.base.h x (fun i => if i.val = 0 then μ else ρ)| +
+            |h.base.h x (fun i => if i.val = 0 then μ else ρ)| *
+              |h.base.h x (fun i => if i.val = 0 then ρ else ν)|) := by
+    refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
+    refine Finset.sum_le_sum ?_
+    intro ρ hρ
+    have :
+        |-(minkowski.toMetricTensor.g x (fun _ => 0)
+              (fun i => if i.val = 0 then μ else ρ)) *
+            h.base.h x (fun i => if i.val = 0 then ρ else ν) +
+          (h.base.h x (fun i => if i.val = 0 then μ else ρ) *
+              (inverse_metric minkowski.toMetricTensor) x
+                (fun i => if i.val = 0 then ρ else ν) (fun _ => 0) -
+            h.base.h x (fun i => if i.val = 0 then μ else ρ) *
+              h.base.h x (fun i => if i.val = 0 then ρ else ν))|
+        ≤ |-(minkowski.toMetricTensor.g x (fun _ => 0)
+                (fun i => if i.val = 0 then μ else ρ)) *
+              h.base.h x (fun i => if i.val = 0 then ρ else ν)| +
+          |h.base.h x (fun i => if i.val = 0 then μ else ρ) *
+              (inverse_metric minkowski.toMetricTensor) x
+                (fun i => if i.val = 0 then ρ else ν) (fun _ => 0) -
+            h.base.h x (fun i => if i.val = 0 then μ else ρ) *
+              h.base.h x (fun i => if i.val = 0 then ρ else ν)| :=
+      by
+        exact (abs_add _ _)
+    have hsecond :
+        |h.base.h x (fun i => if i.val = 0 then μ else ρ) *
+              (inverse_metric minkowski.toMetricTensor) x
+                (fun i => if i.val = 0 then ρ else ν) (fun _ => 0) -
+            h.base.h x (fun i => if i.val = 0 then μ else ρ) *
+              h.base.h x (fun i => if i.val = 0 then ρ else ν)|
+        ≤ |h.base.h x (fun i => if i.val = 0 then μ else ρ) *
+              (inverse_metric minkowski.toMetricTensor) x
+                (fun i => if i.val = 0 then ρ else ν) (fun _ => 0)| +
+          |h.base.h x (fun i => if i.val = 0 then μ else ρ) *
+              h.base.h x (fun i => if i.val = 0 then ρ else ν)| :=
+      by exact (abs_sub_le _ _ _)
+    have hterm1 :
+        |-(minkowski.toMetricTensor.g x (fun _ => 0)
+              (fun i => if i.val = 0 then μ else ρ)) *
+            h.base.h x (fun i => if i.val = 0 then ρ else ν)|
+        ≤ |h.base.h x (fun i => if i.val = 0 then ρ else ν)| := by
+      have := h_eta_le ρ
+      simpa [abs_mul] using mul_le_mul_of_nonneg_right this.abs (abs_nonneg _)
+    have hterm2 :
+        |h.base.h x (fun i => if i.val = 0 then μ else ρ) *
+            (inverse_metric minkowski.toMetricTensor) x
+              (fun i => if i.val = 0 then ρ else ν) (fun _ => 0)|
+        ≤ |h.base.h x (fun i => if i.val = 0 then μ else ρ)| := by
+      have := h_eta_inv_le ρ
+      simpa [abs_mul] using mul_le_mul_of_nonneg_right this.abs (abs_nonneg _)
+    have hterm3 :
+        |h.base.h x (fun i => if i.val = 0 then μ else ρ) *
+            h.base.h x (fun i => if i.val = 0 then ρ else ν)|
+        ≤ |h.base.h x (fun i => if i.val = 0 then μ else ρ)| *
+          |h.base.h x (fun i => if i.val = 0 then ρ else ν)| := by
+      simp [abs_mul]
+    have := add_le_add hterm1 (add_le_add hterm2 hterm3)
+    exact le_trans this (by
+      have := add_le_add hterm1 (add_le_add hterm2 hterm3)
+      simpa using add_le_add hterm1 (add_le_add hterm2 hterm3))
+  have hsum_hρν :
+      Finset.sum (Finset.univ : Finset (Fin 4))
+          (fun ρ => |h.base.h x (fun i => if i.val = 0 then ρ else ν)|)
+        ≤ 4 * h.eps := by
+    have hterm : ∀ ρ ∈ (Finset.univ : Finset (Fin 4)),
+        |h.base.h x (fun i => if i.val = 0 then ρ else ν)| ≤ h.eps := by
+      intro ρ _
+      simpa using h.small x ρ ν
+    have := Finset.sum_le_card_nsmul (Finset.univ : Finset (Fin 4)) hterm
+    simpa [Finset.card_univ, Fintype.card_fin, Nat.smul_eq_mul, bit0, one_mul]
+      using this
+  have hsum_hμρ :
+      Finset.sum (Finset.univ : Finset (Fin 4))
+          (fun ρ => |h.base.h x (fun i => if i.val = 0 then μ else ρ)|)
+        ≤ 4 * h.eps := by
+    have hterm : ∀ ρ ∈ (Finset.univ : Finset (Fin 4)),
+        |h.base.h x (fun i => if i.val = 0 then μ else ρ)| ≤ h.eps := by
+      intro ρ _
+      simpa using h.small x μ ρ
+    have := Finset.sum_le_card_nsmul (Finset.univ : Finset (Fin 4)) hterm
+    simpa [Finset.card_univ, Fintype.card_fin, Nat.smul_eq_mul, bit0, one_mul]
+      using this
+  have hsum_prod :
+      Finset.sum (Finset.univ : Finset (Fin 4))
+          (fun ρ =>
+            |h.base.h x (fun i => if i.val = 0 then μ else ρ)| *
+              |h.base.h x (fun i => if i.val = 0 then ρ else ν)|)
+        ≤ 4 * h.eps ^ 2 := by
+    have hterm : ∀ ρ ∈ (Finset.univ : Finset (Fin 4)),
+        |h.base.h x (fun i => if i.val = 0 then μ else ρ)| *
+            |h.base.h x (fun i => if i.val = 0 then ρ else ν)|
+          ≤ h.eps ^ 2 := by
+      intro ρ _
+      have hμρ_le :
+          |h.base.h x (fun i => if i.val = 0 then μ else ρ)| ≤ h.eps :=
+        by simpa using h.small x μ ρ
+      have hρν_le :
+          |h.base.h x (fun i => if i.val = 0 then ρ else ν)| ≤ h.eps :=
+        by simpa using h.small x ρ ν
+      have := mul_le_mul hμρ_le hρν_le (abs_nonneg _) h_eps_nonneg
+      simpa [sq, pow_two] using this
+    have := Finset.sum_le_card_nsmul (Finset.univ : Finset (Fin 4)) hterm
+    simpa [Finset.card_univ, Fintype.card_fin, Nat.smul_eq_mul, bit0, one_mul,
+      pow_two, sq] using this
+  have hfinal :
+      Finset.sum (Finset.univ : Finset (Fin 4)) (fun ρ =>
+          |h.base.h x (fun i => if i.val = 0 then ρ else ν)| +
+            |h.base.h x (fun i => if i.val = 0 then μ else ρ)| +
+            |h.base.h x (fun i => if i.val = 0 then μ else ρ)| *
+              |h.base.h x (fun i => if i.val = 0 then ρ else ν)|)
+        ≤ 8 * h.eps + 4 * h.eps ^ 2 := by
+    have := add_le_add (add_le_add hsum_hρν hsum_hμρ) hsum_prod
+    simpa [two_mul, add_comm, add_left_comm, add_assoc, bit0, pow_two] using this
+  have := le_trans hsum_bound hfinal
+  simpa [hrewrite]
 
 /-- Test: Minkowski + diagonal perturbation. -/
 theorem test_minkowski_diagonal_pert :
