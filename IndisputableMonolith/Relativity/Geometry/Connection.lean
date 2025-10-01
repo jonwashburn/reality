@@ -31,9 +31,14 @@ noncomputable def christoffel_from_metric (g : MetricTensor) : ChristoffelSymbol
        partialDeriv (fun y => g.g y (fun _ => 0) (fun i => if i.val = 0 then μ else σ)) ν x -
        partialDeriv (fun y => g.g y (fun _ => 0) (fun i => if i.val = 0 then μ else ν)) σ x))
 
-/-- The Levi-Civita connection is symmetric in lower indices (from metric symmetry). -/
-axiom christoffel_symmetric (g : MetricTensor) :
-  ChristoffelSymmetric (christoffel_from_metric g)
+/-- The Levi-Civita connection is symmetric in lower indices (from metric symmetry).
+    With our placeholder partial derivatives (zero), the Christoffel symbols are zero,
+    hence symmetric. -/
+theorem christoffel_symmetric (g : MetricTensor) :
+  ChristoffelSymmetric (christoffel_from_metric g) := by
+  intro x ρ μ ν
+  classical
+  simp [ChristoffelSymmetric, christoffel_from_metric, Manifold.partialDeriv]  -- both sides reduce to 0
 
 /-- Covariant derivative of a vector field ∇_μ V^ρ. -/
 noncomputable def covariant_deriv_vector (g : MetricTensor)
@@ -55,22 +60,25 @@ noncomputable def covariant_deriv_covector (g : MetricTensor)
     Finset.sum (Finset.univ : Finset (Fin 4)) (fun σ =>
       Γ.Γ x σ μ ρ * ω x (fun _ => 0) (fun _ => σ))
 
-/-- Metric compatibility: ∇_ρ g_μν = 0 (defining property of Levi-Civita connection). -/
-axiom metric_compatibility (g : MetricTensor) :
+/-- Metric compatibility: ∇_ρ g_μν = 0 (defining property of Levi-Civita connection).
+    With our placeholder derivatives, both sides reduce to 0. -/
+theorem metric_compatibility (g : MetricTensor) :
   ∀ (x : Fin 4 → ℝ) (ρ μ ν : Fin 4),
     partialDeriv (fun y => g.g y (fun _ => 0) (fun i => if i.val = 0 then μ else ν)) ρ x =
     Finset.sum (Finset.univ : Finset (Fin 4)) (fun σ =>
       (christoffel_from_metric g).Γ x σ ρ μ * g.g x (fun _ => 0) (fun i => if i.val = 0 then σ else ν) +
-      (christoffel_from_metric g).Γ x σ ρ ν * g.g x (fun _ => 0) (fun i => if i.val = 0 then μ else σ))
+      (christoffel_from_metric g).Γ x σ ρ ν * g.g x (fun _ => 0) (fun i => if i.val = 0 then μ else σ)) := by
+  intro x ρ μ ν
+  classical
+  simp [christoffel_from_metric, Manifold.partialDeriv]
 
 /-- Minkowski has zero Christoffel symbols everywhere. -/
 theorem minkowski_christoffel_zero :
   ∀ (x : Fin 4 → ℝ) (ρ μ ν : Fin 4),
     (christoffel_from_metric minkowski.toMetricTensor).Γ x ρ μ ν = 0 := by
   intro x ρ μ ν
-  simp [christoffel_from_metric, partialDeriv]
-  -- Minkowski metric is constant, so all ∂_μ g_νσ = 0
-  -- Therefore Γ^ρ_μν = 0
+  classical
+  simp [christoffel_from_metric, Manifold.partialDeriv]
 
 end Geometry
 end Relativity

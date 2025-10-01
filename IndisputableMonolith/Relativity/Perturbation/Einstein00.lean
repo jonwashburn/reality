@@ -56,7 +56,7 @@ def Einstein00Equation
   (ng : NewtonianGaugeMetric) (ψ₀ : ScalarField) (δψ : ScalarPerturbation)
   (ρ : (Fin 4 → ℝ) → ℝ) (α m_squared : ℝ) : Prop :=
   ∀ x : Fin 4 → ℝ,
-    let κ := (1 : ℝ)  -- 8πG/c⁴ in natural units
+    let κ := (4 * Real.pi : ℝ)  -- 4πG in natural units (c=G=1)
     laplacian ng.Φ x = κ * (ρ x + T_00_scalar_linear ψ₀ δψ minkowski.toMetricTensor α m_squared x)
 
 /-- Poisson equation form: ∇²Φ = 4πG(ρ + ρ_ψ). -/
@@ -68,10 +68,9 @@ theorem poisson_form_of_einstein_00
     laplacian ng.Φ x = (4 * Real.pi) * (ρ x + ρ_ψ) ∧
     ρ_ψ = T_00_scalar_linear ψ₀ δψ minkowski.toMetricTensor α m_squared x) := by
   intro h_eq x
-  have := h_eq x
-  -- κ = 8πG/c⁴; in natural units with proper factors: κ = 4π
+  have hx := h_eq x
   refine ⟨T_00_scalar_linear ψ₀ δψ minkowski.toMetricTensor α m_squared x, ?_, rfl⟩
-  sorry  -- TODO: Show κ = 4π in natural units
+  simpa [Einstein00Equation] using hx
 
 /-- For zero scalar field, recover standard Poisson. -/
 theorem einstein_00_reduces_to_poisson (ng : NewtonianGaugeMetric) (ρ : (Fin 4 → ℝ) → ℝ) :

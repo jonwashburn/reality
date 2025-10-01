@@ -26,8 +26,53 @@ structure MetricPerturbation where
   h : (Fin 4 → ℝ) → (Fin 2 → Fin 4) → ℝ  -- h_μν(x)
   small : ∀ x μ ν, |h x (fun i => if i.val = 0 then μ else ν)| < 1
 
-/-- Perturbed metric g_μν = g₀_μν + h_μν (axiomatized construction). -/
-axiom perturbed_metric (g₀ : MetricTensor) (h : MetricPerturbation) : MetricTensor
+/-- Symmetrize a (0,2)-tensor in its covariant indices. -/
+noncomputable def symmetrize_bilinear (T : BilinearForm) : BilinearForm :=
+  fun x up_idx low_idx =>
+    let μ := low_idx 0
+    let ν := low_idx 1
+    ((T x up_idx (fun i => if i.val = 0 then μ else ν)) +
+     (T x up_idx (fun i => if i.val = 0 then ν else μ))) / 2
+
+/-- The symmetrized bilinear form is symmetric. -/
+theorem symmetrize_bilinear_symmetric (T : BilinearForm) :
+  IsSymmetric (symmetrize_bilinear T) := by
+  intro x μ ν
+  dsimp [Geometry.IsSymmetric, symmetrize_bilinear]
+  set a := T x (fun _ => 0) (fun i => if i.val = 0 then μ else ν) with ha
+  set b := T x (fun _ => 0) (fun i => if i.val = 0 then ν else μ) with hb
+  have hcomm : (a + b) / 2 = (b + a) / 2 := by
+    simpa [add_comm] using congrArg (fun s => s / 2) (add_comm a b)
+  simpa [ha, hb] using hcomm
+
+/-- Sum of symmetric bilinear forms is symmetric. -/
+theorem sum_of_symmetric_is_symmetric' (A B : BilinearForm)
+  (hA : IsSymmetric A) (hB : IsSymmetric B) :
+  IsSymmetric (fun x up low => A x up low + B x up low) := by
+  intro x μ ν
+  have hAeq := hA x μ ν
+  have hBeq := hB x μ ν
+  -- Rewrite both summands using symmetry equalities
+  dsimp [Geometry.IsSymmetric]
+  calc
+    (A x (fun _ => 0) (fun i => if i.val = 0 then μ else ν)) +
+        (B x (fun _ => 0) (fun i => if i.val = 0 then μ else ν))
+        = (A x (fun _ => 0) (fun i => if i.val = 0 then ν else μ)) +
+          (B x (fun _ => 0) (fun i => if i.val = 0 then μ else ν)) := by
+          simpa using congrArg (fun z => z + B x (fun _ => 0) (fun i => if i.val = 0 then μ else ν)) hAeq
+    _ = (A x (fun _ => 0) (fun i => if i.val = 0 then ν else μ)) +
+          (B x (fun _ => 0) (fun i => if i.val = 0 then ν else μ)) := by
+          simpa using congrArg (fun z => (A x (fun _ => 0) (fun i => if i.val = 0 then ν else μ)) + z) hBeq
+
+/-- Perturbed metric g_μν = g₀_μν + sym(h_μν), constructed to be symmetric. -/
+noncomputable def perturbed_metric (g₀ : MetricTensor) (h : MetricPerturbation) : MetricTensor :=
+  { g := fun x up_idx low_idx =>
+      g₀.g x up_idx low_idx +
+      symmetrize_bilinear (fun x' up' low' => h.h x' low') x up_idx low_idx
+    , symmetric := by
+      -- Both parts are symmetric: g₀.g by hypothesis; symmetrized h by construction
+      refine sum_of_symmetric_is_symmetric' _ _ g₀.symmetric ?_
+      exact symmetrize_bilinear_symmetric (fun x' _ low' => h.h x' low') }
 
 /-- Scalar field perturbation δψ around background ψ₀. -/
 structure ScalarPerturbation where

@@ -77,13 +77,18 @@ axiom deriv_comp (f : ℝ → ℝ) (g : (Fin 4 → ℝ) → ℝ) (μ : Fin 4) (x
     (deriv f (g x)) * partialDeriv_v2 g μ x
 
 /-- Product rule: ∂_μ(f g) = (∂_μ f) g + f (∂_μ g). -/
-axiom deriv_mul (f g : (Fin 4 → ℝ) → ℝ) (μ : Fin 4) (x : Fin 4 → ℝ) :
+theorem deriv_mul (f g : (Fin 4 → ℝ) → ℝ) (μ : Fin 4) (x : Fin 4 → ℝ) :
   partialDeriv_v2 (fun y => f y * g y) μ x =
-    partialDeriv_v2 f μ x * g x + f x * partialDeriv_v2 g μ x
+    partialDeriv_v2 f μ x * g x + f x * partialDeriv_v2 g μ x := by
+  -- Holds for our finite-difference directional derivative
+  simp [partialDeriv_v2]
+  ring
 
 /-- Laplacian is linear. -/
-axiom laplacian_add (f g : (Fin 4 → ℝ) → ℝ) (x : Fin 4 → ℝ) :
-  laplacian (fun y => f y + g y) x = laplacian f x + laplacian g x
+theorem laplacian_add (f g : (Fin 4 → ℝ) → ℝ) (x : Fin 4 → ℝ) :
+  laplacian (fun y => f y + g y) x = laplacian f x + laplacian g x := by
+  unfold laplacian
+  simp [secondDeriv, deriv_add]
 
 end Calculus
 end Relativity

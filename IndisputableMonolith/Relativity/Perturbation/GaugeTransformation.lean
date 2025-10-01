@@ -38,10 +38,14 @@ theorem gauge_transform_symmetric (h : MetricPerturbation) (ξ : GaugeVector)
   (hh : IsSymmetric (fun x _ low => h.h x low)) :
   IsSymmetric (fun x _ low => (gauge_transform h ξ).h x low) := by
   intro x μ ν
-  simp [gauge_transform]
-  -- ∂_μ ξ_ν + ∂_ν ξ_μ is symmetric by construction
+  -- Unfold symmetry condition and gauge transform definition
+  dsimp [Geometry.IsSymmetric, gauge_transform]
+  -- Use symmetry of h
   have h_sym := hh x μ ν
-  sorry  -- TODO: Expand and show symmetry
+  -- The derivative part is symmetric by commutativity of addition
+  -- Left side: h(μ,ν) + ∂μ ξν + ∂ν ξμ
+  -- Right side: h(ν,μ) + ∂ν ξμ + ∂μ ξν
+  simpa [h_sym, add_comm, add_left_comm, add_assoc]
 
 /-- Condition for Newtonian gauge: h'_0i = 0. -/
 def InNewtonianGauge (h : MetricPerturbation) : Prop :=

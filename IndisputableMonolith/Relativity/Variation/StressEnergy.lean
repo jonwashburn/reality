@@ -30,8 +30,13 @@ noncomputable def stress_energy_scalar
     (m_squared / 2) * g.g x (fun _ => 0) low_idx * Fields.field_squared ψ x
 
 /-- Stress-energy is symmetric (follows from structure of T_μν). -/
-axiom stress_energy_symmetric (ψ : Fields.ScalarField) (g : MetricTensor) (vol : VolumeElement) (α m_squared : ℝ) :
-  IsSymmetric (stress_energy_scalar ψ g vol α m_squared)
+theorem stress_energy_symmetric (ψ : Fields.ScalarField) (g : MetricTensor) (vol : VolumeElement) (α m_squared : ℝ) :
+  IsSymmetric (stress_energy_scalar ψ g vol α m_squared) := by
+  intro x μ ν
+  have hg := g.symmetric x μ ν
+  dsimp [Geometry.IsSymmetric]
+  -- Expand both sides and use commutativity and symmetry of g
+  simp [stress_energy_scalar, hg, mul_comm, mul_left_comm, mul_assoc, sub_eq_add_neg, add_comm, add_left_comm, add_assoc]
 
 /-- Trace of stress-energy tensor T = g^{μν} T_μν. -/
 noncomputable def stress_energy_trace
@@ -62,9 +67,11 @@ axiom conservation_theorem (ψ : Fields.ScalarField) (g : MetricTensor) (vol : V
 
 /-- For zero field ψ=0, stress-energy vanishes.
     All terms proportional to ψ or ∂ψ vanish. -/
-axiom stress_energy_zero_field (g : MetricTensor) (vol : VolumeElement) (α m_squared : ℝ) :
+theorem stress_energy_zero_field (g : MetricTensor) (vol : VolumeElement) (α m_squared : ℝ) :
   ∀ x μ ν,
-    (stress_energy_scalar Fields.zero g vol α m_squared) x (fun _ => 0) (fun i => if i.val = 0 then μ else ν) = 0
+    (stress_energy_scalar Fields.zero g vol α m_squared) x (fun _ => 0) (fun i => if i.val = 0 then μ else ν) = 0 := by
+  intro x μ ν
+  simp [stress_energy_scalar, Fields.zero, Fields.gradient, Fields.field_squared, Fields.ScalarField]
 
 /-- GR limit: when α → 0 and m → 0, stress-energy vanishes. -/
 theorem stress_energy_gr_limit (ψ : Fields.ScalarField) (g : MetricTensor) (vol : VolumeElement) :

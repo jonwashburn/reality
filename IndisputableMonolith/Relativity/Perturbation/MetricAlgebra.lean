@@ -36,10 +36,7 @@ theorem perturbed_metric_symmetric (g₀ : MetricTensor) (h : MetricPerturbation
   IsSymmetric (perturbed_metric g₀ h).g := by
   -- Would construct explicit proof, but perturbed_metric is axiomatized
   -- Structure: if g₀.g and h.h both symmetric, sum is symmetric
-  have hg₀ := g₀.symmetric
-  have hh := perturbation_symmetric h
-  -- Apply sum_of_symmetric_is_symmetric
-  sorry  -- Blocked by perturbed_metric being axiom; would work if it were constructive
+  exact (perturbed_metric g₀ h).symmetric
 
 /-- Inverse metric to first order: g^{μν} ≈ g₀^{μν} - h^{μν} + O(h²). -/
 noncomputable def inverse_metric_first_order (g₀ : MetricTensor) (h : MetricPerturbation) : ContravariantBilinear :=

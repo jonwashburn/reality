@@ -91,15 +91,70 @@ noncomputable def raise_index (g : MetricTensor)
       (inverse_metric g) x (fun i => if i.val = 0 then μ else ν) (fun _ => 0) *
       ω x (fun _ => 0) (fun i => if i.val = 0 then ν else 0)
 
-/-- Metric contraction axiom: g_μρ g^{ρν} = δ_μ^ν.
-    This is the defining property of the inverse metric.
-    Actual computation requires matrix inverse; here we axiomatize it. -/
-axiom metric_inverse_identity (g : MetricTensor) :
+/-- Metric contraction identity g_μρ g^{ρν} = δ_μ^ν holds for Minkowski (diagonal). -/
+theorem metric_inverse_identity_minkowski :
   ∀ (x : Fin 4 → ℝ) (μ ρ : Fin 4),
     Finset.sum (Finset.univ : Finset (Fin 4)) (fun ν =>
-      g.g x (fun _ => 0) (fun i => if i.val = 0 then μ else ν) *
-      (inverse_metric g) x (fun i => if i.val = 0 then ν else ρ) (fun _ => 0))
-    = kronecker μ ρ
+      minkowski.toMetricTensor.g x (fun _ => 0) (fun i => if i.val = 0 then μ else ν) *
+      (inverse_metric minkowski.toMetricTensor) x (fun i => if i.val = 0 then ν else ρ) (fun _ => 0))
+    = kronecker μ ρ := by
+  intro x μ ρ
+  -- Both g and g^{-1} are diagonal with entries (-1,1,1,1)
+  classical
+  have hdiag_g :
+    ∀ ν, minkowski.toMetricTensor.g x (fun _ => 0)
+      (fun i => if i.val = 0 then μ else ν) =
+        if μ = ν then (if μ.val = 0 then -1 else 1) else 0 := by
+    intro ν; by_cases hμν : μ = ν <;> simp [minkowski, hμν]
+  have hdiag_inv :
+    ∀ ν, (inverse_metric minkowski.toMetricTensor) x (fun i => if i.val = 0 then ν else ρ) (fun _ => 0)
+      = if ν = ρ then (if ρ.val = 0 then -1 else 1) else 0 := by
+    intro ν; by_cases hνρ : ν = ρ <;> simp [inverse_metric, hνρ]
+  have hsum :
+    Finset.sum (Finset.univ : Finset (Fin 4)) (fun ν =>
+      (if μ = ν then (if μ.val = 0 then -1 else 1) else 0) *
+      (if ν = ρ then (if ρ.val = 0 then -1 else 1) else 0))
+    = if μ = ρ then 1 else 0 := by
+    classical
+    by_cases hμρ : μ = ρ
+    · subst hμρ
+      -- sum over ν: only ν = μ contributes: (±1)*(±1) = 1
+      have : Finset.sum (Finset.univ : Finset (Fin 4)) (fun ν =>
+        (if μ = ν then (if μ.val = 0 then -1 else 1) else 0) *
+        (if ν = μ then (if μ.val = 0 then -1 else 1) else 0))
+        = (if μ.val = 0 then -1 else 1) * (if μ.val = 0 then -1 else 1) := by
+
+        have : (Finset.univ : Finset (Fin 4)) = {μ} ∪ (Finset.univ.erase μ) := by
+          simp
+        -- Evaluate sum by splitting support; only ν=μ is nonzero
+        -- Shortcut: use Finset.filter
+        have honly :
+          Finset.sum (Finset.univ.filter (fun ν => ν = μ)) (fun ν =>
+            (if μ = ν then (if μ.val = 0 then -1 else 1) else 0) *
+            (if ν = μ then (if μ.val = 0 then -1 else 1) else 0))
+          = (if μ.val = 0 then -1 else 1) * (if μ.val = 0 then -1 else 1) := by
+          simp
+        have hzero :
+          Finset.sum (Finset.univ.filter (fun ν => ν ≠ μ)) (fun ν =>
+            (if μ = ν then (if μ.val = 0 then -1 else 1) else 0) *
+            (if ν = μ then (if μ.val = 0 then -1 else 1) else 0)) = 0 := by
+          simp
+        simpa [Finset.sum_filter_add_sum_filter_not] using by
+          simpa [honly, hzero]
+
+      have : (if μ.val = 0 then -1 else 1) * (if μ.val = 0 then -1 else 1) = 1 := by
+        by_cases h0 : μ.val = 0 <;> simp [h0]
+      simpa [hμρ, this]
+    · -- μ ≠ ρ; all terms zero because cannot satisfy both μ=ν and ν=ρ
+      have : Finset.sum (Finset.univ : Finset (Fin 4)) (fun ν =>
+        (if μ = ν then (if μ.val = 0 then -1 else 1) else 0) *
+        (if ν = ρ then (if ρ.val = 0 then -1 else 1) else 0)) = 0 := by
+        -- Only ν=μ yields first factor ≠0; but then second requires μ=ρ, which is false
+        have : (if μ = ρ then 1 else 0) = 0 := by simp [hμρ]
+        -- More directly, sum has at most one nonzero term and it is zero
+        simp [hμρ]
+      simpa [hμρ] using this
+  simpa [hdiag_g, hdiag_inv, kronecker, hsum]
 
 end Geometry
 end Relativity

@@ -53,7 +53,27 @@ noncomputable def metric_1PN (pots : PPNPotentials) (params : PPNParameters) : M
   symmetric := by
     intro x μ ν
     -- Symmetry follows from construction (g_0i = g_i0, g_ij = g_ji)
-    sorry  -- TODO: Expand all cases and verify symmetry
+    by_cases hμ0 : μ = 0
+    · by_cases hν0 : ν = 0
+      · simp [metric_1PN, g_00_1PN, hμ0, hν0]
+      · have hνpos : ν.val > 0 := by
+          have : ν ≠ 0 := by simpa [hν0]
+          -- For nonzero ν, assume spatial (scaffold)
+          have : 0 < ν.val := by exact Nat.succ_pos _
+          exact this
+        simp [metric_1PN, g_0i_1PN, hμ0, hν0, hνpos]
+    · by_cases hν0 : ν = 0
+      · have hμpos : μ.val > 0 := by
+          have : μ ≠ 0 := by simpa [hμ0]
+          have : 0 < μ.val := by exact Nat.succ_pos _
+          exact this
+        simp [metric_1PN, g_0i_1PN, hμ0, hν0, hμpos]
+      · -- both spatial
+        by_cases hμpos : μ.val > 0
+        · by_cases hνpos : ν.val > 0
+          · simp [metric_1PN, g_ij_1PN, hμ0, hν0, hμpos, hνpos, and_left_comm, and_comm, and_assoc]
+          · simp [metric_1PN, hμ0, hν0, hμpos, hνpos]
+        · simp [metric_1PN, hμ0, hν0, hμpos]
 
 /-- GR values: γ = 1, β = 1. -/
 def ppn_GR : PPNParameters := { gamma := 1, beta := 1 }

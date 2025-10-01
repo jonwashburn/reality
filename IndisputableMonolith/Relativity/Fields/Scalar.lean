@@ -91,11 +91,37 @@ noncomputable def gradient_squared (φ : ScalarField) (g : MetricTensor) (x : Fi
       (inverse_metric g) x (fun i => if i.val = 0 then μ else ν) (fun _ => 0) *
       (gradient φ x μ) * (gradient φ x ν)))
 
-/-- For Minkowski (flat), gradient squared is sum with signature.
-    Scaffold: structure correct but sum manipulation needs work. -/
-axiom gradient_squared_minkowski (φ : ScalarField) (x : Fin 4 → ℝ) :
+/-- For Minkowski (flat), gradient squared is sum with signature. -/
+theorem gradient_squared_minkowski (φ : ScalarField) (x : Fin 4 → ℝ) :
   gradient_squared φ minkowski.toMetricTensor x =
-    -(gradient φ x 0)^2 + (gradient φ x 1)^2 + (gradient φ x 2)^2 + (gradient φ x 3)^2
+    -(gradient φ x 0)^2 + (gradient φ x 1)^2 + (gradient φ x 2)^2 + (gradient φ x 3)^2 := by
+  -- Use the explicit inverse metric for Minkowski and evaluate the double sum
+  classical
+  unfold gradient_squared
+  -- Expand the finite sums over indices using the diagonal form of inverse_metric
+  have inv_diag : ∀ μ ν,
+      (inverse_metric minkowski.toMetricTensor) x (fun i => if i.val = 0 then μ else ν) (fun _ => 0)
+      = (if μ = ν then (if μ.val = 0 then -1 else 1) else 0) := by
+    intro μ ν; by_cases h : μ = ν <;> simp [Geometry.inverse_metric, Geometry.minkowski, h]
+  simp [inv_diag]
+  -- Only diagonal terms survive; separate time and space signs
+  have ht : (if 0 = (0 : Fin 4) then (if (0 : Fin 4).val = 0 then -1 else 1) else 0) = -1 := by simp
+  have h1 : (if (1 : Fin 4) = (1 : Fin 4) then (if (1 : Fin 4).val = 0 then -1 else 1) else 0) = 1 := by simp
+  have h2 : (if (2 : Fin 4) = (2 : Fin 4) then (if (2 : Fin 4).val = 0 then -1 else 1) else 0) = 1 := by simp
+  have h3 : (if (3 : Fin 4) = (3 : Fin 4) then (if (3 : Fin 4).val = 0 then -1 else 1) else 0) = 1 := by simp
+  -- Evaluate double sum as sum over diagonal entries
+  have :
+    Finset.sum (Finset.univ : Finset (Fin 4)) (fun μ =>
+      Finset.sum (Finset.univ : Finset (Fin 4)) (fun ν =>
+        (if μ = ν then (if μ.val = 0 then -1 else 1) else 0) * (gradient φ x μ) * (gradient φ x ν)))
+    = (-1) * (gradient φ x 0) * (gradient φ x 0)
+      + 1 * (gradient φ x 1) * (gradient φ x 1)
+      + 1 * (gradient φ x 2) * (gradient φ x 2)
+      + 1 * (gradient φ x 3) * (gradient φ x 3) := by
+    -- Only terms with μ=ν contribute
+    classical
+    simp
+  simpa [this, ht, h1, h2, h3, sq] using this
 
 /-- Field squared. -/
 noncomputable def field_squared (φ : ScalarField) (x : Fin 4 → ℝ) : ℝ :=
