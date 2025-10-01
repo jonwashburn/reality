@@ -6,9 +6,9 @@ Sorries that cannot be resolved without external help or are in buggy theorems.
 
 ## Needs Mathlib Expertise
 
-- PhiSupport/Alternatives.lean:36 - `e > 2` - Needs: Real.exp numerical bounds
-- PhiSupport/Alternatives.lean:38 - `e > 2.7` - Needs: Tighter exp bound
-- PhiSupport/Alternatives.lean:39 - `e < 2.8` - Needs: Upper exp bound
+- PhiSupport/Alternatives.lean:37 - `ln(2) < 1` - Blocked: Equivalent to e > 2 (circular). Needs: Direct Mathlib lemma or Taylor series for ln
+- PhiSupport/Alternatives.lean:43 - `e > 2.7` - Needs: Tighter exp bound from Mathlib
+- PhiSupport/Alternatives.lean:44 - `e < 2.8` - Needs: Upper exp bound from Mathlib
 
 ---
 

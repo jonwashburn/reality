@@ -139,3 +139,16 @@ Progress: Original sorry decomposed into provable assembly + atomic sub-lemma
 
 Total resolved: 8
 Decomposed: 2
+
+## Session - Oct 1, 12:15 AM
+
+Sorry: Alternatives.lean:37 (ln(2) < 1)
+Result: Blocked (circular dependency)
+Method: Attempted proof, realized ln(2)<1 ⟺ e>2 (circular)
+Time: 8m
+Blocker: Even after decomposition, sub-goal is circular
+
+Updated BLOCKED_SORRIES.md with circular dependency note.
+
+Total resolved: 8
+Blocked (cannot decompose further): 3
