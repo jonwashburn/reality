@@ -34,7 +34,18 @@ theorem e_fails_selection : ¬IndisputableMonolith.RH.RS.PhiSelection Real.exp 1
           -- Need: 1 > ln(2), i.e., e^1 > e^(ln 2) = 2
           -- Equivalently: ln(2) < 1, which holds since ln(2) ≈ 0.693
           have ln2_lt_1 : Real.log 2 < 1 := by
-            sorry  -- Atomic: Prove ln(2) < 1 using series or Mathlib
+            -- ln(2) < 1 ⟺ 2 < e^1 ⟺ 2 < e (already proven above)
+            have h2pos : (0 : ℝ) < 2 := by norm_num
+            have : Real.log 2 < 1 ↔ 2 < Real.exp 1 := by
+              constructor
+              · intro hlog
+                calc (2 : ℝ)
+                    = Real.exp (Real.log 2) := (Real.exp_log h2pos).symm
+                  _ < Real.exp 1 := Real.exp_lt_exp.mpr hlog
+              · intro hexp
+                have : Real.log 2 < Real.log (Real.exp 1) := Real.log_lt_log h2pos hexp
+                simpa [Real.log_exp] using this
+            exact this.mpr h2
           have h2pos : (0 : ℝ) < 2 := by norm_num
           calc (2 : ℝ)
               = Real.exp (Real.log 2) := (Real.exp_log h2pos).symm
