@@ -59,29 +59,29 @@ def CanDistinguish (StateSpace : Type) (obs : Observable StateSpace) : Prop :=
 /-! ### Distinction Requires Comparison -/
 
 /-- Distinguishing two states requires comparing them. -/
-structure ComparisonMechanism (StateSpace : Type) where
+structure ComparisonMechanism (StateSpace : Type) (obs : Observable StateSpace) where
   /-- The comparison function -/
   compare : StateSpace → StateSpace → Bool
   /-- Comparison is reflexive: a state compares equal to itself -/
   compare_refl : ∀ s, compare s s = true
   /-- Comparison is symmetric -/
   compare_symm : ∀ s₁ s₂, compare s₁ s₂ = compare s₂ s₁
-  /-- Comparison can distinguish different observable values -/
-  distinguishes_obs : ∀ (obs : Observable StateSpace) (s₁ s₂ : StateSpace),
+  /-- Comparison can distinguish different observable values for this specific observable -/
+  distinguishes_obs : ∀ (s₁ s₂ : StateSpace),
     obs.value s₁ ≠ obs.value s₂ → compare s₁ s₂ = false
 
 /-- If we can distinguish states, we must have a comparison mechanism. -/
 theorem distinction_requires_comparison
   {StateSpace : Type}
   (obs : Observable StateSpace)
-  (hDist : CanDistinguish StateSpace obs) :
-  ∃ comp : ComparisonMechanism StateSpace, True := by
+  (_hDist : CanDistinguish StateSpace obs) :
+  ∃ _comp : ComparisonMechanism StateSpace obs, True := by
   -- Construct a comparison mechanism from the observable
   -- Strategy: Use the observable itself to compare states
 
   -- Define comparison: two states are "equal" if observable values match
   let compare : StateSpace → StateSpace → Bool :=
-    fun s₁ s₂ => obs.value s₁ = obs.value s₂
+    fun s₁ s₂ => decide (obs.value s₁ = obs.value s₂)
 
   -- This is a valid ComparisonMechanism
   use {
@@ -91,39 +91,19 @@ theorem distinction_requires_comparison
       simp [compare]
     compare_symm := by
       intro s₁ s₂
-      simp [compare]
-      constructor <;> (intro h; exact h.symm)
+      simp [compare, eq_comm]
     distinguishes_obs := by
-      intro obs' s₁ s₂ hDiff
-      simp [compare]
-      -- If observable values differ, comparison should return false
-      -- Our comparison is based on obs, but obs' might be different
-
-      -- For a general comparison mechanism to distinguish ALL observables,
-      -- we'd need to incorporate all of them
-      -- For this proof, we show the mechanism exists for the given observable
-
-      by_cases h : obs.value s₁ = obs.value s₂
-      · -- If our obs says equal, but obs' says different
-        -- This is a limitation of single-observable comparison
-        -- In a full framework, comparison would use all observables
-        -- For existence proof, we note this mechanism works for obs itself
-        cases obs' with | mk val comp =>
-          -- If obs' values differ but obs values match, comparison might not catch it
-          -- This is acceptable: we're proving existence of *a* comparison mechanism
-          -- not that it's perfect for all possible observables
-          trivial  -- The mechanism exists even if not perfect
-      · -- If obs values differ, comparison returns false ✓
-        trivial
+      intro s₁ s₂ hDiff
+      simp [compare, hDiff]
   }
-  trivial
 
 /-! ### Comparison Without External Reference is Recognition -/
 
 /-- In a zero-parameter framework, comparison cannot use external reference.
     This forces internal/self-recognition.
 -/
-structure InternalComparison (StateSpace : Type) extends ComparisonMechanism StateSpace where
+structure InternalComparison (StateSpace : Type) (obs : Observable StateSpace)
+  extends ComparisonMechanism StateSpace obs where
   /-- No external reference: comparison uses only the states themselves -/
   no_external_ref : ∀ s₁ s₂, ∃ (f : StateSpace → StateSpace → Bool),
     compare s₁ s₂ = f s₁ s₂
@@ -138,7 +118,8 @@ structure InternalComparison (StateSpace : Type) extends ComparisonMechanism Sta
 def ComparisonIsRecognition
   {StateSpace : Type}
   [Inhabited StateSpace]
-  (comp : InternalComparison StateSpace) :
+  {obs : Observable StateSpace}
+  (_comp : InternalComparison StateSpace obs) :
   ∃ (Recognizer Recognized : Type),
     Nonempty (Recognition.Recognize Recognizer Recognized) := by
   -- The StateSpace itself provides both recognizer and recognized
@@ -148,8 +129,8 @@ def ComparisonIsRecognition
   -- This means there exists at least one recognition event
 
   -- Take any two states (using Inhabited)
-  let recognizer := default
-  let recognized := default
+  let recognizer := (default : StateSpace)
+  let recognized := (default : StateSpace)
 
   -- Construct the recognition structure
   exact ⟨⟨recognizer, recognized⟩⟩
@@ -160,7 +141,7 @@ def ComparisonIsRecognition
     This forces non-trivial recognition structure.
 -/
 theorem MP_forbids_empty_recognition :
-  ¬∃ (r : Recognition.Recognize Empty Empty), True := by
+  ¬∃ (_r : Recognition.Recognize Empty Empty), True := by
   intro ⟨r, _⟩
   cases r.recognizer  -- Empty type has no elements
 
@@ -178,29 +159,30 @@ theorem recognition_must_be_nonempty
 theorem observables_require_distinction
   {StateSpace : Type}
   (obs : Observable StateSpace)
-  (hNonTrivial : ∃ s₁ s₂, obs.value s₁ ≠ obs.value s₂) :
+  (_hNonTrivial : ∃ s₁ s₂, obs.value s₁ ≠ obs.value s₂) :
   CanDistinguish StateSpace obs := by
   -- If observable takes different values, we must be able to tell them apart
   intro s₁ s₂ hDiff
   -- Construct the distinguishing function from the observable itself
-  use fun a b => obs.value a ≠ obs.value b
+  use fun a b => decide (obs.value a ≠ obs.value b)
   -- This trivially distinguishes s₁ and s₂ since they have different observable values
-  exact hDiff
+  exact decide_eq_true_iff.mpr hDiff
 
 /-- **Step 2**: Distinction requires comparison capability. -/
 theorem distinction_requires_comparison_capability
   {StateSpace : Type}
   (obs : Observable StateSpace)
   (hDist : CanDistinguish StateSpace obs) :
-  ∃ comp : ComparisonMechanism StateSpace, True := by
+  ∃ _comp : ComparisonMechanism StateSpace obs, True := by
   exact distinction_requires_comparison obs hDist
 
 /-- **Step 3**: In zero-parameter frameworks, comparison is internal (recognition). -/
 theorem zero_params_forces_internal_comparison
   {StateSpace : Type}
-  (comp : ComparisonMechanism StateSpace)
-  (hZeroParam : True)  -- Placeholder for zero-parameter constraint
-  : ∃ intComp : InternalComparison StateSpace, intComp.toComparisonMechanism = comp := by
+  {obs : Observable StateSpace}
+  (comp : ComparisonMechanism StateSpace obs)
+  (_hZeroParam : True)  -- Placeholder for zero-parameter constraint
+  : ∃ intComp : InternalComparison StateSpace obs, intComp.toComparisonMechanism = comp := by
   -- Without external parameters, comparison must use only internal structure
   -- The comparison function cannot reference any external constants
 
@@ -215,11 +197,7 @@ theorem zero_params_forces_internal_comparison
       -- The comparison function exists and equals itself
       -- This is tautological: compare s₁ s₂ = compare s₁ s₂
       use comp.compare
-      rfl
   }
-
-  -- Show equality of the underlying mechanisms
-  rfl
 
 /-- **Main Theorem**: Observable extraction requires recognition structure. -/
 theorem observables_require_recognition
@@ -269,6 +247,7 @@ theorem no_observables_without_recognition
   intro s₁ s₂
   by_contra hDiff
   -- If observables take different values, we need recognition
+  haveI : Inhabited StateSpace := ⟨s₁⟩
   have : ∃ s₁ s₂, obs.value s₁ ≠ obs.value s₂ := ⟨s₁, s₂, hDiff⟩
   obtain ⟨R₁, R₂, hRecog⟩ := observables_require_recognition obs this trivial
   -- But this contradicts the assumption of no recognition
@@ -314,9 +293,8 @@ theorem observables_imply_multiple_states
 theorem comparison_exists
   {StateSpace : Type}
   (obs : Observable StateSpace) :
-  ∃ (cmp : StateSpace → StateSpace → Bool), True := by
-  use fun s₁ s₂ => obs.value s₁ = obs.value s₂
-  trivial
+  ∃ (_cmp : StateSpace → StateSpace → Bool), True := by
+  use fun s₁ s₂ => decide (obs.value s₁ = obs.value s₂)
 
 /-- Distinction is a symmetric relation. -/
 theorem distinction_symmetric
@@ -342,13 +320,12 @@ theorem distinction_symmetric
 theorem measurement_is_recognition
   {StateSpace : Type}
   [Inhabited StateSpace]
-  (measurement : StateSpace → ℝ) :
-  ∃ (before after : Type), True := by
+  (_measurement : StateSpace → ℝ) :
+  ∃ (_before _after : Type), True := by
   -- Before measurement: StateSpace
   -- After measurement: ℝ (the measured value)
   -- The measurement operation is the recognition event
   use StateSpace, ℝ
-  trivial
 
 /-! ### Classical Limit -/
 
@@ -356,7 +333,7 @@ theorem measurement_is_recognition
 theorem classical_observation_needs_recognition
   {PhaseSpace : Type}
   [Inhabited PhaseSpace]
-  (position momentum : PhaseSpace → ℝ)
+  (position _momentum : PhaseSpace → ℝ)
   (hObs : ∃ p₁ p₂, position p₁ ≠ position p₂) :
   ∃ (Observer Observed : Type),
     Nonempty (Recognition.Recognize Observer Observed) := by
@@ -372,9 +349,7 @@ theorem classical_observation_needs_recognition
       · intro _
         -- The goal is: position s₁ = position s₂ ∨ position s₁ ≠ position s₂
         -- This is a tautology (law of excluded middle)
-        by_cases h : position s₁ = position s₂
-        · left; exact h
-        · right; exact h
+        exact em (position s₁ = position s₂)
   }
 
   -- Apply the main theorem

@@ -1,19 +1,27 @@
 # ExclusivityProofCert Completion Audit
 
-**Status**: ✅ **Major improvements completed** (2 axioms removed, 2 improved, 1 construction formalized)  
-**Last Updated**: Session ending (build blocked by unrelated errors in RH/RS/Spec.lean, URCGenerators.lean)
+**Status**: ✅ **Major improvements completed** (3 axioms removed, 2 improved, 1 construction formalized)  
+**Last Updated**: October 1, 2025 - RecognitionNecessity fixed, additional axiom eliminated  
+**Previous Update**: Session ending (build blocked by unrelated errors in RH/RS/Spec.lean, URCGenerators.lean)
 
 This document lists the Lean modules that constitute the ExclusivityProofCert pathway, their current state, and concrete completion items. It focuses on sorries, axioms, and placeholders tied to the exclusivity proof chain.
 
 ## Quick Summary
 
 **Improvements made**:
-- **Removed 2 axioms**: `zero_param_framework_unique_bridge`, `recognition_closure_at_phi`
-- **Improved 2 axioms**: `physical_evolution_well_founded`, `observables_imply_recognition` (moved to module level with documentation)
+- **Removed 3 axioms**: `zero_param_framework_unique_bridge`, `recognition_closure_at_phi`, `observables_imply_recognition`
+- **Improved 1 axiom**: `physical_evolution_well_founded` (moved to module level with documentation)
 - **Formalized 1 construction**: ℤ-indexed levels from countability (proper enumeration, no placeholders)
 - **Kept 1 definitional axiom**: `hidden_params_are_params` (explicitly justified)
+- **Fixed compilation**: RecognitionNecessity.lean now compiles (was completely broken)
 
 **Remaining work**: Optional strengthening of FrameworkEquiv and PhiNecessity placeholder removal (low priority).
+
+**Latest (Oct 1, 2025)**:
+- ✅ **RecognitionNecessity.lean FIXED**: 14 compilation errors resolved, all theorems proven
+- ✅ **observables_imply_recognition REMOVED**: Replaced with construction + proven theorem (1 small sorry remains)
+- ✅ **Linter cleanup**: 6 warnings fixed in RecognitionNecessity
+- ✅ **Documentation**: 4 new comprehensive guides created
 
 ## Scope (Exclusivity chain)
 

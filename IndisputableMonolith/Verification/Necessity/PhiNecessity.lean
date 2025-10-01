@@ -509,7 +509,6 @@ example : (Real.sqrt 2)^2 ≠ Real.sqrt 2 + 1 := by
   intro h
   -- First: (√2)² = 2
   have sqrt2_sq : (Real.sqrt 2)^2 = 2 := by
-    rw [sq]
     exact Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2)
 
   -- Second: √2 > 1
@@ -530,8 +529,7 @@ example : (Real.sqrt 2)^2 ≠ Real.sqrt 2 + 1 := by
   rw [sqrt2_sq] at h
   have : (2 : ℝ) < 2 := by
     calc (2 : ℝ) < Real.sqrt 2 + 1 := this
-         _ = (Real.sqrt 2)^2 := h.symm
-         _ = 2 := sqrt2_sq
+         _ = 2 := h.symm
   linarith
 
 end PhiNecessity
