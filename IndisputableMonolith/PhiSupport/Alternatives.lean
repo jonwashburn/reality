@@ -74,7 +74,7 @@ theorem pi_fails_selection : ¬IndisputableMonolith.RH.RS.PhiSelection Real.pi :
   have pi_bounds : 3.14 < Real.pi ∧ Real.pi < 3.15 := by
     constructor
     · exact Real.pi_gt_314
-    · sorry -- π < 3.15 from Mathlib
+    · norm_num
   have pi_sq_lower : 9.8 < Real.pi ^ 2 := by
     have : (3.14 : ℝ) ^ 2 = 9.8596 := by norm_num
     calc Real.pi ^ 2

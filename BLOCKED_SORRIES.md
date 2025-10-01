@@ -7,8 +7,6 @@ Sorries that cannot be resolved without external help or are in buggy theorems.
 ## Needs Mathlib Expertise
 
 - PhiSupport/Alternatives.lean:37 - `ln(2) < 1` - Blocked: Equivalent to e > 2 (circular). Needs: Direct Mathlib lemma or Taylor series for ln
-- PhiSupport/Alternatives.lean:43 - `e > 2.7` - Needs: Tighter exp bound from Mathlib
-- PhiSupport/Alternatives.lean:44 - `e < 2.8` - Needs: Upper exp bound from Mathlib
 
 ---
 
@@ -26,9 +24,7 @@ Sorries that cannot be resolved without external help or are in buggy theorems.
 
 ## Needs Numerical Computation
 
-- PostNewtonian/GammaExtraction.lean:41,52 - γ PPN bounds - Needs: norm_num or interval arithmetic
-- PostNewtonian/BetaExtraction.lean:42,53 - β PPN bounds - Needs: norm_num or interval arithmetic
-- WeightFormula.lean:41,50 - w(r) numerical eval - Needs: Real.rpow computation
+(All numerical computation sorries have been resolved using norm_num)
 
 ## Needs Physics Derivation
 
@@ -52,8 +48,8 @@ Sorries that cannot be resolved without external help or are in buggy theorems.
 
 ---
 
-**Last Updated**: Sept 30, 2025
-**Total Blocked**: ~25
-**Resolved**: 5 (real proofs)
-**Remaining executable**: ~18
-**Action Items**: Fix 3 bugs, get Mathlib help for 4 bounds
+**Last Updated**: Oct 1, 2025
+**Total Blocked**: ~15
+**Resolved**: 15 (real proofs)
+**Remaining executable**: ~10
+**Action Items**: Physics derivations (5), Tensor calculus (3), Design decisions (1), Mathlib (1)

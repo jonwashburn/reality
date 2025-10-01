@@ -238,3 +238,14 @@ Method: norm_num
 Running total:
 - Resolved: 15
 - Blocked: 3
+
+## Session - Oct 1, 3:00 AM
+
+Sorry attempted: Alternatives.lean:77
+Result: Resolved
+Time: 10 minutes
+Method: norm_num
+
+Running total:
+- Resolved: 16
+- Blocked: 1 (ln(2) < 1 circular)
