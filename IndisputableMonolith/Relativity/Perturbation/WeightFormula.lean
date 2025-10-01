@@ -38,7 +38,7 @@ theorem weight_galaxy_typical :
   let w := weight_RS_final T_dyn tau0
   -- w ≈ 1 + 0.017 · (3e29)^0.191 ≈ 1 + 0.017 · 1e5.5 ≈ 1 + 5400
   w > 100 := by
-  sorry  -- TODO: Numerical computation
+  norm_num
 
 /-- Numerical evaluation for solar system. -/
 theorem weight_solar_system_typical :
