@@ -41,7 +41,7 @@ theorem e_fails_selection : ¬IndisputableMonolith.RH.RS.PhiSelection Real.exp 1
             _ < Real.exp 1 := Real.exp_lt_exp.mpr ln2_lt_1
         have : (2.7 : ℝ) < Real.exp 1 := by
           norm_num
-    · sorry -- exp(1) < 2.8 from Mathlib numerical bounds
+    · norm_num -- exp(1) < 2.8
   have e_sq_lower : 7 < (Real.exp 1) ^ 2 := by
     have : 2.7 ^ 2 = 7.29 := by norm_num
     calc (Real.exp 1) ^ 2
