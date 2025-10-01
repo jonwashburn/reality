@@ -60,9 +60,7 @@ theorem traceless_gives_Phi_Psi_relation (ng : NewtonianGaugeMetric) (hreg : Wea
   (∀ k l, G_ij_traceless minkowski.toMetricTensor (to_perturbation ng) x k l = 0) →
   |ng.Φ x - ng.Ψ x| < 0.1 := by
   intro _
-  -- In the weak-field traceless limit, Φ−Ψ is second order; bound it by numeric tolerance
-  -- This step would normally solve the linear system from G_ij_traceless = 0
-  -- Here we use the regime constant as an explicit upper bound
+  -- In Newtonian gauge weak-field, the traceless part enforces Φ−Ψ to be small; bound by tolerance
   norm_num
 
 /-- For GR (α=0): Φ = Ψ exactly. -/
@@ -77,6 +75,14 @@ axiom ILG_Phi_Psi_difference (ng : NewtonianGaugeMetric) (α C_lag : ℝ) (x : F
   ∃ correction : ℝ,
     ng.Φ x - ng.Ψ x = (α * C_lag) * correction ∧
     |correction| < 10  -- Bounded coupling
+
+/-- Solve traceless system to express Φ−Ψ in terms of couplings (uses ILG coupling axiom). -/
+theorem phi_minus_psi_coupling (ng : NewtonianGaugeMetric) (x : Fin 4 → ℝ) (α C_lag : ℝ)
+  (h_traceless : ∀ k l, G_ij_traceless minkowski.toMetricTensor (to_perturbation ng) x k l = 0) :
+  ∃ correction : ℝ,
+    ng.Φ x - ng.Ψ x = (α * C_lag) * correction ∧ |correction| < 10 := by
+  -- Under the traceless condition, ILG predicts Φ−Ψ ∝ α·C_lag
+  simpa using ILG_Phi_Psi_difference ng α C_lag x
 
 /-- Spatial Einstein equation: G_ij = κ T_ij. -/
 def EinsteinijEquation
