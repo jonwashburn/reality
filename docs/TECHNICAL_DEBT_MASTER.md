@@ -477,11 +477,36 @@ Many remaining sorries require:
 
 **Final sorry count**: 66 → **47** (28.8% reduction) 🎯
 
-**Remaining structural blockers**:
-1. Need `WeakFieldPerturbation` with |h| < ε and |∂h| < Cε (blocks ~7 items)
-2. Dimensional inconsistency in `inverse_metric_first_order` (blocks 2 items)
-3. Concrete field solutions needed for numeric bounds (blocks ~5 items)
-4. Circular axiom dependencies (blocks ~3 items)
+**Additional progress**:
+- ✅ Added `gauge_transform_small_in_weak_field`: Proven weak-field version with |h| < 0.4
+- ✅ Documented RiemannLinear bound accumulation issue (4 terms × 0.01 = 0.04 > 0.01)
+
+**Remaining 47 sorries - categorized by blocker type**:
+
+**Category 1: Numeric Tolerance Issues** (~8 sorries)
+- Bounds too loose when summed (e.g., 4 terms × 0.01 = 0.04 > target 0.01)
+- Examples: ricci_expansion, inverse_first_order_identity
+- Fix: Tighten individual bounds to 0.0025 or use cancellation
+
+**Category 2: Weak-Field Structure Needed** (~12 sorries)  
+- Require |h| < ε (not just < 1) and |∂h| < Cε
+- Examples: ChristoffelExpansion, GaugeTransformation (general case), MetricAlgebra
+- Fix: Introduce `WeakFieldPerturbation` structure
+
+**Category 3: Missing Concrete Solutions** (~15 sorries)
+- Need actual field/potential values to evaluate bounds
+- Examples: T_full−T_linear expansion, w_derived−w_formula, factorizations
+- Fix: Implement/extract solutions from existence axioms
+
+**Category 4: Circular/Fundamental Axioms** (~8 sorries)
+- Axiom depends on another axiom, or represents postulate
+- Examples: ricci_scalar_expansion_theorem, ILG_Phi_Psi_difference
+- Fix: Either prove from more fundamental principles or document as intentional
+
+**Category 5: Computational** (~4 sorries)
+- Explicit derivatives/Laplacians of specific functions (1/r, etc.)
+- Examples: spherical Laplacian, r-bounds for potentials
+- Fix: Add Green's function infrastructure or numerical lemmas
 
 ---
 
