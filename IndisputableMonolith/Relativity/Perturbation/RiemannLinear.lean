@@ -59,9 +59,12 @@ theorem ricci_expansion (g₀ : MetricTensor) (h : MetricPerturbation) (x : Fin 
   |(ricci_tensor (perturbed_metric g₀ h)) x (fun _ => 0) (fun i => if i.val = 0 then μ else ν) -
    ((ricci_tensor g₀) x (fun _ => 0) (fun i => if i.val = 0 then μ else ν) +
     linearized_ricci g₀ h x μ ν)| < 0.01 := by
-  -- Contract Riemann expansion
-  simp [ricci_tensor, linearized_ricci]
-  sorry  -- TODO: Sum of bounded terms is bounded
+  -- Contract Riemann expansion: sum over ρ of bounded terms
+  -- Each Riemann component satisfies |R - (R + δR)| < 0.01
+  -- Sum of 4 terms: |∑(R - R - δR)| ≤ ∑|R - R - δR| < 4·0.01 = 0.04
+  -- But we need < 0.01, so this approach gives 0.04 which is too loose
+  -- The individual Riemann bound of 0.01 needs to be tightened to 0.0025 to get sum < 0.01
+  sorry  -- TODO: Needs tighter individual Riemann bounds (< 0.0025 each) or different contraction approach
 
 /-- For Minkowski: R_μν[η+h] = δR_μν[h] + O(h²). -/
 theorem ricci_minkowski_linear (h : MetricPerturbation) (x : Fin 4 → ℝ) (μ ν : Fin 4) :
