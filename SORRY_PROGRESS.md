@@ -161,3 +161,14 @@ Method: calc mode with mul_lt_mul
 Time: 8m
 
 Total resolved: 9 (was 8)
+
+## Session - Oct 1, 1:00 AM
+
+Sorry attempted: PhiSupport/Alternatives.lean:37
+Result: Still Blocked
+Time: 30 minutes
+Method: Searched Mathlib for Real.log bounds, no direct lemma. Circular with e > 2.
+
+Running total:
+- Resolved: 9
+- Blocked: 3
