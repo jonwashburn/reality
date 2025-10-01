@@ -62,9 +62,9 @@ axiom linearized_solution_exists
 
 /-- Remainder is O(ε²) in perturbation parameter. -/
 axiom remainder_order_epsilon_squared
-  (ng : NewtonianGaugeMetric) (ρ : (Fin 4 → ℝ) → ℝ) (ε : ℝ) :
+  (ng : NewtonianGaugeMetric) (δψ : ScalarPerturbation) (ρ : (Fin 4 → ℝ) → ℝ) (ε : ℝ) :
   ∃ R : ℝ → ℝ, IsOrderEpsilonSquared R 1 ∧
-    ∀ x, |weight_from_scalar sorry ng x - 1| ≤ |ε| + R ε
+    ∀ x, |weight_from_scalar δψ ng x - 1| ≤ |ε| + R ε
 
 end Perturbation
 end Relativity

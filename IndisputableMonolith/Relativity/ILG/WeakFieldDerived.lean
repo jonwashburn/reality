@@ -43,12 +43,12 @@ theorem modified_poisson_proven (ng : NewtonianGaugeMetric) (ρ : ℝ → ℝ) (
   sorry  -- TODO: Extract w from existence proof
 
 /-- O(ε²) error control (proven in Phase 5 Day 14). -/
-theorem error_controlled (ψ₀ : Fields.ScalarField) (ng : NewtonianGaugeMetric) (ρ : ℝ → ℝ) (α C_lag : ℝ) :
-  ∀ r, expansion_parameter ng sorry (fun _ => r) < 0.1 →
+theorem error_controlled (ψ₀ : Fields.ScalarField) (ng : NewtonianGaugeMetric) (δψ : ScalarPerturbation) (ρ : ℝ → ℝ) (α C_lag : ℝ) :
+  ∀ r, expansion_parameter ng δψ (fun _ => r) < 0.1 →
   ∃ C > 0, |w_of_r ψ₀ ng ρ α C_lag r - weight_derived α C_lag 1 (2 * Real.pi * r)| ≤ C * 0.01 := by
   intro r h_small
   -- From ErrorAnalysis module
-  have := weight_remainder_bounded ψ₀ ng ρ α C_lag 1 r h_small
+  have := weight_remainder_bounded ψ₀ ng δψ ρ α C_lag 1 r h_small
   sorry  -- TODO: Extract C from existence proof
 
 /-- GR limit: weight → 1 when parameters → 0. -/
