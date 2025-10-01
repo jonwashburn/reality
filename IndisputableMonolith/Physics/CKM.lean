@@ -51,7 +51,7 @@ noncomputable def jarlskog : ℝ :=
 theorem jarlskog_holds : jarlskog > 0 ∧ jarlskog ≈ 3.18e-5 := by
   -- Numerical eval in demo; theorem witnesses positivity from Im>0 and approx match
   -- Requires: 1) φ-rung → mixing angles explicit computation
-  --           2) eight-beat → CP phase δ derivation  
+  --           2) eight-beat → CP phase δ derivation
   --           3) Complex arithmetic to evaluate Im(product)
   sorry  -- TODO: Deep CKM phenomenology - requires full angle derivation from φ-rungs (Paper III work)
 
