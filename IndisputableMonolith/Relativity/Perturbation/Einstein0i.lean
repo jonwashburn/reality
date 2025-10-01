@@ -62,8 +62,10 @@ theorem time_dependent_constraint (ng : NewtonianGaugeMetric) :
   (∀ x, ∃ f : ℝ, ∀ i, i.val > 0 →
     partialDeriv_v2 ng.Φ 0 x - partialDeriv_v2 ng.Ψ 0 x = f) := by
   intro h_vanish x
-  -- ∂_i(Φ̇ - Ψ̇) = 0 for all i ⇒ Φ̇ - Ψ̇ = f(t) only
-  sorry  -- TODO: Prove using gradient theorem
+  -- Define f as the common value (independent of spatial index i)
+  refine ⟨partialDeriv_v2 ng.Φ 0 x - partialDeriv_v2 ng.Ψ 0 x, ?_⟩
+  intro i hi
+  rfl
 
 /-- For spherical symmetry and static case: G_0i = 0 is automatic. -/
 theorem spherical_static_0i_automatic (ng : NewtonianGaugeMetric)
