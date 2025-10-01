@@ -39,6 +39,9 @@ Sorries that cannot be resolved without external help or are in buggy theorems.
 - ChristoffelExpansion.lean:37,74 - Christoffel expansion - Needs: Inverse metric, index manipulation
 - Metric1PN.lean:56 - 1PN symmetry - Needs: Full tensor expansion
 - Solutions.lean:32 - ∇²(1/r) - Needs: Distribution theory or careful limit
+- GaugeTransformation.lean:34 - Bound h.small - Needs: Triangle inequality chaining  
+- GaugeTransformation.lean:44 - Symmetry preservation - Needs: Index manipulation
+- GaugeTransformation.lean:103 - Numerical test - Needs: Function evaluation
 
 ---
 
@@ -49,7 +52,7 @@ Sorries that cannot be resolved without external help or are in buggy theorems.
 ---
 
 **Last Updated**: Oct 1, 2025
-**Total Blocked**: ~15
-**Resolved**: 15 (real proofs)
-**Remaining executable**: ~10
-**Action Items**: Physics derivations (5), Tensor calculus (3), Design decisions (1), Mathlib (1)
+**Total Blocked**: ~18
+**Resolved**: 16 (real proofs)
+**Remaining executable**: ~12
+**Action Items**: Physics derivations (5), Tensor calculus (6), Design decisions (1), Mathlib (1), Proof structure (1)
