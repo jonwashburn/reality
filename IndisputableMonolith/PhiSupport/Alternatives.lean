@@ -30,12 +30,17 @@ theorem e_fails_selection : ¬IndisputableMonolith.RH.RS.PhiSelection Real.exp 1
         -- exp(1) > 2.7 is a known numerical fact
         have h1 : 1 < Real.exp 1 := Real.one_lt_exp_iff.mpr (by norm_num : (0 : ℝ) < 1)
         have h2 : 2 < Real.exp 1 := by
-          have : (2 : ℝ) < Real.exp 1 := by
-            have : Real.exp 1 > 2 := by
-              -- exp(1) > 1 + 1 + 1/2 = 2.5 by Taylor series
-              sorry -- numerical bound from Mathlib
-          exact this
-        sorry -- tighter numerical bound
+          -- Use monotonicity: exp(1) > exp(ln(2)) = 2
+          -- Need: 1 > ln(2), i.e., e^1 > e^(ln 2) = 2
+          -- Equivalently: ln(2) < 1, which holds since ln(2) ≈ 0.693
+          have ln2_lt_1 : Real.log 2 < 1 := by
+            sorry  -- Atomic: Prove ln(2) < 1 using series or Mathlib
+          have h2pos : (0 : ℝ) < 2 := by norm_num
+          calc (2 : ℝ)
+              = Real.exp (Real.log 2) := (Real.exp_log h2pos).symm
+            _ < Real.exp 1 := Real.exp_lt_exp.mpr ln2_lt_1
+        have : (2.7 : ℝ) < Real.exp 1 := by
+          sorry  -- Atomic: Prove e > 2.7 using tighter bound (needs Mathlib or more series terms)
     · sorry -- exp(1) < 2.8 from Mathlib numerical bounds
   have e_sq_lower : 7 < (Real.exp 1) ^ 2 := by
     have : 2.7 ^ 2 = 7.29 := by norm_num

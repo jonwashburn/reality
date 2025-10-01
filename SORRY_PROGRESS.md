@@ -121,3 +121,21 @@ Each piece more focused than original.
 
 Total resolved: 8
 Decomposed: 1
+
+## Session - Oct 1, 12:10 AM
+
+Sorry: Alternatives.lean:36 (e > 2)
+Result: Decomposed with assembly proven
+Method: Proved calc proof e^1 > e^(ln 2) = 2, atomic sub-goal ln(2)<1
+Time: 12m
+
+Changes:
+- Assembly proven (calc from ln2 to e > 2)
+- Atomic sub-goal: ln(2) < 1 (line 37)
+- Clarified e > 2.7 as separate atomic goal
+
+Sorries: 4 (same) but assembly logic proven
+Progress: Original sorry decomposed into provable assembly + atomic sub-lemma
+
+Total resolved: 8
+Decomposed: 2
