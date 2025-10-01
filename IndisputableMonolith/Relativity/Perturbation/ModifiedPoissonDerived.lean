@@ -35,7 +35,14 @@ theorem modified_poisson_equation
   -- h_00 gives: laplacian ng.Φ x = κ * (ρ x + T_00_scalar_linear ...)
   -- By definition, w_correction_term = T_00_explicit / ρ
   -- Need to show T_00_scalar_linear relates to T_00_explicit
-  sorry  -- TODO: Requires linking T_00_scalar_linear to T_00_explicit via EffectiveSource.T_00_factorization
+  -- Use EffectiveSource.T_00_factorization with h_ψ₀_from_ρ provided by the system
+  have h_factor := EffectiveSource.T_00_factorization ψ₀ ng ρ α h_system.gradient_alignment
+  have h_scalar := h_factor x
+  rcases h_scalar with ⟨corr, hcorr⟩
+  by_cases hρ : ρ x = 0
+  · simp [w_correction_term, T_00_explicit, hρ] at hcorr
+    simp [w_correction_term, hρ, hcorr]
+  · simp [w_correction_term, hρ, hcorr]
 
 /-- Weight function is well-defined. -/
 def WeightWellDefined (w : (Fin 4 → ℝ) → ℝ) : Prop :=

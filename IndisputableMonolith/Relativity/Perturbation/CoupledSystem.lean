@@ -27,7 +27,10 @@ structure LinearizedFieldSystem (ng : NewtonianGaugeMetric) (ψ₀ : ScalarField
   einstein_00 : Einstein00Equation ng ψ₀ { δψ := delta_psi_solution ψ₀ ng m_squared, small := by intro _; norm_num } ρ α m_squared
   einstein_0i_static : ∀ x i, delta_G_0i_newtonian ng x i = 0  -- Static case
   einstein_ij : EinsteinijEquation ng ρ
-  scalar_solved : ∀ x, delta_psi_solution ψ₀ ng m_squared x = delta_psi_solution ψ₀ ng m_squared x  -- Tautology, but marks it's used
+  /-- δψ solves the scalar equation sourced by Φ and Ψ (Green's-function solution). -/
+  scalar_eq : LinearizedScalarEq ψ₀ { δψ := delta_psi_solution ψ₀ ng m_squared, small := by intro _; norm_num } ng m_squared
+  /-- Physical alignment: background scalar gradient proportional to matter density gradient. -/
+  physical_gradient_alignment : ∀ x, ∃ k : ℝ, Fields.gradient ψ₀ x = fun μ => k * Calculus.partialDeriv_v2 ρ μ x
 
 /-- Reduced system: δψ eliminated, only Φ and Ψ remain. -/
 structure ReducedSystem (ng : NewtonianGaugeMetric) (ρ : (Fin 4 → ℝ) → ℝ) (α C_lag : ℝ) where
