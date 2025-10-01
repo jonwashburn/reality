@@ -80,9 +80,31 @@ theorem christoffel_small_when_h_small (h : MetricPerturbation) (x : Fin 4 → �
            (|partialDeriv_v2 (fun y => h.h y (fun i => if i.val = 0 then ν else σ)) μ x| +
             |partialDeriv_v2 (fun y => h.h y (fun i => if i.val = 0 then μ else σ)) ν x| +
             |partialDeriv_v2 (fun y => h.h y (fun i => if i.val = 0 then μ else ν)) σ x|)) := by
-    simp [linearized_christoffel]
-    -- Apply abs of finite sum
-    sorry  -- TODO: Requires abs_sum_le_sum_abs for our specific index structure
+    have hhalf : 0 ≤ (1 / 2 : ℝ) := by norm_num
+    have hsum :
+        |Finset.sum (Finset.univ : Finset (Fin 4)) (fun σ =>
+            (inverse_metric minkowski.toMetricTensor) x (fun i => if i.val = 0 then ρ else σ) (fun _ => 0) *
+              (partialDeriv_v2 (fun y => h.h y (fun i => if i.val = 0 then ν else σ)) μ x +
+               partialDeriv_v2 (fun y => h.h y (fun i => if i.val = 0 then μ else σ)) ν x -
+               partialDeriv_v2 (fun y => h.h y (fun i => if i.val = 0 then μ else ν)) σ x))|
+          ≤ Finset.sum (Finset.univ : Finset (Fin 4)) (fun σ =>
+            |(inverse_metric minkowski.toMetricTensor) x (fun i => if i.val = 0 then ρ else σ) (fun _ => 0) *
+              (partialDeriv_v2 (fun y => h.h y (fun i => if i.val = 0 then ν else σ)) μ x +
+               partialDeriv_v2 (fun y => h.h y (fun i => if i.val = 0 then μ else σ)) ν x -
+               partialDeriv_v2 (fun y => h.h y (fun i => if i.val = 0 then μ else ν)) σ x)|) :=
+      Finset.abs_sum_le_sum_abs _ _
+    have hlin :
+        |linearized_christoffel minkowski.toMetricTensor h x ρ μ ν|
+          = (1 / 2 : ℝ) *
+              |Finset.sum (Finset.univ : Finset (Fin 4)) (fun σ =>
+                (inverse_metric minkowski.toMetricTensor) x (fun i => if i.val = 0 then ρ else σ) (fun _ => 0) *
+                  (partialDeriv_v2 (fun y => h.h y (fun i => if i.val = 0 then ν else σ)) μ x +
+                   partialDeriv_v2 (fun y => h.h y (fun i => if i.val = 0 then μ else σ)) ν x -
+                   partialDeriv_v2 (fun y => h.h y (fun i => if i.val = 0 then μ else ν)) σ x))| := by
+      simp [linearized_christoffel, abs_mul, abs_of_nonneg hhalf]
+    have := mul_le_mul_of_nonneg_left hsum hhalf
+    simpa [hlin, abs_mul, abs_of_nonneg hhalf, mul_add, add_comm, add_left_comm, add_assoc]
+      using this
   -- Each derivative ~ |h|; requires |∂h| < C|h| from WeakFieldPerturbation structure
   sorry  -- TODO: Requires WeakFieldPerturbation with derivative bounds |∂h| < Cε
 
