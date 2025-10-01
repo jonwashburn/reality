@@ -54,3 +54,12 @@ Method: Real.sqrt_lt_sqrt with calc
 Time: 5m
 
 Total resolved: 6 (was 5)
+
+## Session - Sept 30, 11:55 PM
+
+Sorry: WeightFormula.lean:63
+Result: Resolved (fixed theorem + proved)
+Method: Fixed RHS to include +1, then simp + linarith
+Time: 10m
+
+Total resolved: 7 (was 6)

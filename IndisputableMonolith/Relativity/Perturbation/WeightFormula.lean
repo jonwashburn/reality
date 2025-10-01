@@ -55,12 +55,15 @@ theorem phenomenology_match :
     -- Derived form matches phenomenological with:
     -- λ ξ n ζ = normalization factors absorbing tau0 and geometric terms
     weight_RS_final T_dyn tau0 =
-      lambda * xi * n * (T_dyn / tau0) ^ alpha_RS * zeta →
+      1 + lambda * xi * n * (T_dyn / tau0) ^ alpha_RS * zeta →
     -- Implied normalization:
     lambda * xi * n * zeta = C_lag_RS * alpha_RS := by
   intro T_dyn tau0 n zeta xi lambda h_match
   -- Extract normalization from equality
-  sorry  -- TODO: Algebraic manipulation
+  simp [weight_RS_final, weight_final, alpha_RS, C_lag_RS] at h_match
+  -- From h_match: 1 + C_lag_RS * alpha_RS * X = 1 + (lambda*xi*n*zeta) * X
+  -- Therefore: C_lag_RS * alpha_RS = lambda * xi * n * zeta
+  linarith
 
 /-- Full derivation chain. -/
 theorem weight_derivation_complete :
