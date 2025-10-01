@@ -64,7 +64,7 @@ theorem beta_RS_value :
   |beta_RS - 1| < 0.001 := by
   unfold beta_RS beta_ILG
   -- Numerical: 0.05 · 0.191 · 0.090 ≈ 0.00086
-  sorry  -- TODO: Numerical computation
+  norm_num
 
 /-- Extraction matches solution. -/
 axiom beta_extraction_correct (sol : Solution1PN ρ ψ α m_squared) :

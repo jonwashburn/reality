@@ -205,3 +205,14 @@ Method: norm_num
 Running total:
 - Resolved: 12
 - Blocked: 3
+
+## Session - Oct 1, 2:30 AM
+
+Sorry attempted: BetaExtraction.lean:42
+Result: Resolved
+Time: 10 minutes
+Method: norm_num
+
+Running total:
+- Resolved: 13
+- Blocked: 3
