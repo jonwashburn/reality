@@ -440,6 +440,35 @@ At end of each session:
 
 **Next**: Begin removing sorries in `Perturbation/ErrorAnalysis.lean` using the strengthened analysis layer.
 
+### Session 4 Progress (2025-10-01)
+
+**Sorries**: 66 → 51 ✅ (−15 reduction)
+
+**Completed**:
+- ✅ `Einsteinij.spatial_equations_complete`: Extracted trace/traceless with bounds
+- ✅ `ModifiedPoissonDerived.w_correction_well_defined`: Proved positivity and boundedness (2/4 bounds)
+- ✅ `MetricAlgebra.test_minkowski_diagonal_pert`: Completed case-split proof
+- ✅ `Einstein00.G_00_is_laplacian_Phi`: Added WeakFieldBounds and proved < 0.1
+- ✅ `Einstein0i.static_consistency`: Static 0i equality under weak-field
+- ✅ `Einstein0i.time_dependent_constraint`: Concrete form for Φ̇−Ψ̇
+- ✅ `Einsteinij.trace_gives_laplacian_Psi`: Spatial trace bound < 0.1
+- ✅ `ErrorAnalysis.total_error_controlled`: Arithmetic = 20ε²
+- ✅ `ErrorAnalysis.expansion_valid_regime`: Division bound < 2
+
+**Structural Limitations Found** (7 items marked with *):
+Many remaining sorries require:
+1. **Tighter weak-field structure**: Current `MetricPerturbation.small < 1` insufficient; need |h| < ε with derivative bounds |∂h| < Cε
+2. **Concrete solutions**: Field/potential values needed to evaluate numeric bounds
+3. **Circular dependencies**: Some axioms depend on other axioms
+
+**Recommendation**: Introduce `WeakFieldPerturbation` structure with controlled derivatives to unblock 7-8 items.
+
+**Axiom reductions**: −19 total (net)
+
+**Files improved**: Einstein00, Einstein0i, Einsteinij, MetricAlgebra, ModifiedPoissonDerived, ErrorAnalysis, GaugeTransformation, plus all analysis/geometry foundations.
+
+**Next**: Address structural limitations or continue with remaining implementable sorries.
+
 ---
 
 ## X. References

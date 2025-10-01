@@ -105,7 +105,7 @@ theorem ricci_scalar_expansion (g₀ : MetricTensor) (h : MetricPerturbation) (x
       ricci_scalar g₀ x + R_linear + R_remainder ∧
     IsOrderEpsilonSquared (fun ε => R_remainder) 1 := by
   -- Use the linearized Ricci scalar from RiemannLinear module
-  refine ⟨linearized_ricci_scalar g₀ h x, 
+  refine ⟨linearized_ricci_scalar g₀ h x,
           ricci_scalar (perturbed_metric g₀ h) x - ricci_scalar g₀ x - linearized_ricci_scalar g₀ h x,
           ?_, ?_⟩
   · ring

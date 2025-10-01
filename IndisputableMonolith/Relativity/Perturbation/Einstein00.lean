@@ -130,13 +130,26 @@ theorem einstein_00_reduces_to_poisson (ng : NewtonianGaugeMetric) (ρ : (Fin 4 
   simp [T_00_scalar_linear, zero, gradient, directional_deriv] at this
   exact this
 
-/-- Test: Spherical source ρ = M δ³(r) gives Φ = -M/r. -/
-axiom spherical_source_test (M : ℝ) :
+/-- Test: Spherical source ρ = M δ³(r) gives Φ = -M/r (for small M and r > r_min). -/
+axiom spherical_source_test (M : ℝ) (hM : |M| < 0.1) :
   let ng : NewtonianGaugeMetric := {
     Φ := fun x => -M / Real.sqrt (x 1 ^ 2 + x 2 ^ 2 + x 3 ^ 2),
     Ψ := fun x => -M / Real.sqrt (x 1 ^ 2 + x 2 ^ 2 + x 3 ^ 2),
-    Φ_small := by intro _; sorry,
-    Ψ_small := by intro _; sorry
+    Φ_small := by
+      intro x
+      -- |Φ| = |M/r| < 0.5 when |M| < 0.1 and r > 0.2
+      -- We need r > 2|M|; assume x ≠ 0 gives r > |M|/5 (weak-field domain)
+      have : |(-M / Real.sqrt (x 1 ^ 2 + x 2 ^ 2 + x 3 ^ 2))| < 0.5 := by
+        have : |M| < 0.1 := hM
+        -- For r > 0.2: |M/r| < 0.1/0.2 = 0.5
+        sorry  -- TODO: Add hypothesis r > r_min to ensure bound
+      exact this,
+    Ψ_small := by
+      intro x
+      have : |(-M / Real.sqrt (x 1 ^ 2 + x 2 ^ 2 + x 3 ^ 2))| < 0.5 := by
+        have : |M| < 0.1 := hM
+        sorry  -- TODO: Add hypothesis r > r_min to ensure bound
+      exact this
   }
   ∀ x, x ≠ (fun _ => 0) →
     |laplacian ng.Φ x| < 0.01  -- ∇²(1/r) = -4πM δ³(r), zero away from origin

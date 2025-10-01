@@ -103,7 +103,7 @@ theorem spatial_equations_complete (ng : NewtonianGaugeMetric) (hreg : WeakField
   -- Decompose G_ij = 0 into trace and traceless parts
   -- Trace → ∇²Ψ equation (use trace_gives_laplacian_Psi)
   -- Traceless → Φ - Ψ relation (use traceless_gives_Phi_Psi_relation)
-  
+
   -- Extract Ψ_val and Φ_Ψ_diff from the established bounds
   refine ⟨laplacian ng.Ψ x, ng.Φ x - ng.Ψ x, ?_, ?_⟩
   · -- Trace bound: |laplacian ng.Ψ x - laplacian ng.Ψ x| = 0 < 0.1
