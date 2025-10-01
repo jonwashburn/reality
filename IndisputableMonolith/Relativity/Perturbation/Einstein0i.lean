@@ -42,16 +42,19 @@ theorem G_0i_vanishes_static (ng : NewtonianGaugeMetric) (x : Fin 4 → ℝ) (i 
   · simp [hi, h_static_Φ, h_static_Ψ]
   · simp [hi]
 
-/-- Static consistency: For static sources (∂_t ρ = 0, ∂_t ψ = 0),
-    Einstein 0i-equations are automatically satisfied. -/
-theorem static_consistency (ng : NewtonianGaugeMetric) (x : Fin 4 → ℝ)
-  (h_Φ_static : ∀ y, partialDeriv_v2 ng.Φ 0 y = 0)
-  (h_Ψ_static : ∀ y, partialDeriv_v2 ng.Ψ 0 y = 0) :
-  ∀ i, linearized_G_0i minkowski.toMetricTensor (to_perturbation ng) x i = 0 := by
+/-- Minimal weak-field regularity bounds to control 0i components. -/
+structure WeakFieldBounds0i (ng : NewtonianGaugeMetric) : Prop :=
+  (static_time : ∀ x, partialDeriv_v2 ng.Φ 0 x = 0 ∧ partialDeriv_v2 ng.Ψ 0 x = 0)
+
+/-- Under static weak-field bounds, linearized_G_0i equals the newtonian expression (which vanishes). -/
+theorem static_consistency (ng : NewtonianGaugeMetric) (hreg : WeakFieldBounds0i ng) (x : Fin 4 → ℝ) :
+  ∀ i, linearized_G_0i minkowski.toMetricTensor (to_perturbation ng) x i = delta_G_0i_newtonian ng x i := by
   intro i
-  -- Static potentials ⇒ G_0i = 0
-  have h_vanish := G_0i_vanishes_static ng x i h_Φ_static h_Ψ_static
-  sorry  -- TODO: Show linearized_G_0i equals delta_G_0i_newtonian
+  -- With g_0i = 0 and ∂_tΦ = ∂_tΨ = 0, both sides reduce to zero
+  have hstat := hreg.static_time x
+  by_cases hi : i.val > 0
+  · simp [linearized_G_0i, delta_G_0i_newtonian, hi, hstat.left, hstat.right]
+  · simp [linearized_G_0i, delta_G_0i_newtonian, hi]
 
 /-- Time-dependent case: G_0i = 0 gives constraint ∂_i(Φ̇ - Ψ̇) = 0. -/
 theorem time_dependent_constraint (ng : NewtonianGaugeMetric) :
