@@ -67,6 +67,22 @@ noncomputable def w_of_r
   1 + w_correction_term ψ₀ ng (fun x => ρ (Real.sqrt (x 1^2 + x 2^2 + x 3^2))) α C_lag
         (fun i => if i = 1 then r else 0)
 
+/-- Laplacian of spherical function in Cartesian coordinates. -/
+lemma laplacian_of_radial_function (f : ℝ → ℝ) (x : Fin 4 → ℝ) :
+  let r := Real.sqrt (x 1^2 + x 2^2 + x 3^2)
+  r > 0 →
+  laplacian (fun y => f (Real.sqrt (y 1^2 + y 2^2 + y 3^2))) x =
+    secondDeriv f r + (2 / r) * (deriv f r) := by
+  intro r_pos
+  sorry  -- TODO: Spherical Laplacian formula
+
+/-- RadialPoissonPhi implies the 3D source equation. -/
+lemma radial_to_cartesian_poisson (Φ : (Fin 4 → ℝ) → ℝ) (ρ w : ℝ → ℝ) (r : ℝ) (hr : r > 0) :
+  RadialPoissonPhi Φ ρ w hr →
+  ∃ source, laplacian Φ (fun i => if i = 1 then r else 0) = (4 * Real.pi) * source := by
+  intro h_radial
+  sorry  -- TODO: Extract source from RadialPoissonPhi definition
+
 /-- Modified Poisson with w(r). -/
 theorem modified_poisson_with_weight
   (ψ₀ : ScalarField) (ng : NewtonianGaugeMetric) (ρ : ℝ → ℝ) (α C_lag : ℝ) :
@@ -75,9 +91,10 @@ theorem modified_poisson_with_weight
         r > 0 →
         laplacian ng.Φ x = (4 * Real.pi) * ρ r * w_of_r ψ₀ ng ρ α C_lag r) := by
   intro h_radial x r_pos
-  -- Convert radial ODE to 3D Laplacian
-  have := h_radial (Real.sqrt (x 1^2 + x 2^2 + x 3^2)) r_pos
-  sorry  -- TODO: Apply laplacian_spherical conversion
+  -- Assemble from lemmas
+  have h1 := laplacian_of_radial_function (fun r => ng.Φ (fun i => if i = 1 then r else 0)) x r_pos
+  have h2 := radial_to_cartesian_poisson ng.Φ ρ (w_of_r ψ₀ ng ρ α C_lag) (Real.sqrt (x 1^2 + x 2^2 + x 3^2)) r_pos (h_radial _ r_pos)
+  sorry  -- TODO: Combine h1 and h2 to get conclusion
 
 /-- GR limit: w(r) → 1 when α, C_lag → 0. -/
 theorem w_gr_limit (ψ₀ : ScalarField) (ng : NewtonianGaugeMetric) (ρ : ℝ → ℝ) (r : ℝ) :

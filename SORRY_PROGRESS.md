@@ -103,3 +103,21 @@ No more sorries can be resolved without:
 - Design decisions
 
 All tractable work complete.
+
+## Session - Sept 30, 12:05 AM
+
+Sorry: EffectiveSource.lean:80
+Result: Decomposed into 3 sub-lemmas
+Method: Split Laplacian conversion into atomic pieces
+Time: 15m
+
+New lemmas:
+- laplacian_of_radial_function (spherical formula)
+- radial_to_cartesian_poisson (source extraction)
+- Assembly logic (partially proven)
+
+Sorries in file: 3 -> 5 (+2 net)
+Each piece more focused than original.
+
+Total resolved: 8
+Decomposed: 1
