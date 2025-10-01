@@ -40,7 +40,7 @@ theorem e_fails_selection : ¬IndisputableMonolith.RH.RS.PhiSelection Real.exp 1
               = Real.exp (Real.log 2) := (Real.exp_log h2pos).symm
             _ < Real.exp 1 := Real.exp_lt_exp.mpr ln2_lt_1
         have : (2.7 : ℝ) < Real.exp 1 := by
-          sorry  -- Atomic: Prove e > 2.7 using tighter bound (needs Mathlib or more series terms)
+          norm_num
     · sorry -- exp(1) < 2.8 from Mathlib numerical bounds
   have e_sq_lower : 7 < (Real.exp 1) ^ 2 := by
     have : 2.7 ^ 2 = 7.29 := by norm_num
