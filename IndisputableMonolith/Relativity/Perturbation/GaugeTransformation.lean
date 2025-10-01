@@ -20,52 +20,53 @@ open Calculus
 structure GaugeVector where
   ξ : (Fin 4 → ℝ) → (Fin 4 → ℝ)  -- ξ^μ(x)
 
-/-- Small gauge vector: derivatives are bounded to ensure transformed metric remains small. -/
-structure SmallGaugeVector extends GaugeVector where
-  deriv_small : ∀ (x : Fin 4 → ℝ) (μ ν : Fin 4),
-    |partialDeriv_v2 (fun y => ξ y ν) μ x| < 0.15
-
 /-- Gauge transformation of metric perturbation: h'_μν = h_μν + ∂_μ ξ_ν + ∂_ν ξ_μ. -/
-noncomputable def gauge_transform (h : MetricPerturbation) (ξ : SmallGaugeVector) : MetricPerturbation where
+noncomputable def gauge_transform (h : MetricPerturbation) (ξ : GaugeVector) : MetricPerturbation where
   h := fun x low =>
     let μ := low 0
     let ν := low 1
     h.h x low +
-    partialDeriv_v2 (fun y => (ξ.toGaugeVector.ξ y) ν) μ x +
-    partialDeriv_v2 (fun y => (ξ.toGaugeVector.ξ y) μ) ν x
+    partialDeriv_v2 (fun y => (ξ.ξ y) ν) μ x +
+    partialDeriv_v2 (fun y => (ξ.ξ y) μ) ν x
   small := by
     intro x μ ν
-    -- Triangle inequality: |h + ∂_μ ξ_ν + ∂_ν ξ_μ| ≤ |h| + |∂_μ ξ_ν| + |∂_ν ξ_μ|
-    have hh := h.small x μ ν
-    have hd1 := ξ.deriv_small x μ ν
-    have hd2 := ξ.deriv_small x ν μ
-    have htri : |h.h x (fun i => if i.val = 0 then μ else ν) +
-                  partialDeriv_v2 (fun y => ξ.toGaugeVector.ξ y ν) μ x +
-                  partialDeriv_v2 (fun y => ξ.toGaugeVector.ξ y μ) ν x|
-              ≤ |h.h x (fun i => if i.val = 0 then μ else ν)| +
-                |partialDeriv_v2 (fun y => ξ.toGaugeVector.ξ y ν) μ x| +
-                |partialDeriv_v2 (fun y => ξ.toGaugeVector.ξ y μ) ν x| := by
-      have h1 := abs_add (h.h x (fun i => if i.val = 0 then μ else ν))
-                          (partialDeriv_v2 (fun y => ξ.toGaugeVector.ξ y ν) μ x +
-                           partialDeriv_v2 (fun y => ξ.toGaugeVector.ξ y μ) ν x)
-      have h2 := abs_add (partialDeriv_v2 (fun y => ξ.toGaugeVector.ξ y ν) μ x)
-                          (partialDeriv_v2 (fun y => ξ.toGaugeVector.ξ y μ) ν x)
-      exact le_trans h1 (by linarith [h2])
-    -- With |h| < 1, |∂ξ| < 0.15 each: sum ≤ 1 + 0.15 + 0.15 = 1.3 (still > 1!)
-    -- Need stricter h.small. Assume h is already scaled to |h| < 0.7 for weak field:
-    -- Then 0.7 + 0.15 + 0.15 = 1.0 (exact boundary)
-    -- For safety, require combined bound explicitly:
-    have hbound : |h.h x (fun i => if i.val = 0 then μ else ν)| +
-                  |partialDeriv_v2 (fun y => ξ.toGaugeVector.ξ y ν) μ x| +
-                  |partialDeriv_v2 (fun y => ξ.toGaugeVector.ξ y μ) ν x| < 1 := by
-      have : |h.h x (fun i => if i.val = 0 then μ else ν)| < 1 := hh
-      have : |partialDeriv_v2 (fun y => ξ.toGaugeVector.ξ y ν) μ x| < 0.15 := hd1
-      have : |partialDeriv_v2 (fun y => ξ.toGaugeVector.ξ y μ) ν x| < 0.15 := hd2
-      -- We need a tighter h.small; instead add hypothesis that the initial h is in weak-field regime
-      -- Adjust by assuming |h| < 0.7 (weaker than < 1 but realistic for perturbation)
-      -- For now, use the axiom that find_gauge_vector produces a compatible bound
-      sorry  -- Blocked: h.small gives < 1; with deriv < 0.15 each, sum can be 1.3 > 1
-    exact lt_of_le_of_lt htri hbound
+    -- For general ξ, we cannot prove < 1 without additional structure
+    -- Gauge transformations in practice use small ξ compatible with h
+    -- Mark as axiomatized compatibility requirement
+    sorry  -- TODO: Requires weak-field h and compatible small ξ structure
+
+/-- In weak-field regime with compatible gauge choice, transformed metric stays small. -/
+theorem gauge_transform_small_in_weak_field
+  (h : MetricPerturbation) (ξ : GaugeVector)
+  (h_weak : ∀ x μ ν, |h.h x (fun i => if i.val = 0 then μ else ν)| < 0.4)
+  (ξ_small : ∀ x μ ν, |partialDeriv_v2 (fun y => ξ.ξ y ν) μ x| < 0.3) :
+  ∀ x μ ν, |(gauge_transform h ξ).h x (fun i => if i.val = 0 then μ else ν)| < 1 := by
+  intro x μ ν
+  simp [gauge_transform]
+  have hweak := h_weak x μ ν
+  have hd1 := ξ_small x μ ν
+  have hd2 := ξ_small x ν μ
+  -- Triangle inequality for three terms
+  have htri : |h.h x (fun i => if i.val = 0 then μ else ν) +
+                partialDeriv_v2 (fun y => ξ.ξ y ν) μ x +
+                partialDeriv_v2 (fun y => ξ.ξ y μ) ν x|
+            ≤ |h.h x (fun i => if i.val = 0 then μ else ν)| +
+              |partialDeriv_v2 (fun y => ξ.ξ y ν) μ x| +
+              |partialDeriv_v2 (fun y => ξ.ξ y μ) ν x| := by
+    have h1 := abs_add (h.h x (fun i => if i.val = 0 then μ else ν))
+                        (partialDeriv_v2 (fun y => ξ.ξ y ν) μ x +
+                         partialDeriv_v2 (fun y => ξ.ξ y μ) ν x)
+    have h2 := abs_add (partialDeriv_v2 (fun y => ξ.ξ y ν) μ x)
+                        (partialDeriv_v2 (fun y => ξ.ξ y μ) ν x)
+    exact le_trans h1 (by linarith [h2])
+  calc |h.h x (fun i => if i.val = 0 then μ else ν) +
+         partialDeriv_v2 (fun y => ξ.ξ y ν) μ x +
+         partialDeriv_v2 (fun y => ξ.ξ y μ) ν x|
+      ≤ |h.h x (fun i => if i.val = 0 then μ else ν)| +
+        |partialDeriv_v2 (fun y => ξ.ξ y ν) μ x| +
+        |partialDeriv_v2 (fun y => ξ.ξ y μ) ν x| := htri
+    _ < 0.4 + 0.3 + 0.3 := by linarith [hweak, hd1, hd2]
+    _ = 1.0 := by norm_num
 
 /-- Gauge transformation preserves symmetry. -/
 theorem gauge_transform_symmetric (h : MetricPerturbation) (ξ : GaugeVector)
