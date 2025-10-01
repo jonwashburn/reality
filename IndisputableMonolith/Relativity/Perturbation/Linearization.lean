@@ -26,6 +26,29 @@ structure MetricPerturbation where
   h : (Fin 4 → ℝ) → (Fin 2 → Fin 4) → ℝ  -- h_μν(x)
   small : ∀ x μ ν, |h x (fun i => if i.val = 0 then μ else ν)| < 1
 
+/-- Weak-field perturbations with derivative control suitable for first-order GR expansions. -/
+structure WeakFieldPerturbation where
+  base : MetricPerturbation
+  eps : ℝ
+  eps_pos : 0 < eps
+  eps_le : eps ≤ 0.1
+  small : ∀ x μ ν, |base.h x (fun i => if i.val = 0 then μ else ν)| ≤ eps
+  deriv_bound : ∀ x μ ν,
+    |Calculus.partialDeriv_v2
+      (fun y => base.h y (fun i => if i.val = 0 then μ else ν)) μ x|
+        ≤ (1 / 10) * eps
+  mixed_deriv_bound : ∀ x μ ν σ,
+    |Calculus.partialDeriv_v2
+      (fun y => Calculus.partialDeriv_v2
+        (fun z => base.h z (fun i => if i.val = 0 then μ else ν)) σ y) σ x|
+        ≤ (1 / 10) * eps
+
+/-- Forgetful coercion from `WeakFieldPerturbation` to `MetricPerturbation`. -/
+@[simp, coercion]
+def WeakFieldPerturbation.toMetricPerturbation
+  (hWF : WeakFieldPerturbation) : MetricPerturbation :=
+  hWF.base
+
 /-- Symmetrize a (0,2)-tensor in its covariant indices. -/
 noncomputable def symmetrize_bilinear (T : BilinearForm) : BilinearForm :=
   fun x up_idx low_idx =>

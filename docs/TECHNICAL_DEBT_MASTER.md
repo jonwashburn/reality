@@ -488,10 +488,10 @@ Many remaining sorries require:
 - Examples: ricci_expansion, inverse_first_order_identity
 - Fix: Tighten individual bounds to 0.0025 or use cancellation
 
-**Category 2: Weak-Field Structure Needed** (~12 sorries)  
-- Require |h| < ε (not just < 1) and |∂h| < Cε
-- Examples: ChristoffelExpansion, GaugeTransformation (general case), MetricAlgebra
-- Fix: Introduce `WeakFieldPerturbation` structure
+- **Category 2: Weak-Field Structure** (~12 sorries)  
+  - ✅ Introduced `WeakFieldPerturbation` structure with derivative bounds (`Linearization.lean`)
+  - ✅ Applied to `ChristoffelExpansion.christoffel_small_when_h_small` (derivative-controlled proof)
+  - Remaining: gauge transform general smallness, Ricci/Riemann expansions, MetricAlgebra inverse; update proofs to use `WeakFieldPerturbation`
 
 **Category 3: Missing Concrete Solutions** (~15 sorries)
 - Need actual field/potential values to evaluate bounds
