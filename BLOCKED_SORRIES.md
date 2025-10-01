@@ -12,9 +12,9 @@ Sorries that cannot be resolved without external help or are in buggy theorems.
 
 ---
 
-## Needs Theorem Fix
+## Needs Design Decision (Units)
 
-- Perturbation/Einstein00.lean:74 - κ value - Bug: Code says 1, comment says 4π
+- Perturbation/Einstein00.lean:74 - κ inconsistency - Blocker: κ defined as 1 (line 59) but theorem needs 4π (line 68). Cannot prove 1 = 4π. Needs: Decision on unit system or parameterize κ
 
 ---
 

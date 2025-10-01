@@ -72,3 +72,14 @@ Method: Changed bound from 0.2ε² to 0.2, proved with calc + mul_lt_mul
 Time: 8m
 
 Total resolved: 8 (was 7)
+
+## Session - Sept 30, 12:00 AM
+
+Sorry: Einstein00.lean:74
+Result: Blocked (updated documentation)
+Method: Analyzed, found units inconsistency (κ=1 vs κ=4π)
+Time: 10m
+Blocker: Design decision needed on unit system
+
+Total resolved: 8
+Total blocked: Documented with specifics
