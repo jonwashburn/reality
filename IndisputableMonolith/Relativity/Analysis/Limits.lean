@@ -107,8 +107,10 @@ theorem bigO_comp (f g h : ℝ → ℝ) (k : ℝ → ℝ) (a : ℝ)
   (hfg : IsBigO f g a) (hcont : ContinuousAt k a) :
   IsBigO (fun x => k (f x)) (fun x => k (g x)) a := by
   unfold IsBigO at *
-  -- Requires continuity and boundedness arguments
-  sorry  -- TODO: Prove using composition lemmas from Mathlib
+  -- Requires local Lipschitz or boundedness of k beyond ContinuousAt
+  -- ContinuousAt alone insufficient: k could be unbounded near a
+  -- Need: ∃ δ L, |x-a| < δ → |k(x)| ≤ L (local boundedness)
+  sorry  -- TODO: Requires Lipschitz or locally bounded hypothesis on k beyond ContinuousAt
 
 /-- Little-o is stronger than big-O. -/
 theorem littleO_implies_bigO (f g : ℝ → ℝ) (a : ℝ) :
