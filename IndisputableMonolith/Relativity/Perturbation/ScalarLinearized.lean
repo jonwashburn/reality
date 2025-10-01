@@ -48,10 +48,18 @@ theorem scalar_eq_static (ψ₀ : ScalarField) (δψ : ScalarPerturbation) (ng :
   LinearizedScalarEq ψ₀ δψ ng m_squared →
   (∀ x, laplacian δψ.δψ x - m_squared * δψ.δψ x = -(ng.Φ x + ng.Ψ x) * ψ₀.ψ x) := by
   intro h_eq x
-  have := h_eq x
-  -- □ = -∂_t² + ∇²; for static: ∂_t² = 0, so □ = ∇²
-  simp [dalembertian_operator] at this
-  sorry  -- TODO: Use h_static to drop time derivatives
+  have heq := h_eq x
+  -- □ = -∂_t² + ∇²; for static: ∂_t²δψ = secondDeriv δψ.δψ 0 0 = ∂_t(∂_tδψ) = ∂_t(0) = 0
+  have htime : secondDeriv δψ.δψ 0 0 x = 0 := by
+    unfold secondDeriv
+    simp [h_static_δψ x]
+    -- ∂_0(∂_0 δψ) = ∂_0(0) = 0
+    have := deriv_const 0 0 x
+    simpa [partialDeriv_v2] using this
+  -- Substitute into dalembertian
+  have : dalembertian_operator δψ.δψ x = laplacian δψ.δψ x := by
+    simp [dalembertian_operator, htime]
+  simpa [this] using heq
 
 /-- Solve for δψ in terms of Φ, Ψ (algebraic if m=0 or perturbative). -/
 noncomputable def delta_psi_solution
@@ -62,16 +70,32 @@ noncomputable def delta_psi_solution
   let c := 0.1  -- Coupling constant (to be derived)
   -c * (ng.Φ x + ng.Ψ x)
 
-/-- Solution satisfies linearized equation (approximately). -/
-theorem delta_psi_satisfies_eq (ψ₀ : ScalarField) (ng : NewtonianGaugeMetric) :
+/-- Solution satisfies linearized equation (approximately, assuming ψ₀ ≈ const). -/
+theorem delta_psi_satisfies_eq (ψ₀ : ScalarField) (ng : NewtonianGaugeMetric)
+  (h_ψ₀_small : ∀ x, |ψ₀.ψ x| < 0.1) :
   let δψ_val := delta_psi_solution ψ₀ ng 0
   let δψ : ScalarPerturbation := { δψ := δψ_val, small := by intro _; norm_num }
   -- For m=0 and assuming ψ₀ ≈ const or small:
-  ∀ x, |dalembertian_operator δψ_val x - (-(ng.Φ x + ng.Ψ x))| < 0.1 := by
+  ∀ x, |dalembertian_operator δψ_val x - (-(ng.Φ x + ng.Ψ x) * ψ₀.ψ x)| < 0.1 := by
   intro x
-  simp [delta_psi_solution, dalembertian_operator, laplacian]
-  -- ∇²(Φ+Ψ) involves second derivatives
-  sorry  -- TODO: Compute ∇²δψ and verify equation holds
+  -- Compute ∇²δψ where δψ = -c(Φ + Ψ)
+  -- ∇²δψ = -c ∇²(Φ + Ψ) = -c(∇²Φ + ∇²Ψ) by linearity
+  have hlin : laplacian (fun y => delta_psi_solution ψ₀ ng 0 y) x =
+    -0.1 * (laplacian ng.Φ x + laplacian ng.Ψ x) := by
+    simp [delta_psi_solution]
+    -- δψ = -0.1·(Φ + Ψ), so ∇²δψ = -0.1·∇²(Φ + Ψ)
+    have h1 := laplacian_add ng.Φ ng.Ψ x
+    have h2 := laplacian_smul (-0.1) (fun y => ng.Φ y + ng.Ψ y) x
+    calc laplacian (fun y => -0.1 * (ng.Φ y + ng.Ψ y)) x
+        = -0.1 * laplacian (fun y => ng.Φ y + ng.Ψ y) x := h2
+      _ = -0.1 * (laplacian ng.Φ x + laplacian ng.Ψ x) := by simp [h1]
+  -- Now dalembertian δψ = -∂_t² δψ + ∇²δψ
+  -- For static δψ: -∂_t² δψ = 0
+  -- The equation wants: □δψ = -(Φ+Ψ)ψ₀
+  -- We have: ∇²δψ = -0.1·(∇²Φ + ∇²Ψ)
+  -- This doesn't directly match -(Φ+Ψ) unless ∇²Φ ∼ Φ (which isn't general)
+  -- The solution formula is too simplified; needs proper Green's function
+  sorry  -- TODO: Requires proper solution via Green's function, not just δψ ∝ Φ+Ψ
 
 /-- Substitute δψ solution back into T_00. -/
 noncomputable def T_00_with_solution

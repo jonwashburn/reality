@@ -70,13 +70,12 @@ theorem time_dependent_constraint (ng : NewtonianGaugeMetric) :
 /-- For spherical symmetry and static case: G_0i = 0 is automatic. -/
 theorem spherical_static_0i_automatic (ng : NewtonianGaugeMetric)
   (h_spherical : ∀ x r, ng.Φ x = ng.Φ (fun _ => r))  -- Depends only on radius
-  (h_static : ∀ x, partialDeriv_v2 ng.Φ 0 x = 0) :
+  (h_static_Φ : ∀ x, partialDeriv_v2 ng.Φ 0 x = 0)
+  (h_static_Ψ : ∀ x, partialDeriv_v2 ng.Ψ 0 x = 0) :
   ∀ x i, delta_G_0i_newtonian ng x i = 0 := by
   intro x i
-  have := G_0i_vanishes_static ng x i h_static
-  · -- Also need ∂_t Ψ = 0 for spherical
-    sorry
-  · sorry
+  -- For static fields, both ∂_tΦ = ∂_tΨ = 0
+  exact G_0i_vanishes_static ng x i h_static_Φ h_static_Ψ
 
 end Perturbation
 end Relativity

@@ -90,6 +90,13 @@ theorem laplacian_add (f g : (Fin 4 → ℝ) → ℝ) (x : Fin 4 → ℝ) :
   unfold laplacian
   simp [secondDeriv, deriv_add]
 
+/-- Laplacian is homogeneous: ∇²(cf) = c∇²f. -/
+theorem laplacian_smul (c : ℝ) (f : (Fin 4 → ℝ) → ℝ) (x : Fin 4 → ℝ) :
+  laplacian (fun y => c * f y) x = c * laplacian f x := by
+  unfold laplacian secondDeriv
+  simp [deriv_smul]
+  ring
+
 end Calculus
 end Relativity
 end IndisputableMonolith
