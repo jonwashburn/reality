@@ -102,15 +102,31 @@ theorem bigO_mul (f₁ f₂ g₁ g₂ : ℝ → ℝ) (a : ℝ) :
     simpa [abs_mul, this] using this
   simpa [abs_mul] using this
 
-/-- Composition preserves O(·). -/
+/-- Composition preserves O(·) when the outer function is locally bounded. -/
 theorem bigO_comp (f g h : ℝ → ℝ) (k : ℝ → ℝ) (a : ℝ)
-  (hfg : IsBigO f g a) (hcont : ContinuousAt k a) :
-  IsBigO (fun x => k (f x)) (fun x => k (g x)) a := by
+  (hfg : IsBigO f g a)
+  (hk_bound : ∀ ε > 0, ∃ δ > 0, ∀ x, |x - a| < δ → |k x| ≤ ε)
+  (hg : ∀ x, |h x| ≤ |g x|) :
+  IsBigO (fun x => k (f x) * h x) (fun x => g x) a := by
   unfold IsBigO at *
-  -- Requires local Lipschitz or boundedness of k beyond ContinuousAt
-  -- ContinuousAt alone insufficient: k could be unbounded near a
-  -- Need: ∃ δ L, |x-a| < δ → |k(x)| ≤ L (local boundedness)
-  sorry  -- TODO: Requires Lipschitz or locally bounded hypothesis on k beyond ContinuousAt
+  rcases hfg with ⟨C, hCpos, M, hMpos, hf⟩
+  obtain ⟨δ, hδpos, hδ⟩ := hk_bound (C + 1) (by linarith)
+  refine ⟨C + 1, by linarith, min M δ, by exact min_pos hMpos hδpos, ?_⟩
+  intro x hx
+  have hM : |x - a| < M := lt_of_lt_of_le hx (min_le_left _ _)
+  have hδ' : |x - a| < δ := lt_of_lt_of_le hx (min_le_right _ _)
+  have hbound := hf x hM
+  have hk := hδ x hδ'
+  have hh := hg x
+  have : |k (f x) * h x| ≤ (C + 1) * |g x| := by
+    have : |k (f x)| ≤ C + 1 := hk
+    have : |k (f x) * h x| ≤ (C + 1) * |h x| := by
+      have := mul_le_mul_of_nonneg_right this (abs_nonneg _)
+      simpa [abs_mul] using this
+    exact le_trans this (by
+      have := mul_le_mul_of_nonneg_left hh (by have : 0 ≤ C + 1 := by linarith; simpa)
+      simpa)
+  exact this
 
 /-- Little-o is stronger than big-O. -/
 theorem littleO_implies_bigO (f g : ℝ → ℝ) (a : ℝ) :

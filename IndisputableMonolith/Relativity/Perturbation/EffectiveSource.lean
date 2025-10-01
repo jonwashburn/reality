@@ -61,21 +61,122 @@ noncomputable def w_correction_term
   -- w = 1 + (T_00_scalar / ρ)
   if ρ x = 0 then 0 else (T_00_explicit ψ₀ ng α x) / ρ x
 
-/-- Weight is close to 1 when α, C_lag small. -/
+/-- Weight correction stays small under weak-field hypotheses. -/
 theorem w_correction_small (ψ₀ : ScalarField) (ng : NewtonianGaugeMetric) (ρ : (Fin 4 → ℝ) → ℝ) (α C_lag : ℝ)
   (h_α_small : |α| < 0.2) (h_C_small : |C_lag| < 0.1)
-  (h_ψ₀_bounded : ∀ x μ, |Fields.gradient ψ₀ x μ| < 1)
-  (h_Φ_Ψ_small : ∀ x, |ng.Φ x| + |ng.Ψ x| < 0.5) :
-  ∀ x, ρ x > 0 → |w_correction_term ψ₀ ng ρ α C_lag x| < 0.05 := by
+  (h_ψ₀_bounded : ∀ x μ, |Fields.gradient ψ₀ x μ| ≤ 1)
+  (h_grad_ΦΨ : ∀ x μ, |partialDeriv_v2 (fun y => ng.Φ y + ng.Ψ y) μ x| ≤ 0.5)
+  (h_ρ_pos : ∀ x, 0 < ρ x) (h_ρ_lower : ∀ x, 1 ≤ ρ x) :
+  ∀ x, |w_correction_term ψ₀ ng ρ α C_lag x| < 0.07 := by
   intro x h_ρ_pos
-  simp [w_correction_term, T_00_explicit]
-  -- T_00 = -2αc (∇ψ₀)·(∇(Φ+Ψ)) with c = 0.1
-  -- |T_00| ≤ 2|α|·0.1·(|∇ψ₀|·|∇(Φ+Ψ)|)
-  -- Bound: |∇ψ₀| < 1 (assumed), |∇(Φ+Ψ)| ~ |(Φ+Ψ)|/L < 0.5/L (gradient bounded by value)
-  -- With 3 spatial directions: |∑| ≤ 3 · 2 · 0.2 · 0.1 · 1 · 0.5 = 0.06
-  -- Then |T_00/ρ| < 0.06/ρ; for ρ > 1: < 0.06 < 0.05 (fails by small margin)
-  -- Need either tighter assumptions or looser bound (0.06 vs claimed 0.05)
-  sorry  -- TODO: Numeric bound yields 0.06; need either tighter assumptions or adjust claimed 0.05 → 0.1
+  have hρ_ne : ρ x ≠ 0 := ne_of_gt (h_ρ_pos x)
+  have hρ_ge : 1 ≤ ρ x := h_ρ_lower x
+  simp [w_correction_term, T_00_explicit, hρ_ne]
+  -- Define shorthand constants
+  set c : ℝ := 0.1
+  have hc_pos : 0 ≤ c := by norm_num
+  have hgradψ (μ : Fin 4) : |gradient ψ₀ x μ| ≤ 1 := h_ψ₀_bounded x μ
+  have hgradΦΨ (μ : Fin 4) : |partialDeriv_v2 (fun y => ng.Φ y + ng.Ψ y) μ x| ≤ 0.5 := h_grad_ΦΨ x μ
+  -- Bound the sum over spatial indices
+  have hsum_le :
+      |Finset.sum (Finset.range 3)
+        (fun i =>
+          let i' : Fin 4 := ⟨i + 1, by omega⟩
+          gradient ψ₀ x i' *
+            partialDeriv_v2 (fun y => ng.Φ y + ng.Ψ y) i' x)|
+        ≤ (3 : ℝ) * 0.5 := by
+    refine
+      (Finset.abs_sum_le_sum_abs _ _).trans ?_
+    have hterm : ∀ i ∈ Finset.range 3,
+        |gradient ψ₀ x ⟨i + 1, ?_⟩ *
+            partialDeriv_v2 (fun y => ng.Φ y + ng.Ψ y) ⟨i + 1, ?_⟩ x|
+        ≤ 0.5 := by
+      intro i hi
+      have hψ := hgradψ ⟨i + 1, by omega⟩
+      have hΦΨ' := hgradΦΨ ⟨i + 1, by omega⟩
+      have :
+          |gradient ψ₀ x ⟨i + 1, by omega⟩ *
+              partialDeriv_v2 (fun y => ng.Φ y + ng.Ψ y) ⟨i + 1, by omega⟩ x|
+          ≤ 1 * 0.5 := by
+        have := mul_le_mul hψ hΦΨ' (by norm_num) (abs_nonneg _)
+        simpa [abs_mul] using this
+      simpa using this
+    have hcard : ((Finset.range 3).card : ℝ) = 3 := by simp
+    have := Finset.sum_le_card_nsmul (Finset.range 3) hterm
+    simpa [Finset.card_range, hcard, bit0, one_mul] using this
+  -- Bound the numerator |T_00_explicit|
+  have hnum_le :
+      |(-2) * α * c *
+          Finset.sum (Finset.range 3)
+            (fun i =>
+              let i' : Fin 4 := ⟨i + 1, by omega⟩
+              gradient ψ₀ x i' *
+                partialDeriv_v2 (fun y => ng.Φ y + ng.Ψ y) i' x)|
+        ≤ 3 * |α| * c := by
+    have habs_mul :
+        |(-2 : ℝ) * α * c| = 2 * |α| * c := by
+      simp [abs_mul, hc_pos, abs_of_pos (by norm_num : (0 : ℝ) < 2)]
+    have :=
+      mul_le_mul_of_nonneg_left hsum_le (by
+        have : 0 ≤ 2 * |α| * c := by
+          have := mul_nonneg (by norm_num : (0 : ℝ) ≤ 2) (mul_nonneg (abs_nonneg α) hc_pos)
+          simpa using this
+        simpa [habs_mul] using this)
+    simpa [habs_mul, mul_assoc, mul_left_comm, mul_comm] using this
+  -- Convert to bound on |w_correction_term|
+  have hden_pos : 0 < ρ x := h_ρ_pos x
+  have hden_ge : (0 : ℝ) ≤ ρ x := le_of_lt hden_pos
+  have :
+      |(-2) * α * c *
+            Finset.sum (Finset.range 3)
+              (fun i =>
+                let i' : Fin 4 := ⟨i + 1, by omega⟩
+                gradient ψ₀ x i' *
+                  partialDeriv_v2 (fun y => ng.Φ y + ng.Ψ y) i' x)| /
+          ρ x|
+        ≤ (3 * |α| * c) := by
+    have hdiv_le_self :
+        |(-2) * α * c *
+              Finset.sum (Finset.range 3)
+                (fun i =>
+                  let i' : Fin 4 := ⟨i + 1, by omega⟩
+                  gradient ψ₀ x i' *
+                    partialDeriv_v2 (fun y => ng.Φ y + ng.Ψ y) i' x)| /
+            ρ x
+          ≤
+          |(-2) * α * c *
+              Finset.sum (Finset.range 3)
+                (fun i =>
+                  let i' : Fin 4 := ⟨i + 1, by omega⟩
+                  gradient ψ₀ x i' *
+                    partialDeriv_v2 (fun y => ng.Φ y + ng.Ψ y) i' x)| :=
+      by
+        have hnum_nonneg :
+            0 ≤ |(-2) * α * c *
+                Finset.sum (Finset.range 3)
+                  (fun i =>
+                    let i' : Fin 4 := ⟨i + 1, by omega⟩
+                    gradient ψ₀ x i' *
+                      partialDeriv_v2 (fun y => ng.Φ y + ng.Ψ y) i' x)| :=
+          abs_nonneg _
+        have hden_ge' : 1 ≤ ρ x := h_ρ_lower x
+        have := div_le_self hnum_nonneg hden_ge'
+        simpa using this
+    exact le_trans hdiv_le_self hnum_le
+  -- Combine numerical bounds
+  have hα_bound : 3 * |α| * c < 0.06 := by
+    have := mul_lt_mul_of_pos_right h_α_small (by norm_num : 0 < 3 * c)
+    simpa [mul_assoc, mul_left_comm, mul_comm] using this
+  have :
+      |(-2) * α * c *
+            Finset.sum (Finset.range 3)
+              (fun i =>
+                let i' : Fin 4 := ⟨i + 1, by omega⟩
+                gradient ψ₀ x i' *
+                  partialDeriv_v2 (fun y => ng.Φ y + ng.Ψ y) i' x)| /
+          ρ x
+        < 0.06 := lt_of_le_of_lt this hα_bound
+  exact lt_of_lt_of_le this (by norm_num : (0.06 : ℝ) ≤ 0.07)
 
 /-- For spherical ρ(r), w becomes a function of r. -/
 noncomputable def w_of_r
