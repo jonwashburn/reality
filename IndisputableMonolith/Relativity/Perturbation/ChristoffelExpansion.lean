@@ -34,7 +34,10 @@ theorem christoffel_expansion (g₀ : MetricTensor) (h : MetricPerturbation) (x 
   -- Standard first-order perturbation theory
   -- Γ[g+h] = (1/2)(g+h)⁻¹ ∂(g+h) ≈ (1/2)(g⁻¹ - h)(∂g + ∂h) = Γ[g] + δΓ + O(h²)
   simp [christoffel_from_metric, linearized_christoffel]
-  sorry  -- TODO: Expand inverse metric and derivatives
+  -- Expansion requires: (g₀+h)⁻¹ ≈ g₀⁻¹ - g₀⁻¹ h g₀⁻¹ (but inverse_metric_first_order has dimensional issue)
+  -- And: ∂(g+h) = ∂g + ∂h (requires |∂h| bounds not in MetricPerturbation.small)
+  -- Blocked by: 1) inverse metric dimensional issue, 2) lack of derivative bounds
+  sorry  -- TODO: Requires WeakFieldPerturbation with |∂h| < Cε AND fixed inverse_metric_first_order
 
 /-- For Minkowski background, Γ[η] = 0, so Γ[η+h] = δΓ[h] + O(h²). -/
 theorem christoffel_minkowski_expansion (h : MetricPerturbation) (x : Fin 4 → ℝ) (ρ μ ν : Fin 4) :
@@ -78,10 +81,10 @@ theorem christoffel_small_when_h_small (h : MetricPerturbation) (x : Fin 4 → �
             |partialDeriv_v2 (fun y => h.h y (fun i => if i.val = 0 then μ else σ)) ν x| +
             |partialDeriv_v2 (fun y => h.h y (fun i => if i.val = 0 then μ else ν)) σ x|)) := by
     simp [linearized_christoffel]
-    have := abs_sum_le_sum_abs (Finset.univ : Finset (Fin 4)) _
-    sorry  -- TODO: Apply triangle inequality to the finite sum
-  -- Each derivative ~ |h|; with 4 σ values and 3 derivative terms: ~ (1/2)·1·4·3·0.1 = 0.6 < 1
-  sorry  -- TODO: Bound each derivative by |h| and sum
+    -- Apply abs of finite sum
+    sorry  -- TODO: Requires abs_sum_le_sum_abs for our specific index structure
+  -- Each derivative ~ |h|; requires |∂h| < C|h| from WeakFieldPerturbation structure
+  sorry  -- TODO: Requires WeakFieldPerturbation with derivative bounds |∂h| < Cε
 
 end Perturbation
 end Relativity
