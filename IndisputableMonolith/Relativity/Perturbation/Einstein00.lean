@@ -131,24 +131,24 @@ theorem einstein_00_reduces_to_poisson (ng : NewtonianGaugeMetric) (ρ : (Fin 4 
   exact this
 
 /-- Test: Spherical source ρ = M δ³(r) gives Φ = -M/r (for small M and r > r_min). -/
-axiom spherical_source_test (M : ℝ) (hM : |M| < 0.1) :
+axiom spherical_source_test (M : ℝ) (hM : |M| < 0.1) (r_min : ℝ) (hr_min : r_min > 0.2) :
   let ng : NewtonianGaugeMetric := {
     Φ := fun x => -M / Real.sqrt (x 1 ^ 2 + x 2 ^ 2 + x 3 ^ 2),
     Ψ := fun x => -M / Real.sqrt (x 1 ^ 2 + x 2 ^ 2 + x 3 ^ 2),
     Φ_small := by
       intro x
-      -- |Φ| = |M/r| < 0.5 when |M| < 0.1 and r > 0.2
-      -- We need r > 2|M|; assume x ≠ 0 gives r > |M|/5 (weak-field domain)
+      -- Require x to be in weak-field domain: r > r_min
       have : |(-M / Real.sqrt (x 1 ^ 2 + x 2 ^ 2 + x 3 ^ 2))| < 0.5 := by
-        have : |M| < 0.1 := hM
-        -- For r > 0.2: |M/r| < 0.1/0.2 = 0.5
-        sorry  -- TODO: Add hypothesis r > r_min to ensure bound
+        -- This holds when Real.sqrt(...) > r_min and |M/r_min| < 0.5
+        -- With |M| < 0.1 and r_min > 0.2: |M|/r_min < 0.1/0.2 = 0.5 ✓
+        -- But we can't prove x satisfies r > r_min without it as a hypothesis on x
+        -- The axiom should restrict to domain where r > r_min
+        sorry  -- TODO: Axiom needs domain restriction: valid only for r(x) > r_min
       exact this,
     Ψ_small := by
       intro x
       have : |(-M / Real.sqrt (x 1 ^ 2 + x 2 ^ 2 + x 3 ^ 2))| < 0.5 := by
-        have : |M| < 0.1 := hM
-        sorry  -- TODO: Add hypothesis r > r_min to ensure bound
+        sorry  -- TODO: Same domain restriction needed
       exact this
   }
   ∀ x, x ≠ (fun _ => 0) →
