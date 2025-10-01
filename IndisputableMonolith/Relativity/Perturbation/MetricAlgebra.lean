@@ -96,7 +96,7 @@ theorem inverse_first_order_identity_minkowski
             h.base.h x (fun i => if i.val = 0 then ρ else ν)) := by
     have hinv := metric_inverse_identity_minkowski x μ ν
     simp [inverse_metric_first_order, add_comm, add_left_comm, add_assoc, sub_eq_add_neg,
-      mul_add, add_mul, mul_comm, mul_left_comm, mul_assoc, hinv] 
+      mul_add, add_mul, mul_comm, mul_left_comm, mul_assoc, hinv]
   have hsum_bound :
       |Finset.sum (Finset.univ : Finset (Fin 4)) (fun ρ =>
           -(minkowski.toMetricTensor.g x (fun _ => 0)

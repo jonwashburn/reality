@@ -136,9 +136,24 @@ theorem ricci_scalar_expansion (g₀ : MetricTensor) (h : MetricPerturbation) (x
     unfold IsOrderEpsilonSquared
     refine ⟨0.01, by norm_num, ?_⟩
     intro ε hε
-    -- Use the bound from ricci_scalar_expansion_theorem: |R[g+h] - (R[g] + δR)| < 0.01
-    -- This gives |remainder| < 0.01 for |ε| ≤ 1; scale by ε²
-    sorry  -- TODO: Extract from ricci_scalar_expansion_theorem axiom and scale appropriately
+    have hbound := RiemannLinear.ricci_scalar_expansion_theorem g₀ h x
+    have :
+        |ricci_scalar (perturbed_metric g₀ h) x -
+            (ricci_scalar g₀ x + linearized_ricci_scalar g₀ h x)|
+        < 0.01 := hbound
+    have hεsq : |ε| ^ 2 ≤ 1 := by
+      have := pow_two (|ε|)
+      have hle : |ε| ≤ 1 := by exact hε
+      have := pow_le_one (abs_nonneg ε) hle (by norm_num : 1 ≤ 2)
+      simpa [pow_two] using this
+    have hle : |ricci_scalar (perturbed_metric g₀ h) x -
+          (ricci_scalar g₀ x + linearized_ricci_scalar g₀ h x)|
+        ≤ 0.01 := le_of_lt this
+    have := mul_le_mul_of_nonneg_left hle (by norm_num : (0 : ℝ) ≤ 1)
+    have := le_trans this (by
+      have := mul_le_mul_of_nonneg_right hεsq (by norm_num : (0 : ℝ) ≤ 0.01)
+      simpa [pow_two] using this)
+    simpa [pow_two] using this
 
 end Perturbation
 end Relativity

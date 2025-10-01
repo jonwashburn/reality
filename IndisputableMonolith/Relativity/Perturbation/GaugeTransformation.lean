@@ -29,19 +29,49 @@ structure WeakGaugeVector where
   deriv_bound : ∀ x μ ν, |partialDeriv_v2 (fun y => (ξ.ξ y) ν) μ x| ≤ bound
 
 /-- Gauge transformation of metric perturbation: h'_μν = h_μν + ∂_μ ξ_ν + ∂_ν ξ_μ. -/
-noncomputable def gauge_transform (h : MetricPerturbation) (ξ : GaugeVector) : MetricPerturbation where
+noncomputable def gauge_transform (h : WeakFieldPerturbation) (ξ : WeakGaugeVector) : WeakFieldPerturbation where
+  eps := h.eps + 2 * ξ.bound
+  eps_pos := by
+    have := add_pos_of_pos_of_nonneg h.eps_pos (mul_nonneg (by norm_num) ξ.bound_nonneg)
+    simpa [two_mul]
+  eps_le := by
+    have := add_le_add (le_of_eq rfl) (mul_le_mul_of_nonneg_left ξ.bound_le (by norm_num : (0 : ℝ) ≤ 2))
+    simpa [two_mul]
   h := fun x low =>
     let μ := low 0
     let ν := low 1
-    h.h x low +
-    partialDeriv_v2 (fun y => (ξ.ξ y) ν) μ x +
-    partialDeriv_v2 (fun y => (ξ.ξ y) μ) ν x
+    h.base.h x low +
+    partialDeriv_v2 (fun y => (ξ.ξ.ξ y) ν) μ x +
+    partialDeriv_v2 (fun y => (ξ.ξ.ξ y) μ) ν x
   small := by
     intro x μ ν
-    -- For general ξ, we cannot prove < 1 without additional structure
-    -- Gauge transformations in practice use small ξ compatible with h
-    -- Mark as axiomatized compatibility requirement
-    sorry  -- TODO: Requires weak-field h and compatible small ξ structure
+    have h_base := h.small x μ ν
+    have hξ₁ := ξ.deriv_bound x μ ν
+    have hξ₂ := ξ.deriv_bound x ν μ
+    have :
+        |h.base.h x (fun i => if i.val = 0 then μ else ν) +
+          partialDeriv_v2 (fun y => (ξ.ξ.ξ y) ν) μ x +
+          partialDeriv_v2 (fun y => (ξ.ξ.ξ y) μ) ν x|
+        ≤ h.eps + ξ.bound + ξ.bound := by
+      have htri :
+          |h.base.h x (fun i => if i.val = 0 then μ else ν) +
+            partialDeriv_v2 (fun y => (ξ.ξ.ξ y) ν) μ x +
+            partialDeriv_v2 (fun y => (ξ.ξ.ξ y) μ) ν x|
+          ≤ |h.base.h x (fun i => if i.val = 0 then μ else ν)| +
+            |partialDeriv_v2 (fun y => (ξ.ξ.ξ y) ν) μ x| +
+            |partialDeriv_v2 (fun y => (ξ.ξ.ξ y) μ) ν x| := by
+        have h1 := abs_add (h.base.h x (fun i => if i.val = 0 then μ else ν)) _
+        have h2 := abs_add (partialDeriv_v2 (fun y => (ξ.ξ.ξ y) ν) μ x)
+                        (partialDeriv_v2 (fun y => (ξ.ξ.ξ y) μ) ν x)
+        exact le_trans h1 (by linarith [h2])
+      have : |h.base.h x (fun i => if i.val = 0 then μ else ν)| ≤ h.eps := by
+        simpa using h_base
+      have :
+          |partialDeriv_v2 (fun y => (ξ.ξ.ξ y) ν) μ x| ≤ ξ.bound := hξ₁
+      have :
+          |partialDeriv_v2 (fun y => (ξ.ξ.ξ y) μ) ν x| ≤ ξ.bound := hξ₂
+      linarith [htri, this, hξ₁, hξ₂]
+    exact this
 
 /-- In weak-field regime with compatible gauge choice, transformed metric stays small. -/
 theorem gauge_transform_small_in_weak_field
