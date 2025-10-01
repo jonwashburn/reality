@@ -522,8 +522,13 @@ Many remaining sorries require:
 - Commits this session: 14
 - Build: CLEAN
 
-**Latest completion**:
-- ✅ SphericalWeight.w_enhancement_for_slow_systems: Proved using Constants.phi_pos and rpow properties
+**Latest completions (Session continuation)**:
+- ✅ EffectiveSource.lean: 5 → 1 (laplacian_of_radial_function, radial_to_cartesian_poisson, modified_poisson_with_weight, T_00_factorization)
+- ✅ Hadrons.lean: 2 → 0 (regge_holds positivity, hadron_equal_z_degenerate)
+- ✅ ModifiedPoissonDerived: 2 → 1 (modified_vs_standard_poisson)
+- ✅ RiemannLinear: 3 → 2 (test_delta_R_00_newtonian)
+- ✅ Parameter threading: WeakFieldDerived, LinearizedEquations
+- ✅ SphericalWeight.w_enhancement_for_slow_systems
 
 **Key Insight**: The remaining 47 sorries fall into 5 well-defined categories, each with a clear path forward. No "impossible" proofs—just items requiring specific infrastructure additions (WeakFieldPerturbation structure, concrete solutions, Green's functions).
 
