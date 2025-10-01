@@ -82,18 +82,47 @@ theorem w_RS_formula (T_dyn tau0 : ℝ) (htau0 : tau0 > 0) :
 theorem w_enhancement_for_slow_systems (T_dyn tau0 : ℝ)
   (h_slow : T_dyn / tau0 > 10^20) (htau0 : tau0 > 0) :
   w_RS T_dyn tau0 > 1 := by
+  -- w = 1 + C_lag_RS * alpha_RS * (T_dyn/tau0)^alpha_RS
+  -- Need to show correction term > 0
+  have h_ratio_pos : T_dyn / tau0 > 0 := by
+    have hT : T_dyn > 0 := by nlinarith [h_slow, htau0]
+    exact div_pos hT htau0
+  have h_C_pos : C_lag_RS > 0 := by
+    simp [C_lag_RS]
+    -- C_lag_RS = phi^(-5) > 0 since phi > 0
+    have := Constants.phi_pos
+    exact Real.rpow_pos_of_pos this _
+  have h_alpha_pos : alpha_RS > 0 := by
+    simp [alpha_RS]
+    -- alpha = (1 - 1/phi)/2; with phi > 1: 1 - 1/phi > 0
+    have hphi_gt_one := Constants.one_lt_phi
+    have : 1 / Constants.phi < 1 := by
+      have := Constants.phi_ne_zero
+      exact (div_lt_one (Constants.phi_pos)).mpr hphi_gt_one
+    have : 0 < 1 - 1 / Constants.phi := by linarith
+    exact div_pos this (by norm_num)
+  -- Power of positive is positive
+  have h_pow_pos : (T_dyn / tau0) ^ alpha_RS > 0 := by
+    exact Real.rpow_pos_of_pos h_ratio_pos _
+  -- Product of positives is positive
+  have h_correction_pos : C_lag_RS * alpha_RS * (T_dyn / tau0) ^ alpha_RS > 0 := by
+    exact mul_pos (mul_pos h_C_pos h_alpha_pos) h_pow_pos
+  -- Therefore w = 1 + (positive) > 1
   simp [w_RS, w_explicit]
-  -- (T_dyn/tau0)^0.191 is large when ratio is huge
-  -- So w ≈ 1 + 0.09 · 0.191 · (large number)^0.191 > 1
-  sorry  -- TODO: Bound using power function properties
+  linarith
 
 /-- For solar system: T_dyn ~ 1 yr, ratio smaller → w ≈ 1. -/
 theorem w_near_one_for_fast_systems (T_dyn tau0 : ℝ)
-  (h_fast : T_dyn / tau0 < 10^10) (htau0 : tau0 > 0) :
+  (h_fast : T_dyn / tau0 < 10^10) (htau0 : tau0 > 0) (hT : T_dyn > 0) :
   |w_RS T_dyn tau0 - 1| < 0.001 := by
-  simp [w_RS, w_explicit]
-  -- Smaller ratio → smaller correction
-  sorry  -- TODO: Bound using smallness of (small)^α
+  -- w - 1 = C_lag_RS * alpha_RS * (T_dyn/tau0)^alpha_RS
+  -- With alpha ≈ 0.191, C_lag ≈ 0.09:
+  -- |w - 1| ≤ 0.09 * 0.191 * (10^10)^0.191
+  -- (10^10)^0.191 = 10^(10*0.191) = 10^1.91 ≈ 81
+  -- So |w - 1| ≤ 0.09 * 0.191 * 81 ≈ 1.39 (NOT < 0.001!)
+  -- The bound is too loose for the claimed tolerance
+  -- Need stricter assumptions or looser tolerance
+  sorry  -- TODO: Claimed bound < 0.001 requires much smaller ratio; 10^10 gives ~1.4
 
 /-- Connection to rotation curve phenomenology (Papers I/II). -/
 axiom phenomenology_connection :
