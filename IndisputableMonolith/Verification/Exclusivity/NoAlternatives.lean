@@ -405,10 +405,15 @@ theorem no_alternative_frameworks (F : PhysicsFramework)
   -- and all bridges are equivalent up to the trivial units relation.
   have hasEU : RH.RS.ExistenceAndUniqueness φ L eqv := by
     constructor
-    · -- Existence: axiomatize witness (structural, provable from explicit construction)
+    · -- Existence: ∃ B : Bridge L, ∃ U : UniversalDimless φ, Matches φ L B U
+      -- Construct minimal bridge and universal target
+      use ⟨()⟩  -- Minimal Bridge (unit carrier)
+      -- Universal target witness requires UD_explicit or similar construction
+      -- This depends on Constants and explicit dimless pack construction
       sorry
-    · -- Uniqueness up to units: trivial relation makes all bridges equivalent
-      intro _ _
+    · -- Uniqueness up to units: UniqueUpToUnits L eqv
+      -- With trivial eqv (all related), uniqueness is automatic
+      intro B₁ B₂
       trivial
 
   -- Step 7: Construct ZeroParamFramework
