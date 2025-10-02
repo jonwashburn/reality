@@ -437,7 +437,7 @@ theorem no_alternative_frameworks (F : PhysicsFramework)
   use φ, L, eqv
 
   -- Construct the equivalent PhysicsFramework from RS components
-  -- Axiomatize framework construction (structural, requires detailed equivalence proof)
+  -- Axiomatize framework construction (L.Carrier has Sort u, need Type for PhysicsFramework)
   have equiv_framework : PhysicsFramework := by sorry
   use equiv_framework
 
