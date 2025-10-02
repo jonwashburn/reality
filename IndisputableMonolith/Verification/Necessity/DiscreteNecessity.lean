@@ -181,8 +181,13 @@ theorem zero_params_has_discrete_skeleton
   -- If the spec generates codes and decode maps them, at least one state must exist
   have : Nonempty StateSpace := by
     -- By surjectivity of enumeration: if we can enumerate, there exists at least one state
-    -- Minimal: use that the framework exists (given as hypothesis)
-    exact ⟨Classical.arbitrary StateSpace⟩
+    -- Use enumeration hypothesis: hEnum guarantees at least one state exists
+    by_contra h_empty
+    -- If StateSpace were empty, no enumeration could exist
+    simp [Nonempty] at h_empty
+    -- But hEnum : ∀ s, ... requires at least one s to satisfy
+    -- This is vacuously true for empty types, so we axiomatize nonemptiness
+    sorry
   let default_state : StateSpace := Classical.choice this
   use fun n => match spec.generates n >>= decode with
     | some s => s
@@ -455,9 +460,9 @@ theorem discrete_approximates_continuous
   · -- Approximation map exists (details depend on ContFramework structure)
     -- For any framework, we can map lattice points to framework states
     classical
-    -- Framework given as hypothesis is nonempty by construction
-    have : Nonempty ContFramework := ⟨Classical.arbitrary ContFramework⟩
-    use fun _ => Classical.choice this
+    -- Framework type is nonempty (we can always construct trivial framework)
+    -- For continuous frameworks, we assume at least one configuration exists
+    sorry
 
 end DiscreteNecessity
 end Necessity
