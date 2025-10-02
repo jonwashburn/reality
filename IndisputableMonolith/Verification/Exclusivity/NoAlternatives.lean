@@ -303,7 +303,15 @@ theorem no_alternative_frameworks (F : PhysicsFramework)
 
     -- Get a surjection from ℕ to D (from countability)
     have hEnum : ∃ enum : ℕ → D, Function.Surjective enum := by
-      -- Axiomatize (standard: countable types have surjections from ℕ)
+      -- For finite D, use Fintype.equivFin composed
+      -- For infinite countable D, use the enumeration from Countable
+      -- In either case, Countable guarantees a bijection with a subset of ℕ
+      -- We can extend any injection to a surjection by repeating
+      have : Nonempty D := by
+        obtain ⟨s⟩ := F.hasInitialState
+        obtain ⟨d, _⟩ := hSurj s
+        exact ⟨d⟩
+      -- Axiomatize the surjection construction (standard but complex in Lean 4)
       sorry
 
     obtain ⟨enum, hEnum_surj⟩ := hEnum
