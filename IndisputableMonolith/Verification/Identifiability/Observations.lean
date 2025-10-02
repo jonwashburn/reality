@@ -60,7 +60,7 @@ lemma observedFromPack_matches_to (φ : ℝ) {L : Ledger} {B : Bridge L}
   rcases hrest with ⟨hscp, hrest⟩
   rcases hrest with ⟨het, hrest⟩
   rcases hrest with ⟨hborn, hbf⟩
-  ext <;> simp [observedFromPack, observedFromUD, hα, hmr, hma, hg2, hscp, het, hborn, hbf]
+  simp [observedFromPack, observedFromUD, hα, hmr, hma, hg2, hscp, het, hborn, hbf]
 
 lemma observedFromPack_of_matches (φ : ℝ) {L : Ledger} {B : Bridge L}
   {P : DimlessPack L B}
@@ -107,7 +107,7 @@ lemma obs_equal_trans {φ : ℝ}
   ObsEqual φ F G → ObsEqual φ G H → ObsEqual φ F H := by
   intro hFG hGH; simpa [ObsEqual] using hFG.trans hGH
 
-/‑! Classical gate (choice-dependent): the following definitions and lemmas
+/-! Classical gate (choice-dependent): the following definitions and lemmas
     use choice to pick bridges/packs. These are fenced to keep the MP-only
     envelope clear and are provided as fallbacks. -/
 
@@ -154,17 +154,6 @@ lemma observeC_eq_observedFromPack_explicit (φ : ℝ) (F : ZeroParamFramework �
     (P:=Classical.choose (matches_explicit φ F.L (someBridge φ F))) := rfl
 
 end  -- noncomputable classical fence
-
-/-- Classical fallbacks exposed under a dedicated namespace. -/
-namespace Classical
-
-noncomputable abbrev someBridge (φ : ℝ) (F : ZeroParamFramework φ) : Bridge F.L :=
-  Identifiability.someBridge φ F
-
-noncomputable abbrev observe (φ : ℝ) (F : ZeroParamFramework φ) : ObservedLedger φ :=
-  Identifiability.observeC φ F
-
-end Classical
 
 end Identifiability
 end Verification
