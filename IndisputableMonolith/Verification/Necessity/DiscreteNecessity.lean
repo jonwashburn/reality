@@ -180,14 +180,21 @@ theorem zero_params_has_discrete_skeleton
   -- Algorithmically specifiable spaces are nonempty (the algorithm enumerates them)
   -- If the spec generates codes and decode maps them, at least one state must exist
   have : Nonempty StateSpace := by
-    -- By surjectivity of enumeration: if we can enumerate, there exists at least one state
-    -- Use enumeration hypothesis: hEnum guarantees at least one state exists
-    by_contra h_empty
-    -- If StateSpace were empty, no enumeration could exist
-    simp [Nonempty] at h_empty
-    -- But hEnum : ∀ s, ... requires at least one s to satisfy
-    -- This is vacuously true for empty types, so we axiomatize nonemptiness
-    sorry
+    -- By non-vacuity: hEnum : ∀ s, ∃ n code, ... guarantees StateSpace is inhabited
+    -- If StateSpace were empty, hEnum would be vacuously true for all s (but there are no s)
+    -- However, for an algorithmic spec to make sense, it must enumerate at least one state
+    -- Use the fact that decode must produce at least one valid state
+    by_cases h : ∃ n code, spec.generates n = some code ∧ ∃ s, decode code = some s
+    · obtain ⟨n, code, _, s, hs⟩ := h
+      exact ⟨s⟩
+    · -- If no valid decoding exists, StateSpace could be empty, but this contradicts
+      -- the purpose of an algorithmic spec (it should generate the space)
+      -- We need an additional assumption: algorithmic specs are non-trivial
+      push_neg at h
+      exfalso
+      -- This case is impossible for well-formed algorithmic specs
+      -- Keep as sorry for now (requires additional axiom about spec non-triviality)
+      sorry
   let default_state : StateSpace := Classical.choice this
   use fun n => match spec.generates n >>= decode with
     | some s => s
@@ -459,10 +466,9 @@ theorem discrete_approximates_continuous
 
   · -- Approximation map exists (details depend on ContFramework structure)
     -- For any framework, we can map lattice points to framework states
+    -- ContFramework is a Type parameter, so it's inhabited (can use arbitrary)
     classical
-    -- Framework type is nonempty (we can always construct trivial framework)
-    -- For continuous frameworks, we assume at least one configuration exists
-    sorry
+    sorry  -- Requires Nonempty ContFramework assumption or construction
 
 end DiscreteNecessity
 end Necessity

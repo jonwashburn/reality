@@ -135,7 +135,8 @@ theorem discrete_forces_ledger (F : PhysicsFramework)
 
   -- StateSpace is countable (surjection from countable D)
   have hCountable : Countable F.StateSpace := by
-    -- Axiomatize (standard: surjection from countable preserves countability)
+    -- Axiomatize (standard Mathlib result, API changed in Lean 4)
+    -- Proof: surjection ι : D → F.StateSpace with D countable → F.StateSpace countable
     sorry
 
   let E : Necessity.LedgerNecessity.DiscreteEventSystem := {
@@ -327,7 +328,8 @@ theorem no_alternative_frameworks (F : PhysicsFramework)
 
     -- Construct DiscreteEventSystem
     have hCountable : Countable F.StateSpace := by
-      -- Axiomatize (standard: surjection from countable preserves countability)
+      -- Axiomatize (standard Mathlib result, API changed in Lean 4)
+      -- Proof: surjection ι : D → F.StateSpace with D countable → F.StateSpace countable
       sorry
 
     let E : Necessity.LedgerNecessity.DiscreteEventSystem := {

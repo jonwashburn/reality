@@ -64,7 +64,8 @@ def EventGraph (E : DiscreteEventSystem) (ev : EventEvolution E) : Prop :=
     **Justification**: The events themselves serve as vertices, and the evolution
     relation serves as edges. This is a direct structural correspondence.
 
-    **Status**: Structural axiom (trivial to prove, ~2 min)
+    **Status**: Blocked by universe polymorphism (Type u_1 vs Type u_2)
+    Requires fixing EventGraph definition or universe handling in module
 -/
 axiom discrete_events_form_graph
   (E : DiscreteEventSystem)
@@ -166,7 +167,8 @@ theorem conservation_forces_balance
     the structure of a ledger (carrier + debit/credit balance). The events serve as
     the ledger carrier, flow values serve as debits/credits.
 
-    **Status**: Structural axiom (provable via explicit construction with ULift, ~5 min)
+    **Status**: Blocked by universe polymorphism (Sort u_2 vs Type (max u_1 ?u))
+    Requires fixing Ledger.Carrier universe handling
 -/
 axiom graph_with_balance_is_ledger
   (E : DiscreteEventSystem)
