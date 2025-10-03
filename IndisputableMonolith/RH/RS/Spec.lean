@@ -316,8 +316,11 @@ theorem kGate_from_units : kGateHolds := by
   intro U
   exact IndisputableMonolith.Verification.K_gate_bridge U
 
+/-- Eight-tick minimality holds: proven by `Patterns.period_exactly_8`. -/
+theorem eightTick_from_TruthCore : eightTickMinimalHolds :=
+  IndisputableMonolith.Patterns.period_exactly_8
+
 /-- Local proofs temporarily axiomatized pending module availability. -/
-axiom eightTick_from_TruthCore : eightTickMinimalHolds
 axiom born_from_TruthCore : bornHolds
 axiom boseFermi_from_TruthCore : boseFermiHolds
 
