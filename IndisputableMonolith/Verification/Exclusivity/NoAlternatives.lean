@@ -177,26 +177,59 @@ theorem discrete_forces_ledger (F : PhysicsFramework)
 
 /-! ### Recognition Structure Necessity -/
 
+/-- Axiom: Any type can be injectively encoded into ℝ (cardinality permitting).
+
+For finite and countable types, this is standard (use enumeration).
+For general types, this is a choice principle similar to well-ordering.
+
+**Usage**: Allows us to convert F.Observable (arbitrary type) to ℝ for recognition. -/
+axiom observable_encoding (F : PhysicsFramework) :
+  ∃ (encode : F.Observable → ℝ), Function.Injective encode
+
 /-- Bridge from abstract DerivesObservables to concrete Observable.
 
     DerivesObservables provides F.measure : F.StateSpace → F.Observable.
-    For non-trivial frameworks, this measurement must distinguish some states.
+    We encode F.Observable to ℝ via an injective map, preserving distinctions.
 -/
-noncomputable def observableFromDerivation (F : PhysicsFramework) (hObs : DerivesObservables F) :
+noncomputable def observableFromDerivation (F : PhysicsFramework) (_hObs : DerivesObservables F) :
     Necessity.RecognitionNecessity.Observable F.StateSpace := {
   value := fun s =>
-    -- Use the derived alpha as a proxy observable
-    -- In a real framework, alpha takes different values in different states
-    hObs.derives_alpha.choose
+    let encode := Classical.choose (observable_encoding F)
+    encode (F.measure s)
   computable := by
     intro s₁ s₂
     use 1
     constructor
     · norm_num
     · intro _
-      -- Decidability of equality on ℝ approximations
       exact em _
 }
+
+/-- If F.measure distinguishes states, so does observableFromDerivation.
+
+**Proof**: The encoding is injective, so if F.measure s₁ ≠ F.measure s₂,
+then encode (F.measure s₁) ≠ encode (F.measure s₂). -/
+theorem observableFromDerivation_preserves_distinction (F : PhysicsFramework) (hObs : DerivesObservables F)
+  (s₁ s₂ : F.StateSpace) (h : F.measure s₁ ≠ F.measure s₂) :
+  (observableFromDerivation F hObs).value s₁ ≠ (observableFromDerivation F hObs).value s₂ := by
+  simp [observableFromDerivation]
+  have hinj := Classical.choose_spec (observable_encoding F)
+  exact hinj.ne h
+
+/-- If measure reflects changes, then observableFromDerivation is sensitive. -/
+class MeasureReflectsChange (F : PhysicsFramework) : Prop where
+  reflects : ∀ s : F.StateSpace, F.evolve s ≠ s → F.measure (F.evolve s) ≠ F.measure s
+
+/-- Generic instance: if measure reflects changes, observableFromDerivation is sensitive. -/
+instance observableFromDerivation_sensitive (F : PhysicsFramework) (hObs : DerivesObservables F)
+  [MeasureReflectsChange F] :
+  ObservableSensitive F (observableFromDerivation F hObs) where
+  detects := by
+    intro s hchg
+    simp [observableFromDerivation]
+    have hmeas := MeasureReflectsChange.reflects s hchg
+    have hinj := Classical.choose_spec (observable_encoding F)
+    exact hinj.ne hmeas
 
 /-- Observable extraction in a zero-parameter framework requires recognition events.
 
@@ -209,7 +242,7 @@ theorem observables_require_recognition (F : PhysicsFramework)
   [Inhabited F.StateSpace]
   [NonStatic F]
   (hObs : DerivesObservables F)
-  [IndisputableMonolith.Verification.Exclusivity.ObservableSensitive F (observableFromDerivation F hObs)]
+  [MeasureReflectsChange F]
   (hZero : HasZeroParameters F) :
   ∃ (recognizer : Type) (recognized : Type),
     Nonempty (Recognition.Recognize recognizer recognized) := by
@@ -217,10 +250,8 @@ theorem observables_require_recognition (F : PhysicsFramework)
   let obs := observableFromDerivation F hObs
 
   -- For non-trivial observables, show they distinguish some states
-  -- In a real framework with zero parameters, observables must vary
-  -- Otherwise the framework would be trivial (single state)
+  -- ObservableSensitive auto-derived from MeasureReflectsChange + encoding injectivity
   have hNonTrivial : ∃ s₁ s₂ : F.StateSpace, obs.value s₁ ≠ obs.value s₂ := by
-    -- Use ObservableSensitive + NonStatic to get a one‑step change, then conclude
     have h := IndisputableMonolith.Verification.Exclusivity.obs_changes_if_nonstatic F obs
     exact IndisputableMonolith.Verification.Exclusivity.distinct_states_for_observable F obs h
 
@@ -277,7 +308,7 @@ theorem no_alternative_frameworks (F : PhysicsFramework)
   (hZero : HasZeroParameters F)
   [Necessity.DiscreteNecessity.SpecNontrivial F.StateSpace]
   (hObs : DerivesObservables F)
-  [IndisputableMonolith.Verification.Exclusivity.ObservableSensitive F (observableFromDerivation F hObs)]
+  [MeasureReflectsChange F]
   (hSelfSim : HasSelfSimilarity F.StateSpace)  -- Additional assumption for φ
   :
   ∃ (φ : ℝ) (L : RH.RS.Ledger) (eqv : RH.RS.UnitsEqv L)

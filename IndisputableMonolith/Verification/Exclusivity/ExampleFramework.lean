@@ -1,5 +1,6 @@
 import IndisputableMonolith.Verification.Exclusivity.Framework
 import IndisputableMonolith.Verification.Exclusivity.NontrivialityShim
+import IndisputableMonolith.Verification.Exclusivity.NoAlternatives
 import IndisputableMonolith.Verification.Necessity.DiscreteNecessity
 import IndisputableMonolith.Verification.Necessity.RecognitionNecessity
 
@@ -37,21 +38,11 @@ instance : NonStatic SimpleDiscrete where
 instance : Necessity.DiscreteNecessity.SpecNontrivial SimpleDiscrete.StateSpace where
   inhabited := ⟨(0 : ℕ)⟩
 
-/-- SimpleDiscrete's natural observable (identity map ℕ → ℝ) is sensitive to evolution.
-
-Note: This is an example, not a global instance, since ObservableSensitive depends on
-the specific observable function. In practice, provide this as a local instance or
-accept it as a hypothesis in theorems. -/
-example : ∀ (obs : Necessity.RecognitionNecessity.Observable SimpleDiscrete.StateSpace),
-    obs.value = (fun n : ℕ => (n : ℝ)) →
-    ObservableSensitive SimpleDiscrete obs := by
-  intro obs hobs
-  constructor
-  intro s _hchg
-  rw [hobs]
-  intro heq
-  have : s.succ = s := Nat.cast_injective heq
-  exact Nat.succ_ne_self s this
+/-- SimpleDiscrete's measure reflects changes: id is injective. -/
+instance : NoAlternatives.MeasureReflectsChange SimpleDiscrete where
+  reflects := by
+    intro s _hchg
+    exact Nat.succ_ne_self s
 
 /-! ### Example 2: Two-State Framework -/
 
@@ -132,4 +123,3 @@ end Examples
 end Exclusivity
 end Verification
 end IndisputableMonolith
-
