@@ -103,12 +103,8 @@ theorem minkowskiMatrix_sq : minkowskiMatrix * minkowskiMatrix = 1 := by
     Simplify: I·A = A⁻¹, hence A = A⁻¹.
 -/
 theorem minkowskiMatrix_inv : minkowskiMatrix⁻¹ = minkowskiMatrix := by
-  have hsq := minkowskiMatrix_sq
-  -- η² = I means η is a left and right inverse of itself
-  -- By definition of matrix inverse, η⁻¹ is the unique matrix satisfying η·η⁻¹ = I
-  -- We also have η·η = I
-  -- Therefore η⁻¹ = η
-  sorry -- Needs correct Mathlib inverse uniqueness theorem
+  -- Placeholder: will close via inverse uniqueness after det-bound is completed
+  sorry
 
 /-- Product of 4 bounded terms is bounded by b⁴. -/
 lemma prod_four_bound (f : Fin 4 → ℝ) (b : ℝ) (hb : 0 ≤ b) (h : ∀ i, |f i| ≤ b) :
@@ -299,7 +295,7 @@ lemma diag_prod_linear_remainder_bound
     have :
       |a0 * a1 * a2 + (a0 * a1 * a3 + (a0 * a2 * a3 + a1 * a2 * a3))|
       ≤ |a0 * a1 * a2| + |a0 * a1 * a3| + |a0 * a2 * a3| + |a1 * a2 * a3| := by
-      repeat (first | simpa [add_comm, add_left_comm, add_assoc] using abs_add_le_abs_add_abs _ _)
+      repeat (first | simpa [add_comm, add_left_comm, add_assoc] using abs_add _ _)
     exact this.trans hb
   have h4term : |a0 * a1 * a2 * a3| ≤ ε ^ 4 := by
     have hb : |a0 * a1 * a2 * a3| ≤ |a0| * |a1| * |a2| * |a3| := by
@@ -326,14 +322,14 @@ lemma diag_prod_linear_remainder_bound
       ≤ |a0 * a1 + a0 * a2 + a0 * a3 + a1 * a2 + a1 * a3 + a2 * a3|
         + |(a0 * a1 * a2 + a0 * a1 * a3 + a0 * a2 * a3 + a1 * a2 * a3)
         + a0 * a1 * a2 * a3| := by
-    -- Triangle inequality: |a + b| ≤ |a| + |b|
-    exact abs_add_le_abs_add_abs _ _
+  -- Triangle inequality: |a + b| ≤ |a| + |b|
+  exact abs_add _ _
   have h_step3 :
     |(a0 * a1 * a2 + a0 * a1 * a3 + a0 * a2 * a3 + a1 * a2 * a3)
       + a0 * a1 * a2 * a3|
       ≤ |a0 * a1 * a2 + a0 * a1 * a3 + a0 * a2 * a3 + a1 * a2 * a3|
         + |a0 * a1 * a2 * a3| := by
-    exact abs_add_le_abs_add_abs _ _
+  exact abs_add _ _
   have h_pairs :
     |a0 * a1 + a0 * a2 + a0 * a3 + a1 * a2 + a1 * a3 + a2 * a3|
       ≤ 6 * ε ^ 2 := h2pairs
