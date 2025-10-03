@@ -378,8 +378,8 @@ theorem inevitability_dimless_witness (φ : ℝ) (L : Ledger) (B : Bridge L) :
   Matches φ L B (UD_explicit φ) := matches_explicit φ L B
 
 /-- Concrete definition of Inevitability_dimless (after UD_explicit is defined). -/
-def Inevitability_dimless_concrete (φ : ℝ) : Prop :=
-  ∀ (L : Ledger) (B : Bridge L), Matches φ L B (UD_explicit φ)
+def Inevitability_dimless_concrete.{u_lev} (φ : ℝ) : Prop :=
+  ∀ (L : Ledger.{u_lev}) (B : Bridge L), Matches φ L B (UD_explicit φ)
 
 /-- Prove the concrete definition holds. -/
 theorem inevitability_dimless_concrete_holds (φ : ℝ) : Inevitability_dimless_concrete φ := by
@@ -623,20 +623,23 @@ axiom Inevitability_recognition_computation : Prop
 
 /-! ### Inevitability proofs (after dependencies are defined) -/
 
-/-- Inevitability_dimless holds: axiomatized witness.
+/-- Inevitability_dimless holds: axiomatized, but witness exists.
 
-**Witness exists**: `inevitability_dimless_witness` proves `∀ L B, Matches φ L B (UD_explicit φ)`.
-The abstract axiom can be discharged by defining `Inevitability_dimless` concretely,
-but for now we keep it axiomatized to avoid upstream changes. -/
+**Reduction status**: Concrete witness `inevitability_dimless_concrete_holds` proves
+`∀ L B, Matches φ L B (UD_explicit φ)`. The abstract axiom can be replaced with a def
+by also updating `ZeroParamFramework.closure` field type, but this requires broader refactor. -/
 axiom inevitability_dimless_holds : ∀ (φ : ℝ), Inevitability_dimless φ
 
-/-- Inevitability_absolute holds: axiomatized witness. -/
+/-- Inevitability_absolute holds: axiomatized, but witness exists.
+
+**Reduction status**: Concrete witness `inevitability_absolute_concrete_holds` proves
+`∀ L B A, UniqueCalibration L B A`. Can be replaced with def in future refactor. -/
 axiom inevitability_absolute_holds : ∀ (φ : ℝ), Inevitability_absolute φ
 
 /-- Recognition_Closure follows from the inevitability layers: axiomatized composition.
 
-**Proof path**: Apply conjunction of `Inevitability_dimless` and `Inevitability_absolute`.
-Kept as axiom to match abstract predicate definitions. -/
+**Reduction status**: Can be proven as `⟨inevitability_dimless_holds φ, inevitability_absolute_holds φ⟩`
+if Recognition_Closure is defined as conjunction. Kept as axiom to match abstract predicates. -/
 axiom recognition_closure_from_inevitabilities :
   ∀ (φ : ℝ), Inevitability_dimless φ → Inevitability_absolute φ → Recognition_Closure φ
 
@@ -695,8 +698,8 @@ theorem uniqueCalibration_any (L : Ledger) (B : Bridge L) (A : Anchors) : Unique
   exact UniqueCalibration.mk
 
 /-- Concrete definition of Inevitability_absolute (after UniqueCalibration is defined). -/
-def Inevitability_absolute_concrete (φ : ℝ) : Prop :=
-  ∀ (L : Ledger) (B : Bridge L) (A : Anchors), UniqueCalibration L B A
+def Inevitability_absolute_concrete.{u_lev} (φ : ℝ) : Prop :=
+  ∀ (L : Ledger.{u_lev}) (B : Bridge L) (A : Anchors), UniqueCalibration L B A
 
 /-- Prove the concrete definition holds. -/
 theorem inevitability_absolute_concrete_holds (φ : ℝ) : Inevitability_absolute_concrete φ := by
