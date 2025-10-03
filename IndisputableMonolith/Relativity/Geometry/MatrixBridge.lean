@@ -243,12 +243,16 @@ lemma diag_prod_linear_remainder_bound
       |a0 * a1 + a0 * a2 + a0 * a3 + a1 * a2 + a1 * a3 + a2 * a3|
       ≤ 6 * ε ^ 2 := by
     have hb_pair : ∀ x y, |x| ≤ ε → |y| ≤ ε → |x * y| ≤ ε ^ 2 := by
-      intro x y hx hy; have := mul_le_mul hx hy (abs_nonneg _) (by exact le_of_lt (pow_pos (show 0 < ε from lt_of_le_of_lt (le_of_lt (by decide : (0:ℝ)<1)) (by decide)) 0))
-      -- fallback: use basic bound |xy| ≤ |x||y| ≤ ε²
-      have hx' : |x| ≤ ε := hx; have hy' : |y| ≤ ε := hy
-      calc |x * y| ≤ |x| * |y| := by simpa [abs_mul] using (abs_mul x y).le
-           _ ≤ ε * ε := by nlinarith
-           _ = ε ^ 2 := by ring
+      intro x y hx hy
+      -- Use |xy| ≤ |x||y| ≤ ε²
+      calc |x * y|
+          = |x| * |y| := abs_mul x y
+        _ ≤ ε * ε := by
+            -- Need |x| ≤ ε, |y| ≤ ε, and both sides ≥ 0
+            have h_nonneg : 0 ≤ |x| * |y| := mul_nonneg (abs_nonneg _) (abs_nonneg _)
+            have h_target_nonneg : 0 ≤ ε * ε := by nlinarith [sq_nonneg ε, abs_nonneg x, abs_nonneg y]
+            exact mul_le_mul hx hy (abs_nonneg _) h_target_nonneg
+        _ = ε ^ 2 := by ring
     have hb :
       |a0 * a1| + |a0 * a2| + |a0 * a3| + |a1 * a2| + |a1 * a3| + |a2 * a3|
       ≤ 6 * ε ^ 2 := by
@@ -259,12 +263,20 @@ lemma diag_prod_linear_remainder_bound
       have h13 := hb_pair _ _ h1 h3
       have h23 := hb_pair _ _ h2 h3
       nlinarith
-    have htri := abs_add_le_abs_add_abs
-    -- Bound sum of pairs by sum of absolutes
+    -- Bound sum of pairs by sum of absolutes using triangle inequality repeatedly
     have :
       |a0 * a1 + (a0 * a2 + (a0 * a3 + (a1 * a2 + (a1 * a3 + a2 * a3))))|
       ≤ |a0 * a1| + |a0 * a2| + |a0 * a3| + |a1 * a2| + |a1 * a3| + |a2 * a3| := by
-      repeat (first | simpa [add_comm, add_left_comm, add_assoc] using abs_add_le_abs_add_abs _ _)
+      repeat (first | refine le_trans (abs_add _ _) ?_)
+      simp only [add_le_add_iff_left]
+      repeat (first | refine le_trans (abs_add _ _) ?_)
+      simp only [add_le_add_iff_left]
+      repeat (first | refine le_trans (abs_add _ _) ?_)
+      simp only [add_le_add_iff_left]
+      repeat (first | refine le_trans (abs_add _ _) ?_)
+      simp only [add_le_add_iff_left]
+      repeat (first | refine le_trans (abs_add _ _) ?_)
+      rfl
     exact this.trans hb
   have h3terms :
       |a0 * a1 * a2 + a0 * a1 * a3 + a0 * a2 * a3 + a1 * a2 * a3|
@@ -315,13 +327,13 @@ lemma diag_prod_linear_remainder_bound
         + |(a0 * a1 * a2 + a0 * a1 * a3 + a0 * a2 * a3 + a1 * a2 * a3)
         + a0 * a1 * a2 * a3| := by
     -- Triangle inequality: |a + b| ≤ |a| + |b|
-    sorry -- Need Mathlib lemma name for |a + b| ≤ |a| + |b|
+    exact abs_add_le_abs_add_abs _ _
   have h_step3 :
     |(a0 * a1 * a2 + a0 * a1 * a3 + a0 * a2 * a3 + a1 * a2 * a3)
       + a0 * a1 * a2 * a3|
       ≤ |a0 * a1 * a2 + a0 * a1 * a3 + a0 * a2 * a3 + a1 * a2 * a3|
         + |a0 * a1 * a2 * a3| := by
-    sorry -- Need Mathlib lemma name for |a + b| ≤ |a| + |b|
+    exact abs_add_le_abs_add_abs _ _
   have h_pairs :
     |a0 * a1 + a0 * a2 + a0 * a3 + a1 * a2 + a1 * a3 + a2 * a3|
       ≤ 6 * ε ^ 2 := h2pairs
