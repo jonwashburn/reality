@@ -467,9 +467,28 @@ theorem lcm_pow2_45_eq_iff (D : Nat) : Nat.lcm (2 ^ D) 45 = 360 ↔ D = 3 := by
       -- Compute lcm(16,45): gcd(16,45)=1, so lcm=16×45=720
       have hlcm_4 : Nat.lcm (2^4) 45 = 720 := by decide
       have hlcm_mono : Nat.lcm (2^4) 45 ≤ Nat.lcm (2^(n+4)) 45 := by
-        -- lcm is monotone in first argument when second is fixed and coprime
-        -- For now, use a direct computation bound
-        sorry
+        -- When coprime, lcm(a,b) = a*b, so lcm is monotone in a
+        have h_gcd_4 : Nat.gcd (2^4) 45 = 1 := by decide
+        have h_gcd_n4 : Nat.gcd (2^(n+4)) 45 = 1 := by
+          -- gcd(2^k, odd) = 1 is standard
+          sorry  -- Provable: 2 coprime to 45 → 2^k coprime to 45
+        -- From gcd = 1 and gcd_mul_lcm, derive lcm = a * b
+        have eq4 : Nat.lcm (2^4) 45 = (2^4) * 45 := by
+          have hprod : Nat.gcd (2^4) 45 * Nat.lcm (2^4) 45 = (2^4) * 45 := Nat.gcd_mul_lcm (2^4) 45
+          calc Nat.lcm (2^4) 45
+              = 1 * Nat.lcm (2^4) 45 := by ring
+            _ = Nat.gcd (2^4) 45 * Nat.lcm (2^4) 45 := by rw [←h_gcd_4]
+            _ = (2^4) * 45 := hprod
+        have eqn4 : Nat.lcm (2^(n+4)) 45 = (2^(n+4)) * 45 := by
+          have hprod : Nat.gcd (2^(n+4)) 45 * Nat.lcm (2^(n+4)) 45 = (2^(n+4)) * 45 := Nat.gcd_mul_lcm (2^(n+4)) 45
+          calc Nat.lcm (2^(n+4)) 45
+              = 1 * Nat.lcm (2^(n+4)) 45 := by ring
+            _ = Nat.gcd (2^(n+4)) 45 * Nat.lcm (2^(n+4)) 45 := by rw [←h_gcd_n4]
+            _ = (2^(n+4)) * 45 := hprod
+        calc Nat.lcm (2^4) 45
+            = (2^4) * 45 := eq4
+          _ ≤ (2^(n+4)) * 45 := Nat.mul_le_mul_right 45 h16
+          _ = Nat.lcm (2^(n+4)) 45 := eqn4.symm
       have : 720 ≤ 360 := by
         calc 720 = Nat.lcm (2^4) 45 := hlcm_4.symm
           _ ≤ Nat.lcm (2^(n+4)) 45 := hlcm_mono
