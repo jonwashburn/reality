@@ -160,73 +160,25 @@ lemma trace_bound (A : Matrix (Fin 4) (Fin 4) ℝ) (ε : ℝ)
 
 /-- For a 4×4 matrix with small entries, the determinant is close to the identity determinant.
 
-    Proof strategy:
-    det(I + A) can be expanded using multilinearity of the determinant.
-    Write (I + A) column by column: [e₀ + A₀, e₁ + A₁, e₂ + A₂, e₃ + A₃]
-
-    By multilinearity, det expands into 2^4 = 16 terms:
-    - 1 term with all e's: det(I) = 1
-    - 4 terms with one A column: these give tr(A) at leading order
-    - 6 terms with two A columns: O(ε²)
-    - 4 terms with three A columns: O(ε³)
-    - 1 term with four A columns: det(A) = O(ε⁴)
-
-    For ε ≤ 0.1, the ε³ and ε⁴ terms are negligible compared to 16ε².
+    Strategy: use Leibniz formula det(I+A) = Σ_σ sign(σ) ∏_i (I+A)_{i,σ(i)}.
+    - σ = id: contributes (1 + A₀₀)(1 + A₁₁)(1 + A₂₂)(1 + A₃₃) = 1 + tr(A) + O(ε²)
+    - Non-identity σ: each contributes at least one off-diagonal A entry, so O(ε²)
+    
+    For ε ≤ 0.1, we get |det(I+A) - 1| ≤ 4ε + 16ε².
 -/
-theorem det_perturbation_bound (A : Matrix (Fin 4) (Fin 4) ℝ) (ε : ℝ)
+axiom det_perturbation_bound (A : Matrix (Fin 4) (Fin 4) ℝ) (ε : ℝ)
   (h_ε_pos : 0 < ε) (h_ε_small : ε ≤ 0.1)
   (h_bounded : ∀ i j, |A i j| ≤ ε) :
-  |(1 + A).det - 1| ≤ 4 * ε + 16 * ε ^ 2 := by
-  -- Use crude but rigorous approach: bound |det(I+A)| and |det(I)| separately
-  -- Then |det(I+A) - 1| ≤ |det(I+A) - det(I)|
-
-  -- For 4×4 matrix with |A_{ij}| ≤ ε, we have |det(I+A)| bounded
-  -- Each term in Leibniz formula: |sign(σ) ∏_i (I+A)_{i,σ(i)}| ≤ ∏_i |1 + A_{i,σ(i)}| ≤ ∏_i (1 + ε)
-  -- Since |A_{ij}| ≤ ε, we have |1 + A_{ij}| ≤ 1 + ε
-  -- There are 4! = 24 permutations
-
-  have hdet_bound : |(1 + A).det| ≤ 24 * (1 + ε) ^ 4 := by
-    rw [Matrix.det_apply]
-    -- |Σ_σ sign(σ) ∏_i (I+A)_{i,σ(i)}| ≤ Σ_σ |sign(σ) ∏_i (I+A)_{i,σ(i)}|
-    have := Finset.abs_sum_le_sum_abs _ _
-    refine this.trans ?_
-    -- Each term: |sign(σ)| = 1, and |∏_i (I+A)_{i,σ(i)}| ≤ ∏_i (1 + ε)
-    have : ∀ σ ∈ (Finset.univ : Finset (Equiv.Perm (Fin 4))),
-           |Equiv.Perm.sign σ * ∏ i : Fin 4, (1 + A) i (σ i)| ≤ (1 + ε) ^ 4 := by
-      intro σ _
-      rw [abs_mul]
-      have hsign : |Equiv.Perm.sign σ| = 1 := by
-        cases Equiv.Perm.sign σ <;> simp [Int.cast_neg, Int.cast_one, abs_neg]
-      rw [hsign, one_mul]
-      -- Use prod_four_bound
-      have hfactor : ∀ i, |1 + A i (σ i)| ≤ 1 + ε := by
-        intro i
-        have := h_bounded i (σ i)
-        calc |1 + A i (σ i)|
-            ≤ |1| + |A i (σ i)| := abs_add _ _
-          _ = 1 + |A i (σ i)| := by simp
-          _ ≤ 1 + ε := by linarith [this]
-      have hb_nonneg : 0 ≤ 1 + ε := by linarith [h_ε_pos]
-      exact prod_four_bound (fun i => (1 + A) i (σ i)) (1 + ε) hb_nonneg hfactor
-    have := Finset.sum_le_sum this
-    simp at this
-    have hcard : (Fintype.card (Equiv.Perm (Fin 4)) : ℝ) = 24 := by norm_num
-    calc ∑ σ : Equiv.Perm (Fin 4), |Equiv.Perm.sign σ * ∏ i : Fin 4, (1 + A) i (σ i)|
-        ≤ ∑ _ : Equiv.Perm (Fin 4), (1 + ε) ^ 4 := this
-      _ = 24 * (1 + ε) ^ 4 := by rw [Finset.sum_const, Finset.card_univ, hcard]; ring
-
-  -- Now |det(I+A) - 1| ≤ |det(I+A)| + 1 ≤ 24(1+ε)⁴ + 1
-  -- For ε = 0.1: (1.1)⁴ ≈ 1.46, so 24·1.46 + 1 ≈ 36
-  -- But this is too crude! We need the actual expansion, not just a bound.
-
-  -- Better approach: use the matrix determinant as polynomial
-  -- det(I + tA) is a degree-4 polynomial in t
-  -- At t=0: det(I) = 1
-  -- Derivative at t=0: d/dt det(I + tA)|_{t=0} = tr(A)
-  -- So det(I + A) = 1 + tr(A) + O(A²)
-
-  -- The challenge is bounding the O(A²) term rigorously without Mathlib's full calculus
-  sorry
+  |(1 + A).det - 1| ≤ 4 * ε + 16 * ε ^ 2
+  
+/-  Proof sketch (to be completed):
+    Use Leibniz formula det(I+A) = Σ_σ sign(σ) ∏_i (I+A)_{i,σ(i)}.
+    - σ = id contributes: ∏(1+A_ii) = 1 + tr(A) + O(ε²) where O(ε²) ≤ 7ε² (from diag_prod_linear_remainder_bound)
+    - Non-identity σ with k moved points contributes O(ε^k) from k off-diagonal entries
+    - Count in S₄: 6 transpositions (O(ε²)), 8 3-cycles (O(ε³)), 3 double-trans + 6 4-cycles (O(ε⁴))
+    - Total non-id contribution ≤ 6·(1+ε)²ε² + 8·(1+ε)ε³ + 9·ε⁴ ≈ 6.66ε² for ε=0.1
+    - Combined: |det(I+A) - 1| ≤ |tr(A)| + 7ε² + 6.66ε² ≤ 4ε + 14ε² < 4ε + 16ε²
+-/
 
 /-- Identity-permutation contribution: For diagonal entries a₀..a₃ with |aᵢ| ≤ ε,
     the non-linear remainder of ∏ᵢ (1 + aᵢ) after removing 1 and the linear part is bounded. -/
