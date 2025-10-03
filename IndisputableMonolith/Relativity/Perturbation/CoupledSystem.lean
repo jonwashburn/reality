@@ -76,7 +76,7 @@ theorem reduce_to_Phi_Psi (ng : NewtonianGaugeMetric) (ψ₀ : ScalarField) (ρ 
       have h_00 := h_full.einstein_00
       -- h_00 is Einstein00Equation ng ψ₀ δψ ρ α m²
       -- Unfold definition: ∀ x, laplacian ng.Φ x = κ * (ρ x + T_00_scalar_linear ...)
-      have hx : laplacian ng.Φ x = (4 * Real.pi) * (ρ x + T_00_scalar_linear ψ₀ 
+      have hx : laplacian ng.Φ x = (4 * Real.pi) * (ρ x + T_00_scalar_linear ψ₀
         { δψ := delta_psi_solution ψ₀ ng ((C_lag/α)^2), small := by intro _; norm_num }
         minkowski.toMetricTensor α ((C_lag/α)^2) x) := by
         exact h_00 x

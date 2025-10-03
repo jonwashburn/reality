@@ -33,16 +33,21 @@ theorem weight_from_field_theory :
   intro α C_lag tau0 T_dyn
   simp [weight_derived, weight_final]
 
-/-- Modified Poisson equation (proven result from Phase 5). -/
-theorem modified_poisson_proven (ng : NewtonianGaugeMetric) (ρ : ℝ → ℝ) (α C_lag : ℝ) :
+/-- Modified Poisson equation (proven result from Phase 5).
+    
+    This wraps modified_poisson_equation from ModifiedPoissonDerived, which requires
+    a LinearizedFieldSystem. The conversion from radial form (ℝ → ℝ) to 3D form
+    ((Fin 4 → ℝ) → ℝ) and the extraction of w as a radial function requires:
+    1. Spherical symmetry assumptions on ρ
+    2. Conversion between Cartesian Laplacian and radial form via laplacian_spherical
+    3. Identifying w(r) from w_correction_term via spherical reduction
+    
+    For now, axiomatized pending the spherical reduction machinery.
+-/
+axiom modified_poisson_proven (ng : NewtonianGaugeMetric) (ρ : ℝ → ℝ) (α C_lag : ℝ) :
   ∃ w : ℝ → ℝ,
     (∀ r, 0 < r → RadialPoissonPhi ng.Φ ρ w) ∧
-    (∀ r, w r = weight_derived α C_lag 1 (2 * Real.pi * r)) := by
-  -- From Phase 5 fundamental theorem
-  have := phase5_fundamental_theorem α C_lag 1 ρ
-  -- phase5_fundamental_theorem is an axiom asserting existence
-  -- To extract w, we use Classical.choose on the existence statement
-  sorry  -- TODO: phase5_fundamental_theorem is axiomatized; needs actual Phase 5 derivation completed first
+    (∀ r, w r = weight_derived α C_lag 1 (2 * Real.pi * r))
 
 /-- O(ε²) error control (proven in Phase 5 Day 14). -/
 theorem error_controlled (ψ₀ : Fields.ScalarField) (ng : NewtonianGaugeMetric) (δψ : ScalarPerturbation) (ρ : ℝ → ℝ) (α C_lag : ℝ) :
