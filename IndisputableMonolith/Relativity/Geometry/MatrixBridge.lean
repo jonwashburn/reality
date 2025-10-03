@@ -174,39 +174,32 @@ theorem det_perturbation_bound (A : Matrix (Fin 4) (Fin 4) ℝ) (ε : ℝ)
   (h_ε_pos : 0 < ε) (h_ε_small : ε ≤ 0.1)
   (h_bounded : ∀ i j, |A i j| ≤ ε) :
   |(1 + A).det - 1| ≤ 4 * ε + 16 * ε ^ 2 := by
-  -- Use the binomial expansion for det
-  -- det(I + A) = Σ_σ sign(σ) ∏_i (I+A)_{i,σ(i)}
-  -- Split: σ=id gives diagonal product, σ≠id gives off-diagonal contributions
-
-  -- Step 1: Bound det(I+A) from above
-  have hdet_upper : (1 + A).det ≤ (1 + ε) ^ 4 := by
-    sorry -- Each Leibniz term ≤ (1+ε)⁴; sum of signs doesn't all add (alternating), so crude bound
-
-  -- Step 2: Bound det(I+A) from below (needs more care since cancellations happen)
-  -- For now use: det(I+A) ≥ -(1+ε)⁴ (worst case all terms negative)
-  have hdet_lower : (1 + A).det ≥ -(1 + ε) ^ 4 := by
-    sorry -- Similar Leibniz bound argument
-
-  -- Step 3: Combine to bound |det(I+A) - 1|
-  have habs_bound : |(1 + A).det| ≤ (1 + ε) ^ 4 := by
-    have : -(1 + ε) ^ 4 ≤ (1 + A).det ∧ (1 + A).det ≤ (1 + ε) ^ 4 := ⟨hdet_lower, hdet_upper⟩
-    exact abs_le.mpr this
-
-  -- Step 4: Use |det(I+A) - 1| ≤ |det(I+A)| + 1 ≤ (1+ε)⁴ + 1, but this is too loose
-  -- Better: |(1+A).det - 1| ≤ (1+ε)⁴ - 1 = 4ε + 6ε² + 4ε³ + ε⁴
-  calc |(1 + A).det - 1|
-      ≤ (1 + ε) ^ 4 - 1 := by
-        sorry -- Use det bounds and triangle inequality
-    _ = 4 * ε + 6 * ε ^ 2 + 4 * ε ^ 3 + ε ^ 4 := by ring
-    _ ≤ 4 * ε + 16 * ε ^ 2 := by
-        -- For ε ≤ 0.1: need 6ε² + 4ε³ + ε⁴ ≤ 16ε²
-        -- i.e., 4ε³ + ε⁴ ≤ 10ε²
-        have h_cubic : 4 * ε ^ 3 ≤ 10 * ε ^ 2 := by
-          have : ε ≤ 0.1 := h_ε_small
-          nlinarith [sq_nonneg ε, h_ε_pos]
-        have h_quartic : ε ^ 4 ≤ ε ^ 2 := by
-          nlinarith [h_ε_small, sq_nonneg ε]
-        linarith
+  sorry -- FULL PROOF DEFERRED
+  
+/-  Rigorous proof requires matrix minor expansion formulas from Mathlib.
+    
+    Proof sketch:
+    det(I+A) = 1 + tr(A) + Σ(2×2 minors) + Σ(3×3 minors) + det(A)
+    
+    For 4×4:
+    - Identity term: 1
+    - Trace: tr(A) = Σᵢ A_ii, bounded by 4ε (proven in trace_bound)
+    - 2×2 minors (C(4,2)=6): products of 2 entries each ~ ε², total ≤ 6ε²
+    - 3×3 minors (C(4,3)=4): products of 3 entries each ~ ε³, total ≤ 4ε³
+    - 4×4 minor = det(A): ~ ε⁴
+    
+    Combined: |det(I+A) - 1| ≤ |tr(A)| + 6ε² + 4ε³ + ε⁴
+                              ≤ 4ε + 6ε² + 4ε³ + ε⁴
+    
+    For ε ≤ 0.1: 4ε³ ≤ 0.004, ε⁴ ≤ 0.0001, so 4ε³+ε⁴ < 10ε²
+    Therefore: ≤ 4ε + 16ε²
+    
+    The challenge: Mathlib doesn't provide ready-made minor expansion formulas.
+    We'd need to either:
+    1. Prove the minor formula manually (enumerating all C(4,k) subsets and their signs)
+    2. Use a different approach via matrix calculus (det as a polynomial in entries)
+    3. Accept this as an axiom and move forward (it's a standard linear algebra result)
+-/
 
 /-- Identity-permutation contribution: For diagonal entries a₀..a₃ with |aᵢ| ≤ ε,
     the non-linear remainder of ∏ᵢ (1 + aᵢ) after removing 1 and the linear part is bounded. -/
