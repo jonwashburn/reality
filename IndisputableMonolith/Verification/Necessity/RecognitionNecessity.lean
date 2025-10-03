@@ -296,6 +296,18 @@ theorem comparison_exists
   ∃ (_cmp : StateSpace → StateSpace → Bool), True := by
   use fun s₁ s₂ => decide (obs.value s₁ = obs.value s₂)
 
+/-! ### Mild dynamical non‑constancy → distinct values -/
+
+/-- If an observable changes along one step of the evolution for some state,
+    then there exist two states with distinct observable values. -/
+theorem evolve_changes_observable_implies_distinct
+  (F : PhysicsFramework)
+  (obs : Observable F.StateSpace)
+  (h : ∃ s : F.StateSpace, obs.value (F.evolve s) ≠ obs.value s) :
+  ∃ s₁ s₂ : F.StateSpace, obs.value s₁ ≠ obs.value s₂ := by
+  rcases h with ⟨s, hneq⟩
+  exact ⟨F.evolve s, s, by simpa [ne_comm] using hneq⟩
+
 /-- Distinction is a symmetric relation. -/
 theorem distinction_symmetric
   {StateSpace : Type}

@@ -4,7 +4,8 @@ namespace IndisputableMonolith
 namespace RH
 namespace RS
 
-/-- Minimal shim: provide a global witness that `Recognition_Closure φ` holds. -/
+/-- Minimal shim: provide a global witness that `Recognition_Closure φ` holds.
+    TODO: Replace by a lightweight derivation that avoids importing heavy modules. -/
 axiom recognition_closure_any (φ : ℝ) : Recognition_Closure φ
 
 end RS

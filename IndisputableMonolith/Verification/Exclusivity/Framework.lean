@@ -49,6 +49,12 @@ structure PhysicsFramework where
   /-- Initial conditions exist -/
   hasInitialState : Nonempty StateSpace
 
+/-! ### Mild dynamics property -/
+
+/-- A framework is non‑static if at least one state changes under `evolve`. -/
+class NonStatic (F : PhysicsFramework) : Prop where
+  exists_change : ∃ s : F.StateSpace, F.evolve s ≠ s
+
 /-! ### Parameter Counting -/
 
 /-- A framework has zero parameters if it can be specified algorithmically
