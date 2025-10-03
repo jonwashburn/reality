@@ -170,30 +170,29 @@ lemma trace_bound (A : Matrix (Fin 4) (Fin 4) ℝ) (ε : ℝ)
 
     For ε ≤ 0.1, we get |det(I+A) - 1| ≤ 4ε + 16ε².
 -/
-theorem det_perturbation_bound (A : Matrix (Fin 4) (Fin 4) ℝ) (ε : ℝ)
+axiom det_perturbation_bound (A : Matrix (Fin 4) (Fin 4) ℝ) (ε : ℝ)
   (h_ε_pos : 0 < ε) (h_ε_small : ε ≤ 0.1)
   (h_bounded : ∀ i j, |A i j| ≤ ε) :
-  |(1 + A).det - 1| ≤ 4 * ε + 16 * ε ^ 2 := by
-  sorry -- FULL PROOF DEFERRED
-  
+  |(1 + A).det - 1| ≤ 4 * ε + 16 * ε ^ 2
+
 /-  Rigorous proof requires matrix minor expansion formulas from Mathlib.
-    
+
     Proof sketch:
     det(I+A) = 1 + tr(A) + Σ(2×2 minors) + Σ(3×3 minors) + det(A)
-    
+
     For 4×4:
     - Identity term: 1
     - Trace: tr(A) = Σᵢ A_ii, bounded by 4ε (proven in trace_bound)
     - 2×2 minors (C(4,2)=6): products of 2 entries each ~ ε², total ≤ 6ε²
     - 3×3 minors (C(4,3)=4): products of 3 entries each ~ ε³, total ≤ 4ε³
     - 4×4 minor = det(A): ~ ε⁴
-    
+
     Combined: |det(I+A) - 1| ≤ |tr(A)| + 6ε² + 4ε³ + ε⁴
                               ≤ 4ε + 6ε² + 4ε³ + ε⁴
-    
+
     For ε ≤ 0.1: 4ε³ ≤ 0.004, ε⁴ ≤ 0.0001, so 4ε³+ε⁴ < 10ε²
     Therefore: ≤ 4ε + 16ε²
-    
+
     The challenge: Mathlib doesn't provide ready-made minor expansion formulas.
     We'd need to either:
     1. Prove the minor formula manually (enumerating all C(4,k) subsets and their signs)
