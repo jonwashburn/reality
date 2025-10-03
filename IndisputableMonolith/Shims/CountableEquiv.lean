@@ -37,29 +37,38 @@ theorem countable_of_surjective {α : Type u} (f : ℕ → α) (hf : Surjective 
   -- Use mathlib's Countable constructor (exists in Lean 4)
   exact ⟨g, hinj⟩
 
-/-! ### Enumeration from countability (well-justified axioms) -/
+/-! ### Enumeration from countability -/
 
 /-- From `Countable α` and inhabitedness, produce a surjection `ℕ → α`.
 
-**Rationale**: `Countable α` provides an injection `α → ℕ` (by definition).
-Inverting this injection classically (using `Classical.choose` for preimages)
-yields a surjection `ℕ → α`.
+**Proof strategy**: Use `Nonempty.some` to extract the injection witness from `Countable`,
+then invert it classically to build a surjection.
 
-**Why axiomatized**:
-- `Countable` is defined as `∃ f, Injective f`, which eliminates into `Prop`.
-- Pattern-matching on the witness in `def` mode fails (can't eliminate `Prop` to `Type`).
-- Workaround: use `Countable.choose` or `Nonempty.some` if mathlib provides extractors,
-  or axiomatize for now.
+The challenge is that `Countable α := ∃ f, Injective f` is in `Prop`, but we need
+to use the witness `f` in a `Type`-producing definition. We use `Nonempty` coercion. -/
+noncomputable def enumOfCountable {α : Type u} [Inhabited α] (h : Countable α) : ℕ → α :=
+  -- Convert existence proof to Nonempty, then extract witness
+  let f_witness : Nonempty (∃ f : α → ℕ, Injective f) := ⟨h.exists_injective_nat⟩
+  let f_data := Classical.choice f_witness
+  let f := f_data.choose
+  -- Build surjection by choosing preimages
+  fun n => if h : ∃ a, f a = n then Classical.choose h else default
 
-**Provability**: Fully constructive in proof mode; can be proven by manually constructing
-the inverse map in a helper `axiom`-free if needed. Total effort: ~30 minutes.
-
-**Alternative**: Use mathlib's `Encodable` (if the type has one) or `Quot.exists_rep`-style
-patterns to extract the injection witness data-style. -/
-axiom enumOfCountable {α : Type u} [Inhabited α] :
-  Countable α → (ℕ → α)
-
-axiom enumOfCountable_surjective {α : Type u} [Inhabited α]
-  (h : Countable α) : Function.Surjective (enumOfCountable h)
+theorem enumOfCountable_surjective {α : Type u} [Inhabited α] (h : Countable α) :
+    Function.Surjective (enumOfCountable h) := by
+  intro a
+  classical
+  -- Extract the injection
+  let f_witness : Nonempty (∃ f : α → ℕ, Injective f) := ⟨h.exists_injective_nat⟩
+  let f_data := Classical.choice f_witness
+  let f := f_data.choose
+  let hinj := f_data.choose_spec
+  -- f a is in the range, so enumOfCountable (f a) = a
+  use f a
+  simp [enumOfCountable]
+  have hex : ∃ a', f a' = f a := ⟨a, rfl⟩
+  rw [dif_pos hex]
+  have hchoose := Classical.choose_spec hex
+  exact hinj hchoose
 
 end Shims
