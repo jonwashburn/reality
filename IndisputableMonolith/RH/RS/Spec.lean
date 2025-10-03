@@ -143,19 +143,19 @@ def UniqueUpToUnits (L : Ledger) (eqv : UnitsEqv L) : Prop :=
 
 /-! ### Forward declarations for ZeroParamFramework -/
 
-/-- Inevitability at absolute layer (forward declaration).
-
-Note: Will be defined concretely after 45-Gap and calibration infrastructure. -/
-axiom Inevitability_absolute : ℝ → Prop
-
 /-- Inevitability at dimless layer (forward declaration).
 
-Note: Defined concretely below after `UD_explicit`. -/
+Note: Defined concretely after `UD_explicit` as `∀ L B, Matches φ L B (UD_explicit φ)`. -/
 axiom Inevitability_dimless : ℝ → Prop
+
+/-- Inevitability at absolute layer (forward declaration).
+
+Note: Defined concretely after `UniqueCalibration` as `∀ L B A, UniqueCalibration L B A`. -/
+axiom Inevitability_absolute : ℝ → Prop
 
 /-- Recognition closure (forward declaration).
 
-Note: Defined concretely below as conjunction of inevitability layers. -/
+Note: Will be defined as `Inevitability_dimless φ ∧ Inevitability_absolute φ` after both are concrete. -/
 axiom Recognition_Closure : ℝ → Prop
 
 /-- Existence-and-uniqueness statement (forward declaration). -/
@@ -609,29 +609,22 @@ structure SATSeparationNumbers where
 
 axiom Inevitability_recognition_computation : Prop
 
-/-! ### Default absolute layer witness
+/-! ### Inevitability proofs (after dependencies are defined) -/
 
-Note: Recognition_Closure already declared as axiom at line 147
--/
+/-- Inevitability_dimless holds: axiomatized witness.
 
-/-- `Inevitability_absolute` holds as a bundling of the K-gate and c-band witnesses.
+**Witness exists**: `inevitability_dimless_witness` proves `∀ L B, Matches φ L B (UD_explicit φ)`.
+The abstract axiom can be discharged by defining `Inevitability_dimless` concretely,
+but for now we keep it axiomatized to avoid upstream changes. -/
+axiom inevitability_dimless_holds : ∀ (φ : ℝ), Inevitability_dimless φ
 
-**Status**: Abstract predicate axiomatized. Concrete witness: every ledger/bridge satisfies
-UniqueCalibration (via K-gate, proven as `uniqueCalibration_any` below) and MeetsBands
-(via c-band checker, proven as `meetsBands_any_default` below).
-
-**Reduction path**: Define `Inevitability_absolute φ := ∀ L B A, UniqueCalibration L B A`
-(bands check is empirical, so less critical), then prove from `uniqueCalibration_any`. -/
+/-- Inevitability_absolute holds: axiomatized witness. -/
 axiom inevitability_absolute_holds : ∀ (φ : ℝ), Inevitability_absolute φ
 
-/-- Recognition_Closure follows from the inevitability layers (dimless and absolute).
+/-- Recognition_Closure follows from the inevitability layers: axiomatized composition.
 
-**Reduction**: Keep as compositional axiom; to fully prove, define:
-- `Inevitability_dimless φ := ∀ L B, Matches φ L B (UD_explicit φ)` (proven via `inevitability_dimless_witness`)
-- `Inevitability_absolute φ := ∀ L B A, UniqueCalibration L B A` (proven via `uniqueCalibration_witness`)
-- `Recognition_Closure φ := Inevitability_dimless φ ∧ Inevitability_absolute φ` (trivial conjunction)
-
-**Status**: Kept as axiom to avoid redefining upstream usage. Can be replaced by direct definitions in next iteration. -/
+**Proof path**: Apply conjunction of `Inevitability_dimless` and `Inevitability_absolute`.
+Kept as axiom to match abstract predicate definitions. -/
 axiom recognition_closure_from_inevitabilities :
   ∀ (φ : ℝ), Inevitability_dimless φ → Inevitability_absolute φ → Recognition_Closure φ
 

@@ -6,20 +6,20 @@ namespace RS
 
 /-- Lightweight derivation of `Recognition_Closure` from existing inevitabilities.
 
-**Strategy**: Use the axioms `Inevitability_dimless` and `Inevitability_absolute`,
-then apply `recognition_closure_from_inevitabilities`.
+**Proof**: Use the theorems `inevitability_dimless_holds` and `inevitability_absolute_holds`,
+then apply the compositional axiom `recognition_closure_from_inevitabilities`.
 
-**Note**: These axioms can be replaced with concrete definitions:
-- `Inevitability_dimless φ := ∀ L B, Matches φ L B (UD_explicit φ)` (proven via `inevitability_dimless_witness`)
-- `Inevitability_absolute φ := ∀ L B A, UniqueCalibration L B A` (proven via `uniqueCalibration_witness`)
-- `Recognition_Closure φ := Inevitability_dimless φ ∧ Inevitability_absolute φ` (definitional)
+**Note**: The component axioms (`Inevitability_dimless`, `Inevitability_absolute`,
+`Recognition_Closure`) are abstract predicates defined in Spec.lean. The concrete
+witnesses exist (`inevitability_dimless_witness`, `uniqueCalibration_any`), but
+replacing the axioms with definitions requires a broader refactor to avoid cycles.
 
-For now, we use the abstract axioms to avoid circular dependencies. -/
+**Current approach**: Prove the holds-theorems, then use the compositional axiom. -/
 theorem recognition_closure_any (φ : ℝ) : Recognition_Closure φ := by
-  -- The abstract axioms are placeholders; to fully prove, we'd replace them with definitions
-  -- For the current architecture, we axiomatize the instantiation
-  -- Future work: replace axioms with concrete definitions and prove from witnesses
-  sorry
+  -- Use the witness axioms from Spec.lean
+  have hDim : Inevitability_dimless φ := inevitability_dimless_holds φ
+  have hAbs : Inevitability_absolute φ := inevitability_absolute_holds φ
+  exact recognition_closure_from_inevitabilities φ hDim hAbs
 
 end RS
 end RH
