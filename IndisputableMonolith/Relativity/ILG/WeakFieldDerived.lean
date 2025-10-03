@@ -34,14 +34,14 @@ theorem weight_from_field_theory :
   simp [weight_derived, weight_final]
 
 /-- Modified Poisson equation (proven result from Phase 5).
-    
+
     This wraps modified_poisson_equation from ModifiedPoissonDerived, which requires
     a LinearizedFieldSystem. The conversion from radial form (ℝ → ℝ) to 3D form
     ((Fin 4 → ℝ) → ℝ) and the extraction of w as a radial function requires:
     1. Spherical symmetry assumptions on ρ
     2. Conversion between Cartesian Laplacian and radial form via laplacian_spherical
     3. Identifying w(r) from w_correction_term via spherical reduction
-    
+
     For now, axiomatized pending the spherical reduction machinery.
 -/
 axiom modified_poisson_proven (ng : NewtonianGaugeMetric) (ρ : ℝ → ℝ) (α C_lag : ℝ) :

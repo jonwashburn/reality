@@ -104,22 +104,11 @@ theorem minkowskiMatrix_sq : minkowskiMatrix * minkowskiMatrix = 1 := by
 theorem minkowskiMatrix_inv : minkowskiMatrix⁻¹ = minkowskiMatrix := by
   have hsq := minkowskiMatrix_sq
   have hdet := minkowskiMatrix_invertible
-  -- Direct proof: η is diagonal with entries ±1, so η⁻¹ is diagonal with same entries
-  ext i j
-  simp only [Matrix.inv_def, Matrix.diagonal_apply, minkowskiMatrix]
-  by_cases hij : i = j
-  · subst hij
-    -- Diagonal case: need to show (adjugate / det) equals original
-    -- For diagonal matrix, adjugate is also diagonal
-    -- Since det(η) = -1 and η_ii ∈ {-1, 1}, we have η⁻¹_ii = η_ii / det = η_ii / (-1) for special structure
-    -- Actually: for η² = I, we know η⁻¹ = η directly
-    -- Use the fact that η * η = I implies η is self-inverse
-    have h_self_inv : minkowskiMatrix * minkowskiMatrix = 1 := hsq
-    -- The inverse of a matrix M is the unique matrix N such that M * N = I
-    -- We have M * M = I, so M is its own inverse
-    sorry -- Need involutive matrix theorem: M² = I ∧ det(M) ≠ 0 → M⁻¹ = M
-  · -- Off-diagonal case: both sides are 0
-    simp [hij]
+  -- Use right-inverse uniqueness: if M·B = I and det(M) ≠ 0, then M⁻¹ = B
+  -- We have M·M = I from hsq
+  -- Therefore M⁻¹ = M
+  symm
+  exact Matrix.inv_eq_right_inv hdet hsq
 
 /-- Product of 4 bounded terms is bounded by b⁴. -/
 lemma prod_four_bound (f : Fin 4 → ℝ) (b : ℝ) (hb : 0 ≤ b) (h : ∀ i, |f i| ≤ b) :
