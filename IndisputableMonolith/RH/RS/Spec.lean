@@ -303,14 +303,23 @@ axiom bornHolds : Prop
 /-- Bose–Fermi witness (temporarily axiomatized - Quantum module commented out). -/
 axiom boseFermiHolds : Prop
 
-/-- K‑gate witness (temporarily axiomatized - Constants.RSUnits fields unavailable). -/
-axiom kGateHolds : Prop
+/-- K‑gate witness: K_A = K_B route agreement.
+
+**Proven** in `Verification.Observables` as `K_gate_bridge`. -/
+def kGateHolds : Prop :=
+  ∀ U : IndisputableMonolith.Constants.RSUnits,
+    IndisputableMonolith.Verification.BridgeEval IndisputableMonolith.Verification.K_A_obs U
+      = IndisputableMonolith.Verification.BridgeEval IndisputableMonolith.Verification.K_B_obs U
+
+/-- K-gate holds: proven by `Verification.K_gate_bridge`. -/
+theorem kGate_from_units : kGateHolds := by
+  intro U
+  exact IndisputableMonolith.Verification.K_gate_bridge U
 
 /-- Local proofs temporarily axiomatized pending module availability. -/
 axiom eightTick_from_TruthCore : eightTickMinimalHolds
 axiom born_from_TruthCore : bornHolds
 axiom boseFermi_from_TruthCore : boseFermiHolds
-axiom kGate_from_units : kGateHolds
 
 /-- Explicit universal target populated by φ‑closed fields. -/
 noncomputable def UD_explicit (φ : ℝ) : UniversalDimless φ where
@@ -327,14 +336,14 @@ noncomputable def UD_explicit (φ : ℝ) : UniversalDimless φ where
     intro r hr
     simp [List.mem_cons] at hr
     rcases hr with h | h
-    · simp [h]
-    · simp [h]
+    · simpa [h] using phiClosed_phi φ
+    · simpa [h] using phiClosed_inv_phi_pow φ 2
   mixingAngles0_isPhi := by
     intro θ hθ
     simp at hθ
-    simp [hθ]
+    simpa [hθ] using phiClosed_inv_phi_pow φ 1
   g2Muon0_isPhi := by
-    simp
+    simpa using phiClosed_inv_phi_pow φ 5
 
 /-- Bridge-side explicit dimless pack mirroring `UD_explicit`. -/
 noncomputable def dimlessPack_explicit (L : Ledger) (B : Bridge L) : DimlessPack L B :=
