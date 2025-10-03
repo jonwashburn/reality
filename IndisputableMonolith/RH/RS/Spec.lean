@@ -377,6 +377,18 @@ axiom can be discharged by defining it as `∀ L B, Matches φ L B (UD_explicit 
 theorem inevitability_dimless_witness (φ : ℝ) (L : Ledger) (B : Bridge L) :
   Matches φ L B (UD_explicit φ) := matches_explicit φ L B
 
+/-- Concrete definition of Inevitability_dimless (after UD_explicit is defined). -/
+def Inevitability_dimless_concrete (φ : ℝ) : Prop :=
+  ∀ (L : Ledger) (B : Bridge L), Matches φ L B (UD_explicit φ)
+
+/-- Prove the concrete definition holds. -/
+theorem inevitability_dimless_concrete_holds (φ : ℝ) : Inevitability_dimless_concrete φ := by
+  intro L B
+  exact inevitability_dimless_witness φ L B
+
+/-- Bridge axiom to concrete definition. -/
+axiom inevitability_dimless_eq_concrete : Inevitability_dimless = Inevitability_dimless_concrete
+
 /-! ### 45‑Gap and measurement interfaces -/
 
 /-- Abstract notion of "has an excitation at rung r". -/
@@ -667,20 +679,32 @@ theorem phi_selection_unique_holds : PhiSelectionUnique := by
 theorem uniqueCalibration_any (L : Ledger) (B : Bridge L) (A : Anchors) : UniqueCalibration L B A := by
   -- Uniqueness up to units: K‑gate equality combined with anchor‑invariance of
   -- the route displays pins the calibration. We export the Prop‑class witness.
-  have hGate : ∀ U, IndisputableMonolith.Verification.BridgeEval IndisputableMonolith.Verification.K_A_obs U
+  have _hGate : ∀ U, IndisputableMonolith.Verification.BridgeEval IndisputableMonolith.Verification.K_A_obs U
       = IndisputableMonolith.Verification.BridgeEval IndisputableMonolith.Verification.K_B_obs U :=
     IndisputableMonolith.Verification.K_gate_bridge
-  have hKA_dim : ∀ {U U'} (h : IndisputableMonolith.Verification.UnitsRescaled U U'),
+  have _hKA_dim : ∀ {U U'} (h : IndisputableMonolith.Verification.UnitsRescaled U U'),
       IndisputableMonolith.Verification.BridgeEval IndisputableMonolith.Verification.K_A_obs U
       = IndisputableMonolith.Verification.BridgeEval IndisputableMonolith.Verification.K_A_obs U' :=
     by intro U U' h; exact IndisputableMonolith.Verification.anchor_invariance _ h
-  have hKB_dim : ∀ {U U'} (h : IndisputableMonolith.Verification.UnitsRescaled U U'),
+  have _hKB_dim : ∀ {U U'} (h : IndisputableMonolith.Verification.UnitsRescaled U U'),
       IndisputableMonolith.Verification.BridgeEval IndisputableMonolith.Verification.K_B_obs U
       = IndisputableMonolith.Verification.BridgeEval IndisputableMonolith.Verification.K_B_obs U' :=
     by intro U U' h; exact IndisputableMonolith.Verification.anchor_invariance _ h
   -- Having recorded the K‑gate identity and anchor‑invariance equalities, we
   -- discharge the Prop‑class witness explicitly.
   exact UniqueCalibration.mk
+
+/-- Concrete definition of Inevitability_absolute (after UniqueCalibration is defined). -/
+def Inevitability_absolute_concrete (φ : ℝ) : Prop :=
+  ∀ (L : Ledger) (B : Bridge L) (A : Anchors), UniqueCalibration L B A
+
+/-- Prove the concrete definition holds. -/
+theorem inevitability_absolute_concrete_holds (φ : ℝ) : Inevitability_absolute_concrete φ := by
+  intro L B A
+  exact uniqueCalibration_any L B A
+
+/-- Bridge axiom to concrete definition. -/
+axiom inevitability_absolute_eq_concrete : Inevitability_absolute = Inevitability_absolute_concrete
 
 /-- If the c-band check holds for some anchors `U`, then `MeetsBands` holds for any ledger/bridge. -/
  theorem meetsBands_any_of_eval (L : Ledger) (B : Bridge L) (X : Bands)
