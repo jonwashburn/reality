@@ -24,9 +24,9 @@ theorem cover_exact_pow (d : Nat) : ∃ w : CompleteCover d, w.period = 2 ^ d :=
   refine ⟨{ period := Fintype.card (Pattern d)
           , path := fun i => e i
           , complete := (Fintype.equivFin (Pattern d)).symm.surjective }, ?_⟩
-  have hcard : Fintype.card (Pattern d) = 2 ^ d := by
+  have : Fintype.card (Pattern d) = 2 ^ d := by
     simp [Pattern, Fintype.card_bool, Fintype.card_fin]
-  simp [hcard]
+  simp [this]
 
 /-- There exists an 8‑tick complete cover for 3‑bit patterns. -/
  theorem period_exactly_8 : ∃ w : CompleteCover 3, w.period = 8 := by

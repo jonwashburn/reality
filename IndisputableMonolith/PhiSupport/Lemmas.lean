@@ -79,8 +79,7 @@ theorem phi_fixed_point : Constants.phi = 1 + 1 / Constants.phi := by
     have hsqroot : Real.sqrt ((2 * x - 1) ^ 2) = Real.sqrt 5 := by
       simpa [hquad]
     have hsqabs : Real.sqrt ((2 * x - 1) ^ 2) = |2 * x - 1| := by
-      have : 0 ≤ (2 * x - 1) ^ 2 := by exact sq_nonneg _
-      simpa [sq] using Real.sqrt_sq_eq_abs (2 * x - 1)
+      exact Real.sqrt_sq_eq_abs (2 * x - 1)
     have habs : |2 * x - 1| = Real.sqrt 5 := by
       -- rewrite the left side of hsqroot via sqrt(sq)=|·|
       simpa [hsqabs] using hsqroot

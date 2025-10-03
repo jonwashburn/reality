@@ -12,6 +12,12 @@ namespace DiscreteNecessity
 -- Use shared definitions from Framework
 open Exclusivity.Framework (AlgorithmicSpec HasAlgorithmicSpec)
 
+/-! Additional hypothesis for well-formed specs. -/
+
+/-- A spec is nontrivial if the state space is inhabited. -/
+class SpecNontrivial (StateSpace : Type) : Prop where
+  inhabited : Nonempty StateSpace
+
 /-!
 # Discrete Structure Necessity
 
@@ -122,7 +128,7 @@ theorem continuous_specification_needs_parameters
   [MetricSpace StateSpace]
   (hUncountable : ¬Countable StateSpace) :
   ∃ (ParameterSet : Type), ¬Countable ParameterSet ∧
-    ∀ s : StateSpace, ∃ params : ParameterSet, True := by
+    ∀ _ : StateSpace, ∃ _ : ParameterSet, True := by
   -- Use StateSpace itself as the parameter set
   use StateSpace
 
@@ -166,7 +172,8 @@ theorem uncountable_needs_parameters
 -/
 theorem zero_params_has_discrete_skeleton
   (StateSpace : Type)
-  (hZeroParam : HasAlgorithmicSpec StateSpace) :
+  (hZeroParam : HasAlgorithmicSpec StateSpace)
+  [SpecNontrivial StateSpace] :
   ∃ (Discrete : Type) (ι : Discrete → StateSpace),
     Function.Surjective ι ∧ Countable Discrete := by
   -- The algorithmic spec generates a countable discrete set
@@ -177,24 +184,8 @@ theorem zero_params_has_discrete_skeleton
 
   -- Define ι as: decode the code generated at step n
   classical
-  -- Algorithmically specifiable spaces are nonempty (the algorithm enumerates them)
-  -- If the spec generates codes and decode maps them, at least one state must exist
-  have : Nonempty StateSpace := by
-    -- By non-vacuity: hEnum : ∀ s, ∃ n code, ... guarantees StateSpace is inhabited
-    -- If StateSpace were empty, hEnum would be vacuously true for all s (but there are no s)
-    -- However, for an algorithmic spec to make sense, it must enumerate at least one state
-    -- Use the fact that decode must produce at least one valid state
-    by_cases h : ∃ n code, spec.generates n = some code ∧ ∃ s, decode code = some s
-    · obtain ⟨n, code, _, s, hs⟩ := h
-      exact ⟨s⟩
-    · -- If no valid decoding exists, StateSpace could be empty, but this contradicts
-      -- the purpose of an algorithmic spec (it should generate the space)
-      -- We need an additional assumption: algorithmic specs are non-trivial
-      push_neg at h
-      exfalso
-      -- This case is impossible for well-formed algorithmic specs
-      -- Keep as sorry for now (requires additional axiom about spec non-triviality)
-      sorry
+  -- From SpecNontrivial, we get nonemptiness
+  have : Nonempty StateSpace := (inferInstance : SpecNontrivial StateSpace).inhabited
   let default_state : StateSpace := Classical.choice this
   use fun n => match spec.generates n >>= decode with
     | some s => s
@@ -307,7 +298,7 @@ axiom real4_uncountable : ¬Countable (ℝ × ℝ × ℝ × ℝ)
 -/
 theorem classical_field_needs_parameters :
   ∃ (FieldConfig : Type), ¬Countable FieldConfig ∧
-    ∀ (hZero : HasAlgorithmicSpec FieldConfig), False := by
+    ∀ (_ : HasAlgorithmicSpec FieldConfig), False := by
   -- Field configurations on ℝ^4 form an uncountable space
   use (ℝ × ℝ × ℝ × ℝ) → ℝ  -- Field value at each point
 
@@ -364,7 +355,8 @@ theorem quantum_field_discrete_skeleton :
 -/
 theorem RS_discrete_ticks_necessary
   (Framework : Type)
-  (hZeroParam : HasAlgorithmicSpec Framework) :
+  (hZeroParam : HasAlgorithmicSpec Framework)
+  [SpecNontrivial Framework] :
   ∃ (Ticks : Type) (ι : Ticks → Framework),
     Function.Surjective ι ∧ Countable Ticks := by
   exact zero_params_has_discrete_skeleton Framework hZeroParam
@@ -384,7 +376,7 @@ theorem string_theory_must_be_discrete
 theorem LQG_spin_networks_necessary
   (LQGState : Type)
   (hZeroParam : HasAlgorithmicSpec LQGState)
-  (hSpinNetwork : True) :  -- Placeholder for spin network structure
+  (_ : True) :  -- Placeholder for spin network structure
   Countable LQGState := by
   exact algorithmic_spec_countable_states LQGState hZeroParam
 
@@ -419,7 +411,7 @@ axiom equiv_preserves_uncountability
 /-- General relativity on smooth manifolds requires parameters
     (initial conditions, metric components, etc.). -/
 theorem GR_needs_parameters
-  (Metric : (ℝ × ℝ × ℝ × ℝ) → (Fin 4 → Fin 4 → ℝ)) :
+  (_ : (ℝ × ℝ × ℝ × ℝ) → (Fin 4 → Fin 4 → ℝ)) :
   ¬HasAlgorithmicSpec ((ℝ × ℝ × ℝ × ℝ) → (Fin 4 → Fin 4 → ℝ)) := by
   apply uncountable_needs_parameters
   -- Metric space (ℝ⁴ → 4×4 real matrices) is uncountable
@@ -448,6 +440,7 @@ axiom countable_lattice (ε : ℝ) (hε : ε > 0) :
 -/
 theorem discrete_approximates_continuous
   (ContFramework : Type)
+  [Nonempty ContFramework]
   (ε : ℝ)
   (hε : ε > 0) :
   ∃ (DiscFramework : Type),
@@ -464,11 +457,10 @@ theorem discrete_approximates_continuous
   · -- Lattice is countable
     exact hCount
 
-  · -- Approximation map exists (details depend on ContFramework structure)
-    -- For any framework, we can map lattice points to framework states
-    -- ContFramework is a Type parameter, so it's inhabited (can use arbitrary)
+  · -- Approximation map exists: map all lattice points to an arbitrary ContFramework state
     classical
-    sorry  -- Requires Nonempty ContFramework assumption or construction
+    let target := Classical.choice (inferInstance : Nonempty ContFramework)
+    use fun (_: Lattice) => target
 
 end DiscreteNecessity
 end Necessity

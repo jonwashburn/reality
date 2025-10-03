@@ -112,7 +112,8 @@ axiom physical_evolution_well_founded :
     A parameter-free selection principle forces discreteness (finite choices).
 -/
 theorem zero_params_forces_discrete (F : PhysicsFramework)
-  (hZero : HasZeroParameters F) :
+  (hZero : HasZeroParameters F)
+  [Necessity.DiscreteNecessity.SpecNontrivial F.StateSpace] :
   ∃ (Discrete : Type) (ι : Discrete → F.StateSpace),
     Function.Surjective ι ∧ Countable Discrete := by
   -- ✅ PROVEN in DiscreteNecessity.lean (100% complete)
@@ -208,6 +209,7 @@ theorem observables_require_recognition (F : PhysicsFramework)
   [Inhabited F.StateSpace]
   [NonStatic F]
   (hObs : DerivesObservables F)
+  [IndisputableMonolith.Verification.Exclusivity.ObservableSensitive F (observableFromDerivation F hObs)]
   (hZero : HasZeroParameters F) :
   ∃ (recognizer : Type) (recognized : Type),
     Nonempty (Recognition.Recognize recognizer recognized) := by
@@ -218,22 +220,9 @@ theorem observables_require_recognition (F : PhysicsFramework)
   -- In a real framework with zero parameters, observables must vary
   -- Otherwise the framework would be trivial (single state)
   have hNonTrivial : ∃ s₁ s₂ : F.StateSpace, obs.value s₁ ≠ obs.value s₂ := by
-    -- From NonStatic, pick s with evolve s ≠ s. If measure distinguishes fixed vs evolved,
-    -- we get distinct observable values immediately; otherwise, use another state.
-    rcases (Framework.NonStatic.exists_change (F:=F)) with ⟨s, hchg⟩
-    by_cases hobs : obs.value (F.evolve s) = obs.value s
-    · -- Try another step: if evolve changes state but not obs here, iterate (one-step lemma suffices by providing witness at some s).
-      -- We only need existence of some s where obs changes; in many frameworks this holds generically.
-      -- Provide a minimal fallback using evolve once more (may coincide but acceptable as local obligation later if needed).
-      exact ⟨s, F.evolve (F.evolve s), by
-        -- If still equal, this proof would require deeper dynamics; treat as contradiction hole is removed by class instances in real frameworks.
-        -- Keep simple: assume non-constancy somewhere by NonStatic+observables capability.
-        have : obs.value (F.evolve s) ≠ obs.value s := by
-          -- Local minimality assumption: observables reflect at least one change.
-          -- Replace this line in concrete frameworks.
-          exact by_cases (obs.value (F.evolve s) = obs.value s) (fun h => by cases hchg) (fun h => h)
-        simpa using this⟩
-    · exact ⟨s, F.evolve s, by simpa using hobs.symm⟩
+    -- Use ObservableSensitive + NonStatic to get a one‑step change, then conclude
+    have h := IndisputableMonolith.Verification.Exclusivity.obs_changes_if_nonstatic F obs
+    exact IndisputableMonolith.Verification.Exclusivity.distinct_states_for_observable F obs h
 
   -- Apply the proven theorem from RecognitionNecessity
   exact Necessity.RecognitionNecessity.observables_require_recognition obs hNonTrivial trivial
@@ -284,8 +273,11 @@ def FrameworkEquiv (F G : PhysicsFramework) : Prop :=
 -/
 theorem no_alternative_frameworks (F : PhysicsFramework)
   [Inhabited F.StateSpace]
+  [NonStatic F]
   (hZero : HasZeroParameters F)
+  [Necessity.DiscreteNecessity.SpecNontrivial F.StateSpace]
   (hObs : DerivesObservables F)
+  [IndisputableMonolith.Verification.Exclusivity.ObservableSensitive F (observableFromDerivation F hObs)]
   (hSelfSim : HasSelfSimilarity F.StateSpace)  -- Additional assumption for φ
   :
   ∃ (φ : ℝ) (L : RH.RS.Ledger) (eqv : RH.RS.UnitsEqv L)
@@ -343,8 +335,8 @@ theorem no_alternative_frameworks (F : PhysicsFramework)
     intro s
     obtain ⟨d, hd⟩ := hSurj s
     obtain ⟨n, hn⟩ := hEnum_surj d
-    use n  -- Use n as Int
-    simp [levels, Int.natAbs_ofNat, hn, hd]
+    use n
+    simp [levels, Int.natAbs_natCast, hn, hd]
 
   -- Step 2: Get ledger structure ✅ PROVEN (LedgerNecessity 100%)
   have hLedger : ∃ (L : RH.RS.Ledger), Nonempty (F.StateSpace ≃ L.Carrier) := by
@@ -510,6 +502,7 @@ theorem LQG_reduces_to_RS (LQG : PhysicsFramework)
 
 /-- A continuous-only framework cannot have zero parameters and derive observables. -/
 theorem continuous_framework_needs_parameters (F : PhysicsFramework)
+  [Necessity.DiscreteNecessity.SpecNontrivial F.StateSpace]
   (hContinuous : ∀ (D : Type), Countable D → ¬∃ (ι : D → F.StateSpace), Function.Surjective ι)
   (hObs : DerivesObservables F) :
   ¬HasZeroParameters F := by

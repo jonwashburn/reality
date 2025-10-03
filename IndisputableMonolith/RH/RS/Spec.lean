@@ -458,6 +458,10 @@ Note: Recognition_Closure already declared as axiom at line 147
 
 axiom inevitability_absolute_holds : ∀ (φ : ℝ), Inevitability_absolute φ
 
+/-- Recognition_Closure follows from the inevitability layers (dimless and absolute). -/
+axiom recognition_closure_from_inevitabilities :
+  ∀ (φ : ℝ), Inevitability_dimless φ → Inevitability_absolute φ → Recognition_Closure φ
+
 /-! ### Existence and uniqueness (up to units) scaffold
 
 Note: ExistenceAndUniqueness is defined earlier (line 153)

@@ -19,7 +19,24 @@ def compose_measure {F : Framework.PhysicsFramework}
   (obs : Necessity.RecognitionNecessity.Observable F.StateSpace)
   : F.StateSpace → ℝ := fun s => obs.value (F.evolve s)
 
-/--- Hypothesis: `measure ∘ evolve` is not injective. -/
+/-! Bridge class: observables that detect any change in state. -/
+
+class ObservableSensitive (F : Framework.PhysicsFramework)
+  (obs : Necessity.RecognitionNecessity.Observable F.StateSpace) : Prop where
+  detects : ∀ s : F.StateSpace, F.evolve s ≠ s →
+    obs.value (F.evolve s) ≠ obs.value s
+
+/-- From `NonStatic` and `ObservableSensitive`, obtain a one‑step observable change. -/
+theorem obs_changes_if_nonstatic
+  (F : Framework.PhysicsFramework)
+  (obs : Necessity.RecognitionNecessity.Observable F.StateSpace)
+  [Framework.NonStatic F]
+  [ObservableSensitive F obs]
+  : ∃ s : F.StateSpace, obs.value (F.evolve s) ≠ obs.value s := by
+  rcases (Framework.NonStatic.exists_change (F:=F)) with ⟨s, hchg⟩
+  exact ⟨s, ObservableSensitive.detects s hchg⟩
+
+/-- One‑step observable change implies distinct observable values for some pair. -/
 theorem distinct_states_for_observable
   (F : Framework.PhysicsFramework)
   (obs : Necessity.RecognitionNecessity.Observable F.StateSpace)
