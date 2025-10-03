@@ -26,12 +26,12 @@ noncomputable def linearized_riemann
   partialDeriv_v2 (fun y => linearized_christoffel g₀ h y ρ μ σ) ν x
 
 /-- Riemann expansion theorem: R[g₀+h] = R[g₀] + δR[h] + O(h²).
-    
+
     Axiomatized pending: Proper proof requires:
     1. christoffel_expansion giving |Γ[g+h] - (Γ[g] + δΓ)| bounds
     2. Derivative chain rule with WeakFieldPerturbation bounds on |∂Γ|
     3. Bounding quadratic Γ·Γ terms as O(h²)
-    
+
     Standard result from GR perturbation theory. The linearized Riemann formula
     δR^ρ_σμν = ∂_μ δΓ^ρ_νσ - ∂_ν δΓ^ρ_μσ is correct; the challenge is bounding
     the O(h²) remainder rigorously with our finite-difference derivatives.
@@ -60,25 +60,25 @@ noncomputable def linearized_ricci
     linearized_riemann g₀ h x ρ μ ρ ν)
 
 /-- Ricci expansion: R_μν[g₀+h] = R_μν[g₀] + δR_μν[h] + O(h²).
-    
+
     Proof: Contract Riemann expansion over ρ. Each Riemann component has error < 0.01.
     Sum over 4 terms gives |error| ≤ 4·0.01 = 0.04.
-    
+
     To get the claimed < 0.01 bound, we need either:
     1. Tighter individual Riemann bounds (< 0.0025 each), or
     2. Show that errors in different components partially cancel
-    
+
     For now, we relax to < 0.04 which is achievable with current Riemann bounds.
 -/
 /-- Ricci expansion: R_μν[g₀+h] = R_μν[g₀] + δR_μν[h] + O(h²).
-    
+
     Axiomatized pending: Contracting riemann_expansion over ρ gives 4 terms each with error < 0.01.
     Triangle inequality would give total error < 0.04, but we claim < 0.01.
-    
+
     To achieve this, need either:
     1. Tighter Riemann bounds (< 0.0025 per component), or
     2. Show that contraction induces cancellations in the error terms
-    
+
     Standard result, but requires careful error propagation analysis.
 -/
 axiom ricci_expansion (g₀ : MetricTensor) (h : MetricPerturbation) (x : Fin 4 → ℝ) (μ ν : Fin 4) :

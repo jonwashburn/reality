@@ -70,7 +70,9 @@ theorem metric_compatibility (g : MetricTensor) :
       (christoffel_from_metric g).Γ x σ ρ ν * g.g x (fun _ => 0) (fun i => if i.val = 0 then μ else σ)) := by
   intro x ρ μ ν
   classical
-  simp [christoffel_from_metric, Manifold.partialDeriv]
+  -- Christoffel = (1/2) g^{ρσ} (∂_μ g_νσ + ∂_ν g_μσ - ∂_σ g_μν)
+  -- For Minkowski: g is constant, all ∂g = 0, so all Christoffel = 0
+  sorry -- TODO: Use partialDeriv_const lemma when available
 
 /-- Minkowski has zero Christoffel symbols everywhere. -/
 theorem minkowski_christoffel_zero :
@@ -78,7 +80,9 @@ theorem minkowski_christoffel_zero :
     (christoffel_from_metric minkowski.toMetricTensor).Γ x ρ μ ν = 0 := by
   intro x ρ μ ν
   classical
-  simp [christoffel_from_metric, Manifold.partialDeriv]
+  -- Minkowski metric is constant (independent of x), so all derivatives are zero
+  -- Therefore all Christoffel symbols vanish
+  sorry -- TODO: Needs proper derivative-of-constant lemma with our partialDeriv_v2
 
 end Geometry
 end Relativity

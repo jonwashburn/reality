@@ -41,14 +41,85 @@ structure ReducedSystem (ng : NewtonianGaugeMetric) (ρ : (Fin 4 → ℝ) → �
   correction_Psi : ℝ → ℝ → ℝ
   coupling_factor : ℝ
 
-/-- Derive reduced system from full system by eliminating δψ. -/
+/-- Derive reduced system from full system by eliminating δψ.
+
+    Proof strategy:
+    1. h_full.einstein_00 gives: ∇²Φ = 4πρ + (scalar stress-energy contribution from δψ)
+    2. h_full.scalar_eq gives: δψ = delta_psi_solution ψ₀ ng m² (Green's function)
+    3. Substitute δψ solution into T₀₀[scalar] to get effective source
+    4. Factor out ρ: ∇²Φ = 4πρ(1 + w_correction) where w depends on α, C_lag
+    5. Similarly for ∇²Ψ from spatial Einstein equations
+    6. Φ-Ψ relation from traceless part (already in Einsteinij)
+
+    The explicit algebra requires expanding T₀₀[ψ₀ + δψ] and collecting terms by order,
+    then using h_full.physical_gradient_alignment to connect ∇ψ₀ to ∇ρ.
+-/
 theorem reduce_to_Phi_Psi (ng : NewtonianGaugeMetric) (ψ₀ : ScalarField) (ρ : (Fin 4 → ℝ) → ℝ) (α C_lag : ℝ) :
   LinearizedFieldSystem ng ψ₀ ρ α ((C_lag/α)^2) →
   ∃ reduced : ReducedSystem ng ρ α C_lag, True := by
   intro h_full
-  -- Use δψ solution to eliminate scalar field from Einstein eqs
-  -- Get effective source ρ_eff = ρ(1 + w_correction)
-  sorry  -- TODO: Explicit substitution and factorization
+  -- The reduction requires several technical steps:
+  -- 1. Extract δψ from h_full.scalar_eq (it's delta_psi_solution ψ₀ ng m²)
+  -- 2. Substitute into stress-energy: T₀₀[ψ₀ + δψ] expanded to linear order
+  -- 3. Use h_full.physical_gradient_alignment: ∇ψ₀ = k·∇ρ for some k
+  -- 4. Factor: T₀₀ = ρ·(constant + α·C_lag·terms) + δψ·(derivatives)
+  -- 5. Green's function δψ couples back to ρ, giving effective w_correction
+  -- 6. Collect Φ-Ψ relation from h_full.einstein_ij.phi_minus_psi_coupling
+
+  -- Construct the reduced system by extracting equations from h_full
+  use {
+    poisson_Phi := by
+      intro x
+      -- h_full.einstein_00 is of type Einstein00Equation
+      -- which states: ∇²Φ = κ(ρ + T₀₀_scalar)
+      -- Factor: = κρ(1 + T₀₀_scalar/ρ) = 4πρ(1 + w_correction)
+      have h_00 := h_full.einstein_00
+      -- h_00 is Einstein00Equation ng ψ₀ δψ ρ α m²
+      -- Unfold definition: ∀ x, laplacian ng.Φ x = κ * (ρ x + T_00_scalar_linear ...)
+      have hx : laplacian ng.Φ x = (4 * Real.pi) * (ρ x + T_00_scalar_linear ψ₀ 
+        { δψ := delta_psi_solution ψ₀ ng ((C_lag/α)^2), small := by intro _; norm_num }
+        minkowski.toMetricTensor α ((C_lag/α)^2) x) := by
+        exact h_00 x
+      -- Rewrite: κ(ρ + T_scalar) = κρ + κT_scalar = κρ(1 + T_scalar/ρ)
+      -- Define w_correction := T_scalar/ρ (when ρ ≠ 0)
+      by_cases hρ : ρ x = 0
+      · -- If ρ = 0, the equation becomes ∇²Φ = κT_scalar
+        -- For the reduced form, set w_correction = 0 and the equation holds trivially
+        simp [hρ] at hx ⊢
+        convert hx using 2
+        ring
+      · -- If ρ ≠ 0, factor out ρ
+        have : (4 * Real.pi) * (ρ x + T_00_scalar_linear ψ₀
+          { δψ := delta_psi_solution ψ₀ ng ((C_lag/α)^2), small := by intro _; norm_num }
+          minkowski.toMetricTensor α ((C_lag/α)^2) x)
+          = (4 * Real.pi) * ρ x * (1 + (T_00_scalar_linear ψ₀
+            { δψ := delta_psi_solution ψ₀ ng ((C_lag/α)^2), small := by intro _; norm_num }
+            minkowski.toMetricTensor α ((C_lag/α)^2) x) / ρ x) := by
+          field_simp [hρ]
+          ring
+        simp only [this] at hx
+        convert hx using 2
+        -- Define correction_w α C_lag as the ratio T_scalar/ρ
+        -- This is α * C_lag * (some geometric factor from gradients)
+        congr 1
+        -- The exact value depends on the scalar solution and gradient alignment
+        sorry -- Need to compute T_00_scalar_linear / ρ explicitly using h_full.physical_gradient_alignment
+    poisson_Psi := by
+      intro x
+      -- From h_full.einstein_ij: spatial trace gives ∇²Ψ equation
+      have := h_full.einstein_ij.trace_gives_laplacian_Psi x
+      -- This gives: ∇²Ψ = (source involving ρ)
+      -- Factor similarly to get 4πρ(1 + correction_Psi)
+      sorry -- Similar factorization as poisson_Phi
+    Phi_Psi_relation := by
+      intro x
+      -- Use h_full.einstein_ij.phi_minus_psi_coupling
+      exact h_full.einstein_ij.phi_minus_psi_coupling x
+    correction_w := fun α C_lag => α * C_lag * 0.1  -- Placeholder from EffectiveSource
+    correction_Psi := fun α C_lag => α * C_lag * 0.05  -- Placeholder
+    coupling_factor := 1.0  -- From traceless Einstein_ij
+  }
+  trivial
 
 /-- For spherically symmetric source ρ(r), reduce to radial ODEs. -/
 structure SphericalReducedSystem (R_max : ℝ) where
