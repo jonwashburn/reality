@@ -141,20 +141,20 @@ theorem RS_satisfies_exclusivity.{u} (φ : ℝ) (F : ZeroParamFramework.{u} φ) 
     FrameworkEquiv (toPhysicsFramework φ F) equiv_framework := by
   -- RS framework instance
   let rsFramework := toPhysicsFramework φ F
-  
+
   -- Provide required instances and hypotheses
   haveI : Inhabited rsFramework.StateSpace := ⟨Classical.choice (zpf_unitsQuot_nonempty F)⟩
   haveI : NonStatic rsFramework := RS_NonStatic φ F
   haveI : Necessity.DiscreteNecessity.SpecNontrivial rsFramework.StateSpace :=
     RS_SpecNontrivial φ F
   haveI : MeasureReflectsChange rsFramework := RS_MeasureReflectsChange φ F
-  
+
   -- Hypotheses
   have hZero : HasZeroParameters rsFramework := RS_HasZeroParameters φ F
   let hObs := RS_DerivesObservables φ F
   have hSelfSim : Necessity.PhiNecessity.HasSelfSimilarity rsFramework.StateSpace :=
     RS_HasSelfSimilarity φ F
-  
+
   -- Apply main theorem
   exact no_alternative_frameworks rsFramework hZero hObs hSelfSim
 
@@ -183,4 +183,3 @@ theorem RS_is_unique_and_self_describing :
 end Exclusivity
 end Verification
 end IndisputableMonolith
-
