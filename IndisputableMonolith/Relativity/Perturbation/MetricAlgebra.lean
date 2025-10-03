@@ -226,6 +226,23 @@ theorem inverse_first_order_identity_minkowski
   have := le_trans hsum_bound hfinal
   simpa [hrewrite]
 
+/-- Direct bound on inverse metric perturbation for weak field. -/
+theorem inverse_metric_perturbation_bound (hWF : WeakFieldPerturbation) (x : Fin 4 → ℝ) (μ ν : Fin 4) :
+  |(inverse_metric_first_order minkowski.toMetricTensor hWF.base) x
+      (fun i => if i.val = 0 then μ else ν) (fun _ => 0) -
+   (inverse_metric minkowski.toMetricTensor) x
+      (fun i => if i.val = 0 then μ else ν) (fun _ => 0)| ≤ hWF.eps := by
+  -- By definition of inverse_metric_first_order, the difference is just -h^{μν}
+  simp [inverse_metric_first_order]
+  have : |(inverse_metric minkowski.toMetricTensor) x (fun i => if i.val = 0 then μ else ν) (fun _ => 0) -
+           hWF.base.h x (fun i => if i.val = 0 then μ else ν) -
+           (inverse_metric minkowski.toMetricTensor) x (fun i => if i.val = 0 then μ else ν) (fun _ => 0)|
+        = |hWF.base.h x (fun i => if i.val = 0 then μ else ν)| := by
+    ring_nf
+    simp
+  rw [this]
+  exact hWF.small x μ ν
+
 /-- Test: Minkowski + diagonal perturbation. -/
 theorem test_minkowski_diagonal_pert :
   let h : MetricPerturbation := {

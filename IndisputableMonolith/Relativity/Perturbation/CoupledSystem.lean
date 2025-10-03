@@ -81,18 +81,35 @@ def RadialPoissonPhi (Phi : ℝ → ℝ) (rho : ℝ → ℝ) (w : ℝ → ℝ) :
 axiom radial_poisson_solution_exists (rho : ℝ → ℝ) (w : ℝ → ℝ) :
   ∃ Phi : ℝ → ℝ, RadialPoissonPhi Phi rho w
 
-/-- For ρ(r) = M/r² (Keplerian) and w = 1 (GR), get Φ = -M/r. -/
+/-- Exterior Keplerian solution: Φ = -M/r solves the homogeneous radial equation for r > 0. -/
 theorem keplerian_GR_solution :
-  let rho : ℝ → ℝ := fun r => 1 / r^2
+  let rho : ℝ → ℝ := fun _ => 0
   let w : ℝ → ℝ := fun _ => 1
   let Phi_GR : ℝ → ℝ := fun r => -1 / r
   RadialPoissonPhi Phi_GR rho w := by
   intro r hr
-  -- Conceptual issue: Φ = -1/r is the EXTERIOR solution satisfying ∇²Φ = 0 for r > 0
-  -- The Poisson equation ∇²Φ = 4πρ with ρ = δ³(r) is distributional at origin
-  -- For r > 0: deriv²(-1/r) + (2/r)deriv(-1/r) = 2/r³ - 2/r³ = 0 ≠ 4π/r²
-  -- This theorem statement is physically incorrect for r > 0
-  sorry  -- TODO: Statement error - exterior solution has ∇²Φ = 0, not 4πρ; needs distributional treatment
+  classical
+  have hr_ne : (r : ℝ) ≠ 0 := ne_of_gt hr
+  -- First derivative: d(-1/r)/dr = 1/r²
+  have h_inv : HasDerivAt (fun r : ℝ => r⁻¹) (-(r)⁻²) r := by
+    simpa using (Real.hasDerivAt_inv hr_ne)
+  have h_phi_deriv : HasDerivAt Phi_GR (r⁻²) r := by
+    simpa [Phi_GR, mul_comm, mul_left_comm, mul_assoc] using h_inv.const_mul (-1)
+  have h_deriv_eq : deriv Phi_GR r = r⁻² := h_phi_deriv.deriv
+  -- Second derivative: d/dr (1/r²) = -2/r³
+  have h_second : HasDerivAt (fun r : ℝ => r⁻²) (-2 * r⁻³) r := by
+    simpa using (Real.hasDerivAt_zpow hr_ne (-2))
+  have h_second_eq : deriv (fun r : ℝ => r⁻²) r = -2 * r⁻³ := h_second.deriv
+  -- Radial Poisson expression
+  have h_laplacian : deriv (deriv Phi_GR) r + (2 / r) * deriv Phi_GR r = 0 := by
+    have h₁ : deriv Phi_GR r = 1 / r ^ 2 := by
+      simpa [Real.zpow_neg, Real.zpow_one, inv_pow] using h_deriv_eq
+    have h₂ : deriv (fun r : ℝ => r⁻²) r = -2 / r ^ 3 := by
+      simpa [Real.zpow_neg, Real.zpow_one, inv_pow] using h_second_eq
+    have hterm : (2 / r) * (1 / r ^ 2) = 2 / r ^ 3 := by
+      field_simp [hr_ne, hr_sq, hr_cu]
+    simp [RadialPoissonPhi, rho, w, Phi_GR, h₁, h₂, hterm]
+  simp [RadialPoissonPhi, rho, w, Phi_GR, h_deriv_eq, h_laplacian]
 
 end Perturbation
 end Relativity

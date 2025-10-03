@@ -112,7 +112,7 @@ theorem metric_inverse_identity_minkowski :
     intro ν; by_cases hνρ : ν = ρ <;> simp [inverse_metric, hνρ]
   have hsum :
     Finset.sum (Finset.univ : Finset (Fin 4)) (fun ν =>
-      (if μ = ν then (if μ.val = 0 then -1 else 1) else 0) *
+      (if μ = ν then (if μ.val = 0 then (-1 : ℝ) else 1) else 0) *
       (if ν = ρ then (if ρ.val = 0 then -1 else 1) else 0))
     = if μ = ρ then 1 else 0 := by
     classical
@@ -120,9 +120,9 @@ theorem metric_inverse_identity_minkowski :
     · subst hμρ
       -- sum over ν: only ν = μ contributes: (±1)*(±1) = 1
       have : Finset.sum (Finset.univ : Finset (Fin 4)) (fun ν =>
-        (if μ = ν then (if μ.val = 0 then -1 else 1) else 0) *
+        (if μ = ν then (if μ.val = 0 then (-1 : ℝ) else 1) else 0) *
         (if ν = μ then (if μ.val = 0 then -1 else 1) else 0))
-        = (if μ.val = 0 then -1 else 1) * (if μ.val = 0 then -1 else 1) := by
+        = (if μ.val = 0 then (-1 : ℝ) else 1) * (if μ.val = 0 then -1 else 1) := by
 
         have : (Finset.univ : Finset (Fin 4)) = {μ} ∪ (Finset.univ.erase μ) := by
           simp
@@ -130,31 +130,44 @@ theorem metric_inverse_identity_minkowski :
         -- Shortcut: use Finset.filter
         have honly :
           Finset.sum (Finset.univ.filter (fun ν => ν = μ)) (fun ν =>
-            (if μ = ν then (if μ.val = 0 then -1 else 1) else 0) *
+            (if μ = ν then (if μ.val = 0 then (-1 : ℝ) else 1) else 0) *
             (if ν = μ then (if μ.val = 0 then -1 else 1) else 0))
-          = (if μ.val = 0 then -1 else 1) * (if μ.val = 0 then -1 else 1) := by
+          = (if μ.val = 0 then (-1 : ℝ) else 1) * (if μ.val = 0 then -1 else 1) := by
           simp
         have hzero :
           Finset.sum (Finset.univ.filter (fun ν => ν ≠ μ)) (fun ν =>
-            (if μ = ν then (if μ.val = 0 then -1 else 1) else 0) *
+            (if μ = ν then (if μ.val = 0 then (-1 : ℝ) else 1) else 0) *
             (if ν = μ then (if μ.val = 0 then -1 else 1) else 0)) = 0 := by
           simp
         simpa [Finset.sum_filter_add_sum_filter_not] using by
           simpa [honly, hzero]
 
-      have : (if μ.val = 0 then -1 else 1) * (if μ.val = 0 then -1 else 1) = 1 := by
+      have : (if μ.val = 0 then (-1 : ℝ) else 1) * (if μ.val = 0 then -1 else 1) = 1 := by
         by_cases h0 : μ.val = 0 <;> simp [h0]
-      simpa [hμρ, this]
+      -- After subst hμρ, we have μ = ρ, so the goal becomes "1 = 1"
+      by_cases h0 : μ.val = 0
+      · simp [h0]
+      · simp [h0]
     · -- μ ≠ ρ; all terms zero because cannot satisfy both μ=ν and ν=ρ
       have : Finset.sum (Finset.univ : Finset (Fin 4)) (fun ν =>
-        (if μ = ν then (if μ.val = 0 then -1 else 1) else 0) *
+        (if μ = ν then (if μ.val = 0 then (-1 : ℝ) else 1) else 0) *
         (if ν = ρ then (if ρ.val = 0 then -1 else 1) else 0)) = 0 := by
         -- Only ν=μ yields first factor ≠0; but then second requires μ=ρ, which is false
         have : (if μ = ρ then 1 else 0) = 0 := by simp [hμρ]
         -- More directly, sum has at most one nonzero term and it is zero
         simp [hμρ]
-      simpa [hμρ] using this
-  simpa [hdiag_g, hdiag_inv, kronecker, hsum]
+      rw [this]
+      simp [hμρ]
+  -- Final step: rewrite the sum using the diagonal forms and apply hsum
+  trans (Finset.sum (Finset.univ : Finset (Fin 4)) (fun ν =>
+            (if μ = ν then (if μ.val = 0 then (-1 : ℝ) else 1) else 0) *
+            (if ν = ρ then (if ρ.val = 0 then -1 else 1) else 0)))
+  · congr 1
+    funext ν
+    rw [hdiag_g ν, hdiag_inv ν]
+  · trans (if μ = ρ then 1 else 0)
+    · exact hsum
+    · simp [kronecker]
 
 end Geometry
 end Relativity
