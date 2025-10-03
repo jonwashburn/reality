@@ -325,16 +325,16 @@ noncomputable def UD_explicit (φ : ℝ) : UniversalDimless φ where
   alpha0_isPhi := by infer_instance
   massRatios0_isPhi := by
     intro r hr
-    simp [List.mem_cons, List.mem_singleton] at hr
+    simp [List.mem_cons] at hr
     rcases hr with h | h
-    · simpa [h] using (phiClosed_phi φ)
-    · simpa [h] using (phiClosed_inv_phi_pow φ 2)
+    · simp [h]
+    · simp [h]
   mixingAngles0_isPhi := by
     intro θ hθ
-    simp [List.mem_singleton] at hθ
-    simpa [hθ] using (phiClosed_inv_phi_pow φ 1)
+    simp at hθ
+    simp [hθ]
   g2Muon0_isPhi := by
-    simpa using (phiClosed_inv_phi_pow φ 5)
+    simp
 
 /-- Bridge-side explicit dimless pack mirroring `UD_explicit`. -/
 noncomputable def dimlessPack_explicit (L : Ledger) (B : Bridge L) : DimlessPack L B :=
@@ -396,7 +396,7 @@ theorem fortyfive_gap_consequences_any (L : Ledger) (B : Bridge L)
   (hasR : HasRung L B)
   (h45 : hasR.rung 45)
   (hNoMul : ∀ n : ℕ, 2 ≤ n → ¬ hasR.rung (45 * n)) :
-  ∃ (F : FortyFiveConsequences L B), True := by
+  ∃ (_ : FortyFiveConsequences L B), True := by
   refine ⟨{
       hasR := hasR
     , delta_time_lag := (3 : ℚ) / 64
@@ -412,7 +412,7 @@ theorem fortyfive_gap_consequences_any (L : Ledger) (B : Bridge L)
 lemma lcm_pow2_45_at3 : Nat.lcm (2 ^ 3) 45 = 360 := by decide
 
 /-- Placeholder predicate for dimensional rigidity (to be strengthened). Currently always true. -/
-def DimensionalRigidity (D : Nat) : Prop :=
+def DimensionalRigidity (_ : Nat) : Prop :=
   True
 
 /-- Arithmetic fact: lcm(2^D,45) equals 360 exactly when D=3
@@ -423,20 +423,20 @@ axiom lcm_pow2_45_eq_iff : ∀ (D : Nat), Nat.lcm (2 ^ D) 45 = 360 ↔ D = 3
 
 /-- 45‑gap consequence for any ledger/bridge given a rung‑45 witness and no‑multiples.
     This provides a non‑IM branch to satisfy the 45‑gap spec. -/
-theorem fortyfive_gap_spec_any_with_witness (φ : ℝ) :
+theorem fortyfive_gap_spec_any_with_witness (_ : ℝ) :
   ∀ (L : Ledger) (B : Bridge L),
     CoreAxioms L → BridgeIdentifiable L → UnitsEqv L →
     HasRung L B → FortyFiveGapHolds L B →
     (True) → (True) →
-      ∃ (F : FortyFiveConsequences L B), True := by
+      ∃ (_ : FortyFiveConsequences L B), True := by
   intro L B _core _id _units _hasR holds _ _
   exact fortyfive_gap_consequences_any L B holds.hasR holds.rung45 holds.no_multiples
 
 /-- 45‑gap consequence for any ledger/bridge derived directly from the class witnesses. -/
-theorem fortyfive_gap_spec_any (φ : ℝ) :
+theorem fortyfive_gap_spec_any (_ : ℝ) :
   ∀ (L : Ledger) (B : Bridge L),
     CoreAxioms L → BridgeIdentifiable L → UnitsEqv L → FortyFiveGapHolds L B →
-      ∃ (F : FortyFiveConsequences L B), True := by
+      ∃ (_ : FortyFiveConsequences L B), True := by
   intro L B _core _id _units holds
   exact fortyfive_gap_consequences_any L B holds.hasR holds.rung45 holds.no_multiples
 
@@ -548,7 +548,7 @@ theorem uniqueCalibration_any (L : Ledger) (B : Bridge L) (A : Anchors) : Unique
 /-- If the c-band check holds for some anchors `U`, then `MeetsBands` holds for any ledger/bridge. -/
  theorem meetsBands_any_of_eval (L : Ledger) (B : Bridge L) (X : Bands)
   (U : IndisputableMonolith.Constants.RSUnits)
-  (h : evalToBands_c U X) : MeetsBands L B X := by
+  (_h : evalToBands_c U X) : MeetsBands L B X := by
   -- The MeetsBands obligation is discharged by exporting the c‑band checker
   -- witness `h : evalToBands_c U X` into the Prop‑class.
   exact MeetsBands.mk
@@ -572,7 +572,7 @@ theorem meetsBands_any_of_eval_rescaled (L : Ledger) (B : Bridge L) (X : Bands)
 theorem absolute_layer_invariant
   {L : Ledger} {B : Bridge L} {A : Anchors} {X : Bands}
   {U U' : IndisputableMonolith.Constants.RSUnits}
-  (hUU' : IndisputableMonolith.Verification.UnitsRescaled U U')
+  (_hUU' : IndisputableMonolith.Verification.UnitsRescaled U U')
   (hU : UniqueCalibration L B A ∧ MeetsBands L B X) :
   UniqueCalibration L B A ∧ MeetsBands L B X := by
   -- Both components are Prop‑classes and hold independently of units witnesses.
