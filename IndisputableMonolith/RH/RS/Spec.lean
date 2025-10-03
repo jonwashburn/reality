@@ -423,6 +423,48 @@ theorem fortyfive_gap_consequences_any (L : Ledger) (B : Bridge L)
 /-- Arithmetic helper: lcm(2^3,45) = 360. -/
 lemma lcm_pow2_45_at3 : Nat.lcm (2 ^ 3) 45 = 360 := by decide
 
+/-- Helper: 2 and 45 are coprime. -/
+lemma gcd_2_45 : Nat.gcd 2 45 = 1 := by decide
+
+/-- Helper: 45 is odd. -/
+lemma odd_45 : Odd (45 : ℕ) := by
+  use 22
+  decide
+
+/-- Key lemma: gcd(2^k, 45) = 1 for any k.
+
+**Proof**: 45 = 9 × 5 = 3² × 5. Since 2 is coprime to both 3 and 5,
+any power of 2 is coprime to 45. -/
+lemma gcd_pow2_45 (k : ℕ) : Nat.gcd (2 ^ k) 45 = 1 := by
+  -- Use induction on k
+  induction k with
+  | zero =>
+    -- Base case: gcd(1, 45) = 1
+    simp [Nat.gcd_one_left]
+  | succ k ih =>
+    -- Inductive case: gcd(2^(k+1), 45) = gcd(2 * 2^k, 45)
+    -- Use gcd(a*b, c) = gcd(b, c) when gcd(a,c) = 1
+    have : 2 ^ (k + 1) = 2 * 2 ^ k := by ring
+    rw [this]
+    -- gcd(2 * 2^k, 45) = gcd(2^k, 45) when gcd(2, 45) = 1
+    have h2 : Nat.gcd 2 45 = 1 := gcd_2_45
+    -- Use the identity: gcd(a*b, c) related to gcd(a,c) and gcd(b,c)
+    -- When gcd(a,c) = 1, we have gcd(a*b, c) = gcd(b, c)
+    -- Use: gcd(a*b, c) = gcd(b, c) when Coprime a c
+    have hcoprime : Nat.Coprime 2 45 := by
+      rw [Nat.Coprime]
+      exact h2
+    -- When Coprime a c, gcd(a*b, c) = gcd(b, c)
+    -- Use commutativity and the fact that gcd distributes over coprime factors
+    have : Nat.gcd (2 * 2^k) 45 = Nat.gcd (2^k) 45 := by
+      -- Prove directly: gcd(2*x, 45) = gcd(x, 45) * gcd(2, 45) when using gcd properties
+      -- Simpler: just compute the relationship via the identity
+      -- gcd(a*b, c) when Coprime a c can be handled via Euclid's algorithm
+      sorry  -- TODO: Find or prove gcd(coprime * x, y) = gcd(x, y)
+    calc Nat.gcd (2 * 2^k) 45
+        = Nat.gcd (2^k) 45 := this
+      _ = 1 := ih
+
 /-- Placeholder predicate for dimensional rigidity (to be strengthened). Currently always true. -/
 def DimensionalRigidity (_ : Nat) : Prop :=
   True
@@ -469,9 +511,7 @@ theorem lcm_pow2_45_eq_iff (D : Nat) : Nat.lcm (2 ^ D) 45 = 360 ↔ D = 3 := by
       have hlcm_mono : Nat.lcm (2^4) 45 ≤ Nat.lcm (2^(n+4)) 45 := by
         -- When coprime, lcm(a,b) = a*b, so lcm is monotone in a
         have h_gcd_4 : Nat.gcd (2^4) 45 = 1 := by decide
-        have h_gcd_n4 : Nat.gcd (2^(n+4)) 45 = 1 := by
-          -- gcd(2^k, odd) = 1 is standard
-          sorry  -- Provable: 2 coprime to 45 → 2^k coprime to 45
+        have h_gcd_n4 : Nat.gcd (2^(n+4)) 45 = 1 := gcd_pow2_45 (n+4)
         -- From gcd = 1 and gcd_mul_lcm, derive lcm = a * b
         have eq4 : Nat.lcm (2^4) 45 = (2^4) * 45 := by
           have hprod : Nat.gcd (2^4) 45 * Nat.lcm (2^4) 45 = (2^4) * 45 := Nat.gcd_mul_lcm (2^4) 45
@@ -494,7 +534,7 @@ theorem lcm_pow2_45_eq_iff (D : Nat) : Nat.lcm (2 ^ D) 45 = 360 ↔ D = 3 := by
           _ ≤ Nat.lcm (2^(n+4)) 45 := hlcm_mono
           _ = 360 := hlcm
       omega
-    
+
   · -- Reverse: D = 3 → lcm = 360
     intro hD
     subst hD
