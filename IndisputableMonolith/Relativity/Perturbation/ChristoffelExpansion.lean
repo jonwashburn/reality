@@ -28,7 +28,7 @@ noncomputable def linearized_christoffel
      partialDeriv_v2 (fun y => h.h y (fun i => if i.val = 0 then μ else ν)) σ x))
 
 /-- Christoffel expansion theorem: Γ[g₀+h] = Γ[g₀] + δΓ[h] + O(h²).
-    
+
     Axiomatized pending: correct inverse metric computation via MatrixBridge and explicit O(h²) bound.
     The expansion is standard first-order perturbation theory, but requires:
     1. Matrix representation of (g₀+h)⁻¹ via MatrixBridge.metricToMatrix and Neumann series

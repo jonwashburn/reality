@@ -99,12 +99,27 @@ theorem minkowskiMatrix_sq : minkowskiMatrix * minkowskiMatrix = 1 := by
 
 /-- η⁻¹ = η since η² = I.
     Proof: If A² = I and A is invertible, then A⁻¹ = A.
-    From A·A = I, multiply both sides by A⁻¹ on left: A⁻¹·A·A = A⁻¹·I
-    Simplify: I·A = A⁻¹, hence A = A⁻¹.
+    From A·A = I, we have A is its own inverse.
 -/
 theorem minkowskiMatrix_inv : minkowskiMatrix⁻¹ = minkowskiMatrix := by
-  -- Placeholder: will close via inverse uniqueness after det-bound is completed
-  sorry
+  have hsq := minkowskiMatrix_sq
+  have hdet := minkowskiMatrix_invertible
+  -- Direct proof: η is diagonal with entries ±1, so η⁻¹ is diagonal with same entries
+  ext i j
+  simp only [Matrix.inv_def, Matrix.diagonal_apply, minkowskiMatrix]
+  by_cases hij : i = j
+  · subst hij
+    -- Diagonal case: need to show (adjugate / det) equals original
+    -- For diagonal matrix, adjugate is also diagonal
+    -- Since det(η) = -1 and η_ii ∈ {-1, 1}, we have η⁻¹_ii = η_ii / det = η_ii / (-1) for special structure
+    -- Actually: for η² = I, we know η⁻¹ = η directly
+    -- Use the fact that η * η = I implies η is self-inverse
+    have h_self_inv : minkowskiMatrix * minkowskiMatrix = 1 := hsq
+    -- The inverse of a matrix M is the unique matrix N such that M * N = I
+    -- We have M * M = I, so M is its own inverse
+    sorry -- Need involutive matrix theorem: M² = I ∧ det(M) ≠ 0 → M⁻¹ = M
+  · -- Off-diagonal case: both sides are 0
+    simp [hij]
 
 /-- Product of 4 bounded terms is bounded by b⁴. -/
 lemma prod_four_bound (f : Fin 4 → ℝ) (b : ℝ) (hb : 0 ≤ b) (h : ∀ i, |f i| ≤ b) :
@@ -163,22 +178,46 @@ lemma trace_bound (A : Matrix (Fin 4) (Fin 4) ℝ) (ε : ℝ)
     Strategy: use Leibniz formula det(I+A) = Σ_σ sign(σ) ∏_i (I+A)_{i,σ(i)}.
     - σ = id: contributes (1 + A₀₀)(1 + A₁₁)(1 + A₂₂)(1 + A₃₃) = 1 + tr(A) + O(ε²)
     - Non-identity σ: each contributes at least one off-diagonal A entry, so O(ε²)
-    
+
     For ε ≤ 0.1, we get |det(I+A) - 1| ≤ 4ε + 16ε².
 -/
-axiom det_perturbation_bound (A : Matrix (Fin 4) (Fin 4) ℝ) (ε : ℝ)
+theorem det_perturbation_bound (A : Matrix (Fin 4) (Fin 4) ℝ) (ε : ℝ)
   (h_ε_pos : 0 < ε) (h_ε_small : ε ≤ 0.1)
   (h_bounded : ∀ i j, |A i j| ≤ ε) :
-  |(1 + A).det - 1| ≤ 4 * ε + 16 * ε ^ 2
-  
-/-  Proof sketch (to be completed):
-    Use Leibniz formula det(I+A) = Σ_σ sign(σ) ∏_i (I+A)_{i,σ(i)}.
-    - σ = id contributes: ∏(1+A_ii) = 1 + tr(A) + O(ε²) where O(ε²) ≤ 7ε² (from diag_prod_linear_remainder_bound)
-    - Non-identity σ with k moved points contributes O(ε^k) from k off-diagonal entries
-    - Count in S₄: 6 transpositions (O(ε²)), 8 3-cycles (O(ε³)), 3 double-trans + 6 4-cycles (O(ε⁴))
-    - Total non-id contribution ≤ 6·(1+ε)²ε² + 8·(1+ε)ε³ + 9·ε⁴ ≈ 6.66ε² for ε=0.1
-    - Combined: |det(I+A) - 1| ≤ |tr(A)| + 7ε² + 6.66ε² ≤ 4ε + 14ε² < 4ε + 16ε²
--/
+  |(1 + A).det - 1| ≤ 4 * ε + 16 * ε ^ 2 := by
+  -- Use the binomial expansion for det
+  -- det(I + A) = Σ_σ sign(σ) ∏_i (I+A)_{i,σ(i)}
+  -- Split: σ=id gives diagonal product, σ≠id gives off-diagonal contributions
+
+  -- Step 1: Bound det(I+A) from above
+  have hdet_upper : (1 + A).det ≤ (1 + ε) ^ 4 := by
+    sorry -- Each Leibniz term ≤ (1+ε)⁴; sum of signs doesn't all add (alternating), so crude bound
+
+  -- Step 2: Bound det(I+A) from below (needs more care since cancellations happen)
+  -- For now use: det(I+A) ≥ -(1+ε)⁴ (worst case all terms negative)
+  have hdet_lower : (1 + A).det ≥ -(1 + ε) ^ 4 := by
+    sorry -- Similar Leibniz bound argument
+
+  -- Step 3: Combine to bound |det(I+A) - 1|
+  have habs_bound : |(1 + A).det| ≤ (1 + ε) ^ 4 := by
+    have : -(1 + ε) ^ 4 ≤ (1 + A).det ∧ (1 + A).det ≤ (1 + ε) ^ 4 := ⟨hdet_lower, hdet_upper⟩
+    exact abs_le.mpr this
+
+  -- Step 4: Use |det(I+A) - 1| ≤ |det(I+A)| + 1 ≤ (1+ε)⁴ + 1, but this is too loose
+  -- Better: |(1+A).det - 1| ≤ (1+ε)⁴ - 1 = 4ε + 6ε² + 4ε³ + ε⁴
+  calc |(1 + A).det - 1|
+      ≤ (1 + ε) ^ 4 - 1 := by
+        sorry -- Use det bounds and triangle inequality
+    _ = 4 * ε + 6 * ε ^ 2 + 4 * ε ^ 3 + ε ^ 4 := by ring
+    _ ≤ 4 * ε + 16 * ε ^ 2 := by
+        -- For ε ≤ 0.1: need 6ε² + 4ε³ + ε⁴ ≤ 16ε²
+        -- i.e., 4ε³ + ε⁴ ≤ 10ε²
+        have h_cubic : 4 * ε ^ 3 ≤ 10 * ε ^ 2 := by
+          have : ε ≤ 0.1 := h_ε_small
+          nlinarith [sq_nonneg ε, h_ε_pos]
+        have h_quartic : ε ^ 4 ≤ ε ^ 2 := by
+          nlinarith [h_ε_small, sq_nonneg ε]
+        linarith
 
 /-- Identity-permutation contribution: For diagonal entries a₀..a₃ with |aᵢ| ≤ ε,
     the non-linear remainder of ∏ᵢ (1 + aᵢ) after removing 1 and the linear part is bounded. -/
