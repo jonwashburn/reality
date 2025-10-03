@@ -455,12 +455,40 @@ lemma gcd_pow2_45 (k : ℕ) : Nat.gcd (2 ^ k) 45 = 1 := by
       rw [Nat.Coprime]
       exact h2
     -- When Coprime a c, gcd(a*b, c) = gcd(b, c)
-    -- Use commutativity and the fact that gcd distributes over coprime factors
+    -- Prove via: gcd(a*b, c) divides gcd(b,c) and vice versa
     have : Nat.gcd (2 * 2^k) 45 = Nat.gcd (2^k) 45 := by
-      -- Prove directly: gcd(2*x, 45) = gcd(x, 45) * gcd(2, 45) when using gcd properties
-      -- Simpler: just compute the relationship via the identity
-      -- gcd(a*b, c) when Coprime a c can be handled via Euclid's algorithm
-      sorry  -- TODO: Find or prove gcd(coprime * x, y) = gcd(x, y)
+      apply Nat.dvd_antisymm
+      · -- gcd(2*2^k, 45) ∣ gcd(2^k, 45)
+        -- Any common divisor of 2*2^k and 45 divides 2^k (since it divides 2*2^k and is coprime to 2)
+        -- and divides 45, so it divides gcd(2^k, 45)
+        apply Nat.dvd_gcd
+        · -- gcd(2*2^k, 45) ∣ 2^k
+          -- Strategy: gcd(2*2^k, 45) divides both 2*2^k and 45
+          -- Since gcd(2,45)=1, any divisor of 45 is coprime to 2
+          -- So gcd(2*2^k, 45) is coprime to 2
+          -- But gcd(2*2^k, 45) ∣ 2*2^k, so gcd(2*2^k,45) ∣ 2^k (can't have factor of 2)
+          have hdvd_prod : Nat.gcd (2 * 2^k) 45 ∣ 2 * 2^k := Nat.gcd_dvd_left (2 * 2^k) 45
+          have hdvd_45 : Nat.gcd (2 * 2^k) 45 ∣ 45 := Nat.gcd_dvd_right (2 * 2^k) 45
+          -- gcd(2,45)=1 means 2 and 45 share no prime factors
+          -- So any d∣45 has gcd(d,2)=1
+          have hcoprime_div : Nat.Coprime (Nat.gcd (2 * 2^k) 45) 2 := by
+            -- Any divisor of 45 is coprime to 2
+            have : Nat.Coprime 45 2 := hcoprime.symm
+            exact Nat.Coprime.coprime_dvd_left hdvd_45 this
+          -- Now: gcd(2*2^k,45) ∣ 2*2^k and Coprime gcd(2*2^k,45) 2
+          -- By Euclid's lemma: if Coprime d a and d∣a*b, then d∣b
+          exact Nat.Coprime.dvd_of_dvd_mul_left hcoprime_div hdvd_prod
+        · -- gcd(2*2^k, 45) ∣ 45
+          exact Nat.gcd_dvd_right (2 * 2^k) 45
+      · -- gcd(2^k, 45) ∣ gcd(2*2^k, 45)
+        apply Nat.dvd_gcd
+        · -- gcd(2^k, 45) ∣ 2*2^k
+          have : Nat.gcd (2^k) 45 ∣ 2^k := Nat.gcd_dvd_left (2^k) 45
+          calc Nat.gcd (2^k) 45
+              ∣ 2^k := this
+            _ ∣ 2 * 2^k := Nat.dvd_mul_left (2^k) 2
+        · -- gcd(2^k, 45) ∣ 45
+          exact Nat.gcd_dvd_right (2^k) 45
     calc Nat.gcd (2 * 2^k) 45
         = Nat.gcd (2^k) 45 := this
       _ = 1 := ih
