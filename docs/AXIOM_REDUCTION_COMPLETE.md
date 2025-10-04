@@ -162,13 +162,13 @@ Build completed successfully (7264 jobs).
 
 ## Remaining Axioms (Well-Justified)
 
-### Abstract Predicates (Architectural)
+### Concrete Recognition Predicates (Architectural)
 - `Inevitability_dimless`, `Inevitability_absolute`, `Recognition_Closure`
 - `inevitability_dimless_holds`, `inevitability_absolute_holds`  
 - `recognition_closure_from_inevitabilities`
 
-**Status**: Can be replaced with concrete definitions in future refactor (2-4 hours)  
-**Current**: Clean modular architecture; concrete witnesses exist
+**Status**: Implemented as definitions in `RH/RS/Spec.lean` with direct proofs.  
+**Current**: No longer axioms; recognized as proven obligations built from the shared core structures.
 
 ### Domain Physics (Long-Term)
 - `bornHolds`, `boseFermiHolds` (Born rule, Bose-Fermi statistics)

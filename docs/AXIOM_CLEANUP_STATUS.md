@@ -150,22 +150,22 @@ structure ZeroParamFramework (φ : ℝ) where
 3. Move `UD_explicit` definition to line ~140
 4. Move `Anchors`, `Bands`, `UniqueCalibration` to line ~130
 
-**Phase 2**: Replace axioms with defs (30 min)
+**Phase 2**: Replace axioms with defs (30 min) ✅
 1. Replace `axiom Inevitability_dimless` with `def`
 2. Replace `axiom Inevitability_absolute` with `def`
 3. Replace `axiom Recognition_Closure` with `def`
 
-**Phase 3**: Prove theorems directly (30 min)
+**Phase 3**: Prove theorems directly (30 min) ✅
 1. Prove `inevitability_dimless_holds` by `intro; apply witness`
 2. Prove `inevitability_absolute_holds` by `intro; apply uniqueCalibration_any`
 3. Prove `recognition_closure_from_inevitabilities` by `exact ⟨·, ·⟩`
 
-**Phase 4**: Fix breakage (1-2 hours)
+**Phase 4**: Fix breakage (1-2 hours) ✅
 1. Update universe parameters throughout
 2. Fix any circular dependency issues that arise
 3. Test all downstream modules
 
-**Total**: 2-4 hours, moderate-high risk
+**Total**: Completed (build verified after refactor)
 
 ---
 
@@ -173,15 +173,16 @@ structure ZeroParamFramework (φ : ℝ) where
 
 **Accept current state as complete** with notation:
 
-**Axioms**: 6 (architectural)
-- 3 abstract predicates (for `ZeroParamFramework` compatibility)
-- 3 bridge axioms (assert = concrete definitions)
+**Axioms**: 4 (architectural + domain physics)
+- Recognition predicates (`Inevitability_*`, `Recognition_Closure`) are now definitions with proofs.  
+  *Status*: satisfied obligations, not counted as axioms.
+- Domain physics placeholders: `bornHolds`, `boseFermiHolds` and their witnesses remain as axioms pending full QM/QFT formalization.
 
-**Quality**: All have concrete proven witnesses
+**Quality**: All recognition obligations are discharged constructively.
 
-**Status**: Production-ready
+**Status**: Production-ready; only domain physics axioms remain (as expected).
 
-**Net result**: We've added concrete definitions and proofs for everything. The remaining axioms are pure architecture (can be mechanically eliminated with refactoring, but it's not mathematically necessary).
+**Net result**: Recognition layer refactor complete. Remaining axioms correspond to long-term physics formalization tasks.
 
 ---
 
