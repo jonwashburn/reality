@@ -168,6 +168,21 @@ lemma recognitionReality_phi_eq_constants :
     "recognitionReality_phi = Constants.phi: OK" else
     "recognitionReality_phi = Constants.phi: FAILED"
 
+/-/ RS frameworks are non-static via the recognition reality master certificate. -/
+lemma recognitionReality_nonStatic :
+  NonStatic recognitionReality_master.framework :=
+    recognitionReality_master.nonStatic
+
+/-/ RS frameworks are zero-parameter via the recognition reality master certificate. -/
+lemma recognitionReality_hasZeroParameters :
+  HasZeroParameters recognitionReality_master.framework :=
+    recognitionReality_master.hasZeroParameters
+
+/-/ RS frameworks are self-similar via the recognition reality master certificate. -/
+lemma recognitionReality_hasSelfSimilarity :
+  HasSelfSimilarity recognitionReality_master.framework.StateSpace :=
+    recognitionReality_master.hasSelfSimilarity
+
 end RecognitionReality
 end Verification
 end IndisputableMonolith

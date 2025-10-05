@@ -32,5 +32,16 @@ theorem cone_bound_export
 
 end
 
+/-- Cone entropy bound: Entropy in a cone is bounded by area over 4 λ_rec². -/
+theorem cone_entropy_bound {α : Type _} (cone : LightCone α) (area : ℝ) :
+  entropy cone ≤ area / (4 * λ_rec^2) := by
+  -- Proof sketch: Voxel count in cone ~ φ^n, each with bit-cost ln φ
+  -- Sum to entropy S ~ (area / λ_rec^2) * ln φ
+  -- But holographic principle caps at area/4, so adjust constant
+  -- Full proof would use PhiNecessity.self_similarity_forces_phi
+  have hφ : Constants.phi^2 = Constants.phi + 1 := PhiSupport.phi_squared
+  -- Assume voxel density and cost per voxel
+  sorry  -- TODO: Complete with ledger integration
+
 end ConeExport
 end IndisputableMonolith

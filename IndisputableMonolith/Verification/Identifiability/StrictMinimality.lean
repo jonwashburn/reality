@@ -1,9 +1,12 @@
 import Mathlib
+import IndisputableMonolith.RH.RS.Framework
 import IndisputableMonolith.Verification.Identifiability.Costs
 
 namespace IndisputableMonolith
 namespace Verification
 namespace Identifiability
+
+open IndisputableMonolith.RH.RS
 
 /-! This file depends on `Costs`/`Observations` which are classical-fenced.
     No global `open Classical`; we remain within the fenced APIs. -/

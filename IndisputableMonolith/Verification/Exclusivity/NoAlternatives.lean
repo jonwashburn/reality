@@ -1,5 +1,6 @@
 import Mathlib
 import IndisputableMonolith.RH.RS.Spec
+import IndisputableMonolith.RH.RS.Framework
 -- import IndisputableMonolith.Verification.Reality  -- BLOCKED: depends on URCGenerators
 -- import IndisputableMonolith.Verification.Exclusivity  -- BLOCKED: depends on Identifiability
 import IndisputableMonolith.Verification.Exclusivity.Framework
@@ -479,9 +480,7 @@ theorem no_alternative_frameworks (F : PhysicsFramework)
     closure := by
       -- Use global Recognition_Closure shim
       exact RH.RS.recognition_closure_any φ,
-    zeroKnobs := by
-      -- By construction, this framework has zero knobs
-      rfl
+    zeroKnobs := 0
   }
 
   -- Step 8: Provide all components for the clean return type

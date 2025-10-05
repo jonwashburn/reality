@@ -1,6 +1,7 @@
 import Mathlib
 import Mathlib.CategoryTheory.Equivalence
 import IndisputableMonolith.RH.RS.Spec
+import IndisputableMonolith.RH.RS.Framework
 import IndisputableMonolith.Verification.Exclusivity
 import IndisputableMonolith.URCAdapters.Reports
 

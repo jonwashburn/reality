@@ -1,5 +1,6 @@
 import Mathlib
 import IndisputableMonolith.RH.RS.Spec
+import IndisputableMonolith.RH.RS.Framework
 
 namespace IndisputableMonolith
 namespace Verification

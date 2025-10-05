@@ -422,6 +422,14 @@ example : (Real.sqrt 2)^2 ≠ Real.sqrt 2 + 1 := by
          _ = 2 := h.symm
   exact (lt_irrefl _ this)
 
+theorem self_similarity_from_discrete (StateSpace : Type) [Inhabited StateSpace]
+  (hDiscrete : ∃ levels : ℤ → StateSpace, Function.Surjective levels)
+  (hConservation : True) : -- Placeholder for conservation
+  HasSelfSimilarity StateSpace := by
+  have φ := Constants.phi
+  -- Construct scaling relation from levels
+  sorry  -- Complete proof
+
 end PhiNecessity
 end Necessity
 end Verification

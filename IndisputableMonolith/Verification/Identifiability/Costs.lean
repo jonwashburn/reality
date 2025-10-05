@@ -1,9 +1,12 @@
 import Mathlib
+import IndisputableMonolith.RH.RS.Framework
 import IndisputableMonolith.Verification.Identifiability.Observations
 
 namespace IndisputableMonolith
 namespace Verification
 namespace Identifiability
+
+open IndisputableMonolith.RH.RS
 
 /-! Classical gate (choice-dependent): this file uses `UD_explicit` and
     `observe` which depend on classical choice upstream. We fence any
@@ -25,12 +28,15 @@ lemma add_eq_zero_iff_of_nonneg {a b : ℝ}
   (ha : 0 ≤ a) (hb : 0 ≤ b) : a + b = 0 ↔ a = 0 ∧ b = 0 := by
   constructor
   · intro h
+    have hsum : b = -a := eq_neg_of_add_eq_zero_right h
     have ha_le : a ≤ 0 := by
-      have := le_add_of_nonneg_right hb
-      simpa [h] using this
+      have : -b ≤ 0 := neg_nonpos.mpr hb
+      calc a = -b := by simpa [hsum]
+           _ ≤ 0 := this
     have hb_le : b ≤ 0 := by
-      have := le_add_of_nonneg_left ha
-      simpa [h] using this
+      have : -a ≤ 0 := neg_nonpos.mpr ha
+      calc b = -a := hsum
+           _ ≤ 0 := this
     exact ⟨le_antisymm ha_le ha, le_antisymm hb_le hb⟩
   · rintro ⟨ha0, hb0⟩
     simp [ha0, hb0]
@@ -81,11 +87,12 @@ noncomputable def defaultCost (φ : ℝ) (obs : ObservedLedger φ) : ℝ :=
   + l2 obs.g2Muon U.g2Muon0
 
 lemma defaultCost_nonneg (φ : ℝ) (obs : ObservedLedger φ) : 0 ≤ defaultCost φ obs := by
-  have := l2_nonneg obs.alpha (UD_explicit φ).alpha0
+  have ha := l2_nonneg obs.alpha (UD_explicit φ).alpha0
   have hb := listPenalty_nonneg obs.massRatios (UD_explicit φ).massRatios0
   have hc := listPenalty_nonneg obs.mixingAngles (UD_explicit φ).mixingAngles0
-  have := l2_nonneg obs.g2Muon (UD_explicit φ).g2Muon0
-  simp [defaultCost, add_nonneg, *, add_comm, add_left_comm, add_assoc]
+  have hd := l2_nonneg obs.g2Muon (UD_explicit φ).g2Muon0
+  have hsum := add_nonneg (add_nonneg ha hb) (add_nonneg hc hd)
+  simpa [defaultCost, add_comm, add_left_comm, add_assoc] using hsum
 
 lemma defaultCost_eq_zero_iff (φ : ℝ) (obs : ObservedLedger φ) :
   defaultCost φ obs = 0 ↔
@@ -99,9 +106,9 @@ lemma defaultCost_eq_zero_iff (φ : ℝ) (obs : ObservedLedger φ) :
   have hd := l2_nonneg obs.g2Muon (UD_explicit φ).g2Muon0
   constructor
   · intro h
-    have := (add_eq_zero_iff_of_nonneg (add_nonneg ha hb) (add_nonneg hc hd)).mp
+    have hsum := (add_eq_zero_iff_of_nonneg (add_nonneg ha hb) (add_nonneg hc hd)).mp
       (by simpa [defaultCost, add_comm, add_left_comm, add_assoc] using h)
-    rcases this with ⟨hsum1, hsum2⟩
+    rcases hsum with ⟨hsum1, hsum2⟩
     have hαβ := (add_eq_zero_iff_of_nonneg ha hb).mp hsum1
     have hγδ := (add_eq_zero_iff_of_nonneg hc hd).mp hsum2
     rcases hαβ with ⟨hα0, hβ0⟩
@@ -112,7 +119,7 @@ lemma defaultCost_eq_zero_iff (φ : ℝ) (obs : ObservedLedger φ) :
     have hδ := (l2_eq_zero_iff obs.g2Muon (UD_explicit φ).g2Muon0).mp hδ0
     exact ⟨hα, hβ, hγ, hδ⟩
   · rintro ⟨hα, hβ, hγ, hδ⟩
-    simp [defaultCost, hα, hβ, hγ, hδ, listPenalty_eq_zero_iff]
+    simp [defaultCost, hα, hβ, hγ, hδ, (listPenalty_eq_zero_iff _ _).mpr rfl, (l2_eq_zero_iff _ _).mpr rfl]
 
 noncomputable def costOf (φ : ℝ) (F : ZeroParamFramework φ) : ℝ :=
   defaultCost φ (observe φ F)
@@ -154,11 +161,11 @@ lemma observe_eq_ud_of_cost_zero (φ : ℝ) (F : ZeroParamFramework φ)
 
 lemma obs_equal_implies_cost_eq (φ : ℝ) {F G : ZeroParamFramework φ}
   (hObs : ObsEqual φ F G) : costOf φ F = costOf φ G := by
-  unfold costOf
-  simpa [hObs]
+  unfold costOf ObsEqual at *
+  simp [hObs]
+
+end  -- noncomputable classical fence
 
 end Identifiability
 end Verification
 end IndisputableMonolith
-
-end  -- noncomputable classical fence

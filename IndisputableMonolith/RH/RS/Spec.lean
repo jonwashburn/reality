@@ -10,6 +10,9 @@ import IndisputableMonolith.Constants.Alpha
 import IndisputableMonolith.Patterns
 -- import IndisputableMonolith.Quantum
 -- import IndisputableMonolith.Constants.KDisplay
+import IndisputableMonolith.RH.RS.Witness.Core
+
+open IndisputableMonolith.RH.RS.Witness
 
 namespace IndisputableMonolith
 namespace RH
@@ -79,12 +82,11 @@ def eightTickWitness : Prop :=
 theorem eightTick_from_TruthCore : eightTickWitness :=
   IndisputableMonolith.Patterns.period_exactly_8
 
-/-- Local proofs temporarily axiomatized pending module availability. -/
-axiom bornHolds : Prop
-axiom boseFermiHolds : Prop
+@[simp] def bornHolds : Prop := Witness.bornHolds
+@[simp] def boseFermiHolds : Prop := Witness.boseFermiHolds
 
-axiom born_from_TruthCore : bornHolds
-axiom boseFermi_from_TruthCore : boseFermiHolds
+@[simp] theorem born_from_TruthCore : bornHolds := Witness.born_from_TruthCore
+@[simp] theorem boseFermi_from_TruthCore : boseFermiHolds := Witness.boseFermi_from_TruthCore
 
 noncomputable def UD_explicit (φ : ℝ) : UniversalDimless φ :=
 { alpha0 := IndisputableMonolith.Constants.alpha
