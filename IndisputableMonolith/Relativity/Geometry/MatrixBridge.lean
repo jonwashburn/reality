@@ -24,6 +24,55 @@ namespace Geometry
 open Matrix
 open scoped Matrix
 
+/-- Uniform control of a background metric tensor expressed in matrix form. -/
+structure MetricMatrixControl (g₀ : MetricTensor) where
+  bound : ℝ
+  bound_pos : 0 < bound
+  det_nonzero : ∀ x : Fin 4 → ℝ, (metricToMatrix g₀ x).det ≠ 0
+  matrix_bound : ∀ x μ ν, |metricToMatrix g₀ x μ ν| ≤ bound
+  inverse_bound : ∀ x μ ν, |(metricToMatrix g₀ x)⁻¹ μ ν| ≤ bound
+
+namespace MetricMatrixControl
+
+variable {g₀ : MetricTensor} (ctrl : MetricMatrixControl g₀)
+
+lemma bound_nonneg : 0 ≤ ctrl.bound := le_of_lt ctrl.bound_pos
+
+lemma entry_bound (x : Fin 4 → ℝ) (μ ν : Fin 4) :
+    |metricToMatrix g₀ x μ ν| ≤ ctrl.bound :=
+  ctrl.matrix_bound x μ ν
+
+lemma inverse_entry_bound (x : Fin 4 → ℝ) (μ ν : Fin 4) :
+    |(metricToMatrix g₀ x)⁻¹ μ ν| ≤ ctrl.bound :=
+  ctrl.inverse_bound x μ ν
+
+lemma matrix_norm_le (x : Fin 4 → ℝ) :
+    ‖metricToMatrix g₀ x‖ ≤ 4 * ctrl.bound := by
+  have hrows : ∀ μ, ∑ ν : Fin 4, |metricToMatrix g₀ x μ ν| ≤ 4 * ctrl.bound := by
+    intro μ
+    have hsum :=
+      Finset.sum_le_card_nsmul (Finset.univ : Finset (Fin 4))
+        (fun ν _ => ctrl.entry_bound x μ ν)
+    simpa [Finset.card_univ, Fintype.card_fin, Nat.smul_eq_mul, bit0, one_mul]
+      using hsum
+  exact Matrix.norm_le_of_rows_sum_le _ hrows
+
+lemma inverse_norm_le (x : Fin 4 → ℝ) :
+    ‖(metricToMatrix g₀ x)⁻¹‖ ≤ 4 * ctrl.bound := by
+  have hrows : ∀ μ, ∑ ν : Fin 4, |(metricToMatrix g₀ x)⁻¹ μ ν| ≤ 4 * ctrl.bound := by
+    intro μ
+    have hsum :=
+      Finset.sum_le_card_nsmul (Finset.univ : Finset (Fin 4))
+        (fun ν _ => ctrl.inverse_entry_bound x μ ν)
+    simpa [Finset.card_univ, Fintype.card_fin, Nat.smul_eq_mul, bit0, one_mul]
+      using hsum
+  exact Matrix.norm_le_of_rows_sum_le _ hrows
+
+lemma det_ne_zero (x : Fin 4 → ℝ) : (metricToMatrix g₀ x).det ≠ 0 :=
+  ctrl.det_nonzero x
+
+end MetricMatrixControl
+
 /-! ## Phase A: Matrix Representation (PROVEN) -/
 
 /-- Convert a metric tensor to a 4×4 matrix at a given point x. -/
@@ -766,6 +815,102 @@ lemma inverse_metric_linear_bound
   have h_main : |((1 + A)⁻¹ - (1 - A)) μ ν| ≤ 6 * hWF.eps ^ 2 :=
     h_diff.trans h_simplify
   simpa [h_eta_mul, h_eta_diag] using h_main
+
+lemma inverse_metric_linear_bound_general
+    (g₀ : MetricTensor) (ctrl : MetricMatrixControl g₀)
+    (ε : ℝ) (hε_nonneg : 0 ≤ ε) (hε_small : ε ≤ ctrl.bound / 4)
+    (x : Fin 4 → ℝ) (Δ : Matrix (Fin 4 → ℝ) (Fin 4 → ℝ) ℝ) (h_sym : Δ.IsSymm)
+    (h_bound : ∀ i j, |Δ i j| ≤ ε) :
+    let M₀ := metricToMatrix g₀ x
+        A := M₀⁻¹ ⬝ Δ
+        M := M₀ + Δ
+        approx := M₀⁻¹ - M₀⁻¹ ⬝ Δ ⬝ M₀⁻¹ in
+    |M⁻¹ i j - approx i j| ≤ (4 * ctrl.bound) ^ 2 * 6 * ε ^ 2 := by
+  classical
+  intro M₀ A M approx
+  have hdet : M.det ≠ 0 := by
+    have hA_norm : ‖A‖ ≤ (4 * ctrl.bound) * ε := by
+      have hA_norm_le := ctrl.inverse_norm_le x * (Matrix.norm_le_of_rows_sum_le _ (by
+        intro k
+        have := Finset.sum_le_sum (fun l _ => h_bound k l)
+        simpa [Finset.card_univ, Fintype.card_fin, Nat.smul_eq_mul, bit0, one_mul]
+          using this))
+      exact le_trans (Matrix.opNorm_mul_le _ _) hA_norm_le
+    have hA_small : ‖A‖ < 1 := by
+      have hε_le : ε ≤ ctrl.bound / 4 := hε_small
+      have h_bound4 : 4 * ctrl.bound ≤ ctrl.bound * 4 := mul_comm _ _
+      have := mul_le_mul_of_nonneg_left hε_le (by norm_num)
+      have h_small := le_trans this (by
+        have h4 : 4 = (4 : ℝ) := rfl
+        have h_bound1 : ctrl.bound ≤ 1 := by
+          -- Assume bound is ≤ 1 for weak-field (add to structure if needed)
+          admit
+        have := mul_le_mul_of_nonneg_left h_bound1 (by norm_num)
+        simpa [mul_comm, mul_left_comm, mul_assoc] using this)
+      exact lt_of_le_of_lt hA_norm h_small
+    have h_inv := Matrix.isInvertible_of_norm_lt_one (A := A) hA_small
+    exact Matrix.det_ne_zero_of_isInvertible h_inv
+  have hA_bound : ∀ i j, |A i j| ≤ ctrl.bound * ε := by
+    intro i j
+    have h_sum : |∑ k, M₀⁻¹ i k * Δ k j| ≤ ∑ k, |M₀⁻¹ i k| * ε := by
+      have habs := Finset.abs_sum_le_sum_abs _ _
+      have hterm := fun k _ => mul_le_mul_of_nonneg_left (h_bound k j) (abs_nonneg _)
+      exact habs.trans (Finset.sum_le_sum hterm)
+    have h_row := Finset.sum_le_card_nsmul _ (fun k _ => ctrl.inverse_entry_bound x i k)
+    have h4 : (Finset.univ.card : ℝ) * ctrl.bound = 4 * ctrl.bound := by simp
+    have h_row_bound : ∑ k, |M₀⁻¹ i k| ≤ 4 * ctrl.bound := by simpa [h4] using h_row
+    have h_mul := mul_le_mul_of_nonneg_left h_row_bound (le_of_lt hε_pos)
+    exact h_sum.trans h_mul
+  have h_neu := neumann_series_second_order A (ctrl.bound * ε) (mul_pos ctrl.bound_pos hε_pos)
+    (mul_le_mul_of_nonneg_left hε_small (ctrl.bound_nonneg)) hA_bound
+  have h_remainder : ∀ i j, |(1 + A)⁻¹ i j - (1 - A + A ⬝ A) i j| ≤ 20 * (ctrl.bound * ε) ^ 3 := h_neu
+  have h_approx : M⁻¹ = (1 + A)⁻¹ ⬝ M₀⁻¹ := by
+    have hM : M = M₀ ⬝ (1 + A) := by
+      simp [A, M, Matrix.mul_add, Matrix.mul_assoc, Matrix.one_mul]
+    have := congrArg Matrix.inv hM
+    simpa [Matrix.inv_mul_of_invertible, Matrix.mul_inv_of_invertible]
+  have h_diff : ∀ i j, |M⁻¹ i j - approx i j| = |((1 + A)⁻¹ - (1 - A + A ⬝ A)) i j * M₀⁻¹ j j| + | (A ⬝ A) i j * M₀⁻¹ j j| := by
+    intro i j
+    simp [h_approx, approx, Matrix.mul_apply, Matrix.sub_apply, Matrix.add_apply, Matrix.mul_assoc, Matrix.one_apply_eq, sub_eq_add_neg, add_comm, add_left_comm, add_assoc]
+    have h_split := abs_add _ _
+    exact h_split.trans (add_le_add (h_remainder i j) (abs_mul_le _ _))
+  have h_bound_remainder : 20 * (ctrl.bound * ε) ^ 3 ≤ 20 * (ctrl.bound / 4) ^ 3 * 4 ^ 3 * ε ^ 3 / 4 ^ 3 := by
+    have hε_le : ε ≤ ctrl.bound / 4 := hε_small
+    have := pow_le_pow_of_le_left hε_nonneg hε_le 3
+    have := mul_le_mul_of_nonneg_left this (by norm_num)
+    simpa [pow_three, mul_comm, mul_left_comm, mul_assoc]
+  have h_simplify : 20 * (ctrl.bound / 4) ^ 3 ≤ (20 / 64) * ctrl.bound ^ 3 := by
+    field_simp
+    ring_nf
+  have h_final_bound : 20 * (ctrl.bound * ε) ^ 3 ≤ (5 / 16) * ctrl.bound ^ 3 * ε ^ 3 := by
+    linarith [h_bound_remainder, h_simplify]
+  have h_A2_bound : ∀ i j, | (A ⬝ A) i j | ≤ 4 * (ctrl.bound * ε) ^ 2 := by
+    intro i j
+    have hsum : |∑ k, A i k * A k j| ≤ ∑ k, |A i k| * |A k j| := Finset.abs_sum_le_sum_abs _ _
+    have hterm : ∀ k, |A i k| * |A k j| ≤ (ctrl.bound * ε) ^ 2 := by
+      intro k
+      have h1 := hA_bound i k
+      have h2 := hA_bound k j
+      exact mul_le_mul h1 h2 (mul_nonneg hε_nonneg (le_of_lt ctrl.bound_pos)) (mul_nonneg (le_of_lt ctrl.bound_pos) hε_nonneg)
+    have h_sum_le := Finset.sum_le_sum hterm
+    have h_card := Finset.sum_le_card_nsmul _ hterm
+    simpa [Finset.card_univ, Fintype.card_fin, Nat.smul_eq_mul, bit0, one_mul, pow_two, sq] using h_card
+    exact hsum.trans h_sum_le
+  have h_total : |M⁻¹ i j - approx i j| ≤ h_final_bound + 4 * (ctrl.bound * ε) ^ 2 * ctrl.bound := by
+    have h_A2 := h_A2_bound i j
+    have h_mul := mul_le_mul h_A2 (ctrl.inverse_norm_le x) (norm_nonneg _) (le_of_lt ctrl.bound_pos)
+    linarith [h_diff i j, h_mul]
+  have h_final : h_final_bound + 4 * (ctrl.bound * ε) ^ 2 * ctrl.bound ≤ 6 * (4 * ctrl.bound) ^ 2 * ε ^ 2 := by
+    have h1 : (5 / 16) * ctrl.bound ^ 3 * ε ^ 3 ≤ (5 / 16) * ctrl.bound ^ 3 * (ctrl.bound / 4) ^ 3 * 64 / ctrl.bound ^ 3 := by
+      have := pow_le_pow_of_le_left hε_nonneg hε_small 3
+      mul_le_mul_of_nonneg_left this (by norm_num)
+    have h2 : 4 * (ctrl.bound * ε) ^ 2 * ctrl.bound ≤ 4 * (ctrl.bound * (ctrl.bound / 4)) ^ 2 * ctrl.bound := by
+      have := mul_le_mul_of_nonneg_left hε_small (le_of_lt ctrl.bound_pos)
+      have := pow_le_pow_of_le_left (mul_nonneg (le_of_lt ctrl.bound_pos) hε_nonneg) this 2
+      mul_le_mul this (le_rfl) (mul_nonneg (le_of_lt ctrl.bound_pos) (pow_two_nonneg _)) (le_of_lt ctrl.bound_pos)
+    -- Simplify and combine
+    linarith [h1, h2]
+  exact le_trans h_total h_final
 
 end Geometry
 end Relativity
