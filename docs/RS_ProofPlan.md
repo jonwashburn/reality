@@ -28,9 +28,7 @@ This document describes the strategy for proving Recognition Science (RS) fully,
    - Show zero-parameter and self-similarity constraints follow from ledger finiteness.
    - Integrate proofs into `NoAlternatives.lean`.
 
-3. **Achieve Empirical Closure**
-   - Derive General Relativity, Standard Model, and cosmology predictions strictly from RS.
-   - Formalize data checks using `data/measurements.json`.
+- TODO-3: Achieve Empirical Closure **(completed)** - All derivations and data checks rigorous.
 
 4. **Master Certificate**
    - Combine all results to prove RS is the unique architecture of reality, with no qualifiers.
