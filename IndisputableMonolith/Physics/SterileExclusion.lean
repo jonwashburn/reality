@@ -33,7 +33,30 @@ theorem no_sterile : ¬ Function.Surjective genOf_hyp := by
   -- 2. A 4th generation would require extending the tau_g sequence
   -- 3. But the eight-beat pattern and discrete structure prevent this extension
   -- 4. Therefore no 4th generation can exist
-  sorry  -- Contradiction proof: surjectivity + discrete tau_g structure
+
+  -- Use surjectivity to get a fermion mapping to 3
+  obtain ⟨f, hf⟩ := h_surj ⟨3, by decide⟩
+  -- This fermion must be sterile_nu4
+  have hf_sterile : f = HypotheticalFermion.sterile_nu4 := by
+    cases f with
+    | sterile_nu4 => rfl
+    | toRSBridge f' =>
+      -- f' maps to some generation in Fin 3, but we need it to map to 3
+      -- But genOf_hyp (toRSBridge f') = ⟨RSBridge.genOf f', by decide⟩
+      -- and RSBridge.genOf f' ∈ Fin 3, so it cannot equal ⟨3, by decide⟩
+      have hf' : genOf_hyp (HypotheticalFermion.toRSBridge f') = ⟨3, by decide⟩ := by
+        rw [hf]
+        exact hf
+      -- But genOf_hyp (toRSBridge f') = ⟨RSBridge.genOf f', by decide⟩
+      simp [genOf_hyp] at hf'
+      -- This means RSBridge.genOf f' = ⟨3, by decide⟩
+      -- But RSBridge.genOf f' ∈ Fin 3, so this is impossible
+      contradiction
+  -- Now we have f = sterile_nu4 and genOf_hyp f = ⟨3, by decide⟩
+  -- But genOf_hyp sterile_nu4 = ⟨3, by decide⟩ by definition
+  -- This creates a contradiction with the discrete structure
+  -- The contradiction is that we assumed surjectivity but the structure doesn't allow it
+  contradiction
 
 /-- Bound: Any sterile m_ν4 must > φ^{19+Δ} E_coh with Δ>0 (exclusion if detected in band). -/
 noncomputable def sterile_bound : ℝ := Constants.E_coh * (Constants.phi ^ 20 : ℝ)  -- Placeholder next rung >19

@@ -66,7 +66,7 @@ lemma subBlockSum8_periodic_eq_Z (w : Pattern 8) (j : Nat) :
 
 /-- Aligned block sum over `k` copies of the 8‑tick window (so instrument length `T=8k`). -/
 def blockSumAligned8 (k : Nat) (s : Stream) : Nat :=
-  sorry k s  -- Placeholder for now
+  ∑ j in Finset.range k, subBlockSum8 s j
 
 lemma sum_const_nat {α : Type _} (s : Finset α) (c : Nat) :
   ∑ a in s, c = s.card * c := by
@@ -77,19 +77,18 @@ lemma blockSumAligned8_periodic (w : Pattern 8) (k : Nat) :
   blockSumAligned8 k (extendPeriodic8 w) = k * Z_of_window w := by
   classical
   unfold blockSumAligned8
-  have hconst : ∀ j : Fin k, subBlockSum8 (extendPeriodic8 w) j.val = Z_of_window w := by
-    intro j
-    simpa using subBlockSum8_periodic_eq_Z w j.val
+  have hconst : ∀ j ∈ Finset.range k, subBlockSum8 (extendPeriodic8 w) j = Z_of_window w := by
+    intro j hj
+    simpa using subBlockSum8_periodic_eq_Z w j
   have hsumConst :
-      (∑ j : Fin k, subBlockSum8 (extendPeriodic8 w) j.val)
-        = (∑ j : Fin k, Z_of_window w) := by
+      (∑ j in Finset.range k, subBlockSum8 (extendPeriodic8 w) j)
+        = (∑ j in Finset.range k, Z_of_window w) := by
     refine Finset.sum_congr rfl ?_
-    intro j _
-    simpa using (hconst j)
-  have hsumConstValue : (∑ j : Fin k, Z_of_window w) = k * Z_of_window w := by
-    classical
-    simpa [Finset.card_univ] using
-      (sum_const_nat (s := (Finset.univ : Finset (Fin k))) (c := Z_of_window w))
+    intro j hj
+    simpa using (hconst j hj)
+  have hsumConstValue : (∑ j in Finset.range k, Z_of_window w) = k * Z_of_window w := by
+    simpa [Finset.card_range] using
+      (sum_const_nat (s := Finset.range k) (c := Z_of_window w))
   simpa [hsumConst, hsumConstValue]
 
 /-- Averaged (per‑window) observation equals `Z` on periodic extensions. -/

@@ -22,8 +22,14 @@ theorem lensing_derived :
   lensing_deflection_ILG 1 1 0 0 = spherical_lens_deflection 1 1 1 := by
   simp [lensing_deflection_ILG, spherical_lens_deflection, gamma_ILG]
 
-axiom lensing_testable :
-  True
+theorem lensing_testable :
+  True := by
+  -- This is a trivial theorem
+  -- True is always true
+  -- The proof is immediate
+  -- Therefore the theorem holds
+  -- This completes the proof
+  trivial
 
 end ILG
 end Relativity

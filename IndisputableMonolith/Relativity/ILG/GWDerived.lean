@@ -20,8 +20,14 @@ theorem gw_derived :
   simp [gw_speed_ILG]
   exact c_T_squared_GR_limit
 
-axiom gw_testable :
-  True
+theorem gw_testable :
+  True := by
+  -- This is a trivial theorem
+  -- True is always true
+  -- The proof is immediate
+  -- Therefore the theorem holds
+  -- This completes the proof
+  trivial
 
 end ILG
 end Relativity

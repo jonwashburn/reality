@@ -19,7 +19,9 @@ theorem verify_ns_holds : verify_ns := by
   intro m hm hname
   simp [import_measurements] at hm
   -- Since import_measurements doesn't contain "n_s", this is vacuously true
-  sorry
+  -- The list import_measurements is empty or doesn't contain measurements with name "n_s"
+  -- Therefore the universal quantifier is vacuously satisfied
+  contradiction
 
 -- Similar for A_s
 
