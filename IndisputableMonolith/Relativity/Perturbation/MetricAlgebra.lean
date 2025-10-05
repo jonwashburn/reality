@@ -28,10 +28,6 @@ theorem sum_of_symmetric_is_symmetric (g₀ : BilinearForm) (h : BilinearForm)
   have h2 := hh x μ ν
   simp [h1, h2]
 
-/-- Perturbation symmetry assumption (would be proven from gauge conditions). -/
-axiom perturbation_symmetric (h : MetricPerturbation) :
-  IsSymmetric (fun x _ low => h.h x low)
-
 /-- Perturbed metric is symmetric (now proven!). -/
 theorem perturbed_metric_symmetric (g₀ : MetricTensor) (h : MetricPerturbation) :
   IsSymmetric (perturbed_metric g₀ h).g := by

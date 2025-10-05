@@ -44,10 +44,52 @@ theorem weight_from_field_theory :
 
     For now, axiomatized pending the spherical reduction machinery.
 -/
-axiom modified_poisson_proven (ng : NewtonianGaugeMetric) (ρ : ℝ → ℝ) (α C_lag : ℝ) :
-  ∃ w : ℝ → ℝ,
-    (∀ r, 0 < r → RadialPoissonPhi ng.Φ ρ w) ∧
-    (∀ r, w r = weight_derived α C_lag 1 (2 * Real.pi * r))
+theorem modified_poisson_proven
+    (ψ₀ : Fields.ScalarField) (ng : NewtonianGaugeMetric)
+    (ρ : (Fin 4 → ℝ) → ℝ) (α C_lag : ℝ)
+    (h_system : CoupledSystem.LinearizedFieldSystem ng ψ₀ ρ α ((C_lag/α)^2)) :
+    ∃ w : ℝ → ℝ,
+      (∀ r, 0 < r → CoupledSystem.RadialPoissonPhi ng.Φ
+        (CoupledSystem.ρ_radial h_system) w) ∧
+      (∀ r, w r = weight_derived α C_lag 1 (2 * Real.pi * r)) := by
+  classical
+  -- Apply the perturbative machinery to obtain the constant correction factor.
+  obtain ⟨w_const, hw_const⟩ :=
+    EffectiveSource.w_correction_term_constant ψ₀ ng ρ α C_lag
+      (CoupledSystem.ρ_radial h_system)
+      (CoupledSystem.Φ_radial h_system)
+      (CoupledSystem.Ψ_radial h_system)
+      (CoupledSystem.k_radial h_system)
+      (CoupledSystem.hρ h_system)
+      (CoupledSystem.hΦ h_system)
+      (CoupledSystem.hΨ h_system)
+      (CoupledSystem.h_align h_system)
+      (CoupledSystem.h_gradρ h_system)
+      (CoupledSystem.h_gradΦ h_system)
+      (CoupledSystem.h_gradΨ h_system)
+      h_system
+  have h_mod := ModifiedPoissonDerived.modified_poisson_equation ψ₀ ng ρ α C_lag h_system
+  refine ⟨fun _ => w_const, ?_, ?_⟩
+  · intro r hr
+    classical
+    -- Evaluate the Cartesian Laplacian at a point on the radial ray.
+    have h_radial :=
+      EffectiveSource.radial_to_cartesian_poisson ng.Φ (CoupledSystem.ρ_radial h_system)
+        (fun _ => w_const) r hr
+    -- From modified Poisson we know the Cartesian statement.
+    have hr_cart := h_mod (fun i => if i = 1 then r else 0)
+    have hr_eq : spatialRadius (fun i => if i = 1 then r else 0) = r := by
+      simp [Calculus.spatialRadius, Calculus.spatialNormSq]
+    have hcart :=
+      by
+        simpa [hr_eq, EffectiveSource.w_of_r, EffectiveSource.w_correction_term]
+          using hr_cart
+    -- Combine with the radial conversion helper to obtain RadialPoissonPhi.
+    have := h_radial (CoupledSystem.radial_solution h_system r hr)
+    simpa [CoupledSystem.RadialPoissonPhi, hr_eq]
+      using this hcart
+  · intro r
+    exact (hw_const r).symm
 
 /-- O(ε²) error control (proven in Phase 5 Day 14). -/
 theorem error_controlled (ψ₀ : Fields.ScalarField) (ng : NewtonianGaugeMetric) (δψ : ScalarPerturbation) (ρ : ℝ → ℝ) (α C_lag : ℝ) :
