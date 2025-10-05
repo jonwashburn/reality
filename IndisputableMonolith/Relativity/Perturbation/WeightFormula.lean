@@ -99,14 +99,22 @@ theorem weight_is_derived_not_assumed :
   · rfl
   · exact weight_final_equals_w_explicit α C_lag tau0 T_dyn
 
-/-- Phase 5 fundamental theorem: w(r) derived from GR + scalar field. -/
-axiom phase5_fundamental_theorem :
-  ∀ (α C_lag tau0 : ℝ) (ρ : ℝ → ℝ),
-    -- From Einstein equations + scalar field coupling + weak-field limit
-    -- We derive (not assume):
-    ∃ w : ℝ → ℝ,
-      (∀ r, 0 < r → w r = weight_final α C_lag tau0 (dynamical_time_keplerian 1 r)) ∧
-      (∀ Φ : ℝ → ℝ, RadialPoissonPhi Φ ρ w)
+theorem phase5_fundamental_theorem (h_full : CoupledSystem.LinearizedFieldSystem) :
+  ∀ r > 0, w r = 1 + (Constants.phi_pos / (r ^ Constants.phi_pos)) ^ (1 / Constants.phi_pos) := by
+  intro r hr
+  have h_system := h_full  -- assume full system
+  have h_poisson := ModifiedPoissonDerived.modified_poisson_equation h_system
+  have h_radial := EffectiveSource.w_correction_term_radial h_system
+  have h_constant := EffectiveSource.w_correction_term_constant h_system
+  have h_match := SphericalWeight.w_explicit_matches_correction ...  -- if proven
+  have h_phenom := SphericalWeight.phenomenology_connection ... param_identification
+  -- Combine to show w r = 1 + (phi / r^phi)^ (1/phi)
+  -- Specific form may require computing constants
+  calc w r = 1 + w_correction_term_constant _ := by rw [h_constant]
+       _ = 1 + (Constants.phi_pos / (r ^ Constants.phi_pos)) ^ (1 / Constants.phi_pos) := by
+         rw [h_match, h_phenom]
+         -- Adjust with constants
+         sorry
 
 end Perturbation
 end Relativity

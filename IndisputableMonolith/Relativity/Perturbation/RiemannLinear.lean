@@ -2,6 +2,7 @@ import Mathlib
 import IndisputableMonolith.Relativity.Geometry
 import IndisputableMonolith.Relativity.Calculus
 import IndisputableMonolith.Relativity.Perturbation.ChristoffelExpansion
+import IndisputableMonolith.Relativity.Geometry.MatrixBridge
 
 /-!
 # Linearized Riemann Tensor
