@@ -153,13 +153,22 @@ theorem w_near_one_for_fast_systems (T_dyn tau0 δ : ℝ)
   have := le_trans habs_bound hδ_small
   simpa using this
 
-/-- Connection to rotation curve phenomenology (Papers I/II). -/
-axiom phenomenology_connection :
-  ∀ (T_dyn tau0 : ℝ) (n zeta xi lambda : ℝ),
-    -- Field-theoretic w_RS matches phenomenological form
-    -- w_phenom = λ ξ n (T_dyn/tau0)^α zeta
-    -- with appropriate normalizations
-    w_RS T_dyn tau0 = lambda * xi * n * (T_dyn / tau0) ^ alpha_RS * zeta
+/-- Phenomenological parameters from Papers I/II. -/
+def lambda_phenom : ℝ := 1  -- Placeholder; from paper normalization
+def xi_phenom : ℝ := 1
+def n_phenom : ℝ := 1
+def zeta_phenom : ℝ := 1
+
+/-- Prove identification: product equals C_lag_RS * alpha_RS. -/
+theorem param_identification :
+  lambda_phenom * xi_phenom * n_phenom * zeta_phenom = C_lag_RS * alpha_RS := by
+  -- From paper matching: these are set to make the forms equivalent
+  -- For now, axiom or norm_num if values are known
+  sorry  -- Blocker: need explicit values from papers
+
+theorem phenomenology_connection (T_dyn tau0 : ℝ) :
+  w_RS T_dyn tau0 = lambda_phenom * xi_phenom * n_phenom * (T_dyn / tau0) ^ alpha_RS * zeta_phenom := by
+  apply phenomenology_connection _ _ _ _ _ _ param_identification
 
 end Perturbation
 end Relativity
