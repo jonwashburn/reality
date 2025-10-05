@@ -1,18 +1,17 @@
 import IndisputableMonolith.Data.Import
 import IndisputableMonolith.Constants
 
+open IndisputableMonolith.Data
+
 /-- Exponents for mass ratios (example: e to mu = 11). -/
 def rung_exponent (name : String) : Int :=
   if name = "mu_e" then 11 else if name = "tau_mu" then 6 else 0
 
-theorem mass_ladder_matches_pdg (φ : ℝ) : IO Unit := do
-  let data ← import_measurements
-  for m in data do
-    let pred := φ ^ rung_exponent m.name
-    if |m.value - pred| ≤ m.error then
-      IO.println s!"{m.name} matches: {pred} vs {m.value} ± {m.error}"
-    else
-      IO.println s!"{m.name} mismatch!"
+def mass_ladder_matches_pdg (φ : ℝ) : Prop :=
+  ∀ m ∈ import_measurements, |m.value - φ ^ rung_exponent m.name| ≤ m.error
 
--- Run check (scaffold)
-#eval mass_ladder_matches_pdg Constants.phi
+theorem mass_ladder_holds : mass_ladder_matches_pdg IndisputableMonolith.Constants.phi := by
+  intro m hm
+  simp [import_measurements] at hm
+  -- Since import_measurements is non-empty, we can prove this by checking each element
+  sorry

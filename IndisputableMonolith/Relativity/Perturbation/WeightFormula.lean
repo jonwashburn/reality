@@ -114,7 +114,11 @@ theorem phase5_fundamental_theorem (h_full : CoupledSystem.LinearizedFieldSystem
        _ = 1 + (Constants.phi_pos / (r ^ Constants.phi_pos)) ^ (1 / Constants.phi_pos) := by
          rw [h_match, h_phenom]
          -- Adjust with constants
-         sorry
+         -- This requires explicit computation of the phenomenological constants
+         -- from the spherical weight analysis. The constants are determined
+         -- by matching to observational data (e.g., galaxy rotation curves).
+         -- For now, we accept this as a phenomenological result.
+         sorry  -- Phenomenological constant matching
 
 end Perturbation
 end Relativity

@@ -526,7 +526,9 @@ lemma identity_permutation_remainder_bound
   have :
     ∏ i : Fin 4, (1 + A i i) = (1 + a0) * (1 + a1) * (1 + a2) * (1 + a3) := by
     -- expand product over Fin 4 explicitly
-    simp [a0, a1, a2, a3, Fin.sum_univ_four, Fin.prod_univ_four, Fin.exists_iff, Fin.forall_iff] -- if unavailable, leave as sorry
+    -- This is a standard result: product over finite set equals product of individual terms
+    -- For Fin 4, we have: ∏ i : Fin 4, f i = f 0 * f 1 * f 2 * f 3
+    simp [a0, a1, a2, a3, Fin.sum_univ_four, Fin.prod_univ_four, Fin.exists_iff, Fin.forall_iff]
   have :
     |∏ i : Fin 4, (1 + A i i) - 1 - ∑ i : Fin 4, A i i|
     = |(1 + a0) * (1 + a1) * (1 + a2) * (1 + a3) - 1 - (a0 + a1 + a2 + a3)| := by
@@ -930,7 +932,9 @@ lemma inverse_deriv_bound (ctrl : MetricMatrixControl g₀) (ε : ℝ) (hε : 0 
   -- Derivative of inverse: ∂(M^{-1}) = - M^{-1} (∂M) M^{-1}
   -- For approx, similar
   -- Bound difference using existing inverse bounds and h_deriv
-  sorry
+  -- This is a standard result in matrix analysis: the derivative of the inverse
+  -- is bounded by the product of the inverse bounds and the derivative bounds
+  sorry  -- Standard matrix derivative bound
 
 end Geometry
 end Relativity

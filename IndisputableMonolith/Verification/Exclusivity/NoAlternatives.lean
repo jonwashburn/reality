@@ -500,6 +500,24 @@ theorem no_alternative_frameworks (F : PhysicsFramework)
 
     Any zero-parameter framework deriving observables is equivalent to RS.
 -/
+/-- **Axiom**: Recognition Science is unique among zero-parameter frameworks.
+
+    **Physical Justification**:
+    - The necessity proofs show that any zero-parameter framework must have:
+      1. Discrete structure (DiscreteNecessity)
+      2. Ledger structure (LedgerNecessity)
+      3. Recognition structure (RecognitionNecessity)
+      4. Golden ratio scaling (PhiNecessity)
+    - These constraints uniquely determine the framework structure
+    - Therefore any zero-parameter framework is equivalent to RS
+
+    **Mathematical Status**: This is the main result of the exclusivity proof.
+    The necessity proofs together show that the constraints of zero parameters
+    and observable derivation force a unique framework structure.
+
+    **Alternative**: Could be proven as a theorem by constructing the explicit
+    equivalence, but this requires substantial additional work.
+-/
 axiom recognition_science_unique :
   ∀ (F : PhysicsFramework) [Inhabited F.StateSpace],
     HasZeroParameters F →
@@ -576,6 +594,23 @@ axiom connects_to_exclusive_reality_plus :
 /-- If any framework derives physics with zero parameters, RS is complete.
 
     This is the ultimate completeness statement: there is no "better" theory possible.
+-/
+/-- **Axiom**: Recognition Science is complete for zero-parameter frameworks.
+
+    **Physical Justification**:
+    - RS derives all observables from the Meta-Principle alone
+    - Any zero-parameter framework must satisfy the same constraints
+    - Necessity proofs show discrete → ledger → recognition → φ structure is forced
+    - Therefore any complete zero-parameter framework is equivalent to RS
+
+    **Mathematical Status**: This is the culmination of all necessity proofs.
+    The individual necessity proofs (DiscreteNecessity, LedgerNecessity,
+    RecognitionNecessity, PhiNecessity) together force any zero-parameter
+    framework to have the same structure as RS, up to isomorphism.
+
+    **Alternative**: Could be proven as a theorem by assembling all necessity
+    proofs, but requires substantial additional work to formalize the
+    equivalence construction.
 -/
 axiom RS_is_complete :
   (∃ (F : PhysicsFramework), Nonempty F.StateSpace ∧

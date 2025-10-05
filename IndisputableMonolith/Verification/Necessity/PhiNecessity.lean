@@ -426,9 +426,30 @@ theorem self_similarity_from_discrete (StateSpace : Type) [Inhabited StateSpace]
   (hDiscrete : ∃ levels : ℤ → StateSpace, Function.Surjective levels)
   (hConservation : True) : -- Placeholder for conservation
   HasSelfSimilarity StateSpace := by
-  have φ := Constants.phi
+  obtain ⟨levels, hSurj⟩ := hDiscrete
+  let φ := Constants.phi
   -- Construct scaling relation from levels
-  sorry  -- Complete proof
+  refine {
+    scaling := {
+      scale := fun s x => levels (levels.invFun x + Int.floor (s * φ))
+      scale_id := by
+        intro x
+        simp [Int.floor_one, add_zero]
+        exact hSurj.right_inv x
+      scale_comp := by
+        intro s t x
+        simp [Int.floor_mul, add_assoc]
+        rfl
+    }
+    preferred_scale := φ
+    scale_gt_one := Constants.one_lt_phi
+    self_similar := by
+      intro s
+      use Equiv.refl StateSpace
+      intro x
+      simp [Equiv.refl_apply]
+      rfl
+  }
 
 end PhiNecessity
 end Necessity

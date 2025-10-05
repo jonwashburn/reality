@@ -41,7 +41,11 @@ theorem cone_entropy_bound {α : Type _} (cone : LightCone α) (area : ℝ) :
   -- Full proof would use PhiNecessity.self_similarity_forces_phi
   have hφ : Constants.phi^2 = Constants.phi + 1 := PhiSupport.phi_squared
   -- Assume voxel density and cost per voxel
-  sorry  -- TODO: Complete with ledger integration
+  -- This requires integration with the ledger structure to compute the exact
+  -- voxel density and cost per voxel. The holographic principle provides
+  -- the theoretical bound, but the specific values depend on the RS framework
+  -- parameters (φ, recognition length, etc.)
+  sorry  -- Requires ledger integration for exact voxel parameters
 
 end ConeExport
 end IndisputableMonolith

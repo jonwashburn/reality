@@ -28,7 +28,12 @@ theorem no_sterile : ¬ Function.Surjective genOf_hyp := by
   -- From RSBridge.genOf_surjective: exactly 3, no extension
   have h_three : Function.Surjective RSBridge.genOf := RSBridge.genOf_surjective
   -- Hypothetical breaks: no rung/tau_g for 4th (next τ_g>19 violates eight-beat mod 360 or surj)
-  sorry  -- Proved by contradiction on surjectivity + discrete tau_g
+  -- The contradiction arises because:
+  -- 1. RSBridge.genOf is surjective onto Fin 3 (exactly 3 generations)
+  -- 2. A 4th generation would require extending the tau_g sequence
+  -- 3. But the eight-beat pattern and discrete structure prevent this extension
+  -- 4. Therefore no 4th generation can exist
+  sorry  -- Contradiction proof: surjectivity + discrete tau_g structure
 
 /-- Bound: Any sterile m_ν4 must > φ^{19+Δ} E_coh with Δ>0 (exclusion if detected in band). -/
 noncomputable def sterile_bound : ℝ := Constants.E_coh * (Constants.phi ^ 20 : ℝ)  -- Placeholder next rung >19

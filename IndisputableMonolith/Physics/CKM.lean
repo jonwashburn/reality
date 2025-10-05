@@ -53,7 +53,10 @@ theorem jarlskog_holds : jarlskog > 0 ∧ jarlskog ≈ 3.18e-5 := by
   -- Requires: 1) φ-rung → mixing angles explicit computation
   --           2) eight-beat → CP phase δ derivation
   --           3) Complex arithmetic to evaluate Im(product)
-  sorry  -- TODO: Deep CKM phenomenology - requires full angle derivation from φ-rungs (Paper III work)
+  -- This is a deep result requiring the full derivation of CKM matrix elements
+  -- from the φ-rung structure and eight-beat pattern. The Jarlskog invariant
+  -- measures CP violation and must be positive for the observed CP violation.
+  sorry  -- Deep CKM phenomenology - requires full angle derivation from φ-rungs
 
 /- Auxiliary positive witness using φ-rung sines (keeps algebra simple). -/
 noncomputable def s12_w : ℝ :=
