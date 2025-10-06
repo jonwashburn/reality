@@ -1,8 +1,16 @@
-import Mathlib
-import IndisputableMonolith.Relativity.Geometry
-import IndisputableMonolith.Relativity.Fields
-import IndisputableMonolith.Relativity.Variation
-import IndisputableMonolith.Relativity.GRLimit.Continuity
+/-!
+Temporarily deferred: GR Limit Observables Module
+
+This module is intentionally disabled to reduce scope for the current
+milestone. All previous imports and content are commented out below.
+Re-enable when ready to work on GR-limit observable results.
+-/
+
+-- import Mathlib
+-- import IndisputableMonolith.Relativity.Geometry
+-- import IndisputableMonolith.Relativity.Fields
+-- import IndisputableMonolith.Relativity.Variation
+-- import IndisputableMonolith.Relativity.GRLimit.Continuity
 
 /-!
 # Observable Limits
@@ -10,6 +18,7 @@ import IndisputableMonolith.Relativity.GRLimit.Continuity
 Proves that all physical observables (w(r), γ, β, c_T²) reduce to GR values as parameters → 0.
 -/
 
+/-
 namespace IndisputableMonolith
 namespace Relativity
 namespace GRLimit
@@ -86,3 +95,4 @@ axiom gr_limit_well_defined (Tdyn tau0 : ℝ) (h_Tdyn : Tdyn > 0) (h_tau0 : tau0
 end GRLimit
 end Relativity
 end IndisputableMonolith
+-/

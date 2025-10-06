@@ -66,10 +66,10 @@ lemma subBlockSum8_periodic_eq_Z (w : Pattern 8) (j : Nat) :
 
 /-- Aligned block sum over `k` copies of the 8‑tick window (so instrument length `T=8k`). -/
 def blockSumAligned8 (k : Nat) (s : Stream) : Nat :=
-  ∑ j in Finset.range k, subBlockSum8 s j
+  Finset.sum (Finset.range k) (fun j => subBlockSum8 s j)
 
 lemma sum_const_nat {α} (s : Finset α) (c : Nat) :
-  (∑ _ in s, c) = s.card * c := by
+  Finset.sum s (fun _ => c) = s.card * c := by
   classical
   simpa using Finset.sum_const_natural (s := s) (a := c)
 
@@ -78,19 +78,19 @@ lemma blockSumAligned8_periodic (w : Pattern 8) (k : Nat) :
   blockSumAligned8 k (extendPeriodic8 w) = k * Z_of_window w := by
   classical
   unfold blockSumAligned8
-  have hconst : ∀ j : Fin k, subBlockSum8 (extendPeriodic8 w) j.val = Z_of_window w := by
-    intro j; simpa using subBlockSum8_periodic_eq_Z w j.val
-  -- Sum of a constant family over `Fin k` is `k * const`
-  have : (∑ j : Fin k, (fun _ => Z_of_window w) j) = k * Z_of_window w := by
-    simpa [sum_const_nat, Finset.card_univ] using
-      (sum_const_nat (s := (Finset.univ : Finset (Fin k))) (c := Z_of_window w))
-  -- Replace each term by the constant using `hconst`
-  have hsum : (∑ j : Fin k, subBlockSum8 (extendPeriodic8 w) j.val)
-            = (∑ j : Fin k, (fun _ => Z_of_window w) j) := by
-    congr
-    funext j
-    simpa using (hconst j).symm
-  simpa [hsum, this]
+  have hconst : ∀ j ∈ Finset.range k, subBlockSum8 (extendPeriodic8 w) j = Z_of_window w := by
+    intro j hj
+    simpa using subBlockSum8_periodic_eq_Z w j
+  have hsumConst :
+      Finset.sum (Finset.range k) (fun j => subBlockSum8 (extendPeriodic8 w) j)
+        = Finset.sum (Finset.range k) (fun j => Z_of_window w) := by
+    refine Finset.sum_congr rfl ?_
+    intro j hj
+    simpa using (hconst j hj)
+  have hsumConstValue : Finset.sum (Finset.range k) (fun _ => Z_of_window w) = k * Z_of_window w := by
+    simpa [Finset.card_range] using
+      (sum_const_nat (s := Finset.range k) (c := Z_of_window w))
+  simpa [hsumConst, hsumConstValue]
 
 /-- Averaged (per‑window) observation equals `Z` on periodic extensions. -/
 def observeAvg8 (k : Nat) (s : Stream) : Nat :=

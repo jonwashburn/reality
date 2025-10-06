@@ -8,15 +8,19 @@ namespace RH
 namespace RS
 namespace Witness
 
+open Measurement
+open Patterns
+open Streams
+
 @[simp] def eightTickMinimalHolds : Prop :=
   ∃ w : IndisputableMonolith.Patterns.CompleteCover 3, w.period = 8
 
 /-- Born rule witness: existence of a measurement pipeline whose averaging
 recovers a window integer (DNARP bridge). -/
 def bornHolds : Prop :=
-  ∃ (w : Pattern 8),
-    Measurement.observeAvg8 1 (Measurement.extendPeriodic8 w)
-      = Measurement.Z_of_window w
+  ∃ (w : Streams.Pattern 8),
+    observeAvg8 1 (extendPeriodic8 w)
+      = Z_of_window w
 
 @[simp] def boseFermiHolds : Prop :=
   IndisputableMonolith.Quantum.BoseFermiIface PUnit
@@ -32,9 +36,10 @@ lemma eightTick_from_TruthCore : eightTickMinimalHolds := by
   exact ⟨w, hw⟩
 
 @[simp] theorem born_from_TruthCore : bornHolds := by
-  refine ⟨Patterns.grayWindow, ?_⟩
+  -- Use any pattern as witness; the lemma holds for all patterns
+  use (fun _ => true)
   have hk : (1 : Nat) ≠ 0 := by decide
-  simpa using Measurement.observeAvg8_periodic_eq_Z (k:=1) hk _
+  exact observeAvg8_periodic_eq_Z hk _
 
 lemma boseFermi_from_TruthCore : boseFermiHolds := by
   simpa using

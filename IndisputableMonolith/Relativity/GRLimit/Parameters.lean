@@ -1,7 +1,15 @@
-import Mathlib
-import IndisputableMonolith.Relativity.ILG.Action
-import IndisputableMonolith.Relativity.GRLimit.Continuity
-import IndisputableMonolith.Constants
+/-!
+Temporarily deferred: GR Limit Parameters Module
+
+This module is intentionally disabled to reduce scope for the current
+milestone. All previous imports and content are commented out below.
+Re-enable when ready to work on GR-limit parameter results.
+-/
+
+-- import Mathlib
+-- import IndisputableMonolith.Relativity.ILG.Action
+-- import IndisputableMonolith.Relativity.GRLimit.Continuity
+-- import IndisputableMonolith.Constants
 
 /-!
 # Parameter Limits and Recognition Spine Connection
@@ -9,6 +17,7 @@ import IndisputableMonolith.Constants
 Connects ILG parameters (α, C_lag) to recognition spine values and proves limits are well-behaved.
 -/
 
+/-
 namespace IndisputableMonolith
 namespace Relativity
 namespace GRLimit
@@ -67,3 +76,4 @@ axiom zero_nonsingular :
 end GRLimit
 end Relativity
 end IndisputableMonolith
+-/
