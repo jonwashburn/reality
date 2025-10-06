@@ -15,10 +15,10 @@ structure PathWeight (γ : Type) where
 -- (prob_comp omitted in WIP minimal stub)
 
 /-- Interface asserting that the Born rule holds for a given path weight. -/
-def BornRuleIface (γ : Type) (PW : PathWeight γ) : Prop := True
+def BornRuleIface (γ : Type) (_ : PathWeight γ) : Prop := True
 
 /-- Interface asserting Bose/Fermi properties for a given path weight. -/
-def BoseFermiIface (γ : Type) (PW : PathWeight γ) : Prop := True
+def BoseFermiIface (γ : Type) (_ : PathWeight γ) : Prop := True
 
 /-- Minimal witness: the generic PathWeight interface satisfies both interfaces. -/
 theorem rs_pathweight_iface (γ : Type) (PW : PathWeight γ) :

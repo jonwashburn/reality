@@ -26,7 +26,7 @@ theorem cover_exact_pow (d : Nat) : ∃ w : CompleteCover d, w.period = 2 ^ d :=
           , complete := (Fintype.equivFin (Pattern d)).symm.surjective }, ?_⟩
   have : Fintype.card (Pattern d) = 2 ^ d := by
     simp [Pattern, Fintype.card_bool, Fintype.card_fin]
-  simp [this]
+  exact this
 
 /-- There exists an 8‑tick complete cover for 3‑bit patterns. -/
  theorem period_exactly_8 : ∃ w : CompleteCover 3, w.period = 8 := by
@@ -80,7 +80,8 @@ theorem T7_threshold_bijection (D : Nat) : ∃ f : Fin (2 ^ D) → Pattern D, Fu
     fun i => ⟨i.1, by
       -- rewrite the goal via hcard and close with i.2
       have : i.1 < 2 ^ D := i.2
-      simpa [hcard] using this⟩
+      simp [hcard]
+      exact this⟩
   let castFrom : Fin (Fintype.card (Pattern D)) → Fin (2 ^ D) :=
     fun j => ⟨j.1, by simpa [hcard] using j.2⟩
   have hLeft : Function.LeftInverse castFrom castTo := by intro i; cases i; rfl

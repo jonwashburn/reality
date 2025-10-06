@@ -28,8 +28,7 @@ def bornHolds : Prop :=
      , comp := fun _ _ => PUnit.unit
      , cost_additive := by intro _ _; simp
      , normSet := { PUnit.unit }
-     , sum_prob_eq_one := by
-         simp [IndisputableMonolith.Quantum.PathWeight.prob] })
+     , sum_prob_eq_one := by simp })
 
 lemma eightTick_from_TruthCore : eightTickMinimalHolds := by
   obtain ⟨w, hw⟩ := IndisputableMonolith.Patterns.period_exactly_8
@@ -48,7 +47,7 @@ lemma boseFermi_from_TruthCore : boseFermiHolds := by
       , comp := fun _ _ => PUnit.unit
       , cost_additive := by intro _ _; simp
       , normSet := { PUnit.unit }
-      , sum_prob_eq_one := by simp [IndisputableMonolith.Quantum.PathWeight.prob] }).right
+      , sum_prob_eq_one := by simp }).right
 
 end Witness
 end RS

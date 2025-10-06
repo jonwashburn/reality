@@ -36,7 +36,7 @@ def Cylinder {n : Nat} (w : Pattern n) : Set Stream :=
 @[simp] lemma Cylinder_zero (w : Pattern 0) : Cylinder w = Set.univ := by
   ext s; constructor
   · intro _; exact Set.mem_univ _
-  · intro _; simpa using (mem_Cylinder_zero w s)
+  · intro _; simp; exact (mem_Cylinder_zero w s)
 
 /-- Periodic extension of an 8‑bit window. -/
 def extendPeriodic8 (w : Pattern 8) : Stream := fun t =>
@@ -55,13 +55,14 @@ lemma extendPeriodic8_period (w : Pattern 8) (t : Nat) :
   extendPeriodic8 w (t + 8) = extendPeriodic8 w t := by
   dsimp [extendPeriodic8]
   have hmod : (t + 8) % 8 = t % 8 := by
-    simpa [Nat.mod_self, Nat.add_comm] using (Nat.add_mod t 8 8)
+    simp [Nat.mod_self, Nat.add_comm]
+    exact (Nat.add_mod t 8 8)
   have h8 : 0 < 8 := by decide
   have hfin : (⟨(t + 8) % 8, Nat.mod_lt _ h8⟩ : Fin 8)
             = ⟨t % 8, Nat.mod_lt _ h8⟩ := by
     apply Fin.mk_eq_mk.mpr
     exact hmod
-  simp [hfin]
+  rw [hfin]
 
 /-- Sum of the first `m` bits of a stream. -/
 def sumFirst (m : Nat) (s : Stream) : Nat :=
@@ -78,8 +79,8 @@ lemma sumFirst_eq_Z_on_cylinder {n : Nat} (w : Pattern n)
   unfold sumFirst Z_of_window Cylinder at *
   have : (fun i : Fin n => (if s i.val then 1 else 0)) =
          (fun i : Fin n => (if w i then 1 else 0)) := by
-    funext i; simpa [hs i]
-  simpa [this]
+    funext i; simp [hs i]
+  simp [this]
 
 /-- For an 8‑bit window extended periodically, the first‑8 sum equals `Z`. -/
 lemma sumFirst8_extendPeriodic_eq_Z (w : Pattern 8) :

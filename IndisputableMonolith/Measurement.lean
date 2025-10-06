@@ -32,8 +32,9 @@ lemma firstBlockSum_eq_Z_on_cylinder (w : Pattern 8) {s : Stream}
   classical
   have hsum : subBlockSum8 s 0 = sumFirst 8 s := by
     unfold subBlockSum8 sumFirst
-    simp [Nat.zero_mul, zero_add]
-  simpa [hsum] using (sumFirst_eq_Z_on_cylinder (n:=8) w (s:=s) hs)
+    simp [zero_add]
+  simp [hsum]
+  exact (sumFirst_eq_Z_on_cylinder (n:=8) w (s:=s) hs)
 
 /-- For periodic extensions of an 8‑bit window, each sub‑block sums to `Z`. -/
 lemma subBlockSum8_periodic_eq_Z (w : Pattern 8) (j : Nat) :
@@ -42,16 +43,16 @@ lemma subBlockSum8_periodic_eq_Z (w : Pattern 8) (j : Nat) :
   unfold subBlockSum8 Z_of_window extendPeriodic8
   have hmod : ∀ i : Fin 8, ((j * 8 + i.val) % 8) = i.val := by
     intro i
-    have : (j * 8) % 8 = 0 := by simpa using Nat.mul_mod_right j 8
+    have : (j * 8) % 8 = 0 := by simp; exact Nat.mul_mod_right j 8
     have hi : i.val % 8 = i.val := Nat.mod_eq_of_lt i.isLt
     calc
       (j * 8 + i.val) % 8
           = ((j * 8) % 8 + i.val % 8) % 8 := by
-                simpa [Nat.add_comm, Nat.add_left_comm, Nat.add_assoc, Nat.mul_comm] using
-                  (Nat.add_mod (j*8) i.val 8)
-      _   = (0 + i.val) % 8 := by simpa [this, hi]
+                simp [Nat.add_comm, Nat.add_left_comm, Nat.add_assoc, Nat.mul_comm]
+                exact (Nat.add_mod (j*8) i.val 8)
+      _   = (0 + i.val) % 8 := by simp [this, hi]
       _   = i.val % 8 := by simp
-      _   = i.val := by simpa [hi]
+      _   = i.val := by simp; exact hi
   -- Rewrite each summand to the corresponding window bit.
   have hfun :
     (fun i : Fin 8 => if (extendPeriodic8 w) (j * 8 + i.val) then 1 else 0)
@@ -60,9 +61,10 @@ lemma subBlockSum8_periodic_eq_Z (w : Pattern 8) (j : Nat) :
     have : (extendPeriodic8 w) (j * 8 + i.val) = w ⟨(j*8 + i.val) % 8, Nat.mod_lt _ (by decide)⟩ := by
       simp [extendPeriodic8_eq_mod]
     have := congrArg (fun b => if b then 1 else 0) this
-    simpa [hmod i] using this
-  simpa [Z_of_window, subBlockSum8] using
-    (congrArg (fun f => ∑ i : Fin 8, f i) hfun)
+    simp [hmod i]
+    exact this
+  simp [Z_of_window, subBlockSum8]
+  exact (congrArg (fun f => ∑ i : Fin 8, f i) hfun)
 
 /-- Aligned block sum over `k` copies of the 8‑tick window (so instrument length `T=8k`). -/
 def blockSumAligned8 (k : Nat) (s : Stream) : Nat :=
@@ -71,7 +73,8 @@ def blockSumAligned8 (k : Nat) (s : Stream) : Nat :=
 lemma sum_const_nat {α} (s : Finset α) (c : Nat) :
   Finset.sum s (fun _ => c) = s.card * c := by
   classical
-  simpa using Finset.sum_const_natural (s := s) (a := c)
+  simp
+  exact Finset.sum_const_natural (s := s) (a := c)
 
 /-- For `s = extendPeriodic8 w`, summing `k` aligned 8‑blocks yields `k * Z(w)`. -/
 lemma blockSumAligned8_periodic (w : Pattern 8) (k : Nat) :
@@ -80,17 +83,19 @@ lemma blockSumAligned8_periodic (w : Pattern 8) (k : Nat) :
   unfold blockSumAligned8
   have hconst : ∀ j ∈ Finset.range k, subBlockSum8 (extendPeriodic8 w) j = Z_of_window w := by
     intro j hj
-    simpa using subBlockSum8_periodic_eq_Z w j
+    simp
+    exact subBlockSum8_periodic_eq_Z w j
   have hsumConst :
       Finset.sum (Finset.range k) (fun j => subBlockSum8 (extendPeriodic8 w) j)
         = Finset.sum (Finset.range k) (fun j => Z_of_window w) := by
     refine Finset.sum_congr rfl ?_
     intro j hj
-    simpa using (hconst j hj)
+    simp
+    exact (hconst j hj)
   have hsumConstValue : Finset.sum (Finset.range k) (fun _ => Z_of_window w) = k * Z_of_window w := by
-    simpa [Finset.card_range] using
-      (sum_const_nat (s := Finset.range k) (c := Z_of_window w))
-  simpa [hsumConst, hsumConstValue]
+    simp [Finset.card_range]
+    exact (sum_const_nat (s := Finset.range k) (c := Z_of_window w))
+  simp [hsumConst, hsumConstValue]
 
 /-- Averaged (per‑window) observation equals `Z` on periodic extensions. -/
 def observeAvg8 (k : Nat) (s : Stream) : Nat :=
@@ -105,8 +110,9 @@ lemma observeAvg8_periodic_eq_Z {k : Nat} (hk : k ≠ 0) (w : Pattern 8) :
   have hsum := blockSumAligned8_periodic w k
   have hk' : 0 < k := Nat.pos_of_ne_zero hk
   have divCancel : (k * Z_of_window w) / k = Z_of_window w := by
-    simpa [Nat.mul_comm] using Nat.mul_div_cancel_left (Z_of_window w) hk'
-  simpa [hsum, divCancel]
+    simp [Nat.mul_comm]
+    exact Nat.mul_div_cancel_left (Z_of_window w) hk'
+  simp [hsum, divCancel]
 
 end Measurement
 end IndisputableMonolith
