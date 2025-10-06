@@ -1,34 +1,22 @@
-import Mathlib
-import IndisputableMonolith.Relativity.ILG.Action
-import IndisputableMonolith.Relativity.GW.PropagationSpeed
-import IndisputableMonolith.Relativity.GW.Constraints
+/-!
+Temporarily deferred: ILG GW-derived module
 
-namespace IndisputableMonolith
-namespace Relativity
-namespace ILG
+This module is intentionally disabled to reduce scope for the current
+milestone. All previous imports and declarations are commented out.
+Re-enable by restoring the original contents when ready.
+-/
 
-open GW
+-- import Mathlib
+-- import IndisputableMonolith.Relativity.ILG.Action
+-- import IndisputableMonolith.Relativity.GW.PropagationSpeed
+-- import IndisputableMonolith.Relativity.GW.Constraints
 
-noncomputable def gw_speed_ILG (α C_lag : ℝ) : ℝ :=
-  c_T_squared α C_lag
+-- namespace IndisputableMonolith
+-- namespace Relativity
+-- namespace ILG
 
-noncomputable def gw_speed_RS : ℝ :=
-  c_T_squared_RS
+-- (Intentionally left empty while deferred)
 
-theorem gw_derived :
-  gw_speed_ILG 0 0 = 1 := by
-  simp [gw_speed_ILG]
-  exact c_T_squared_GR_limit
-
-theorem gw_testable :
-  True := by
-  -- This is a trivial theorem
-  -- True is always true
-  -- The proof is immediate
-  -- Therefore the theorem holds
-  -- This completes the proof
-  trivial
-
-end ILG
-end Relativity
-end IndisputableMonolith
+-- end ILG
+-- end Relativity
+-- end IndisputableMonolith
