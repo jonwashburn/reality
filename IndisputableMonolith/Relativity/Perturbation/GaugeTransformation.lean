@@ -1,3 +1,34 @@
+import Mathlib
+import IndisputableMonolith.Relativity.Geometry
+import IndisputableMonolith.Relativity.Calculus
+import IndisputableMonolith.Relativity.Perturbation.Linearization
+
+/-!
+# Gauge Transformations and Newtonian Gauge Construction
+
+Proves gauge freedom and constructs explicit Newtonian gauge from general perturbation.
+-/
+
+namespace IndisputableMonolith
+namespace Relativity
+namespace Perturbation
+
+open Geometry
+open Calculus
+
+/-- Gauge vector ξ^μ for coordinate transformation. -/
+structure GaugeVector where
+  ξ : (Fin 4 → ℝ) → (Fin 4 → ℝ)  -- ξ^μ(x)
+
+/-- Weak-field gauge data: derivatives of ξ are uniformly small. -/
+structure WeakGaugeVector where
+  ξ : GaugeVector
+  bound : ℝ
+  bound_nonneg : 0 ≤ bound
+  bound_le : bound ≤ (3 / 10 : ℝ)
+  deriv_bound : ∀ x μ ν, |partialDeriv_v2 (fun y => (ξ.ξ y) ν) μ x| ≤ bound
+
+/-- Collection of assumptions about constructing Newtonian gauge fixes. -/
 class GaugeConstructionFacts : Prop where
   find_gauge_vector_for_newtonian :
     ∀ h : MetricPerturbation, ∃ ξ : GaugeVector, InNewtonianGauge (gauge_transform h ξ)
@@ -36,35 +67,6 @@ class GaugeConstructionFacts : Prop where
     }
     let ng := to_newtonian_gauge h
     ∀ x i, i.val > 0 → |to_perturbation ng - h| x (0 : Fin 4) i < 0.02
-import Mathlib
-import IndisputableMonolith.Relativity.Geometry
-import IndisputableMonolith.Relativity.Calculus
-import IndisputableMonolith.Relativity.Perturbation.Linearization
-
-/-!
-# Gauge Transformations and Newtonian Gauge Construction
-
-Proves gauge freedom and constructs explicit Newtonian gauge from general perturbation.
--/
-
-namespace IndisputableMonolith
-namespace Relativity
-namespace Perturbation
-
-open Geometry
-open Calculus
-
-/-- Gauge vector ξ^μ for coordinate transformation. -/
-structure GaugeVector where
-  ξ : (Fin 4 → ℝ) → (Fin 4 → ℝ)  -- ξ^μ(x)
-
-/-- Weak-field gauge data: derivatives of ξ are uniformly small. -/
-structure WeakGaugeVector where
-  ξ : GaugeVector
-  bound : ℝ
-  bound_nonneg : 0 ≤ bound
-  bound_le : bound ≤ (3 / 10 : ℝ)
-  deriv_bound : ∀ x μ ν, |partialDeriv_v2 (fun y => (ξ.ξ y) ν) μ x| ≤ bound
 
 /-- Gauge transformation of metric perturbation: h'_μν = h_μν + ∂_μ ξ_ν + ∂_ν ξ_μ. -/
 noncomputable def gauge_transform (h : WeakFieldPerturbation) (ξ : WeakGaugeVector) : WeakFieldPerturbation where
@@ -184,8 +186,10 @@ theorem gauge_transform_small_of_weak
   have : (7 / 10 : ℝ) < 1 := by norm_num
   exact lt_of_le_of_lt htotal this
 
-@[simp] theorem gauge_transform_symmetric (h : MetricPerturbation) (ξ : GaugeVector)
-    (hh : IsSymmetric fun x => h.h x) : IsSymmetric fun x _ low => (gauge_transform h ξ).h x low := by
+/-- Gauge transformation preserves symmetry. -/
+theorem gauge_transform_symmetric (h : MetricPerturbation) (ξ : GaugeVector)
+  (hh : IsSymmetric (fun x _ low => h.h x low)) :
+  IsSymmetric (fun x _ low => (gauge_transform h ξ).h x low) := by
   intro x μ ν
   -- Unfold symmetry condition and gauge transform definition
   dsimp [Geometry.IsSymmetric, gauge_transform]
@@ -196,20 +200,20 @@ theorem gauge_transform_small_of_weak
   -- Right side: h(ν,μ) + ∂ν ξμ + ∂μ ξν
   simpa [h_sym, add_comm, add_left_comm, add_assoc]
 
--- Condition for Newtonian gauge
 /-- Condition for Newtonian gauge: h'_0i = 0. -/
 def InNewtonianGauge (h : MetricPerturbation) : Prop :=
-  ∀ x i, i.val > 0 → h.h x (fun j => if j.val = 0 then 0 else i) = 0
+  ∀ (x : Fin 4 → ℝ) (i : Fin 4), i.val > 0 →
+    h.h x (fun j => if j.val = 0 then 0 else i) = 0
 
 /-- Finding gauge vector to eliminate h_0i components. -/
-theorem find_gauge_vector_for_newtonian
-  (h : MetricPerturbation) [GaugeConstructionFacts] :
+theorem find_gauge_vector_for_newtonian (h : MetricPerturbation)
+  [GaugeConstructionFacts] :
   ∃ ξ : GaugeVector, InNewtonianGauge (gauge_transform h ξ) :=
   GaugeConstructionFacts.find_gauge_vector_for_newtonian h
 
-/-- After fixing h_0i = 0, can choose trace to make h_ij ∝ δ_ij. -/
-theorem spatial_trace_freedom
-  (h : MetricPerturbation) (h_newt : InNewtonianGauge h) [GaugeConstructionFacts] :
+-- After fixing h_0i = 0, can choose trace to make h_ij ∝ δ_ij. -/
+theorem spatial_trace_freedom (h : MetricPerturbation) (h_newt : InNewtonianGauge h)
+  [GaugeConstructionFacts] :
   ∃ ξ : GaugeVector,
     InNewtonianGauge (gauge_transform h ξ) ∧
     (∀ x i j, i.val > 0 → j.val > 0 → i ≠ j →
@@ -244,13 +248,11 @@ noncomputable def to_newtonian_gauge (h : MetricPerturbation)
         _ < 0.1 := by norm_num }
 
 /-- Gauge transformation preserves physics (same Riemann tensor). -/
-theorem gauge_invariant_riemann
-  (g₀ : MetricTensor) (h : MetricPerturbation) (ξ : GaugeVector)
+theorem gauge_invariant_riemann (g₀ : MetricTensor) (h : MetricPerturbation) (ξ : GaugeVector)
   (x : Fin 4 → ℝ) [GaugeConstructionFacts] :
   ∀ ρ σ μ ν,
-    linearized_riemann g₀ h x ρ σ μ ν =
-      linearized_riemann g₀ (gauge_transform h ξ) x ρ σ μ ν :=
-  GaugeConstructionFacts.gauge_invariant_riemann g₀ h ξ x
+    linearized_riemann g₀ h x ρ σ μ ν = linearized_riemann g₀ (gauge_transform h ξ) x ρ σ μ ν :=
+  GaugeConstructionFacts.gauge_invariant_riemann g₀ h ξ x _ _ _ _
 
 /-- Test: Start with diagonal h, transform to Newtonian gauge, verify h_0i = 0. -/
 theorem test_newtonian_gauge_construction [GaugeConstructionFacts] :
@@ -260,4 +262,8 @@ theorem test_newtonian_gauge_construction [GaugeConstructionFacts] :
   }
   let ng := to_newtonian_gauge h
   ∀ x i, i.val > 0 → |to_perturbation ng - h| x (0 : Fin 4) i < 0.02 :=
-  GaugeConstructionFacts.test_newtonian_gauge_construction }']} }
+  GaugeConstructionFacts.test_newtonian_gauge_construction
+
+end Perturbation
+end Relativity
+end IndisputableMonolith

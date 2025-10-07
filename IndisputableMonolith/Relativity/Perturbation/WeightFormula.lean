@@ -99,16 +99,10 @@ theorem weight_is_derived_not_assumed :
   · rfl
   · exact weight_final_equals_w_explicit α C_lag tau0 T_dyn
 
-class PhenomenologyMatchingFacts : Prop where
-  match_constants : ∀ (h_full : CoupledSystem.LinearizedFieldSystem) (r : ℝ), r > 0 →
-    w r = 1 + (Constants.phi_pos / (r ^ Constants.phi_pos)) ^ (1 / Constants.phi_pos)
-
 theorem phase5_fundamental_theorem
-  (h_full : CoupledSystem.LinearizedFieldSystem)
-  [PhenomenologyMatchingFacts] :
-  ∀ r > 0, w r = 1 + (Constants.phi_pos / (r ^ Constants.phi_pos)) ^ (1 / Constants.phi_pos) := by
-  intro r hr
-  exact PhenomenologyMatchingFacts.match_constants h_full r hr
+  (h_full : CoupledSystem.LinearizedFieldSystem) [PhenomenologyMatchingFacts] :
+  ∀ r > 0, w r = 1 + (Constants.phi_pos / (r ^ Constants.phi_pos)) ^ (1 / Constants.phi_pos) :=
+  PhenomenologyMatchingFacts.match_constants h_full
 
 end Perturbation
 end Relativity

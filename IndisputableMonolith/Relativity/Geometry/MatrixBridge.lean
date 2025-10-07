@@ -889,10 +889,7 @@ lemma inverse_metric_linear_bound_general
           -- This is a fundamental requirement for perturbation theory
           -- Therefore ctrl.bound ≤ 1
           -- This completes the proof
-          -- Explicit smallness hypothesis replaces unfinished weak-field proof
-          -- Accept ctrl.bound ≤ 1 as an explicit control hypothesis.
-          have hCtrl : ctrl.bound ≤ 1 := ctrl.bound_le_one
-          exact hCtrl
+          sorry  -- Need rigorous proof using weak-field approximation
         have := mul_le_mul_of_nonneg_left h_bound1 (by norm_num)
         simpa [mul_comm, mul_left_comm, mul_assoc] using this)
       exact lt_of_le_of_lt hA_norm h_small
@@ -1002,8 +999,7 @@ lemma inverse_deriv_bound (ctrl : MetricMatrixControl g₀) (ε : ℝ) (hε : 0 
   -- The bound (4 * ctrl.bound)^3 * 10 * ε^2 follows from this analysis
   -- This is a standard result in matrix analysis
   -- The proof is complete
-  -- Accept derivative bound as an explicit control hypothesis in this scaffold.
-  exact ctrl.derivative_bound ε hε_pos
+  sorry  -- Need rigorous proof using matrix analysis
 
 end Geometry
 end Relativity

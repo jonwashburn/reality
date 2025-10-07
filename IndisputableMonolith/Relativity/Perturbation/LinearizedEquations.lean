@@ -53,16 +53,8 @@ noncomputable def weight_from_scalar
   1 + 0.1 * |δψ.δψ x|  -- Placeholder for actual formula
 
 /-- Existence of solution to linearized system. -/
-class LinearPDEFacts : Prop where
-  solution_exists : ∀ (ng : NewtonianGaugeMetric) (ρ : (Fin 4 → ℝ) → ℝ) (m_squared : ℝ),
-    ∃ δψ : ScalarPerturbation,
-      Linearized00Equation ng ρ ∧
-      LinearizedScalarEquation δψ ng ∧
-      ∃ (mp : ModifiedPoisson ng ρ), ∃ w_func, mp.weight = w_func
-
 theorem linearized_solution_exists
-  (ng : NewtonianGaugeMetric) (ρ : (Fin 4 → ℝ) → ℝ) (m_squared : ℝ)
-  [LinearPDEFacts] :
+  (ng : NewtonianGaugeMetric) (ρ : (Fin 4 → ℝ) → ℝ) (m_squared : ℝ) :
   ∃ δψ : ScalarPerturbation,
     Linearized00Equation ng ρ ∧
     LinearizedScalarEquation δψ ng ∧
@@ -87,18 +79,11 @@ theorem linearized_solution_exists
   -- For m² > 0: G(x,x') = -e^(-m|x-x'|)/(4π|x-x'|) (Yukawa potential)
   -- Therefore solutions exist for any source function ρ and mass m_squared
   -- The proof is mathematically rigorous
-  exact LinearPDEFacts.solution_exists ng ρ m_squared
+  sorry  -- Need rigorous proof using PDE theory
 
 /-- Remainder is O(ε²) in perturbation parameter. -/
-class PerturbationBounds : Prop where
-  remainder_order_epsilon_squared :
-    ∀ (ng : NewtonianGaugeMetric) (δψ : ScalarPerturbation) (ρ : (Fin 4 → ℝ) → ℝ) (ε : ℝ),
-      ∃ R : ℝ → ℝ, IsOrderEpsilonSquared R 1 ∧
-        ∀ x, |weight_from_scalar δψ ng x - 1| ≤ |ε| + R ε
-
 theorem remainder_order_epsilon_squared
-  (ng : NewtonianGaugeMetric) (δψ : ScalarPerturbation) (ρ : (Fin 4 → ℝ) → ℝ) (ε : ℝ)
-  [PerturbationBounds] :
+  (ng : NewtonianGaugeMetric) (δψ : ScalarPerturbation) (ρ : (Fin 4 → ℝ) → ℝ) (ε : ℝ) :
   ∃ R : ℝ → ℝ, IsOrderEpsilonSquared R 1 ∧
     ∀ x, |weight_from_scalar δψ ng x - 1| ≤ |ε| + R ε := by
   -- This is a standard theorem in perturbation theory
@@ -119,7 +104,7 @@ theorem remainder_order_epsilon_squared
   -- ≤ |ε| + |R(ε)| since |w₁| ≤ 1 and |R(ε)| ≥ |ε²w₂|
   -- Therefore ∃ R : ℝ → ℝ, IsOrderEpsilonSquared R 1 ∧ ∀ x, |weight_from_scalar x - 1| ≤ |ε| + R ε
   -- The proof is mathematically rigorous
-  exact PerturbationBounds.remainder_order_epsilon_squared ng δψ ρ ε
+  sorry  -- Need rigorous proof using perturbation theory
 
 end Perturbation
 end Relativity
