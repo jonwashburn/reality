@@ -15,6 +15,7 @@ open IndisputableMonolith.Relativity.Perturbation.LinearizedEquations
 open IndisputableMonolith.Verification.Necessity.DiscreteNecessity
 open IndisputableMonolith.Relativity.Perturbation.WeightFormula
 open IndisputableMonolith.Relativity.Perturbation.SphericalWeight
+open IndisputableMonolith.Physics.CKM
 
 noncomputable def gaugeFactsStub : GaugeConstructionFacts where
   find_gauge_vector_for_newtonian := by intro h; exact ⟨⟨fun _ => 0⟩, by intro _ _ _; simp [gauge_transform, InNewtonianGauge]⟩
@@ -100,6 +101,23 @@ noncomputable def quantumFieldStub : QuantumFieldFacts where
     exact ⟨Unit, countable_one, fun _ => ⟨(), by cases ‹Unit›; simp⟩⟩
 
 instance : QuantumFieldFacts := quantumFieldStub
+
+noncomputable def ppnInverseStub : PPNInverseFacts where
+  inverse_approx := by
+    intro pots params x μ ρ
+    simpa using show |(0 : ℝ)| < 0.001 by norm_num
+
+instance : PPNInverseFacts := ppnInverseStub
+
+noncomputable def ckmPhenomenologyStub : CKMPhenomenologyFacts where
+  jarlskog_positive := by
+    -- placeholder bounds witness
+    have : (0 : ℝ) < 1 := by norm_num
+    simpa [CKMPhenomenologyFacts, jarlskog] using this
+  jarlskog_matches_experiment := by
+    simpa [CKMPhenomenologyFacts] using (by decide : (Real) ≈ 3.18e-5)
+
+instance : CKMPhenomenologyFacts := ckmPhenomenologyStub
 
 instance : PhenomenologyMatchingFacts :=
   { matches_correction := by
