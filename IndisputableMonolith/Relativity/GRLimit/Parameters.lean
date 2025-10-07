@@ -50,28 +50,16 @@ theorem rs_params_positive :
     exact Real.rpow_pos_of_pos Constants.phi_pos _
 
 /-- Recognition spine parameters are small (for perturbation theory). -/
-axiom rs_params_small :
-  alpha_from_phi < 1 ∧ cLag_from_phi < 1
-
-/-- Coupling product α·C_lag is small. -/
-axiom coupling_product_small :
-  |alpha_from_phi * cLag_from_phi| < 0.02
-
-/-- GR limit parameter: any sequence (α_n, C_n) → (0,0). -/
-def IsGRLimitSequence (seq : LimitSequence) : Prop :=
-  ∀ ε > 0, ∃ N, ∀ n ≥ N,
-    |seq.alpha_n n| < ε ∧ |seq.cLag_n n| < ε
-
-/-- RS parameters define a valid perturbative expansion (coupling small enough). -/
-axiom rs_params_perturbative :
-  let kappa := |alpha_from_phi * cLag_from_phi|
-  kappa < 0.1
+class GRLimitParameterFacts : Prop where
+  rs_params_small : alpha_from_phi < 1 ∧ cLag_from_phi < 1
+  coupling_product_small : |alpha_from_phi * cLag_from_phi| < 0.02
+  rs_params_perturbative : (|alpha_from_phi * cLag_from_phi|) < 0.1
 
 /-- Zero is not a singular point (field equations remain well-posed). -/
-axiom zero_nonsingular :
-  ∀ (g : Geometry.MetricTensor) (ψ : Fields.ScalarField) (vol : Fields.VolumeElement),
-    -- At α=0, C_lag=0, equations are still well-defined
-    Variation.VacuumEinstein g ∧ (∀ x, Variation.dalembertian ψ g x = 0)
+class GRLimitRegularityFacts : Prop where
+  zero_nonsingular :
+    ∀ (g : Geometry.MetricTensor) (ψ : Fields.ScalarField) (vol : Fields.VolumeElement),
+      Variation.VacuumEinstein g ∧ (∀ x, Variation.dalembertian ψ g x = 0)
 
 end GRLimit
 end Relativity

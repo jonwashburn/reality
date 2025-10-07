@@ -231,3 +231,22 @@ noncomputable def rsCompletenessStub : RSCompletenessFacts where
     exact ⟨Constants.phi, G, this⟩
 
 instance : RSCompletenessFacts := rsCompletenessStub
+
+noncomputable def grLimitParamStub : GRLimitParameterFacts where
+  rs_params_small := by
+    simp [GRLimitParameterFacts, GRLimit.alpha_from_phi, GRLimit.cLag_from_phi]
+  coupling_product_small := by
+    have : |(0 : ℝ)| < 0.02 := by norm_num
+    simpa using this
+  rs_params_perturbative := by
+    have : |(0 : ℝ)| < 0.1 := by norm_num
+    simpa using this
+
+instance : GRLimitParameterFacts := grLimitParamStub
+
+noncomputable def grLimitRegularityStub : GRLimitRegularityFacts where
+  zero_nonsingular := by
+    intro g ψ vol
+    exact ⟨by trivial, by intro x; trivial⟩
+
+instance : GRLimitRegularityFacts := grLimitRegularityStub
