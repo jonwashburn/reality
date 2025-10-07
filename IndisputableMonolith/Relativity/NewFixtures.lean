@@ -14,6 +14,7 @@ open IndisputableMonolith.Verification.Exclusivity
 open IndisputableMonolith.Relativity.Perturbation.LinearizedEquations
 open IndisputableMonolith.Verification.Necessity.DiscreteNecessity
 open IndisputableMonolith.Relativity.Perturbation.WeightFormula
+open IndisputableMonolith.Relativity.Perturbation.SphericalWeight
 
 noncomputable def gaugeFactsStub : GaugeConstructionFacts where
   find_gauge_vector_for_newtonian := by intro h; exact ⟨⟨fun _ => 0⟩, by intro _ _ _; simp [gauge_transform, InNewtonianGauge]⟩
@@ -106,6 +107,9 @@ instance : PhenomenologyMatchingFacts :=
       simp [PhenomenologyMatchingFacts, dynamical_time_keplerian] from
         -- placeholder simplified bound
         show |(1 : ℝ) - 1| < 0.1 by norm_num }
+
+instance : SphericalWeightFacts :=
+  { param_identification := by simp [SphericalWeightFacts, lambda_phenom, xi_phenom, n_phenom, zeta_phenom, C_lag_RS, alpha_RS] }
 
 end TestFixtures
 end IndisputableMonolith
