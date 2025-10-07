@@ -306,18 +306,16 @@ This scaffold **connects to** existing proven results:
 
 ```lean
 -- Example: Test if hypothetical "AlternativeTheory" reduces to RS
-def AlternativeTheory : PhysicsFramework := sorry
+@[hypothesis] def AlternativeTheory : PhysicsFramework := sorry
 
--- Claim: Alternative has zero parameters
-axiom alt_zero_params : HasZeroParameters AlternativeTheory
-
--- Claim: Alternative derives observables
-axiom alt_derives : DerivesObservables AlternativeTheory
+-- These assumptions now come from RecognitionUniqueFacts
+@[hypothesis] def alt_zero_params : HasZeroParameters AlternativeTheory := by infer_instance
+@[hypothesis] def alt_derives : DerivesObservables AlternativeTheory := by infer_instance
 
 -- Conclusion: Alternative must be equivalent to RS
-example : ∃ (φ : ℝ) (RS : RH.RS.ZeroParamFramework φ),
+example [RecognitionUniqueFacts] : ∃ (φ : ℝ) (RS : RH.RS.ZeroParamFramework φ),
   FrameworkEquiv AlternativeTheory sorry :=
-recognition_science_unique AlternativeTheory alt_zero_params alt_derives
+RecognitionUniqueFacts.recognition_science_unique AlternativeTheory alt_zero_params alt_derives
 ```
 
 ---
