@@ -161,5 +161,15 @@ noncomputable def phiPsiCouplingStub : PhiPsiCouplingFacts where
 
 instance : PhiPsiCouplingFacts := phiPsiCouplingStub
 
+noncomputable def modifiedPoissonStub : ModifiedPoissonPDEFacts where
+  poisson_solution_unique := by
+    intro ρ w Φ₁ Φ₂ h₁ h₂ r hr
+    exact ⟨0, rfl⟩
+  fundamental_modified_poisson := by
+    intro ψ₀ ng ρ α C_lag x
+    simp
+
+instance : ModifiedPoissonPDEFacts := modifiedPoissonStub
+
 end TestFixtures
 end IndisputableMonolith
