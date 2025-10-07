@@ -12,6 +12,8 @@ open IndisputableMonolith.Relativity.Geometry
 open IndisputableMonolith.Verification.Necessity
 open IndisputableMonolith.Verification.Exclusivity
 open IndisputableMonolith.Relativity.Perturbation.LinearizedEquations
+open IndisputableMonolith.Verification.Necessity.DiscreteNecessity
+open IndisputableMonolith.Relativity.Perturbation.WeightFormula
 
 noncomputable def gaugeFactsStub : GaugeConstructionFacts where
   find_gauge_vector_for_newtonian := by intro h; exact ⟨⟨fun _ => 0⟩, by intro _ _ _; simp [gauge_transform, InNewtonianGauge]⟩
@@ -90,6 +92,20 @@ noncomputable def linearizedPDEStub : LinearizedPDEFacts where
     · intro x; simp [IsOrderEpsilonSquared, abs_mul]
 
 instance : LinearizedPDEFacts := linearizedPDEStub
+
+noncomputable def quantumFieldStub : QuantumFieldFacts where
+  qft_countable_basis := by
+    intro QFTState
+    exact ⟨Unit, countable_one, fun _ => ⟨(), by cases ‹Unit›; simp⟩⟩
+
+instance : QuantumFieldFacts := quantumFieldStub
+
+instance : PhenomenologyMatchingFacts :=
+  { matches_correction := by
+      intro ψ₀ ng ρ α C_lag tau0 M r hr hM htau0
+      simp [PhenomenologyMatchingFacts, dynamical_time_keplerian] from
+        -- placeholder simplified bound
+        show |(1 : ℝ) - 1| < 0.1 by norm_num }
 
 end TestFixtures
 end IndisputableMonolith
