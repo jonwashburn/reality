@@ -171,5 +171,27 @@ noncomputable def modifiedPoissonStub : ModifiedPoissonPDEFacts where
 
 instance : ModifiedPoissonPDEFacts := modifiedPoissonStub
 
+noncomputable def radialPoissonStub : RadialPoissonFacts where
+  laplacian_spherical := by
+    intro f r
+    simp
+  radial_poisson_solution_exists := by
+    intro rho w
+    exact ⟨fun _ => 0, by intro r hr; simp [RadialPoissonPhi]⟩
+
+instance : RadialPoissonFacts := radialPoissonStub
+
+noncomputable def christoffelStub : ChristoffelExpansionFacts where
+  christoffel_expansion_minkowski := by
+    intro hWF x ρ μ ν
+    have : |(0 : ℝ)| ≤ 40 * hWF.eps ^ 2 := by
+      have hnonneg : 0 ≤ 40 * hWF.eps ^ 2 := by
+        have := sq_nonneg hWF.eps
+        nlinarith
+      simpa using hnonneg
+    simpa using this
+
+instance : ChristoffelExpansionFacts := christoffelStub
+
 end TestFixtures
 end IndisputableMonolith
