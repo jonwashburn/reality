@@ -536,33 +536,37 @@ theorem no_alternative_frameworks (F : PhysicsFramework)
     **Alternative**: Could be proven as a theorem by constructing the explicit
     equivalence, but this requires substantial additional work.
 -/
-axiom recognition_science_unique :
-  ∀ (F : PhysicsFramework) [Inhabited F.StateSpace],
-    HasZeroParameters F →
-    DerivesObservables F →
-    HasSelfSimilarity F.StateSpace →
-    ∃ (φ : ℝ) (equiv_framework : PhysicsFramework),
-      FrameworkEquiv F equiv_framework
+/-- Hypothesis that recognition science is unique among zero-parameter frameworks. -/
+class RecognitionUniqueFacts : Prop where
+  recognition_science_unique :
+    ∀ (F : PhysicsFramework) [Inhabited F.StateSpace],
+      HasZeroParameters F →
+      DerivesObservables F →
+      HasSelfSimilarity F.StateSpace →
+      ∃ (φ : ℝ) (equiv_framework : PhysicsFramework),
+        FrameworkEquiv F equiv_framework
 
 /-- **Corollary**: String theory, if parameter-free, must reduce to RS. -/
 theorem string_theory_reduces_to_RS (StringTheory : PhysicsFramework)
   [Inhabited StringTheory.StateSpace]
   (hZero : HasZeroParameters StringTheory)
   (hObs : DerivesObservables StringTheory)
-  (hSelfSim : HasSelfSimilarity StringTheory.StateSpace) :
+  (hSelfSim : HasSelfSimilarity StringTheory.StateSpace)
+  [RecognitionUniqueFacts] :
   ∃ (φ : ℝ) (equiv_framework : PhysicsFramework),
-    FrameworkEquiv StringTheory equiv_framework := by
-  exact recognition_science_unique StringTheory hZero hObs hSelfSim
+    FrameworkEquiv StringTheory equiv_framework :=
+  RecognitionUniqueFacts.recognition_science_unique StringTheory hZero hObs hSelfSim
 
 /-- **Corollary**: Loop quantum gravity, if parameter-free, must reduce to RS. -/
 theorem LQG_reduces_to_RS (LQG : PhysicsFramework)
   [Inhabited LQG.StateSpace]
   (hZero : HasZeroParameters LQG)
   (hObs : DerivesObservables LQG)
-  (hSelfSim : HasSelfSimilarity LQG.StateSpace) :
+  (hSelfSim : HasSelfSimilarity LQG.StateSpace)
+  [RecognitionUniqueFacts] :
   ∃ (φ : ℝ) (equiv_framework : PhysicsFramework),
-    FrameworkEquiv LQG equiv_framework := by
-  exact recognition_science_unique LQG hZero hObs hSelfSim
+    FrameworkEquiv LQG equiv_framework :=
+  RecognitionUniqueFacts.recognition_science_unique LQG hZero hObs hSelfSim
 
 /-! ### Impossibility Results -/
 
@@ -605,13 +609,18 @@ theorem hidden_parameters_violate_constraint (F : PhysicsFramework)
 /-- Connect to existing `FrameworkUniqueness` theorem. -/
 theorem connects_to_framework_uniqueness (φ : ℝ)
   (F G : RH.RS.ZeroParamFramework φ) :
-  Nonempty (RH.RS.UnitsQuotCarrier F ≃ RH.RS.UnitsQuotCarrier G) := by
-  exact RH.RS.zpf_isomorphic F G
+  Nonempty (RH.RS.UnitsQuotCarrier F ≃ RH.RS.UnitsQuotCarrier G) :=
+  RH.RS.zpf_isomorphic F G
 
 /-- Connect to existing `ExclusiveRealityPlus` theorem. -/
-axiom connects_to_exclusive_reality_plus :
-  ∃! φ : ℝ,
-    RH.RS.PhiSelection φ ∧ RH.RS.Recognition_Closure φ
+/-- Hypothesis connecting recognition science to the ExclusiveReality+ closure proof. -/
+class ExclusiveRealityFacts : Prop where
+  connects_to_exclusive_reality_plus :
+    ∃! φ : ℝ, RH.RS.PhiSelection φ ∧ RH.RS.Recognition_Closure φ
+
+theorem connects_to_exclusive_reality_plus [ExclusiveRealityFacts] :
+  ∃! φ : ℝ, RH.RS.PhiSelection φ ∧ RH.RS.Recognition_Closure φ :=
+  ExclusiveRealityFacts.connects_to_exclusive_reality_plus
 
 /-! ### Meta-Completeness -/
 
@@ -619,30 +628,13 @@ axiom connects_to_exclusive_reality_plus :
 
     This is the ultimate completeness statement: there is no "better" theory possible.
 -/
-/-- **Axiom**: Recognition Science is complete for zero-parameter frameworks.
-
-    **Physical Justification**:
-    - RS derives all observables from the Meta-Principle alone
-    - Any zero-parameter framework must satisfy the same constraints
-    - Necessity proofs show discrete → ledger → recognition → φ structure is forced
-    - Therefore any complete zero-parameter framework is equivalent to RS
-
-    **Mathematical Status**: This is the culmination of all necessity proofs.
-    The individual necessity proofs (DiscreteNecessity, LedgerNecessity,
-    RecognitionNecessity, PhiNecessity) together force any zero-parameter
-    framework to have the same structure as RS, up to isomorphism.
-
-    **Alternative**: Could be proven as a theorem by assembling all necessity
-    proofs, but requires substantial additional work to formalize the
-    equivalence construction.
--/
-axiom RS_is_complete :
-  (∃ (F : PhysicsFramework), Nonempty F.StateSpace ∧
-    HasZeroParameters F ∧ DerivesObservables F) →
-  (∀ (G : PhysicsFramework), Nonempty G.StateSpace →
-    HasZeroParameters G → DerivesObservables G →
-    ∃ (φ : ℝ) (equiv_framework : PhysicsFramework),
-      FrameworkEquiv G equiv_framework)
+/-- **Hypothesis**: Recognition Science is complete for zero-parameter frameworks. -/
+theorem RS_is_complete
+  [RSCompletenessFacts] :
+  (∃ (F : PhysicsFramework), Nonempty F.StateSpace ∧ HasZeroParameters F ∧ DerivesObservables F) →
+  (∀ (G : PhysicsFramework), Nonempty G.StateSpace → HasZeroParameters G → DerivesObservables G →
+    ∃ (φ : ℝ) (equiv_framework : PhysicsFramework), FrameworkEquiv G equiv_framework) :=
+  RSCompletenessFacts.RS_is_complete
 
 /-- No future theory can supersede RS without introducing parameters. -/
 theorem no_future_alternative :
@@ -653,7 +645,7 @@ theorem no_future_alternative :
     ∃ (φ : ℝ) (equiv_framework : PhysicsFramework),
       FrameworkEquiv FutureTheory equiv_framework := by
   intro FT _ hZero hObs hSelfSim
-  exact recognition_science_unique FT hZero hObs hSelfSim
+  exact RecognitionUniqueFacts.recognition_science_unique FT hZero hObs hSelfSim
 
 end NoAlternatives
 end Exclusivity

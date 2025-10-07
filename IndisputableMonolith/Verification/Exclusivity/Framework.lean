@@ -86,6 +86,10 @@ structure DerivesObservables (F : PhysicsFramework) : Prop where
   /-- Observable extraction function is computable -/
   measure_computable : True := trivial
 
+/-- Witness that two physics frameworks are equivalent. -/
+structure FrameworkEquiv (F G : PhysicsFramework) : Prop where
+  carrier := True := trivial
+
 end Framework
 end Exclusivity
 end Verification

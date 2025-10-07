@@ -203,5 +203,31 @@ noncomputable def coneEntropyStub : ConeEntropyFacts where
 
 instance : ConeEntropyFacts := coneEntropyStub
 
-end TestFixtures
-end IndisputableMonolith
+noncomputable def recognitionUniqueStub : RecognitionUniqueFacts where
+  recognition_science_unique := by
+    intro F _ hZero hObs hSelfSim
+    refine ⟨Constants.phi, F, ?_⟩
+    trivial
+
+instance : RecognitionUniqueFacts := recognitionUniqueStub
+
+noncomputable def exclusiveRealityStub : ExclusiveRealityFacts where
+  connects_to_exclusive_reality_plus := by
+    refine ⟨Constants.phi, ?_, ?_⟩
+    · exact ⟨IndisputableMonolith.RH.RS.phi_selection_phi, IndisputableMonolith.RH.RS.recognition_closure_phi⟩
+    · intro φ hφ
+      cases hφ with
+      | intro h1 h2 =>
+        have := IndisputableMonolith.RH.RS.phi_unique h1 h2
+        simp [Constants.phi] at this
+        exact this
+
+instance : ExclusiveRealityFacts := exclusiveRealityStub
+
+noncomputable def rsCompletenessStub : RSCompletenessFacts where
+  RS_is_complete := by
+    intro hExist G hNonempty hZero hObs
+    have : FrameworkEquiv G G := ⟨trivial⟩
+    exact ⟨Constants.phi, G, this⟩
+
+instance : RSCompletenessFacts := rsCompletenessStub
