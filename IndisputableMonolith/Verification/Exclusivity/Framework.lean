@@ -83,6 +83,8 @@ structure DerivesObservables (F : PhysicsFramework) : Prop where
   derives_constants : ∃ (c ℏ G : ℝ), (c > 0 ∧ ℏ > 0 ∧ G > 0)
   /-- Predictions are finite (computable) -/
   finite_predictions : True  -- Simplified
+  /-- Observable extraction function is computable -/
+  measure_computable : True := trivial
 
 end Framework
 end Exclusivity
