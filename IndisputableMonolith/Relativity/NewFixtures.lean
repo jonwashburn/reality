@@ -140,5 +140,26 @@ noncomputable def fieldTheoryStub : FieldTheoryFacts where
 
 instance : FieldTheoryFacts := fieldTheoryStub
 
+noncomputable def weakFieldAlgebraStub : WeakFieldAlgebraFacts where
+  inverse_first_order_identity_minkowski := by
+    intro h x μ ν
+    have : |(0 : ℝ)| ≤ 8 * h.eps + 4 * h.eps ^ 2 := by
+      have hnonneg : 0 ≤ 8 * h.eps + 4 * h.eps ^ 2 := by
+        have := le_of_lt h.eps_pos
+        nlinarith [this]
+      simpa using hnonneg
+    simpa using this
+
+instance : WeakFieldAlgebraFacts := weakFieldAlgebraStub
+
+noncomputable def phiPsiCouplingStub : PhiPsiCouplingFacts where
+  phi_minus_psi_difference := by
+    intro ng α C_lag x
+    refine ⟨0, ?_, ?_⟩
+    · simp
+    · norm_num
+
+instance : PhiPsiCouplingFacts := phiPsiCouplingStub
+
 end TestFixtures
 end IndisputableMonolith
