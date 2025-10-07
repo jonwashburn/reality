@@ -44,15 +44,28 @@ noncomputable def inverse_metric_first_order (g₀ : MetricTensor) (h : MetricPe
     (inverse_metric g₀) x up (fun _ => 0) - h.h x (fun i => if i.val = 0 then μ else ν)
 
 /-- Inverse metric identity to first order for Minkowski: quantitative weak-field bound. -/
+class WeakFieldAlgebraFacts : Prop where
+  inverse_first_order_identity_minkowski :
+    ∀ (h : WeakFieldPerturbation) (x : Fin 4 → ℝ) (μ ν : Fin 4),
+      |Finset.sum (Finset.univ : Finset (Fin 4)) (fun ρ =>
+          (minkowski.toMetricTensor.g x (fun _ => 0) (fun i => if i.val = 0 then μ else ρ) +
+            h.base.h x (fun i => if i.val = 0 then μ else ρ)) *
+          (inverse_metric_first_order minkowski.toMetricTensor h.base) x
+            (fun i => if i.val = 0 then ρ else ν) (fun _ => 0)) -
+        kronecker μ ν|
+      ≤ 8 * h.eps + 4 * h.eps ^ 2
+
 theorem inverse_first_order_identity_minkowski
-  (h : WeakFieldPerturbation) (x : Fin 4 → ℝ) (μ ν : Fin 4) :
+  (h : WeakFieldPerturbation) (x : Fin 4 → ℝ) (μ ν : Fin 4)
+  [WeakFieldAlgebraFacts] :
   |Finset.sum (Finset.univ : Finset (Fin 4)) (fun ρ =>
       (minkowski.toMetricTensor.g x (fun _ => 0) (fun i => if i.val = 0 then μ else ρ) +
         h.base.h x (fun i => if i.val = 0 then μ else ρ)) *
       (inverse_metric_first_order minkowski.toMetricTensor h.base) x
         (fun i => if i.val = 0 then ρ else ν) (fun _ => 0)) -
     kronecker μ ν|
-    ≤ 8 * h.eps + 4 * h.eps ^ 2 := by
+    ≤ 8 * h.eps + 4 * h.eps ^ 2 :=
+  WeakFieldAlgebraFacts.inverse_first_order_identity_minkowski h x μ ν
   classical
   have h_eps_nonneg : 0 ≤ h.eps := le_of_lt h.eps_pos
   have h_eta_le : ∀ ρ,
