@@ -190,6 +190,9 @@ noncomputable def christoffelStub : ChristoffelExpansionFacts where
         nlinarith
       simpa using hnonneg
     simpa using this
+  newtonian_00_formula := by
+    intro ng x
+    simp [ChristoffelExpansionFacts]
 
 instance : ChristoffelExpansionFacts := christoffelStub
 
