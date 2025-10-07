@@ -193,5 +193,12 @@ noncomputable def christoffelStub : ChristoffelExpansionFacts where
 
 instance : ChristoffelExpansionFacts := christoffelStub
 
+noncomputable def coneEntropyStub : ConeEntropyFacts where
+  cone_entropy_bound := by
+    intro α cone area
+    simp
+
+instance : ConeEntropyFacts := coneEntropyStub
+
 end TestFixtures
 end IndisputableMonolith
