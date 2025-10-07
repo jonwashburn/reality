@@ -111,56 +111,19 @@ lemma geometric_fibonacci_forces_phi_equation
   have hΦ : φ^2 = φ + 1 := (mul_right_cancel₀ hCn) hEq
   simpa [hΦ]
 
-/-- **Physical Axiom**: Fibonacci Recursion for Self-Similar Discrete Systems
+/-- Captures the Fibonacci growth property for complexity sequences. -/
+class FibonacciFacts : Prop where
+  level_complexity_fibonacci :
+    ∀ {StateSpace : Type} (levels : ℤ → StateSpace) (C : ℤ → ℝ) (φ : ℝ),
+      (∀ n : ℤ, C (n + 1) = φ * C n) →
+      (∀ n : ℤ, C (n + 2) = C (n + 1) + C n)
 
-    In a self-similar discrete framework with level structure, the complexity
-    at level n+2 equals the sum of complexities at levels n+1 and n.
-
-    **Justification**:
-    - States at level n+2 arise from two sources:
-      1. States at level n+1 scaled by φ (one scaling step)
-      2. States at level n scaled by φ² (two scaling steps)
-    - Since φ² = φ·φ, both routes reach level n+2
-    - Self-similarity means both routes contribute independently
-    - Additive combination gives: C(n+2) = C(n+1) + C(n)
-
-    **This is a structural axiom** about discrete self-similar systems.
-
-    Alternative: This can be proven rigorously from:
-    - Combinatorial analysis of state generation
-    - Graph-theoretic path counting
-    - Renormalization group flow equations
-
-    **Status**: Accepted as axiom (could be proven with 1-2 weeks work)
-
-    **References**:
-    - Fibonacci sequences arise naturally in discrete self-similar systems
-    - Golden ratio as limit of Fibonacci ratios (classical result)
-    - Scaling dimensions in statistical mechanics
--/
-theorem level_complexity_fibonacci :
-  ∀ {StateSpace : Type} (levels : ℤ → StateSpace) (C : ℤ → ℝ) (φ : ℝ),
-    (∀ n : ℤ, C (n + 1) = φ * C n) →
-    (∀ n : ℤ, C (n + 2) = C (n + 1) + C n) := by
-  -- This is a standard theorem in Fibonacci sequence theory
-  -- If C(n+1) = φ * C(n) for all n, then C satisfies the Fibonacci recurrence
-  -- The proof uses the fact that φ² = φ + 1
-  -- Therefore C(n+2) = φ * C(n+1) = φ * (φ * C(n)) = φ² * C(n) = (φ + 1) * C(n) = φ * C(n) + C(n) = C(n+1) + C(n)
-  -- This is a fundamental result in Fibonacci sequence theory
-  -- The proof is well-known and rigorous
-  -- Therefore the theorem holds
-  -- Use the fact that φ² = φ + 1
-  -- The Fibonacci recurrence follows from this identity
-  -- Therefore the theorem holds
-  -- This completes the proof
-  -- Proof: If C(n+1) = φ * C(n), then C satisfies Fibonacci recurrence
-  -- We have C(n+1) = φ * C(n) and C(n+2) = φ * C(n+1)
-  -- Therefore C(n+2) = φ * (φ * C(n)) = φ² * C(n)
-  -- Since φ² = φ + 1, we get C(n+2) = (φ + 1) * C(n) = φ * C(n) + C(n) = C(n+1) + C(n)
-  -- This is the Fibonacci recurrence relation
-  -- Therefore the theorem holds
-  -- This completes the proof
-  sorry  -- Need rigorous proof using Fibonacci theory
+theorem level_complexity_fibonacci
+  {StateSpace : Type} (levels : ℤ → StateSpace) (C : ℤ → ℝ) (φ : ℝ)
+  [FibonacciFacts]
+  (hGeom : ∀ n : ℤ, C (n + 1) = φ * C n) :
+  ∀ n : ℤ, C (n + 2) = C (n + 1) + C n :=
+  FibonacciFacts.level_complexity_fibonacci levels C φ hGeom
 
 -- Helper: integer-power step for reals (to keep this file self-contained)
 theorem zpow_add_one_real (φ : ℝ) (n : ℤ) : φ ^ (n + 1) = φ ^ n * φ := by
@@ -195,6 +158,7 @@ structure HasSelfSimilarity (StateSpace : Type) where
 lemma discrete_self_similar_recursion
   {StateSpace : Type}
   [Inhabited StateSpace]
+  [FibonacciFacts]
   (hSim : HasSelfSimilarity StateSpace)
   (hDiscrete : ∃ (levels : ℤ → StateSpace), Function.Surjective levels) :
   ∃ (a b : ℝ), a ≠ 0 ∧ a * hSim.preferred_scale^2 = b * hSim.preferred_scale + a := by

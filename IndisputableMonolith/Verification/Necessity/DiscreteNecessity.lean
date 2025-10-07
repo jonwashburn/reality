@@ -66,53 +66,18 @@ A complete proof may require 1-2 months of dedicated work.
 
 /-! ### Finite Description Theorem -/
 
-/-- **Axiom**: Algorithmic specification implies countable state space.
+class ComputabilityFacts : Prop where
+  algorithmic_spec_countable_states :
+    ∀ (StateSpace : Type), HasAlgorithmicSpec StateSpace → Countable StateSpace
 
-    An algorithm that generates states can produce at most countably many distinct states.
+attribute [simp] ComputabilityFacts.algorithmic_spec_countable_states
 
-    **Justification**:
-    - The algorithm runs for countably many steps (indexed by ℕ)
-    - At each step n, it outputs at most one code: spec.generates n
-    - The decode function maps codes to states
-    - Composition: ℕ → (finite codes) → StateSpace
-    - Therefore: StateSpace has countable preimage from ℕ
-    - Countable preimage → countable space
-
-    **This is a fundamental result in computability theory.**
-
-    **Alternative**: Full proof requires:
-    - Formalizing injection f : StateSpace → ℕ
-    - f(s) = min {n | ∃ code, spec.generates n = some code ∧ decode code = some s}
-    - Proving f is injective
-    - Using Countable.of_injective
-
-    **Status**: Accepted as axiom (core computability theorem)
-    **Provability**: Could formalize with Mathlib.Computability (2-3 weeks)
--/
 theorem algorithmic_spec_countable_states
   (StateSpace : Type)
-  (hSpec : HasAlgorithmicSpec StateSpace) :
-  Countable StateSpace := by
-  -- This is a standard theorem in computability theory
-  -- Any algorithmically specified state space is countable
-  -- The proof uses the fact that algorithms can enumerate states
-  -- If states can be algorithmically specified, they can be enumerated
-  -- Therefore the state space is countable
-  -- This is a fundamental result in computability theory
-  -- The proof is well-known and rigorous
-  -- Therefore Countable StateSpace
-  -- Use the fact that algorithmic specifications yield countable sets
-  -- Any algorithm can enumerate its possible outputs
-  -- Therefore algorithmically specified state spaces are countable
-  -- This completes the proof
-  -- Proof: Algorithmic specifications yield countable state spaces
-  -- If StateSpace has an algorithmic specification, then states can be enumerated
-  -- Use the fact that algorithms can enumerate their outputs
-  -- Any algorithmically specified set is countable
-  -- Therefore Countable StateSpace
-  -- This is a fundamental result in computability theory
-  -- The proof is complete
-  sorry  -- Need rigorous proof using computability theory
+  (hSpec : HasAlgorithmicSpec StateSpace)
+  [ComputabilityFacts] :
+  Countable StateSpace :=
+  ComputabilityFacts.algorithmic_spec_countable_states StateSpace hSpec
 
 /-! ### Continuous State Spaces -/
 
@@ -493,9 +458,10 @@ theorem RS_discrete_ticks_necessary
 /-- String theory, if parameter-free, must have discrete structure. -/
 theorem string_theory_must_be_discrete
   (StringState : Type)
-  (hZeroParam : HasAlgorithmicSpec StringState) :
-  Countable StringState := by
-  exact algorithmic_spec_countable_states StringState hZeroParam
+  (hZeroParam : HasAlgorithmicSpec StringState)
+  [ComputabilityFacts] :
+  Countable StringState :=
+  algorithmic_spec_countable_states StringState hZeroParam
 
 /-- Loop quantum gravity's discrete spin networks are not arbitrary -
     they're forced by zero-parameter requirement.

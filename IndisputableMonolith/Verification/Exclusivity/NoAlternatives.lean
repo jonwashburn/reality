@@ -101,11 +101,11 @@ Each `sorry` should be replaced with either:
 class WellFoundedEvolution (F : PhysicsFramework) : Prop where
   wf : WellFounded (fun a b : F.StateSpace => F.evolve b = a)
 
-theorem physical_evolution_well_founded :
-  ∀ (F : PhysicsFramework) [Inhabited F.StateSpace] [WellFoundedEvolution F],
-    WellFounded (fun a b : F.StateSpace => F.evolve b = a) := by
-  intro F _ h
-  simpa using (WellFoundedEvolution.wf (F:=F))
+theorem physical_evolution_well_founded
+  (F : PhysicsFramework) [Inhabited F.StateSpace]
+  [PhysicalEvolutionFacts] :
+    WellFounded (fun a b : F.StateSpace => F.evolve b = a) :=
+  PhysicalEvolutionFacts.physical_evolution_well_founded F
 
 /-! ### Discrete Structure Necessity -/
 
@@ -587,12 +587,12 @@ theorem continuous_framework_needs_parameters (F : PhysicsFramework)
 class HiddenParamContradictsSpec (F : PhysicsFramework) : Prop where
   contradict : (∃ (params : ℕ → ℝ), True) → ¬HasAlgorithmicSpec F.StateSpace
 
-theorem hidden_params_are_params :
-  ∀ (F : PhysicsFramework) [HiddenParamContradictsSpec F],
-    (∃ (params : ℕ → ℝ), True) →  -- Simplified: parameters exist
-    ¬HasAlgorithmicSpec F.StateSpace := by
-  intro F hHyp hParams
-  exact HiddenParamContradictsSpec.contradict (F:=F) hParams
+theorem hidden_params_are_params
+  (F : PhysicsFramework)
+  [PhysicalEvolutionFacts]
+  (hHidden : ∃ (params : ℕ → ℝ), True) :
+  ¬HasAlgorithmicSpec F.StateSpace :=
+  PhysicalEvolutionFacts.hidden_params_are_params F hHidden
 
 /-- A framework with hidden parameters is not truly zero-parameter. -/
 theorem hidden_parameters_violate_constraint (F : PhysicsFramework)

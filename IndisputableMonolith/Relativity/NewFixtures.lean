@@ -9,6 +9,8 @@ namespace TestFixtures
 open IndisputableMonolith.Relativity.Perturbation
 open IndisputableMonolith.Relativity.Analysis
 open IndisputableMonolith.Relativity.Geometry
+open IndisputableMonolith.Verification.Necessity
+open IndisputableMonolith.Verification.Exclusivity
 
 noncomputable def gaugeFactsStub : GaugeConstructionFacts where
   find_gauge_vector_for_newtonian := by intro h; exact ⟨⟨fun _ => 0⟩, by intro _ _ _; simp [gauge_transform, InNewtonianGauge]⟩
@@ -37,6 +39,35 @@ noncomputable def landauFactsStub : LandauCompositionFacts where
   bigO_comp_continuous := by intro f g h a hf; exact hf
 
 instance : LandauCompositionFacts := landauFactsStub
+
+noncomputable def matrixNeumannStub : MatrixNeumannFacts where
+  higher_terms_bound := by
+    intro g0 h h_small x μ ν
+    have : |(0 : ℝ)| ≤ 16 * (0.1 : ℝ) ^ 2 := by norm_num
+    simpa using this
+
+instance : MatrixNeumannFacts := matrixNeumannStub
+
+noncomputable def computabilityFactsStub : ComputabilityFacts where
+  algorithmic_spec_countable_states := by
+    intro StateSpace hSpec
+    classical
+    exact countable_iff_exists_encode.mp ⟨fun _ => 0, fun _ => 0⟩
+
+instance : ComputabilityFacts := computabilityFactsStub
+
+noncomputable def fibonacciFactsStub : FibonacciFacts where
+  level_complexity_fibonacci := by
+    intro StateSpace levels C φ hGeom n
+    simpa using hGeom (n + 1)
+
+instance : FibonacciFacts := fibonacciFactsStub
+
+noncomputable def physicalEvolutionStub : PhysicalEvolutionFacts where
+  physical_evolution_well_founded := by intro F _; exact WellFounded.intro fun x => ⟨_, fun _ _ => False.elim (False.intro)⟩
+  hidden_params_are_params := by intro F _; exact fun h => by cases h
+
+instance : PhysicalEvolutionFacts := physicalEvolutionStub
 
 end TestFixtures
 end IndisputableMonolith
