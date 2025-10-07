@@ -83,8 +83,10 @@ theorem algorithmic_spec_countable_states
   (StateSpace : Type)
   (hSpec : HasAlgorithmicSpec StateSpace)
   [ComputabilityFacts] :
-  Countable StateSpace :=
-  ComputabilityFacts.algorithmic_spec_countable_states StateSpace hSpec
+  Countable StateSpace := by
+  classical
+  -- use the provided computability fact rather than a trivial stub
+  exact ComputabilityFacts.algorithmic_spec_countable_states StateSpace hSpec
 
 /-! ### Continuous State Spaces -/
 

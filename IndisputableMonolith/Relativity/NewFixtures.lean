@@ -53,14 +53,6 @@ noncomputable def matrixNeumannStub : MatrixNeumannFacts where
 
 instance : MatrixNeumannFacts := matrixNeumannStub
 
-noncomputable def computabilityFactsStub : ComputabilityFacts where
-  algorithmic_spec_countable_states := by
-    intro StateSpace hSpec
-    classical
-    exact countable_iff_exists_encode.mp ⟨fun _ => 0, fun _ => 0⟩
-
-instance : ComputabilityFacts := computabilityFactsStub
-
 noncomputable def fibonacciFactsStub : FibonacciFacts where
   level_complexity_fibonacci := by
     intro StateSpace levels C φ hGeom n
