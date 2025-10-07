@@ -129,5 +129,16 @@ instance : PhenomenologyMatchingFacts :=
 instance : SphericalWeightFacts :=
   { param_identification := by simp [SphericalWeightFacts, lambda_phenom, xi_phenom, n_phenom, zeta_phenom, C_lag_RS, alpha_RS] }
 
+noncomputable def fieldTheoryStub : FieldTheoryFacts where
+  stress_energy_trace_free := by
+    intro ψ g vol α x
+    simp [FieldTheoryFacts]
+  conservation_theorem := by
+    intro ψ g vol α m_squared h
+    intro ν x
+    simp [FieldTheoryFacts]
+
+instance : FieldTheoryFacts := fieldTheoryStub
+
 end TestFixtures
 end IndisputableMonolith
