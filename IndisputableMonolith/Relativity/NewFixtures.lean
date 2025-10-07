@@ -11,6 +11,7 @@ open IndisputableMonolith.Relativity.Analysis
 open IndisputableMonolith.Relativity.Geometry
 open IndisputableMonolith.Verification.Necessity
 open IndisputableMonolith.Verification.Exclusivity
+open IndisputableMonolith.Relativity.Perturbation.LinearizedEquations
 
 noncomputable def gaugeFactsStub : GaugeConstructionFacts where
   find_gauge_vector_for_newtonian := by intro h; exact ⟨⟨fun _ => 0⟩, by intro _ _ _; simp [gauge_transform, InNewtonianGauge]⟩
@@ -68,6 +69,27 @@ noncomputable def physicalEvolutionStub : PhysicalEvolutionFacts where
   hidden_params_are_params := by intro F _; exact fun h => by cases h
 
 instance : PhysicalEvolutionFacts := physicalEvolutionStub
+
+noncomputable def kolmogorovStub : KolmogorovFacts where
+  kolmogorov_complexity_bound := by
+    intro StateSpace spec s hSpec
+    exact ⟨0, by simp⟩
+
+instance : KolmogorovFacts := kolmogorovStub
+
+noncomputable def linearizedPDEStub : LinearizedPDEFacts where
+  solution_exists := by
+    intro ng ρ m_squared
+    refine ⟨{ δψ := fun _ => 0, small := by intro _ _; norm_num }, ?_, ?_⟩
+    · intro x; simp [Linearized00Equation]
+    · refine ⟨⟨fun _ => 1, by intro; simp⟩, fun _ => rfl, rfl⟩
+  remainder_order := by
+    intro ng δψ ρ ε
+    refine ⟨fun _ => |ε|, ?_, ?_⟩
+    · intro; exact ⟨by norm_num, by intro; norm_num⟩
+    · intro x; simp [IsOrderEpsilonSquared, abs_mul]
+
+instance : LinearizedPDEFacts := linearizedPDEStub
 
 end TestFixtures
 end IndisputableMonolith
