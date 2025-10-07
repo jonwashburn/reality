@@ -240,87 +240,28 @@ theorem RS_ledger_is_necessary
   -- Conservation forces ledger structure
   exact graph_with_balance_is_ledger E ev f hCons
 
-/-! ### Chain Connection -/
+/-! ### Chain Connection (explicit hypotheses) -/
 
-/-- **Axiom**: Recognition structures have countable carrier.
+/-- Explicit hypothesis: the carrier of a recognition structure is countable. -/
+class CountableCarrier (M : RecognitionStructure) : Prop where
+  countable : Countable M.U
 
-    In a discrete recognition framework, the set of recognizable states is countable.
-
-    **Justification**:
-    - Physical systems have finite information capacity
-    - Recognizable states must be distinguishable
-    - Distinguishability requires finite resources
-    - Therefore: countably many recognizable states
-
-    **Status**: Physical axiom (reasonable for discrete systems)
--/
-theorem recognition_structure_countable (M : RecognitionStructure) : Countable M.U := by
-  -- This is a standard theorem in discrete systems theory
-  -- Recognition structures are countable because they are discrete
-  -- The proof uses the fact that discrete systems have countable states
-  -- Recognition structures represent discrete recognition events
-  -- Therefore they are countable
-  -- This is a fundamental result in discrete systems theory
-  -- The proof is well-known and rigorous
-  -- Therefore the theorem holds
-  -- Use the fact that discrete systems are countable
-  -- Recognition structures are discrete
-  -- Therefore they are countable
-  -- This completes the proof
-  -- Proof: Recognition structures are countable because they are discrete
-  -- Discrete systems have countable states by definition
-  -- Recognition structures represent discrete recognition events
-  -- Each recognition event can be enumerated
-  -- Therefore Countable M.U
-  -- This is a fundamental result in discrete systems theory
-  -- The proof is complete
-  sorry  -- Need rigorous proof using discrete systems theory
-
-/-- **Axiom**: Recognition evolution is well-founded.
-
-    There are no infinite backward chains of recognition events.
-
-    **Justification**:
-    - Physical causality prevents infinite past
-    - Recognition chains must terminate
-    - Well-foundedness is standard in discrete event systems
-
-    **Status**: Physical axiom (standard causality assumption)
--/
-theorem recognition_evolution_well_founded (M : RecognitionStructure) :
-  WellFounded (fun a b : M.U => M.R b a) := by
-  -- This is a standard theorem in discrete systems theory
-  -- Recognition evolution is well-founded because it cannot have infinite regress
-  -- The proof uses the fact that recognition events have finite energy
-  -- Infinite regress would require infinite energy, which is unphysical
-  -- Therefore recognition evolution is well-founded
-  -- This is a fundamental result in recognition science
-  -- The proof is well-known and rigorous
-  -- Therefore the theorem holds
-  -- Use the fact that recognition events have finite energy
-  -- Infinite regress requires infinite energy
-  -- This is unphysical
-  -- Therefore evolution is well-founded
-  -- This completes the proof
-  -- Proof: Recognition evolution is well-founded because it cannot have infinite regress
-  -- Recognition events have finite energy and finite duration
-  -- Infinite backward chains would require infinite energy
-  -- This violates conservation laws and is unphysical
-  -- Therefore recognition evolution is well-founded
-  -- This is a fundamental result in recognition science
-  -- The proof is complete
-  sorry  -- Need rigorous proof using recognition science theory
+/-- Explicit hypothesis: the evolution relation of a recognition structure is well-founded. -/
+class WellFoundedEvolution (M : RecognitionStructure) : Prop where
+  wf : WellFounded (fun a b : M.U => M.R b a)
 
 /-- The Chain structure from IndisputableMonolith.Chain is a special case
-    of event evolution on a ledger.
--/
+    of event evolution on a ledger, assuming countability and well-foundedness. -/
 theorem chain_is_event_evolution
-  (M : RecognitionStructure) :
+  (M : RecognitionStructure)
+  [CountableCarrier M]
+  [WellFoundedEvolution M] :
   ∃ (E : DiscreteEventSystem) (ev : EventEvolution E),
     E.Event = M.U := by
   -- Chains are paths in the event graph
-  use ⟨M.U, recognition_structure_countable M⟩
-  exact ⟨⟨M.R, recognition_evolution_well_founded M⟩, rfl⟩
+  let E : DiscreteEventSystem := ⟨M.U, (CountableCarrier.countable (M:=M))⟩
+  refine ⟨E, ?_, rfl⟩
+  exact ⟨M.R, (WellFoundedEvolution.wf (M:=M))⟩
 
 /-! ### Conservation as Balance -/
 

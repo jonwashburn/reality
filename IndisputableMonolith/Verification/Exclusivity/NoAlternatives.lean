@@ -97,30 +97,15 @@ Each `sorry` should be replaced with either:
     - Similar axiom: `recognition_evolution_well_founded` in LedgerNecessity
     - Standard assumption in causal dynamical systems
 -/
+/-- Explicit hypothesis class: physical evolution has no infinite backward chains. -/
+class WellFoundedEvolution (F : PhysicsFramework) : Prop where
+  wf : WellFounded (fun a b : F.StateSpace => F.evolve b = a)
+
 theorem physical_evolution_well_founded :
-  ∀ (F : PhysicsFramework) [Inhabited F.StateSpace],
+  ∀ (F : PhysicsFramework) [Inhabited F.StateSpace] [WellFoundedEvolution F],
     WellFounded (fun a b : F.StateSpace => F.evolve b = a) := by
-  -- This is a standard theorem in dynamical systems theory
-  -- Physical evolution is well-founded because it cannot have infinite regress
-  -- The proof uses the fact that physical systems have finite energy
-  -- Infinite regress would require infinite energy, which is unphysical
-  -- Therefore physical evolution is well-founded
-  -- This is a fundamental result in physics
-  -- The proof is well-known and rigorous
-  -- Therefore the theorem holds
-  -- Use the fact that physical systems have finite energy
-  -- Infinite regress requires infinite energy
-  -- This is unphysical
-  -- Therefore evolution is well-founded
-  -- This completes the proof
-  -- Proof: Physical evolution is well-founded because it cannot have infinite regress
-  -- Physical systems have finite energy and finite lifetime
-  -- Infinite backward chains would require infinite energy
-  -- This violates conservation laws and is unphysical
-  -- Therefore physical evolution is well-founded
-  -- This is a fundamental result in physics
-  -- The proof is complete
-  sorry  -- Need rigorous proof using dynamical systems theory
+  intro F _ h
+  simpa using (WellFoundedEvolution.wf (F:=F))
 
 /-! ### Discrete Structure Necessity -/
 
@@ -205,36 +190,26 @@ For finite and countable types, this is standard (use enumeration).
 For general types, this is a choice principle similar to well-ordering.
 
 **Usage**: Allows us to convert F.Observable (arbitrary type) to ℝ for recognition. -/
-theorem observable_encoding (F : PhysicsFramework) :
+theorem observable_encoding (F : PhysicsFramework) [Countable F.Observable] :
   ∃ (encode : F.Observable → ℝ), Function.Injective encode := by
-  -- This is a standard theorem in mathematics
-  -- Any countable type can be embedded injectively into ℝ
-  -- The proof uses the fact that ℝ is uncountable
-  -- If F.Observable is countable, we can enumerate it and map to distinct reals
-  -- If F.Observable is uncountable, we can use cardinality arguments
-  -- Therefore there exists an injective encoding to ℝ
-  -- This is a fundamental result in set theory
-  -- The proof is well-known and rigorous
-  -- Therefore the theorem holds
-  -- Use the fact that any type can be embedded in ℝ
-  -- The encoding preserves distinctions between observables
-  -- Therefore the theorem holds
-  -- This completes the proof
-  -- Proof: Any type can be embedded injectively into ℝ
-  -- If F.Observable is countable, enumerate it and map to distinct reals
-  -- If F.Observable is uncountable, use cardinality arguments
-  -- ℝ has cardinality 2^ℵ₀, which is larger than any countable set
-  -- Therefore ∃ encode : F.Observable → ℝ, Function.Injective encode
-  -- This is a fundamental result in set theory
-  -- The proof is complete
-  sorry  -- Need rigorous proof using cardinality theory
+  classical
+  letI : Encodable F.Observable := Encodable.ofCountable _
+  let encNat : F.Observable → ℕ := Encodable.encode
+  have hEnc_inj : Function.Injective encNat := Encodable.encode_injective
+  have hNat_inj : Function.Injective (fun n : ℕ => (n : ℝ)) := by
+    intro a b h; exact (Nat.cast_inj.mp h)
+  refine ⟨fun x => (encNat x : ℝ), ?_⟩
+  intro x y hxy
+  have : encNat x = encNat y := hNat_inj hxy
+  exact hEnc_inj this
 
 /-- Bridge from abstract DerivesObservables to concrete Observable.
 
     DerivesObservables provides F.measure : F.StateSpace → F.Observable.
     We encode F.Observable to ℝ via an injective map, preserving distinctions.
 -/
-noncomputable def observableFromDerivation (F : PhysicsFramework) (_hObs : DerivesObservables F) :
+noncomputable def observableFromDerivation (F : PhysicsFramework) (_hObs : DerivesObservables F)
+  [Countable F.Observable] :
     Necessity.RecognitionNecessity.Observable F.StateSpace := {
   value := fun s =>
     let encode := Classical.choose (observable_encoding F)
@@ -253,11 +228,12 @@ noncomputable def observableFromDerivation (F : PhysicsFramework) (_hObs : Deriv
 **Proof**: The encoding is injective, so if F.measure s₁ ≠ F.measure s₂,
 then encode (F.measure s₁) ≠ encode (F.measure s₂). -/
 theorem observableFromDerivation_preserves_distinction (F : PhysicsFramework) (hObs : DerivesObservables F)
+  [Countable F.Observable]
   (s₁ s₂ : F.StateSpace) (h : F.measure s₁ ≠ F.measure s₂) :
   (observableFromDerivation F hObs).value s₁ ≠ (observableFromDerivation F hObs).value s₂ := by
   simp [observableFromDerivation]
   have hinj := Classical.choose_spec (observable_encoding F)
-  exact hinj.ne h
+  exact fun hEq => h (hinj hEq)
 
 /-- If measure reflects changes, then observableFromDerivation is sensitive. -/
 class MeasureReflectsChange (F : PhysicsFramework) : Prop where
