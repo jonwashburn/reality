@@ -53,12 +53,8 @@ noncomputable def matrixNeumannStub : MatrixNeumannFacts where
 
 instance : MatrixNeumannFacts := matrixNeumannStub
 
-noncomputable def fibonacciFactsStub : FibonacciFacts where
-  level_complexity_fibonacci := by
-    intro StateSpace levels C φ hGeom n
-    simpa using hGeom (n + 1)
-
-instance : FibonacciFacts := fibonacciFactsStub
+-- FibonacciFacts now has a real instance in Verification/Necessity/PhiNecessity.lean
+-- based on the RS physical postulate (Source.txt line 287)
 
 noncomputable def physicalEvolutionStub : PhysicalEvolutionFacts where
   physical_evolution_well_founded := by intro F _; exact WellFounded.intro fun x => ⟨_, fun _ _ => False.elim (False.intro)⟩

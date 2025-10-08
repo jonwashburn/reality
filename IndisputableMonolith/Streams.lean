@@ -36,7 +36,7 @@ def Cylinder {n : Nat} (w : Pattern n) : Set Stream :=
 @[simp] lemma Cylinder_zero (w : Pattern 0) : Cylinder w = Set.univ := by
   ext s; constructor
   · intro _; exact Set.mem_univ _
-  · intro _; simp; exact (mem_Cylinder_zero w s)
+  · intro _; exact (mem_Cylinder_zero w s)
 
 /-- Periodic extension of an 8‑bit window. -/
 def extendPeriodic8 (w : Pattern 8) : Stream := fun t =>
@@ -55,7 +55,6 @@ lemma extendPeriodic8_period (w : Pattern 8) (t : Nat) :
   extendPeriodic8 w (t + 8) = extendPeriodic8 w t := by
   dsimp [extendPeriodic8]
   have hmod : (t + 8) % 8 = t % 8 := by
-    simp [Nat.mod_self, Nat.add_comm]
     exact (Nat.add_mod t 8 8)
   have h8 : 0 < 8 := by decide
   have hfin : (⟨(t + 8) % 8, Nat.mod_lt _ h8⟩ : Fin 8)

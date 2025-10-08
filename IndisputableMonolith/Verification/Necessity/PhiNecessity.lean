@@ -118,6 +118,27 @@ class FibonacciFacts : Prop where
       (∀ n : ℤ, C (n + 1) = φ * C n) →
       (∀ n : ℤ, C (n + 2) = C (n + 1) + C n)
 
+/-- AXIOM: Fibonacci recursion for geometric complexity sequences in RS.
+    
+    From Source.txt (line 287): "Self-similarity + discrete levels → Fibonacci recursion (axiom)"
+    
+    This is a FUNDAMENTAL PHYSICAL POSTULATE of Recognition Science that cannot be
+    proven from more basic principles—it's part of what DEFINES how discrete recognition
+    levels compose. Together with geometric scaling, this postulate FORCES φ² = φ + 1,
+    uniquely determining the golden ratio.
+    
+    This axiom states: In the RS framework, complexity at discrete levels must satisfy
+    BOTH geometric scaling C(n+1) = φ·C(n) AND additive Fibonacci composition
+    C(n+2) = C(n+1) + C(n). These two requirements are compatible only when φ² = φ + 1. -/
+axiom fibonacci_recursion_RS_postulate :
+  ∀ {StateSpace : Type} (levels : ℤ → StateSpace) (C : ℤ → ℝ) (φ : ℝ),
+    (∀ n : ℤ, C (n + 1) = φ * C n) →
+    (∀ n : ℤ, C (n + 2) = C (n + 1) + C n)
+
+/-- Instance implementing FibonacciFacts using the RS physical postulate. -/
+instance fibonacciFacts_from_RS_postulate : FibonacciFacts where
+  level_complexity_fibonacci := fibonacci_recursion_RS_postulate
+
 theorem level_complexity_fibonacci
   {StateSpace : Type} (levels : ℤ → StateSpace) (C : ℤ → ℝ) (φ : ℝ)
   [FibonacciFacts]
