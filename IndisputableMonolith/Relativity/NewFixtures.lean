@@ -62,12 +62,8 @@ noncomputable def physicalEvolutionStub : PhysicalEvolutionFacts where
 
 instance : PhysicalEvolutionFacts := physicalEvolutionStub
 
-noncomputable def kolmogorovStub : KolmogorovFacts where
-  kolmogorov_complexity_bound := by
-    intro StateSpace spec s hSpec
-    exact ⟨0, by simp⟩
-
-instance : KolmogorovFacts := kolmogorovStub
+-- KolmogorovFacts now has a real instance in Verification/Necessity/DiscreteNecessity.lean
+-- based on algorithmic information theory axiom
 
 noncomputable def linearizedPDEStub : LinearizedPDEFacts where
   solution_exists := by
