@@ -45,4 +45,3 @@ example : 0 < cLag_from_phi := rs_params_positive.2
 end GRLimit
 end Relativity
 end IndisputableMonolith
-

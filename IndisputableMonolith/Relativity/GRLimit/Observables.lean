@@ -1,98 +1,161 @@
-/-!
-Temporarily deferred: GR Limit Observables Module
-
-This module is intentionally disabled to reduce scope for the current
-milestone. All previous imports and content are commented out below.
-Re-enable when ready to work on GR-limit observable results.
--/
-
--- import Mathlib
--- import IndisputableMonolith.Relativity.Geometry
--- import IndisputableMonolith.Relativity.Fields
--- import IndisputableMonolith.Relativity.Variation
--- import IndisputableMonolith.Relativity.GRLimit.Continuity
+import Mathlib
+import Mathlib.Data.Real.Basic
+import Mathlib.Topology.Basic
+import Mathlib.Analysis.SpecialFunctions.Log.Basic
+import Mathlib.Analysis.SpecialFunctions.Exp
 
 /-!
 # Observable Limits
 
-Proves that all physical observables (w(r), γ, β, c_T²) reduce to GR values as parameters → 0.
+Proves that basic proxy observables (w, γ, β, c_T²) reduce to GR values as parameters → 0,
+using only continuity arguments within mathlib.
 -/
 
-/-
 namespace IndisputableMonolith
 namespace Relativity
 namespace GRLimit
 
-open Geometry
-open Fields
+open Filter Topology
 
-/-- Weight function w(r) in weak-field limit. -/
-noncomputable def weight_observable (α cLag : ℝ) (Tdyn tau0 : ℝ) : ℝ :=
-  -- Simplified: w ≈ 1 + cLag · α · (Tdyn/tau0)^α
-  1 + cLag * α * (Tdyn / tau0) ^ α
+noncomputable section
 
-/-- Weight approaches 1 as parameters → 0. -/
-axiom weight_gr_limit (Tdyn tau0 : ℝ) (h_Tdyn : Tdyn > 0) (h_tau0 : tau0 > 0) :
-  Filter.Tendsto
-    (fun params : ℝ × ℝ => weight_observable params.1 params.2 Tdyn tau0)
-    (nhds (0, 0))
-    (nhds 1)
+/-- Weight function w in a weak-field proxy model.
+We use an exponential representation to avoid rpow domain issues. -/
+def weight_observable (α cLag : ℝ) (Tdyn tau0 : ℝ) : ℝ :=
+  let A : ℝ := Tdyn / tau0
+  1 + (α * cLag) * Real.exp (α * Real.log A)
 
-/-- PPN parameter γ approaches 1. -/
-noncomputable def gamma_observable (α cLag : ℝ) : ℝ :=
-  -- From Phase 7 (PPN derivation): γ = 1 + O(α·cLag)
-  1 + 0.1 * |α * cLag|  -- Simplified proxy
+/-- Weight approaches 1 as (α,cLag) → (0,0), for any positive Tdyn,tau0. -/
+ theorem weight_gr_limit (Tdyn tau0 : ℝ) (_h_Tdyn : 0 < Tdyn) (_h_tau0 : 0 < tau0) :
+  Tendsto (fun params : ℝ × ℝ => weight_observable params.1 params.2 Tdyn tau0)
+    (nhds (0, 0)) (nhds 1) := by
+  have h_cont_mul : Continuous fun p : ℝ × ℝ => p.1 * p.2 :=
+    continuous_fst.mul continuous_snd
+  have A : ℝ := Tdyn / tau0
+  have h_cont_g : Continuous fun p : ℝ × ℝ => Real.exp (p.1 * Real.log A) := by
+    have : Continuous fun p : ℝ × ℝ => p.1 * Real.log A :=
+      (continuous_fst.mul continuous_const)
+    exact Real.continuous_exp.comp this
+  have h_cont_weight : Continuous
+      (fun p : ℝ × ℝ => 1 + (p.1 * p.2) * Real.exp (p.1 * Real.log A)) := by
+    refine continuous_const.add ?_
+    exact h_cont_mul.mul h_cont_g
+  have h_tendsto := (h_cont_weight.tendsto (0, 0))
+  have h_eval : (fun p : ℝ × ℝ => 1 + (p.1 * p.2) * Real.exp (p.1 * Real.log A)) (0, 0) = 1 := by
+    simp
+  simpa [weight_observable, h_eval] using h_tendsto
 
-axiom gamma_gr_limit :
-  Filter.Tendsto
-    (fun params : ℝ × ℝ => gamma_observable params.1 params.2)
-    (nhds (0, 0))
-    (nhds 1)
+/-- PPN parameter γ proxy: γ = 1 + 0.1 · |α·cLag|. -/
+ def gamma_observable (α cLag : ℝ) : ℝ := 1 + (0.1 : ℝ) * |α * cLag|
 
-/-- PPN parameter β approaches 1. -/
-noncomputable def beta_observable (α cLag : ℝ) : ℝ :=
-  1 + 0.05 * |α * cLag|  -- From PPN scaffold
+ theorem gamma_gr_limit :
+  Tendsto (fun params : ℝ × ℝ => gamma_observable params.1 params.2)
+    (nhds (0, 0)) (nhds 1) := by
+  have h_cont_mul : Continuous fun p : ℝ × ℝ => p.1 * p.2 :=
+    continuous_fst.mul continuous_snd
+  have h_cont_abs : Continuous fun p : ℝ × ℝ => |p.1 * p.2| :=
+    continuous_abs.comp h_cont_mul
+  have h_cont : Continuous fun p : ℝ × ℝ => 1 + (0.1 : ℝ) * |p.1 * p.2| := by
+    refine continuous_const.add ?_
+    exact continuous_const.mul h_cont_abs
+  have h := h_cont.tendsto (0, 0)
+  have : (fun p : ℝ × ℝ => 1 + (0.1 : ℝ) * |p.1 * p.2|) (0, 0) = 1 := by simp
+  simpa [gamma_observable, this]
 
-axiom beta_gr_limit :
-  Filter.Tendsto
-    (fun params : ℝ × ℝ => beta_observable params.1 params.2)
-    (nhds (0, 0))
-    (nhds 1)
+/-- PPN parameter β proxy: β = 1 + 0.05 · |α·cLag|. -/
+ def beta_observable (α cLag : ℝ) : ℝ := 1 + (0.05 : ℝ) * |α * cLag|
 
-/-- GW tensor speed c_T² approaches 1. -/
-noncomputable def c_T_squared_observable (α cLag : ℝ) : ℝ :=
-  1 + 0.01 * |α * cLag|  -- From GW scaffold
+ theorem beta_gr_limit :
+  Tendsto (fun params : ℝ × ℝ => beta_observable params.1 params.2)
+    (nhds (0, 0)) (nhds 1) := by
+  have h_cont_mul : Continuous fun p : ℝ × ℝ => p.1 * p.2 :=
+    continuous_fst.mul continuous_snd
+  have h_cont_abs : Continuous fun p : ℝ × ℝ => |p.1 * p.2| :=
+    continuous_abs.comp h_cont_mul
+  have h_cont : Continuous fun p : ℝ × ℝ => 1 + (0.05 : ℝ) * |p.1 * p.2| := by
+    refine continuous_const.add ?_
+    exact continuous_const.mul h_cont_abs
+  have h := h_cont.tendsto (0, 0)
+  have : (fun p : ℝ × ℝ => 1 + (0.05 : ℝ) * |p.1 * p.2|) (0, 0) = 1 := by simp
+  simpa [beta_observable, this]
 
-axiom c_T_squared_gr_limit :
-  Filter.Tendsto
-    (fun params : ℝ × ℝ => c_T_squared_observable params.1 params.2)
-    (nhds (0, 0))
-    (nhds 1)
+/-- GW tensor speed proxy: c_T² = 1 + 0.01 · |α·cLag|. -/
+ def c_T_squared_observable (α cLag : ℝ) : ℝ := 1 + (0.01 : ℝ) * |α * cLag|
 
-/-- All observables approach GR values simultaneously. -/
-axiom observables_bundle_gr_limit (Tdyn tau0 : ℝ) (h_Tdyn : Tdyn > 0) (h_tau0 : tau0 > 0) :
-  Filter.Tendsto
+ theorem c_T_squared_gr_limit :
+  Tendsto (fun params : ℝ × ℝ => c_T_squared_observable params.1 params.2)
+    (nhds (0, 0)) (nhds 1) := by
+  have h_cont_mul : Continuous fun p : ℝ × ℝ => p.1 * p.2 :=
+    continuous_fst.mul continuous_snd
+  have h_cont_abs : Continuous fun p : ℝ × ℝ => |p.1 * p.2| :=
+    continuous_abs.comp h_cont_mul
+  have h_cont : Continuous fun p : ℝ × ℝ => 1 + (0.01 : ℝ) * |p.1 * p.2| := by
+    refine continuous_const.add ?_
+    exact continuous_const.mul h_cont_abs
+  have h := h_cont.tendsto (0, 0)
+  have : (fun p : ℝ × ℝ => 1 + (0.01 : ℝ) * |p.1 * p.2|) (0, 0) = 1 := by simp
+  simpa [c_T_squared_observable, this]
+
+/-- All four proxies approach GR values simultaneously. -/
+ theorem observables_bundle_gr_limit (Tdyn tau0 : ℝ) (hT : 0 < Tdyn) (hτ : 0 < tau0) :
+  Tendsto
     (fun params : ℝ × ℝ =>
       ( weight_observable params.1 params.2 Tdyn tau0
       , gamma_observable params.1 params.2
       , beta_observable params.1 params.2
       , c_T_squared_observable params.1 params.2 ))
-    (nhds (0, 0))
-    (nhds (1, 1, 1, 1))
+    (nhds (0, 0)) (nhds (1, 1, 1, 1)) := by
+  have h_w_cont : Continuous fun p : ℝ × ℝ => weight_observable p.1 p.2 Tdyn tau0 := by
+    have A : ℝ := Tdyn / tau0
+    have h_cont_mul : Continuous fun p : ℝ × ℝ => p.1 * p.2 :=
+      continuous_fst.mul continuous_snd
+    have h_cont_g : Continuous fun p : ℝ × ℝ => Real.exp (p.1 * Real.log A) := by
+      have : Continuous fun p : ℝ × ℝ => p.1 * Real.log A :=
+        (continuous_fst.mul continuous_const)
+      exact Real.continuous_exp.comp this
+    refine continuous_const.add ?_
+    exact h_cont_mul.mul h_cont_g
+  have h_g_cont : Continuous fun p : ℝ × ℝ => gamma_observable p.1 p.2 := by
+    have h_cont_mul : Continuous fun p : ℝ × ℝ => p.1 * p.2 :=
+      continuous_fst.mul continuous_snd
+    have h_cont_abs : Continuous fun p : ℝ × ℝ => |p.1 * p.2| :=
+      continuous_abs.comp h_cont_mul
+    refine continuous_const.add ?_
+    exact continuous_const.mul h_cont_abs
+  have h_b_cont : Continuous fun p : ℝ × ℝ => beta_observable p.1 p.2 := by
+    have h_cont_mul : Continuous fun p : ℝ × ℝ => p.1 * p.2 :=
+      continuous_fst.mul continuous_snd
+    have h_cont_abs : Continuous fun p : ℝ × ℝ => |p.1 * p.2| :=
+      continuous_abs.comp h_cont_mul
+    refine continuous_const.add ?_
+    exact continuous_const.mul h_cont_abs
+  have h_c_cont : Continuous fun p : ℝ × ℝ => c_T_squared_observable p.1 p.2 := by
+    have h_cont_mul : Continuous fun p : ℝ × ℝ => p.1 * p.2 :=
+      continuous_fst.mul continuous_snd
+    have h_cont_abs : Continuous fun p : ℝ × ℝ => |p.1 * p.2| :=
+      continuous_abs.comp h_cont_mul
+    refine continuous_const.add ?_
+    exact continuous_const.mul h_cont_abs
+  have h_tuple_cont : Continuous
+      (fun p : ℝ × ℝ =>
+        ( weight_observable p.1 p.2 Tdyn tau0
+        , gamma_observable p.1 p.2
+        , beta_observable p.1 p.2
+        , c_T_squared_observable p.1 p.2 )) := by
+    simpa using
+      (((h_w_cont.prod_mk h_g_cont).prod_mk h_b_cont).prod_mk h_c_cont)
+  have h := h_tuple_cont.tendsto (0, 0)
+  have :
+      (fun p : ℝ × ℝ =>
+        ( weight_observable p.1 p.2 Tdyn tau0
+        , gamma_observable p.1 p.2
+        , beta_observable p.1 p.2
+        , c_T_squared_observable p.1 p.2 )) (0, 0) = (1, 1, 1, 1) := by
+    simp [weight_observable]
+  simpa [this] using h
 
-/-- No discontinuity at origin: limits from all directions agree. -/
-axiom gr_limit_well_defined (Tdyn tau0 : ℝ) (h_Tdyn : Tdyn > 0) (h_tau0 : tau0 > 0) :
-  ∃! L : ℝ × ℝ × ℝ × ℝ,
-    ∀ seq : LimitSequence,
-      Filter.Tendsto
-        (fun n => ( weight_observable (seq.alpha_n n) (seq.cLag_n n) Tdyn tau0
-                  , gamma_observable (seq.alpha_n n) (seq.cLag_n n)
-                  , beta_observable (seq.alpha_n n) (seq.cLag_n n)
-                  , c_T_squared_observable (seq.alpha_n n) (seq.cLag_n n) ))
-        Filter.atTop
-        (nhds L) ∧ L = (1, 1, 1, 1)
+end
 
 end GRLimit
 end Relativity
 end IndisputableMonolith
--/
