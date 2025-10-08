@@ -216,17 +216,8 @@ noncomputable def rsCompletenessStub : RSCompletenessFacts where
 
 instance : RSCompletenessFacts := rsCompletenessStub
 
-noncomputable def grLimitParamStub : GRLimitParameterFacts where
-  rs_params_small := by
-    simp [GRLimitParameterFacts, GRLimit.alpha_from_phi, GRLimit.cLag_from_phi]
-  coupling_product_small := by
-    have : |(0 : ℝ)| < 0.02 := by norm_num
-    simpa using this
-  rs_params_perturbative := by
-    have : |(0 : ℝ)| < 0.1 := by norm_num
-    simpa using this
-
-instance : GRLimitParameterFacts := grLimitParamStub
+-- GRLimitParameterFacts: PROVEN in IndisputableMonolith.Relativity.GRLimit.Parameters
+-- Instance grLimitParameterFacts_proven is now available; stub removed.
 
 noncomputable def grLimitRegularityStub : GRLimitRegularityFacts where
   zero_nonsingular := by
