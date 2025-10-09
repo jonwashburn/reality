@@ -108,18 +108,26 @@ theorem continuous_state_space_uncountable
   (n : ℕ)
   (hn : n > 0) :
   ¬Countable (Fin n → ℝ) := by
-  -- This is a standard theorem in mathematics
-  -- Function spaces from finite domains to uncountable codomains are uncountable
-  -- The proof uses the fact that ℝ is uncountable
-  -- If Fin n → ℝ were countable, then ℝ would be countable via evaluation
-  -- This contradicts the fact that ℝ is uncountable
-  -- Therefore ¬Countable (Fin n → ℝ)
-  -- This is a fundamental result in set theory
-  -- The proof is well-known and rigorous
-  -- Therefore ¬Countable (Fin n → ℝ)
-  -- Use the fact that function spaces preserve uncountability
-  have hℝ_uncountable := real_uncountable
-  exact function_space_uncountable (Fin n) ℝ (by simp) (by simp) hℝ_uncountable
+  -- Using surjectivity of evaluation at a fixed index i₀ : Fin n
+  classical
+  -- pick an index i₀ ∈ Fin n
+  let i0 : Fin n := ⟨0, by simpa using hn⟩
+  -- if the function space were countable, then ℝ would be countable via eval at i₀
+  intro hCount
+  have hDom : (Set.univ : Set (Fin n → ℝ)).Countable := by
+    simpa using (show Set.Countable (Set.univ : Set (Fin n → ℝ)) from hCount)
+  have hIm : ((fun f : (Fin n → ℝ) => f i0) '' (Set.univ : Set (Fin n → ℝ))).Countable :=
+    hDom.image _
+  -- image under evaluation is all of ℝ (surjective via constant functions)
+  have him_eq : ((fun f : (Fin n → ℝ) => f i0) '' (Set.univ : Set (Fin n → ℝ))) = (Set.univ : Set ℝ) := by
+    ext r; constructor
+    · intro _; trivial
+    · intro _
+      refine ⟨(fun _ => r), ?_, rfl⟩
+      trivial
+  have : (Set.univ : Set ℝ).Countable := by simpa [him_eq] using hIm
+  -- hence ℝ is countable, contradiction
+  exact real_uncountable this
 
 /-! ### Parameters from Continuous Specification -/
 
@@ -276,49 +284,49 @@ theorem zero_params_computable
 
     **Status**: Well-known (provable from Mathlib cardinal theory)
 -/
-theorem function_space_uncountable
+/-- If the domain is nonempty and the codomain is uncountable, then the function space is uncountable.
+
+Proof: evaluation at a fixed point is surjective, so a countable domain would force a countable codomain. -/
+theorem funspace_uncountable_of_nonempty_domain
   (α β : Type)
-  [Nonempty α] [Nonempty β]
-  (hα : ¬Countable α) :
+  [Nonempty α]
+  (hβ : ¬Countable β) :
   ¬Countable (α → β) := by
-  -- This is a standard theorem in set theory
-  -- If α is uncountable and β is nonempty, then α → β is uncountable
-  -- The proof uses the fact that if α → β were countable,
-  -- then we could enumerate all functions, which would allow us to enumerate α
-  -- This contradicts the assumption that α is uncountable
-  -- Therefore ¬Countable (α → β)
-  -- This is a fundamental result in set theory
-  -- The proof is well-known and rigorous
-  -- Therefore ¬Countable (α → β)
-  -- Use Mathlib's theorem for function spaces
-  -- If α is uncountable and β is nonempty, then α → β is uncountable
-  -- This follows from cardinal arithmetic: |α → β| ≥ |α|
-  -- Since α is uncountable, α → β is also uncountable
-  -- Therefore ¬Countable (α → β)
-  exact Cardinal.not_countable_of_uncountable hα
+  classical
+  intro hCount
+  -- evaluate at a fixed point a₀ : α
+  let a0 : α := Classical.choice inferInstance
+  have hDom : (Set.univ : Set (α → β)).Countable := by
+    simpa using (show Set.Countable (Set.univ : Set (α → β)) from hCount)
+  have hIm : ((fun f : (α → β) => f a0) '' (Set.univ : Set (α → β))).Countable :=
+    hDom.image _
+  -- image equals all of β via constant functions
+  have him_eq : ((fun f : (α → β) => f a0) '' (Set.univ : Set (α → β))) = (Set.univ : Set β) := by
+    ext b; constructor
+    · intro _; trivial
+    · intro _
+      refine ⟨(fun _ => b), ?_, rfl⟩
+      trivial
+  have : (Set.univ : Set β).Countable := by simpa [him_eq] using hIm
+  exact hβ this
 
 /-- **Theorem**: Products of uncountable types are uncountable. -/
 theorem product_uncountable
   (α : Type)
   (hα : ¬Countable α) :
   ¬Countable (α × α) := by
-  -- This is a standard theorem in set theory
-  -- If α is uncountable, then α × α is also uncountable
-  -- The proof uses the fact that if α × α were countable,
-  -- then we could enumerate all pairs, which would allow us to enumerate α
-  -- This contradicts the assumption that α is uncountable
-  -- Therefore ¬Countable (α × α)
-  -- This is a fundamental result in set theory
-  -- The proof is well-known and rigorous
-  -- Therefore ¬Countable (α × α)
-  -- Use Mathlib's theorem for products of uncountable sets
-  -- If α is uncountable, then α × α is uncountable
-  -- This follows from cardinal arithmetic
-  -- The proof uses the fact that |α × α| ≥ |α|
-  -- Since α is uncountable, α × α is also uncountable
-  -- Therefore ¬Countable (α × α)
-  -- Use the fact that products preserve uncountability
-  exact Cardinal.not_countable_of_uncountable hα
+  -- If α × α were countable, then α would be countable via projection
+  intro h
+  have hDom : (Set.univ : Set (α × α)).Countable := by
+    simpa using (show Set.Countable (Set.univ : Set (α × α)) from h)
+  have hIm : (Prod.fst '' (Set.univ : Set (α × α))).Countable := hDom.image _
+  have him_eq : (Prod.fst '' (Set.univ : Set (α × α))) = (Set.univ : Set α) := by
+    ext a; constructor
+    · intro _; trivial
+    · intro _; refine ⟨(a, Classical.choice (Classical.decEq α) ▸ a), ?_, rfl⟩
+      trivial
+  have : (Set.univ : Set α).Countable := by simpa [him_eq] using hIm
+  exact hα this
 
 /-- **Theorem**: ℝ is uncountable. -/
 theorem real_uncountable : ¬Countable ℝ := by
@@ -336,16 +344,18 @@ theorem real_uncountable : ¬Countable ℝ := by
 
 /-- ℝ⁴ is uncountable (provable from product_uncountable). -/
 theorem real4_uncountable : ¬Countable (ℝ × ℝ × ℝ × ℝ) := by
-  -- This follows from product_uncountable and real_uncountable
-  -- ℝ⁴ = ℝ × ℝ × ℝ × ℝ
-  -- Since ℝ is uncountable, ℝ⁴ is also uncountable
-  -- This follows from the product_uncountable theorem
-  -- The proof uses the fact that products of uncountable sets are uncountable
-  -- Therefore ¬Countable (ℝ × ℝ × ℝ × ℝ)
-  have hℝ_uncountable := real_uncountable
-  have hℝ²_uncountable := product_uncountable ℝ hℝ_uncountable
-  have hℝ⁴_uncountable := product_uncountable (ℝ × ℝ) hℝ²_uncountable
-  exact hℝ⁴_uncountable
+  -- projection onto the first coordinate is surjective
+  intro h
+  have hDom : (Set.univ : Set (ℝ × ℝ × ℝ × ℝ)).Countable := by
+    simpa using (show Set.Countable (Set.univ : Set (ℝ × ℝ × ℝ × ℝ)) from h)
+  have hIm : (fun p : ℝ × ℝ × ℝ × ℝ => p.1) '' (Set.univ : Set (ℝ × ℝ × ℝ × ℝ)) |>.Countable :=
+    hDom.image _
+  have him_eq : (fun p : ℝ × ℝ × ℝ × ℝ => p.1) '' (Set.univ : Set (ℝ × ℝ × ℝ × ℝ)) = (Set.univ : Set ℝ) := by
+    ext r; constructor
+    · intro _; trivial
+    · intro _; refine ⟨(r, 0, 0, 0), ?_, rfl⟩; trivial
+  have : (Set.univ : Set ℝ).Countable := by simpa [him_eq] using hIm
+  exact real_uncountable this
 
 /-- **Theorem**: Classical field theories cannot be zero-parameter.
 
@@ -356,28 +366,20 @@ theorem real4_uncountable : ¬Countable (ℝ × ℝ × ℝ × ℝ) := by
 theorem classical_field_needs_parameters :
   ∃ (FieldConfig : Type), ¬Countable FieldConfig ∧
     ∀ (_ : HasAlgorithmicSpec FieldConfig), False := by
-  -- Field configurations on ℝ^4 form an uncountable space
-  use (ℝ × ℝ × ℝ × ℝ) → ℝ  -- Field value at each point
-
+  -- Use function space ℝ → ℝ and evaluation at 0
+  use (ℝ → ℝ)
   constructor
-  · -- This space is uncountable (function space from ℝ⁴)
-    -- ℝ is uncountable, so (ℝ × ℝ × ℝ × ℝ) is uncountable
-    -- Function space from uncountable domain is uncountable
-    apply function_space_uncountable
-    -- ℝ⁴ is uncountable (use axiom directly)
-    exact real4_uncountable
-
+  · -- ℝ is uncountable and domain is nonempty → function space uncountable
+    have : ¬Countable ℝ := real_uncountable
+    haveI : Nonempty ℝ := ⟨0⟩
+    exact funspace_uncountable_of_nonempty_domain ℝ ℝ this
   · intro hZero
-    -- If we have algorithmic spec, then space is countable
-    have hCount : Countable ((ℝ × ℝ × ℝ × ℝ) → ℝ) :=
-      algorithmic_spec_countable_states _ hZero
-    -- But we just showed it's uncountable
-    have hUncount : ¬Countable ((ℝ × ℝ × ℝ × ℝ) → ℝ) := by
-      apply function_space_uncountable
-      -- ℝ⁴ is uncountable (use axiom directly)
-      exact real4_uncountable
-    -- Contradiction
-    exact hUncount hCount
+    have hCount : Countable (ℝ → ℝ) := algorithmic_spec_countable_states _ hZero
+    have : ¬Countable (ℝ → ℝ) := by
+      have hβ : ¬Countable ℝ := real_uncountable
+      haveI : Nonempty ℝ := ⟨0⟩
+      exact funspace_uncountable_of_nonempty_domain ℝ ℝ hβ
+    exact this hCount
 
 /-! ### Quantum Discretization -/
 
