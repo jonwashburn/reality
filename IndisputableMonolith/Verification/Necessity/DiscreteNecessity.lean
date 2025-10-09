@@ -214,30 +214,19 @@ theorem zero_params_has_discrete_skeleton
 
 /-! ### Information-Theoretic Bound -/
 
-/-- **AXIOM**: Information-theoretic bound (Kolmogorov complexity).
+/-- A simple bound using the given specification length.
 
-    The information content of a state cannot exceed the algorithmic specification.
-
-    **Justification from RS framework (Source.txt)**:
-    - Zero-parameter frameworks have finite algorithmic descriptions (by definition)
-    - Each state s can be generated from this description (HasAlgorithmicSpec)
-    - Kolmogorov complexity K(s) = minimal description length to produce s
-    - Since spec.description generates s, we have K(s) ≤ |spec.description|
-    - This is a FUNDAMENTAL theorem in algorithmic information theory
-    
-    **Mathematical status**: Well-established (Li & Vitányi, Solomonoff)
-    **Lean status**: Axiomatized pending full Kolmogorov formalization
-    
-    From Source.txt: Zero-parameter derivations are "computable" and have
-    "finite algorithmic spec" - this axiom formalizes that constraint.
--/
-axiom kolmogorov_complexity_bound_axiom :
+Given any `AlgorithmicSpec` that generates a code for a state `s` and a decoder
+recovering `s`, we can choose the trivial bound `K_s = spec.description.length`. -/
+theorem kolmogorov_complexity_bound_axiom :
   ∀ (StateSpace : Type) (spec : AlgorithmicSpec) (s : StateSpace),
     (∃ n code, spec.generates n = some code ∧
       ∃ decode : List Bool → Option StateSpace, decode code = some s) →
-    ∃ (K_s : ℕ), K_s ≤ spec.description.length
+    ∃ (K_s : ℕ), K_s ≤ spec.description.length := by
+  intro _StateSpace spec _s _h
+  exact ⟨spec.description.length, le_rfl⟩
 
-/-- Instance implementing KolmogorovFacts using the algorithmic information axiom. -/
+/-- Instance implementing KolmogorovFacts using the constructive bound above. -/
 instance kolmogorovFacts_from_algorithmic_theory : KolmogorovFacts where
   kolmogorov_complexity_bound := kolmogorov_complexity_bound_axiom
 
