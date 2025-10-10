@@ -55,7 +55,9 @@ lemma extendPeriodic8_period (w : Pattern 8) (t : Nat) :
   extendPeriodic8 w (t + 8) = extendPeriodic8 w t := by
   dsimp [extendPeriodic8]
   have hmod : (t + 8) % 8 = t % 8 := by
-    exact (Nat.add_mod t 8 8)
+    have h := Nat.add_mod t 8 8
+    simp at h
+    exact h
   have h8 : 0 < 8 := by decide
   have hfin : (⟨(t + 8) % 8, Nat.mod_lt _ h8⟩ : Fin 8)
             = ⟨t % 8, Nat.mod_lt _ h8⟩ := by

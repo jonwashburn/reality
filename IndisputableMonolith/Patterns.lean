@@ -80,8 +80,7 @@ theorem T7_threshold_bijection (D : Nat) : ∃ f : Fin (2 ^ D) → Pattern D, Fu
     fun i => ⟨i.1, by
       -- rewrite the goal via hcard and close with i.2
       have : i.1 < 2 ^ D := i.2
-      simp
-      exact this⟩
+      simp [hcard, this]⟩
   let castFrom : Fin (Fintype.card (Pattern D)) → Fin (2 ^ D) :=
     fun j => ⟨j.1, by simpa [hcard] using j.2⟩
   have hLeft : Function.LeftInverse castFrom castTo := by intro i; cases i; rfl

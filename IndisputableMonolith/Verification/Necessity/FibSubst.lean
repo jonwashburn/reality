@@ -9,13 +9,19 @@ namespace FibSubst
 
 abbrev Word := List Bool
 
+/-- The Fibonacci sequence: F(0)=0, F(1)=1, F(n+2)=F(n+1)+F(n) -/
+def fib : ℕ → ℕ
+  | 0 => 0
+  | 1 => 1
+  | n + 2 => fib (n + 1) + fib n
+
 /-- Fibonacci substitution on a single symbol. -/
 def fibSub : Bool → Word
   | false => [false, true]
   | true  => [false]
 
 /-- Extend substitution to words by concatenation. -/
-def fibSubWord (w : Word) : Word := w.bind fibSub
+def fibSubWord (w : Word) : Word := w.flatMap fibSub
 
 /-- Count of `false` symbols in a word. -/
 def countFalse : Word → Nat
@@ -85,13 +91,13 @@ lemma counts_sub_word (w : Word) :
         cases b
         · -- b = false
           have : fibSubWord (false :: bs) = fibSub false ++ fibSubWord bs := by
-            simp [fibSubWord, List.bind]
+            simp [fibSubWord, List.flatMap]
           have hF : countFalse (fibSub false) = 1 := (counts_sub_false).1
           have hT : countTrue (fibSub false) = 1 := (counts_sub_false).2
           simp [this, countFalse_append, countTrue_append, ihF, ihT, hF, hT, countFalse_cons_false, countTrue_cons_false, Nat.add_comm, Nat.add_left_comm, Nat.add_assoc]
         · -- b = true
           have : fibSubWord (true :: bs) = fibSub true ++ fibSubWord bs := by
-            simp [fibSubWord, List.bind]
+            simp [fibSubWord, List.flatMap]
           have hF : countFalse (fibSub true) = 1 := (counts_sub_true).1
           have hT : countTrue (fibSub true) = 0 := (counts_sub_true).2
           simp [this, countFalse_append, countTrue_append, ihF, ihT, hF, hT, countFalse_cons_true, countTrue_cons_true, Nat.add_comm, Nat.add_left_comm, Nat.add_assoc]
@@ -102,8 +108,9 @@ def iter (n : Nat) : Word := (fibSubWord^[n]) [false]
 @[simp] lemma counts_iter_succ (n : Nat) :
   countFalse (iter (n+1)) = countFalse (iter n) + countTrue (iter n) ∧
   countTrue (iter (n+1)) = countFalse (iter n) := by
-  classical
-  simp [iter, Function.iterate_succ]
+  have h_unfold : iter (n+1) = fibSubWord (iter n) := by
+    simp [iter, Function.iterate_succ_apply']
+  rw [h_unfold]
   exact counts_sub_word (iter n)
 
 /-- Fibonacci recursion on counts: starting from `[false]` we have
@@ -115,9 +122,9 @@ lemma counts_iter_fib (n : Nat) :
   | zero => simp [iter, fib]
   | succ n ih =>
       rcases counts_iter_succ n with ⟨hF, hT⟩
-      cases ih with
-      | rfl =>
-          simp [hF, hT, fib, Nat.add_comm, Nat.add_left_comm, Nat.add_assoc]
+      have ihF : countFalse (iter n) = fib (n + 1) := (congrArg Prod.fst ih)
+      have ihT : countTrue (iter n) = fib n := (congrArg Prod.snd ih)
+      ext <;> simp [hF, hT, ihF, ihT, fib]
 
 end FibSubst
 end Necessity
