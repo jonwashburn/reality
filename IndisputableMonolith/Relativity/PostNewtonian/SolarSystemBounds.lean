@@ -31,8 +31,10 @@ noncomputable def max_coupling_from_cassini : ℝ :=
   -- So |α·C_lag| < 2.3×10^{-4}
   cassini_bound_gamma / 0.1
 
-axiom max_coupling_cassini_value :
-  max_coupling_from_cassini = 2.3e-4
+theorem max_coupling_cassini_value :
+  max_coupling_from_cassini = 2.3e-4 := by
+  simp [max_coupling_from_cassini, cassini_bound_gamma]
+  norm_num
 
 /-- Maximum allowed coupling from LLR bound on β. -/
 noncomputable def max_coupling_from_llr : ℝ :=
@@ -40,12 +42,16 @@ noncomputable def max_coupling_from_llr : ℝ :=
   -- So |α·C_lag| < 2×10^{-3}
   llr_bound_beta / 0.05
 
-axiom max_coupling_llr_value :
-  max_coupling_from_llr = 2e-3
+theorem max_coupling_llr_value :
+  max_coupling_from_llr = 2e-3 := by
+  simp [max_coupling_from_llr, llr_bound_beta]
+  norm_num
 
 /-- Cassini bound is more stringent. -/
-axiom cassini_more_stringent :
-  max_coupling_from_cassini < max_coupling_from_llr
+theorem cassini_more_stringent :
+  max_coupling_from_cassini < max_coupling_from_llr := by
+  rw [max_coupling_cassini_value, max_coupling_llr_value]
+  norm_num
 
 /-- Recognition spine coupling value. -/
 noncomputable def coupling_RS : ℝ :=
