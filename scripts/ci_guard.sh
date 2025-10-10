@@ -12,14 +12,16 @@ cd "$ROOT_DIR"
 # Gather Lean files tracked by git
 LEANS="$(git ls-files '*.lean' || true)"
 
-echo "[ci_guard] Scanning for sorry/admit in Lean files..."
+echo "[ci_guard] Scanning for axiom/sorry/admit in Lean files..."
 
 # Use ripgrep if available, else fallback to grep
 if command -v rg >/dev/null 2>&1; then
+  AXIOM_MATCHES_RAW="$(rg -n --no-messages "^\\s*axiom\\b" $LEANS || true)"
   SORRY_MATCHES="$(rg -n --no-messages "\\bsorry\\b" $LEANS || true)"
   # Only flag 'admit' when it appears outside of line comments and block comments (best-effort)
   ADMIT_MATCHES_RAW="$(rg -n --no-messages "\\badmit\\b" $LEANS || true)"
 else
+  AXIOM_MATCHES_RAW="$(grep -n "^\\s*axiom\\b" $LEANS 2>/dev/null || true)"
   SORRY_MATCHES="$(grep -n "\\bsorry\\b" $LEANS 2>/dev/null || true)"
   ADMIT_MATCHES_RAW="$(grep -n "\\badmit\\b" $LEANS 2>/dev/null | sed 's/^ *//g' || true)"
 fi
@@ -52,6 +54,11 @@ else
 fi
 
 HAS_ISSUES=0
+
+if [ -n "$AXIOM_MATCHES_RAW" ]; then
+  echo "[ci_guard][WARN] Found 'axiom' declarations (reporting, not failing):" >&2
+  printf "%s\n" "$AXIOM_MATCHES_RAW" >&2
+fi
 
 if [ -n "$SORRY_MATCHES" ]; then
   echo "[ci_guard][FAIL] Found 'sorry' occurrences:" >&2
