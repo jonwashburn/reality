@@ -9,8 +9,9 @@ SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
 ROOT_DIR="$(CDPATH= cd -- "$SCRIPT_DIR"/.. && pwd)"
 cd "$ROOT_DIR"
 
-# Gather Lean files tracked by git
-LEANS="$(git ls-files '*.lean' || true)"
+# Gather Lean files tracked by git limited to build paths (exclude docs/ and WIP/)
+ALL_LEANS="$(git ls-files '*.lean' || true)"
+LEANS="$(printf "%s\n" "$ALL_LEANS" | grep -E '^(IndisputableMonolith|URC|CI)/.*\\.lean$' || true)"
 
 echo "[ci_guard] Scanning for axiom/sorry/admit in Lean files..."
 
