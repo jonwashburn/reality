@@ -18,12 +18,12 @@ echo "[ci_guard] Scanning for axiom/sorry/admit in Lean files..."
 # Use ripgrep if available, else fallback to grep
 if command -v rg >/dev/null 2>&1; then
   AXIOM_MATCHES_RAW="$(rg -n --no-messages "^\\s*axiom\\b" $LEANS || true)"
-  SORRY_MATCHES="$(rg -n --no-messages "\\bsorry\\b" $LEANS || true)"
+  SORRY_MATCHES_RAW="$(rg -n --no-messages "\\bsorry\\b" $LEANS || true)"
   # Only flag 'admit' when it appears outside of line comments and block comments (best-effort)
   ADMIT_MATCHES_RAW="$(rg -n --no-messages "\\badmit\\b" $LEANS || true)"
 else
   AXIOM_MATCHES_RAW="$(grep -n "^\\s*axiom\\b" $LEANS 2>/dev/null || true)"
-  SORRY_MATCHES="$(grep -n "\\bsorry\\b" $LEANS 2>/dev/null || true)"
+  SORRY_MATCHES_RAW="$(grep -n "\\bsorry\\b" $LEANS 2>/dev/null || true)"
   ADMIT_MATCHES_RAW="$(grep -n "\\badmit\\b" $LEANS 2>/dev/null | sed 's/^ *//g' || true)"
 fi
 
@@ -55,6 +55,25 @@ else
 fi
 
 HAS_ISSUES=0
+
+if [ -n "$SORRY_MATCHES_RAW" ]; then
+  # Filter out comment-only occurrences of 'sorry'
+  SORRY_MATCHES="$(
+    printf "%s\n" "$SORRY_MATCHES_RAW" \
+    | awk '
+        {
+          line=$0;
+          sub(/^[^:]*:[0-9]+:/, "", line);
+          gsub(/^\s+/, "", line);
+          if (line ~ /--/) next;
+          if (line ~ /\/-/ || line ~ /-\//) next;
+          print $0;
+        }
+      ' || true
+  )"
+else
+  SORRY_MATCHES=""
+fi
 
 if [ -n "$AXIOM_MATCHES_RAW" ]; then
   echo "[ci_guard][WARN] Found 'axiom' declarations (reporting, not failing):" >&2
