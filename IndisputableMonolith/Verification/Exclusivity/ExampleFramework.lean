@@ -73,27 +73,7 @@ instance : NonStatic TwoStateFramework where
 instance : Necessity.DiscreteNecessity.SpecNontrivial TwoStateFramework.StateSpace where
   inhabited := ⟨TwoState.state0⟩
 
-/-! ### Example 3: Recognition Science Framework (placeholder) -/
-
-/-- Placeholder for RS framework built from RH.RS.ZeroParamFramework.
-
-When fully developed, this would map:
-- StateSpace := L.Carrier (from some Ledger L)
-- evolve := recognition event transition
-- Observable := dimless predictions
-- measure := bridge evaluation
-
-This demonstrates the pattern for providing instances for RS itself. -/
-axiom RS_Framework (φ : ℝ) : PhysicsFramework
-
-/-- RS is non-static (recognition events cause state transitions). -/
-axiom RS_NonStatic (φ : ℝ) : NonStatic (RS_Framework φ)
-
-/-- RS has nontrivial spec (ledger is inhabited). -/
-axiom RS_SpecNontrivial (φ : ℝ) :
-  Necessity.DiscreteNecessity.SpecNontrivial (RS_Framework φ).StateSpace
-
-/-! ### Instance Provision Pattern
+/-‑! ### Instance Provision Pattern
 
 To add instances for a new framework `MyFramework : PhysicsFramework`:
 
