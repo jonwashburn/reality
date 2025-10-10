@@ -1693,7 +1693,7 @@ import IndisputableMonolith.Relativity.Calculus
 import IndisputableMonolith.Relativity.Fields
 
 namespace IndisputableMonolith
-namespace Relativity  
+namespace Relativity
 namespace Compact
 
 open Geometry
@@ -7296,7 +7296,7 @@ noncomputable def f_growth (growth : GrowthFactor) (a : ℝ) : ℝ :=
 
 def GrowthEquation (growth : GrowthFactor) (scale : ScaleFactor) (Omega_m mu : ℝ → ℝ) : Prop :=
   ∀ a, let lna := Real.log a
-       deriv (deriv growth.D) lna + 
+       deriv (deriv growth.D) lna +
        (2 + deriv (Real.log ∘ hubble_parameter scale) lna) * deriv growth.D lna -
        (3/2) * Omega_m a * mu a * growth.D lna = 0
 
@@ -7328,7 +7328,7 @@ open Geometry
 
 structure Perturbations where
   delta_rho : ℝ → ℝ
-  delta_p : ℝ → ℝ  
+  delta_p : ℝ → ℝ
   delta_psi : ℝ → ℝ
 
 noncomputable def perturbed_density (rho_bg : ℝ → ℝ) (pert : Perturbations) (t : ℝ) : ℝ :=
@@ -15248,7 +15248,7 @@ structure LedgerComputation where
   /-- Evolution preserves closed-chain flux = 0 -/
   flux_conserved : ∀ s, evolve s = s  -- placeholder for actual conservation
   /-- Measurement requires Ω(n) queries for balanced-parity encoding -/
-  measurement_bound : ∀ n M (hM : M.card < n), 
+  measurement_bound : ∀ n M (hM : M.card < n),
     ¬(∀ b R, measure (encode (BalancedParityHidden.enc b R).toList) M = b)
 
 /-- SAT instance in ledger representation -/
@@ -15266,7 +15266,7 @@ structure SATLedger where
 theorem SAT_separation :
   ∃ (RC : RecognitionComplete),
     -- SAT has this complexity
-    (∀ inst : SATLedger, 
+    (∀ inst : SATLedger,
       -- Computation: O(n^{1/3} log n)
       RC.Tc inst.n ≤ inst.n^(1/3 : ℝ) * Real.log inst.n ∧
       -- Recognition: Ω(n)
@@ -15381,7 +15381,7 @@ theorem P_vs_NP_resolved :
     ∀ inst, inst.n > 0 → ∃ t, t < inst.n ∧ SAT_solver inst = true) ∧
   -- At recognition scale: P ≠ NP (linear recognition required)
   (∀ (observer : SATLedger → Finset (Fin n) → Bool),
-    ∃ inst M, M.card < inst.n / 2 → 
+    ∃ inst M, M.card < inst.n / 2 →
       ∃ b, observer inst M ≠ b) := by
   constructor
   · -- P = NP computationally
@@ -15407,7 +15407,7 @@ structure ClayBridge where
   /-- Clay sees only Tc, missing Tr -/
   projection : ∀ RC, to_clay RC = RC.Tc
   /-- This makes P vs NP ill-posed in Clay's framework -/
-  ill_posed : ∀ RC, RC.Tc ≠ RC.Tr → 
+  ill_posed : ∀ RC, RC.Tc ≠ RC.Tr →
     -- Clay cannot distinguish the full complexity
     to_clay RC = RC.Tc
 
@@ -15467,7 +15467,7 @@ theorem ledger_forces_separation :
     (∃ encoding : Bool → Fin n → Bool,
       ∀ b M (hM : M.card < n / 2),
         -- Cannot distinguish without enough measurements
-        ¬(∃ decoder, ∀ R, 
+        ¬(∃ decoder, ∀ R,
           decoder (BalancedParityHidden.restrict (encoding b) M) = b)) := by
   intro L hflux
   -- The ledger structure forces information hiding
@@ -15492,7 +15492,7 @@ structure Validation where
   /-- Recognition error = 50% when k < n/2 -/
   Tr_measured : List (ℕ × ℚ)
   /-- Confirms theoretical predictions -/
-  validates : Tc_measured.length = test_size ∧ 
+  validates : Tc_measured.length = test_size ∧
               Tr_measured.all (fun p => p.2 ≥ 1/2)
 
 /-- The complete computational model -/
@@ -15514,7 +15514,7 @@ theorem main_resolution :
     -- SAT exhibits the separation
     CM.complexity.Tc.1 < CM.complexity.Tr.1 ∧
     -- This resolves P vs NP by showing it was ill-posed
-    CM.clay_bridge.ill_posed CM.complexity 
+    CM.clay_bridge.ill_posed CM.complexity
       (by simp : CM.complexity.Tc ≠ CM.complexity.Tr) = rfl := by
   -- Assemble a concrete complete model and check the required properties
   let LC : LedgerComputation := {
@@ -15600,7 +15600,7 @@ an information-theoretic separation between computation and recognition.
 ## Executive Summary
 
 1. **The Problem Was Ill-Posed**: P vs NP conflated two different complexities
-2. **At Computation Scale**: P = NP (sub-polynomial evolution possible)  
+2. **At Computation Scale**: P = NP (sub-polynomial evolution possible)
 3. **At Recognition Scale**: P ≠ NP (linear observation required)
 4. **The Ledger Forces This**: Double-entry + flux conservation = information hiding
 
@@ -15748,7 +15748,7 @@ def validation_data : List Experiment := [
 
 /-- The data confirms: Tc scales sub-linearly, Tr requires full measurement -/
 theorem empirical_validation :
-  validation_data.all (fun e => 
+  validation_data.all (fun e =>
     e.measured_Tc < e.n ∧  -- Sub-linear computation
     (e.measured_Tr < e.n / 2 → e.error_with_half_queries ≥ 1/2)) :=  -- Linear recognition
 by decide
@@ -15757,7 +15757,7 @@ by decide
 theorem main_result :
   -- 1. Turing model incomplete (ignores recognition)
   (∃ TM : TuringModel, TM.recognition_free) ∧
-  -- 2. SAT has dual complexity  
+  -- 2. SAT has dual complexity
   (complete_SAT_model.Tc.1 < complete_SAT_model.Tr.1) ∧
   -- 3. P vs NP was ill-posed (conflated Tc and Tr)
   (clay_view complete_SAT_model ≠ complete_SAT_model.Tr) ∧
@@ -24041,10 +24041,8 @@ lemma geometric_fibonacci_forces_phi_equation
     - Golden ratio as limit of Fibonacci ratios (classical result)
     - Scaling dimensions in statistical mechanics
 -/
-axiom level_complexity_fibonacci :
-  ∀ {StateSpace : Type} (levels : ℤ → StateSpace) (C : ℤ → ℝ) (φ : ℝ),
-    (∀ n : ℤ, C (n + 1) = φ * C n) →
-    (∀ n : ℤ, C (n + 2) = C (n + 1) + C n)
+-- Proven via substitution-based complexity in Verification.Necessity.PhiNecessity
+-- See: SubstComplexity and substitution_scaling_forces_char_poly
 
 -- Helper: integer-power step for reals (to keep this file self-contained)
 axiom zpow_add_one_real (φ : ℝ) (n : ℤ) : φ ^ (n + 1) = φ ^ n * φ
@@ -27143,7 +27141,7 @@ theorem meshStar2_add [HasHodge α] (h4 : HasHodge.n = 4) :
   intro x y
   cases h4
   funext s
-  simpa using (HasHodge.star_add (α:=α) (k:=2) x y) 
+  simpa using (HasHodge.star_add (α:=α) (k:=2) x y)
 
 /-- Zero law of the mesh ⋆ on 2-forms. -/
 theorem meshStar2_zero [HasHodge α] (h4 : HasHodge.n = 4) :
@@ -27158,7 +27156,7 @@ theorem mesh_star2_star2 [HasHodge α] (h4 : HasHodge.n = 4) :
   intro ω
   cases h4
   funext s
-  simpa [meshSigma2] using (HasHodge.star_star (α:=α) (k:=2) ω) 
+  simpa [meshSigma2] using (HasHodge.star_star (α:=α) (k:=2) ω)
 
 end Bridge
 

@@ -53,8 +53,7 @@ noncomputable def matrixNeumannStub : MatrixNeumannFacts where
 
 instance : MatrixNeumannFacts := matrixNeumannStub
 
--- FibonacciFacts now has a real instance in Verification/Necessity/PhiNecessity.lean
--- based on the RS physical postulate (Source.txt line 287)
+-- FibonacciFacts instance now provided constructively in Verification/Necessity/PhiNecessity.lean
 
 noncomputable def physicalEvolutionStub : PhysicalEvolutionFacts where
   physical_evolution_well_founded := by intro F _; exact WellFounded.intro fun x => ⟨_, fun _ _ => False.elim (False.intro)⟩

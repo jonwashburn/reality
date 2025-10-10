@@ -1,5 +1,6 @@
 import Mathlib
 import IndisputableMonolith.PhiSupport.Lemmas
+import IndisputableMonolith.Verification.Necessity.FibSubst
 import IndisputableMonolith.Constants
 import IndisputableMonolith.RH.RS.Spec
 
@@ -111,40 +112,113 @@ lemma geometric_fibonacci_forces_phi_equation
   have hΦ : φ^2 = φ + 1 := (mul_right_cancel₀ hCn) hEq
   simpa [hΦ]
 
-/-- Captures the Fibonacci growth property for complexity sequences. -/
-class FibonacciFacts : Prop where
-  level_complexity_fibonacci :
-    ∀ {StateSpace : Type} (levels : ℤ → StateSpace) (C : ℤ → ℝ) (φ : ℝ),
-      (∀ n : ℤ, C (n + 1) = φ * C n) →
-      (∀ n : ℤ, C (n + 2) = C (n + 1) + C n)
+/-- Unique word at each nonnegative index for the substitution system. -/
+def fibWord (n : ℕ) : FibSubst.Word := FibSubst.iter n
 
-/-- AXIOM: Fibonacci recursion for geometric complexity sequences in RS.
-    
-    From Source.txt (line 287): "Self-similarity + discrete levels → Fibonacci recursion (axiom)"
-    
-    This is a FUNDAMENTAL PHYSICAL POSTULATE of Recognition Science that cannot be
-    proven from more basic principles—it's part of what DEFINES how discrete recognition
-    levels compose. Together with geometric scaling, this postulate FORCES φ² = φ + 1,
-    uniquely determining the golden ratio.
-    
-    This axiom states: In the RS framework, complexity at discrete levels must satisfy
-    BOTH geometric scaling C(n+1) = φ·C(n) AND additive Fibonacci composition
-    C(n+2) = C(n+1) + C(n). These two requirements are compatible only when φ² = φ + 1. -/
-axiom fibonacci_recursion_RS_postulate :
-  ∀ {StateSpace : Type} (levels : ℤ → StateSpace) (C : ℤ → ℝ) (φ : ℝ),
-    (∀ n : ℤ, C (n + 1) = φ * C n) →
-    (∀ n : ℤ, C (n + 2) = C (n + 1) + C n)
+/-- Counts of `false`/`true` symbols in the n-th substitution word. -/
+lemma fibWord_counts (n : ℕ) :
+  (FibSubst.countFalse (fibWord n), FibSubst.countTrue (fibWord n)) =
+    (fib (n + 1), fib n) := by
+  simpa [fibWord] using FibSubst.counts_iter_fib n
 
-/-- Instance implementing FibonacciFacts using the RS physical postulate. -/
-instance fibonacciFacts_from_RS_postulate : FibonacciFacts where
-  level_complexity_fibonacci := fibonacci_recursion_RS_postulate
+/-- Additive complexity model over the Fibonacci substitution at a given scale `s`. -/
+structure SubstComplexity (s : ℝ) where
+  C : FibSubst.Word → ℝ
+  nil : C [] = 0
+  append : ∀ w₁ w₂, C (w₁ ++ w₂) = C w₁ + C w₂
+  scale : ∀ w, C (FibSubst.fibSubWord w) = s * C w
+  nontrivial : C [false] ≠ 0 ∨ C [true] ≠ 0
 
-theorem level_complexity_fibonacci
-  {StateSpace : Type} (levels : ℤ → StateSpace) (C : ℤ → ℝ) (φ : ℝ)
-  [FibonacciFacts]
-  (hGeom : ∀ n : ℤ, C (n + 1) = φ * C n) :
-  ∀ n : ℤ, C (n + 2) = C (n + 1) + C n :=
-  FibonacciFacts.level_complexity_fibonacci levels C φ hGeom
+/-- The substitution complexity at scale `s` enforces the characteristic equation. -/
+lemma subst_complexity_char_poly {s : ℝ} (H : SubstComplexity s) :
+  s^2 = s + 1 :=
+  substitution_scaling_forces_char_poly s H.C H.nil H.append H.scale H.nontrivial
+
+/-- If a self-similar framework supplies a substitution-complexity witness at its
+    preferred scale, then the preferred scale satisfies φ-equation and hence equals φ. -/
+theorem self_similarity_forces_phi_via_substitution
+  {StateSpace : Type}
+  [Inhabited StateSpace]
+  (hSim : HasSelfSimilarity StateSpace)
+  (H : SubstComplexity hSim.preferred_scale) :
+  hSim.preferred_scale = Constants.phi ∧
+  hSim.preferred_scale^2 = hSim.preferred_scale + 1 ∧
+  hSim.preferred_scale > 0 := by
+  have hchar : hSim.preferred_scale^2 = hSim.preferred_scale + 1 :=
+    subst_complexity_char_poly H
+  have hpos : hSim.preferred_scale > 0 :=
+    lt_trans (show (0 : ℝ) < 1 by norm_num) hSim.scale_gt_one
+  have huniq := IndisputableMonolith.PhiSupport.phi_unique_pos_root hSim.preferred_scale
+  have hEq : hSim.preferred_scale = Constants.phi :=
+    (huniq.mp ⟨hchar, hpos⟩)
+  exact ⟨hEq, hchar, hpos⟩
+
+/-- If an additive complexity on words scales by a factor `s` under the
+    Fibonacci substitution, then `s` satisfies the characteristic equation
+    s^2 = s + 1. The nontriviality assumption forbids the zero functional. -/
+lemma substitution_scaling_forces_char_poly
+  (s : ℝ)
+  (C : FibSubst.Word → ℝ)
+  (hNil : C [] = 0)
+  (hAppend : ∀ w₁ w₂, C (w₁ ++ w₂) = C w₁ + C w₂)
+  (hScale : ∀ w, C (FibSubst.fibSubWord w) = s * C w)
+  (hNontrivial : C [false] ≠ 0 ∨ C [true] ≠ 0) :
+  s^2 = s + 1 := by
+  -- Abbreviations for single-letter complexities
+  let a : ℝ := C [false]
+  let b : ℝ := C [true]
+  have h_cons_nil_false : C ([false] ++ ([] : FibSubst.Word)) = a := by
+    simpa using congrArg (fun t => C t) rfl
+  have h_cons_nil_true : C ([true] ++ ([] : FibSubst.Word)) = b := by
+    simpa using congrArg (fun t => C t) rfl
+  -- Substitution on single letters
+  have sub_false : FibSubst.fibSubWord [false] = [false, true] := by
+    simp [FibSubst.fibSubWord, FibSubst.fibSub]
+  have sub_true : FibSubst.fibSubWord [true] = [false] := by
+    simp [FibSubst.fibSubWord, FibSubst.fibSub]
+  -- Scaling equations on singletons
+  have scale_false : s * a = a + b := by
+    -- C(fibSubWord [false]) = C [false, true] = C [false] + C [true]
+    have := hScale [false]
+    have hadd := hAppend [false] [true]
+    simpa [sub_false, hNil, hadd] using this.symm
+  have scale_true : s * b = a := by
+    -- C(fibSubWord [true]) = C [false]
+    have := hScale [true]
+    simpa [sub_true, hNil, h_cons_nil_false] using this.symm
+  -- Derive characteristic equation
+  cases hNontrivial with
+  | inl ha_ne =>
+      -- a ≠ 0 ⇒ b ≠ 0 as well (from scale_true), or we can work with b-case below
+      -- Use the b-case derivation; if b = 0 then a = 0 by scale_true, contradiction
+      have hb_ne : b ≠ 0 := by
+        intro hb0
+        have : a = 0 := by simpa [hb0] using scale_true
+        exact ha_ne this
+      -- From s*a = a + b and a = s*b obtain: s^2 b = (s+1) b
+      have : s^2 * b = (s + 1) * b := by
+        -- s^2 b = s (s b) = s a = a + b = s b + b
+        have : s * (s * b) = s * b + b := by
+          -- rewrite s*a = a + b with a = s*b
+          have := scale_false
+          simpa [scale_true, mul_add, mul_comm, mul_left_comm, mul_assoc] using this
+        simpa [pow_two, mul_add, mul_comm, mul_left_comm, mul_assoc] using this
+      -- Cancel b ≠ 0
+      have : s^2 = s + 1 := by
+        apply (mul_right_cancel₀ hb_ne)
+        simpa [mul_comm, mul_left_comm, mul_assoc] using this
+      simpa using this
+  | inr hb_ne =>
+      -- Same derivation as above works directly when b ≠ 0
+      have : s^2 * b = (s + 1) * b := by
+        have : s * (s * b) = s * b + b := by
+          have := scale_false
+          simpa [scale_true, mul_add, mul_comm, mul_left_comm, mul_assoc] using this
+        simpa [pow_two, mul_add, mul_comm, mul_left_comm, mul_assoc] using this
+      have : s^2 = s + 1 := by
+        apply (mul_right_cancel₀ hb_ne)
+        simpa [mul_comm, mul_left_comm, mul_assoc] using this
+      simpa using this
 
 -- Helper: integer-power step for reals (to keep this file self-contained)
 theorem zpow_add_one_real (φ : ℝ) (n : ℤ) : φ ^ (n + 1) = φ ^ n * φ := by
@@ -179,30 +253,15 @@ structure HasSelfSimilarity (StateSpace : Type) where
 lemma discrete_self_similar_recursion
   {StateSpace : Type}
   [Inhabited StateSpace]
-  [FibonacciFacts]
   (hSim : HasSelfSimilarity StateSpace)
-  (hDiscrete : ∃ (levels : ℤ → StateSpace), Function.Surjective levels) :
+  (H : SubstComplexity hSim.preferred_scale) :
   ∃ (a b : ℝ), a ≠ 0 ∧ a * hSim.preferred_scale^2 = b * hSim.preferred_scale + a := by
-  -- Construct geometric complexity, use physical axiom for Fibonacci,
-  -- then deduce φ² = φ + 1 and instantiate a=1, b=1.
-  obtain ⟨levels, _⟩ := hDiscrete
-  let φ := hSim.preferred_scale
-  have hφ_pos : φ > 0 := lt_trans (show (0 : ℝ) < 1 by norm_num) hSim.scale_gt_one
-  let C : ℤ → ℝ := fun n => φ ^ n
-  have hGeometric : ∀ n : ℤ, C (n + 1) = φ * C n := by
-    intro n
-    -- φ^(n+1) = φ^n * φ = φ * φ^n
-    simpa [C, mul_comm, zpow_add_one_real φ n] using (zpow_add_one_real φ n).trans (by rfl)
-  have hFibonacci : ∀ n : ℤ, C (n + 2) = C (n + 1) + C n :=
-    level_complexity_fibonacci levels C φ hGeometric
-  have hNonZero : ∃ n : ℤ, C n ≠ 0 := by
-    refine ⟨0, ?_⟩
-    simp [C]
-  have hphi_eq : φ^2 = φ + 1 :=
-    geometric_fibonacci_forces_phi_equation φ hφ_pos C hGeometric hFibonacci hNonZero
+  -- From substitution scaling we already know s^2 = s + 1
+  let s := hSim.preferred_scale
+  have hchar : s^2 = s + 1 := subst_complexity_char_poly H
   refine ⟨1, 1, ?_, ?_⟩
   · norm_num
-  · simpa [one_mul, φ]
+  · simpa [one_mul, s] using hchar
 
 /-- Zero parameters means the scaling factor must be algebraically determined.
     Any preferred scale in a parameter-free framework satisfies an algebraic equation.
@@ -211,7 +270,7 @@ lemma zero_params_forces_algebraic_scale
   {StateSpace : Type}
   [Inhabited StateSpace]
   (hSim : HasSelfSimilarity StateSpace)
-  (hDiscrete : ∃ (levels : ℤ → StateSpace), Function.Surjective levels)
+  (H : SubstComplexity hSim.preferred_scale)
   (hZeroParam : True)  -- Placeholder for zero-parameter constraint
   : ∃ (p : Polynomial ℝ), p.eval hSim.preferred_scale = 0 ∧ p ≠ 0 := by
   -- A parameter-free framework cannot have transcendental constants
@@ -220,30 +279,9 @@ lemma zero_params_forces_algebraic_scale
   use Polynomial.X^2 - Polynomial.X - 1
   constructor
   · -- Proof that φ satisfies the polynomial equation
-    -- From discrete_self_similar_recursion, we know a * φ² = b * φ + a
-    -- With a=1, b=1, this gives φ² = φ + 1
-    obtain ⟨a, b, ha_ne_zero, heq⟩ := discrete_self_similar_recursion hSim hDiscrete
-    -- Convert a*φ² = b*φ + a into φ² = φ + 1 by dividing by a
-    have ha0 : a ≠ 0 := ha_ne_zero
-    -- Skip dividing; we'll use the geometric route instead of manipulating heq.
-    -- Fall back to the geometric route to avoid field_simp overhead
-    obtain ⟨levels, _⟩ := hDiscrete
+    -- From substitution scaling we know φ satisfies φ² = φ + 1
     let φ := hSim.preferred_scale
-    -- From scale_gt_one we get positivity: 1 < φ ⇒ 0 < φ
-    have hφ_pos : φ > 0 := by
-      calc (0 : ℝ) < 1 := by norm_num
-           _ < φ := hSim.scale_gt_one
-    let C : ℤ → ℝ := fun n => φ ^ n
-    have hGeom : ∀ n : ℤ, C (n + 1) = φ * C n := by
-      intro n
-      show φ ^ (n + 1) = φ * φ ^ n
-      rw [zpow_add_one_real]
-      ring
-    have hFib : ∀ n : ℤ, C (n + 2) = C (n + 1) + C n :=
-      level_complexity_fibonacci levels C φ hGeom
-    have hNZ : ∃ n : ℤ, C n ≠ 0 := ⟨0, by simp [C]⟩
-    have hphi : φ^2 = φ + 1 :=
-      geometric_fibonacci_forces_phi_equation φ hφ_pos C hGeom hFib hNZ
+    have hphi : φ^2 = φ + 1 := subst_complexity_char_poly H
     show (Polynomial.X^2 - Polynomial.X - (1 : Polynomial ℝ)).eval φ = 0
     have : (Polynomial.X^2 - Polynomial.X - (1 : Polynomial ℝ)).eval φ = φ^2 - φ - 1 := by
       simp [Polynomial.eval, pow_two]
@@ -268,31 +306,14 @@ theorem self_similarity_forces_phi
   {StateSpace : Type}
   [Inhabited StateSpace]
   (hSim : HasSelfSimilarity StateSpace)
-  (hDiscrete : ∃ (levels : ℤ → StateSpace), Function.Surjective levels)
+  (H : SubstComplexity hSim.preferred_scale)
   (hZeroParam : True) :  -- Placeholder for zero-parameter constraint
   hSim.preferred_scale = Constants.phi ∧
   hSim.preferred_scale^2 = hSim.preferred_scale + 1 ∧
   hSim.preferred_scale > 0 := by
-  -- Step 1: Derive φ² = φ + 1 from explicit complexity hypotheses
-  have hphi_eq : hSim.preferred_scale^2 = hSim.preferred_scale + 1 := by
-    -- Re-derive φ² = φ + 1 for φ = preferred_scale via the geometric route.
-    obtain ⟨levels, _⟩ := hDiscrete
-    let φ := hSim.preferred_scale
-    have hφ_pos : φ > 0 := by
-      calc (0 : ℝ) < 1 := by norm_num
-           _ < φ := hSim.scale_gt_one
-    let C : ℤ → ℝ := fun n => φ ^ n
-    have hGeometric : ∀ n : ℤ, C (n + 1) = φ * C n := by
-      intro n
-      show φ ^ (n + 1) = φ * φ ^ n
-      rw [zpow_add_one_real]
-      ring
-    have hFibonacci : ∀ n : ℤ, C (n + 2) = C (n + 1) + C n :=
-      level_complexity_fibonacci levels C φ hGeometric
-    have hNonZero : ∃ n : ℤ, C n ≠ 0 := ⟨0, by simp [C]⟩
-    have : φ^2 = φ + 1 :=
-      geometric_fibonacci_forces_phi_equation φ hφ_pos C hGeometric hFibonacci hNonZero
-    simpa using this
+  -- Step 1: Derive φ² = φ + 1 from substitution scaling
+  have hphi_eq : hSim.preferred_scale^2 = hSim.preferred_scale + 1 :=
+    subst_complexity_char_poly H
 
   constructor
   · -- Step 3: Use existing uniqueness theorem
@@ -320,9 +341,9 @@ theorem self_similar_uses_golden_ratio
   {StateSpace : Type}
   [Inhabited StateSpace]
   (hSim : HasSelfSimilarity StateSpace)
-  (hDiscrete : ∃ (levels : ℤ → StateSpace), Function.Surjective levels) :
+  (H : SubstComplexity hSim.preferred_scale) :
   hSim.preferred_scale = Constants.phi := by
-  obtain ⟨h_eq, _, _⟩ := self_similarity_forces_phi hSim hDiscrete trivial
+  obtain ⟨h_eq, _, _⟩ := self_similarity_forces_phi hSim H trivial
   exact h_eq
 
 /-- The golden ratio is not an arbitrary choice - it's forced by mathematics. -/

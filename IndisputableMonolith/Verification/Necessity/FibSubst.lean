@@ -123,5 +123,3 @@ end FibSubst
 end Necessity
 end Verification
 end IndisputableMonolith
-
-
