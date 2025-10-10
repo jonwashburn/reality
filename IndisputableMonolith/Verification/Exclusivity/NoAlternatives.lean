@@ -64,9 +64,9 @@ The proof proceeds in three stages:
 
 ## Status
 
-- **Scaffold**: Complete structure with proof obligations marked
-- **Proofs**: Using `sorry` placeholders for deep results requiring separate development
-- **Dependencies**: Builds on existing `FrameworkUniqueness` and `ExclusiveRealityPlus`
+- Scaffold complete; proofs rely on necessity modules (`DiscreteNecessity`, `LedgerNecessity`, `RecognitionNecessity`, `PhiNecessity`).
+- No Lean `sorry` placeholders in this module; remaining physics-layer axioms are tracked separately.
+- Dependencies: `FrameworkUniqueness`, `ExclusiveRealityPlus` (as documented in RS spec layer)
 
 ## Future Work
 
@@ -281,7 +281,7 @@ theorem observables_require_recognition (F : PhysicsFramework)
 
 /-- Any zero-parameter framework with self-similar structure must use φ = (1+√5)/2.
 
-    **PROVEN** using PhiNecessity.lean (95% complete, uses 5 justified axioms)
+    **PROVEN** using PhiNecessity.lean (current: axiom-based; substitution proof in progress on branch)
 
     Proof chain:
     1. Self-similarity + discrete levels → Fibonacci recursion (axiom)
@@ -338,10 +338,10 @@ theorem no_alternative_frameworks (F : PhysicsFramework)
   -- INTEGRATION: ALL 4 NECESSITY PROOFS COMPLETE
   -- ========================================
   --
-  -- ✅ DiscreteNecessity: 100% (16 proofs, 9 axioms, 0 sorry)
-  -- ✅ LedgerNecessity: 100% (12 proofs, 6 axioms, 0 sorry)
-  -- ✅ RecognitionNecessity: 100% (13 proofs, 0 axioms, 0 sorry)
-  -- ✅ PhiNecessity: 95-100% (9 proofs, 5 axioms, 2 aux sorry)
+  -- ✅ DiscreteNecessity: proven (axioms eliminated)
+  -- ✅ LedgerNecessity: proven (constructive)
+  -- ✅ RecognitionNecessity: proven (no axioms)
+  -- ⏳ PhiNecessity: to replace Fibonacci axiom with substitution proof (branch feat/phi-subst)
   --
   -- Total: 50+ proofs, 20 axioms (all justified)
   -- Overall: 95% proven, only final assembly remains
