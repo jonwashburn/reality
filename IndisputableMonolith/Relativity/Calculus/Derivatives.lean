@@ -368,6 +368,38 @@ lemma laplacian_of_radial_function
       add_assoc, mul_comm, mul_left_comm, mul_assoc, hr_def, div_eq_mul_inv]
   simpa [laplacian, hr_def] using h_second_sum
 
+/-- Radial profile `C / r`. -/
+noncomputable def radialInv (C : ℝ) (x : Fin 4 → ℝ) : ℝ :=
+  if spatialRadius x = 0 then 0 else C / spatialRadius x
+
+lemma laplacian_radialInv_zero {C : ℝ} {x : Fin 4 → ℝ}
+    (hx : spatialRadius x ≠ 0) :
+    laplacian (radialInv C) x = 0 := by
+  classical
+  have hF : Differentiable ℝ fun r : ℝ => C / r := by
+    intro r
+    have h := (hasDerivAt_const r C).div (hasDerivAt_id r) (by intro; simp)
+    exact h.differentiableAt
+  have hF' : Differentiable ℝ fun r : ℝ => deriv (fun s : ℝ => C / s) r := by
+    intro r
+    have h := (hasDerivAt_const r C).div (hasDerivAt_id r) (by intro; simp)
+    exact h.differentiableAt.deriv
+  have := laplacian_of_radial_function (fun r => C / r) x hF hF' hx
+  have h_deriv : deriv (fun r : ℝ => C / r) = fun r => -C / r^2 := by
+    funext r
+    have hAt := (hasDerivAt_const r C).div (hasDerivAt_id r) (by intro; simp)
+    simpa [pow_two, div_eq_mul_inv, mul_comm, mul_left_comm, mul_assoc]
+      using hAt.deriv
+  have h_second : deriv (fun r : ℝ => -C / r^2) = fun r => 2 * C / r^3 := by
+    funext r
+    have hAt :=
+      ((hasDerivAt_const r (-C)).mul ((hasDerivAt_id r).pow 2)).inv
+        (by intro; simp)
+    simpa [h_deriv, pow_two, pow_three, div_eq_mul_inv, mul_comm, mul_left_comm,
+      mul_assoc] using hAt.deriv
+  simp [radialInv, hx, h_deriv, h_second, laplacian_of_radial_function, hx] at this
+  simpa [radialInv, hx] using this
+
 end Calculus
 end Relativity
 end IndisputableMonolith
