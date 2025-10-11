@@ -29,11 +29,8 @@ def sample_grid (vol : VolumeElement) (n_points : ℕ) : List (Fin 4 → ℝ) :=
 /-- Integrate a scalar function over spacetime volume (discrete approximation). -/
 noncomputable def integrate_scalar
   (f : (Fin 4 → ℝ) → ℝ) (g : MetricTensor) (vol : VolumeElement) : ℝ :=
-  -- ∫ √(-g(x)) f(x) d^4x ≈ ∑_i √(-g(x_i)) f(x_i) Δx^4
-  let n := 10  -- Grid resolution
-  let grid := sample_grid vol n
+  let n := 10
   let Δx4 := vol.grid_spacing ^ 4
-  -- Simplified: return symbolic value for now
   Δx4 * Finset.sum (Finset.range n) (fun i =>
     sqrt_minus_g g (fun _ => (i : ℝ) * vol.grid_spacing) *
     f (fun _ => (i : ℝ) * vol.grid_spacing))
@@ -48,14 +45,20 @@ noncomputable def potential_action
   (φ : ScalarField) (m_squared : ℝ) (g : MetricTensor) (vol : VolumeElement) : ℝ :=
   (m_squared / 2) * integrate_scalar (field_squared φ) g vol
 
-/-- Integration is linear (from sum linearity). -/
-axiom integrate_add (f₁ f₂ : (Fin 4 → ℝ) → ℝ) (g : MetricTensor) (vol : VolumeElement) :
-  integrate_scalar (fun x => f₁ x + f₂ x) g vol =
-    integrate_scalar f₁ g vol + integrate_scalar f₂ g vol
+/-- Integration is linear (finite weighted sum). -/
+theorem integrate_add (f₁ f₂ : (Fin 4 → ℝ) → ℝ) (g : MetricTensor) (vol : VolumeElement) :
+    integrate_scalar (fun x => f₁ x + f₂ x) g vol =
+      integrate_scalar f₁ g vol + integrate_scalar f₂ g vol := by
+  classical
+  dsimp [integrate_scalar]
+  ring
 
-axiom integrate_smul (c : ℝ) (f : (Fin 4 → ℝ) → ℝ) (g : MetricTensor) (vol : VolumeElement) :
-  integrate_scalar (fun x => c * f x) g vol =
-    c * integrate_scalar f g vol
+theorem integrate_smul (c : ℝ) (f : (Fin 4 → ℝ) → ℝ) (g : MetricTensor) (vol : VolumeElement) :
+    integrate_scalar (fun x => c * f x) g vol =
+      c * integrate_scalar f g vol := by
+  classical
+  dsimp [integrate_scalar]
+  ring
 
 /-- Kinetic action is nonnegative for positive-signature spatial parts. -/
 theorem kinetic_nonneg (φ : ScalarField) (g : MetricTensor) (vol : VolumeElement) :

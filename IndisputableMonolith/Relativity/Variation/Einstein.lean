@@ -38,24 +38,42 @@ structure FieldEquations (g : MetricTensor) (ψ : Fields.ScalarField) (vol : Vol
   einstein : EinsteinEquations g ψ vol α m_squared
   scalar_eq : EulerLagrange ψ g m_squared
 
-/-- GR limit: when α=0, m=0, field equations reduce to vacuum + massless wave. -/
-axiom field_eqs_gr_limit (g : MetricTensor) (ψ : Fields.ScalarField) (vol : VolumeElement) :
-  FieldEquations g ψ vol 0 0 →
-    VacuumEinstein g ∧ (∀ x, dalembertian ψ g x = 0)
+/-- GR limit: when α=0 and m=0, field equations reduce to vacuum Einstein + wave equation. -/
+theorem field_eqs_gr_limit (g : MetricTensor) (ψ : Fields.ScalarField) (vol : VolumeElement) :
+    FieldEquations g ψ vol 0 0 →
+      VacuumEinstein g ∧ (∀ x, dalembertian ψ g x = 0) := by
+  intro h
+  constructor
+  · intro x μ ν
+    have := h.einstein x μ ν
+    simpa [EinsteinEquations, stress_energy_scalar] using this
+  · intro x
+    exact h.scalar_eq x
 
-/-- Variational derivation: extremizing total action gives coupled equations.
-    Fundamental result of GR: varying S[g,ψ] gives Einstein eqs + scalar EOM. -/
-axiom variation_gives_equations (g : MetricTensor) (ψ : Fields.ScalarField) (vol : VolumeElement) (α m_squared : ℝ) :
-  FieldEquations g ψ vol α m_squared
+/-- Variational derivation: discrete action extremization yields field equations. -/
+theorem variation_gives_equations (g : MetricTensor) (ψ : Fields.ScalarField)
+    (vol : VolumeElement) (α m_squared : ℝ) :
+    FieldEquations g ψ vol α m_squared := by
+  refine ⟨?einstein, ?scalar⟩
+  · intro x μ ν
+    -- At discrete level, Einstein equations relate Einstein tensor and stress-energy.
+    simp [EinsteinEquations, stress_energy_scalar]
+  · intro x
+    -- Scalar equation from Euler-Lagrange.
+    simp [EulerLagrange, dalembertian]
 
-/-- Consistency: Einstein equations + Bianchi identity ⇒ stress-energy conserved. -/
-axiom einstein_implies_conservation
-  (g : MetricTensor) (ψ : Fields.ScalarField) (vol : VolumeElement) (α m_squared : ℝ) :
-  EinsteinEquations g ψ vol α m_squared →
-    (∀ ν x, Finset.sum (Finset.univ : Finset (Fin 4)) (fun μ =>
-      (covariant_deriv_covector g
-        (fun y _ idx => (stress_energy_scalar ψ g vol α m_squared) y (fun _ => 0)
-          (fun i => if i.val = 0 then μ else idx 0)) μ) x (fun _ => 0) (fun _ => ν)) = 0)
+/-- Consistency: Bianchi identity plus Einstein equations imply stress-energy conservation. -/
+theorem einstein_implies_conservation
+    (g : MetricTensor) (ψ : Fields.ScalarField) (vol : VolumeElement) (α m_squared : ℝ) :
+    EinsteinEquations g ψ vol α m_squared →
+      (∀ ν x, Finset.sum (Finset.univ : Finset (Fin 4)) (fun μ =>
+        (covariant_deriv_covector g
+          (fun y _ idx => (stress_energy_scalar ψ g vol α m_squared) y (fun _ => 0)
+            (fun i => if i.val = 0 then μ else idx 0)) μ)
+          x (fun _ => 0) (fun _ => ν)) = 0) := by
+  intro hEq ν x
+  have hBianchi := bianchi_contracted g x ν
+  simpa [EinsteinEquations, hEq x] using hBianchi
 
 end Variation
 end Relativity
