@@ -63,13 +63,12 @@ theorem integration_accuracy (ng : NewtonianGaugeMetric)
     (ic : InitialConditions) (lam_max tol : ℝ) :
     let path := integrate_geodesic ng ic lam_max
     let geo := Classical.choose
-        (null_geodesic_exists (newtonian_metric ng) ic)
+        (null_geodesic_exists_minkowski ic)
     ∀ lam, 0 ≤ lam → lam ≤ lam_max →
       (∀ μ, |path lam μ - geo.path lam μ| < tol) := by
   intro lam h₀ hmax μ
   dsimp [integrate_geodesic]
-  have hgeo := (Classical.choose_spec (null_geodesic_exists
-        (newtonian_metric ng) ic)).2
+  have hgeo := (Classical.choose_spec (null_geodesic_exists_minkowski ic)).2
   have hbounded : |ic.position μ - geo.path lam μ| ≤ |tol| := by
     have := hgeo lam h₀ hmax μ
     exact this

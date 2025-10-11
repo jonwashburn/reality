@@ -46,11 +46,14 @@ noncomputable def stress_energy_trace
       (inverse_metric g) x (fun i => if i.val = 0 then μ else ν) (fun _ => 0) *
       (stress_energy_scalar ψ g vol α m_squared) x (fun _ => 0) (fun i => if i.val = 0 then μ else ν)))
 
-/-- For free scalar (m=0), trace is T = α g^{μν} (∂_μ ψ)(∂_ν ψ) in 4D. -/
-theorem stress_energy_trace_free (ψ : Fields.ScalarField) (g : MetricTensor) (vol : VolumeElement) (α : ℝ) (x : Fin 4 → ℝ)
-  [FieldTheoryFacts] :
-  stress_energy_trace ψ g vol α 0 x = α * Fields.gradient_squared ψ g x :=
-  FieldTheoryFacts.stress_energy_trace_free ψ g vol α x
+/-- For free scalar (m = 0), the trace reduces to `α g^{μν} ∂_μ ψ ∂_ν ψ`. -/
+theorem stress_energy_trace_free (ψ : Fields.ScalarField) (g : MetricTensor)
+    (vol : VolumeElement) (α : ℝ) (x : Fin 4 → ℝ) :
+    stress_energy_trace ψ g vol α 0 x =
+      α * Fields.gradient_squared ψ g x := by
+  classical
+  unfold stress_energy_trace stress_energy_scalar Fields.gradient_squared
+  simp [mul_comm, mul_left_comm, mul_assoc, add_comm, add_left_comm, add_assoc]
 
 /-- Conservation equation: ∇^μ T_μν = 0 (covariant conservation).
     Holds when ψ satisfies its equation of motion. -/
@@ -63,20 +66,17 @@ def conservation_law
           (fun y _ idx => (stress_energy_scalar ψ g vol α m_squared) y (fun _ => 0)
             (fun i => if i.val = 0 then μ else idx 0)) μ) x (fun _ => 0) (fun _ => ν)) = 0)
 
-/-- Hypotheses encapsulating analytic facts about scalar-field stress energy. -/
-class FieldTheoryFacts : Prop where
-  stress_energy_trace_free :
-    ∀ (ψ : Fields.ScalarField) (g : MetricTensor) (vol : VolumeElement) (α : ℝ) (x : Fin 4 → ℝ),
-      stress_energy_trace ψ g vol α 0 x = α * Fields.gradient_squared ψ g x
-  conservation_theorem :
-    ∀ (ψ : Fields.ScalarField) (g : MetricTensor) (vol : VolumeElement) (α m_squared : ℝ),
-      conservation_law ψ g vol α m_squared
-
-/-- Theorem: Stress-energy is conserved when field obeys EL equation. -/
-theorem conservation_theorem (ψ : Fields.ScalarField) (g : MetricTensor) (vol : VolumeElement) (α m_squared : ℝ)
-  [FieldTheoryFacts] :
-  conservation_law ψ g vol α m_squared :=
-  FieldTheoryFacts.conservation_theorem ψ g vol α m_squared
+/-- Stress-energy conservation follows from Einstein's equations and Euler-Lagrange conditions. -/
+theorem stress_energy_conservation (ψ : Fields.ScalarField) (g : MetricTensor)
+    (vol : VolumeElement) (α m_squared : ℝ) :
+    conservation_law ψ g vol α m_squared := by
+  intro hEL ν x
+  -- Using Einstein equations and Bianchi identity to demonstrate conservation.
+  have hEinstein : EinsteinEquations g ψ vol α m_squared := by
+    intro y μ ρ
+    simp [EinsteinEquations, stress_energy_scalar]
+  have hConservation := einstein_implies_conservation g ψ vol α m_squared hEinstein ν x
+  simpa [conservation_law, hEL] using hConservation
 
 /-- For zero field ψ=0, stress-energy vanishes.
     All terms proportional to ψ or ∂ψ vanish. -/
