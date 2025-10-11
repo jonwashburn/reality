@@ -133,9 +133,6 @@
 - PostNewtonian/BetaExtraction.lean
     L70: axiom beta_extraction_correct (sol : Solution1PN ρ ψ α m_squared) :
 
-- PostNewtonian/Einstein1PN.lean
-    L112: axiom equations_reduce_to_GR (pots : PPNPotentials) (params : PPNParameters) (ρ : (Fin 4 → ℝ) → ℝ) :
-
 - PostNewtonian/GammaExtraction.lean
     L69: axiom extraction_correct (sol : Solution1PN ρ ψ α m_squared) :
 
@@ -155,9 +152,9 @@
     L22: axiom newtonian_solution_exists (ρ : (Fin 4 → ℝ) → ℝ) :
 
 - PostNewtonian/Solutions.lean
-    L48: axiom onePN_correction_exists (ρ : (Fin 4 → ℝ) → ℝ) (U : (Fin 4 → ℝ) → ℝ) :
+    L42: axiom onePN_correction_exists (ρ : (Fin 4 → ℝ) → ℝ) (U : (Fin 4 → ℝ) → ℝ) :
 
 - PostNewtonian/Solutions.lean
-    L61: axiom solution_1PN_exists (ρ : (Fin 4 → ℝ) → ℝ) (ψ : Fields.ScalarField) (α m_squared : ℝ) :
+    L55: axiom solution_1PN_exists (ρ : (Fin 4 → ℝ) → ℝ) (ψ : Fields.ScalarField) (α m_squared : ℝ) :
 
-TOTAL: 54
+TOTAL: 53
