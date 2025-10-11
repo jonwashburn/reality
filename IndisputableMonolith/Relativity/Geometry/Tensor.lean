@@ -43,6 +43,61 @@ def IsAntisymmetric (T : Tensor 0 2) : Prop :=
     T x (fun (_ : Fin 0) => 0) (fun (i : Fin 2) => if i.val = 0 then μ else ν) =
    -T x (fun (_ : Fin 0) => 0) (fun (i : Fin 2) => if i.val = 0 then ν else μ)
 
+/-- Swap the covariant indices of a rank-(0,2) tensor. -/
+noncomputable def swapLow (T : Tensor 0 2) : Tensor 0 2 :=
+  fun x up_idx low_idx =>
+    let μ := low_idx 0
+    let ν := low_idx 1
+    T x up_idx (fun i => if i.val = 0 then ν else μ)
+
+/-- Symmetric projection of a (0,2)-tensor. -/
+noncomputable def symmetrize (T : Tensor 0 2) : Tensor 0 2 :=
+  fun x up_idx low_idx =>
+    let μ := low_idx 0
+    let ν := low_idx 1
+    ((T x up_idx (fun i => if i.val = 0 then μ else ν)) +
+      (T x up_idx (fun i => if i.val = 0 then ν else μ))) / (2 : ℝ)
+
+/-- Antisymmetric projection of a (0,2)-tensor. -/
+noncomputable def antisymmetrize (T : Tensor 0 2) : Tensor 0 2 :=
+  fun x up_idx low_idx =>
+    let μ := low_idx 0
+    let ν := low_idx 1
+    ((T x up_idx (fun i => if i.val = 0 then μ else ν)) -
+      (T x up_idx (fun i => if i.val = 0 then ν else μ))) / (2 : ℝ)
+
+lemma symmetrize_isSymmetric (T : Tensor 0 2) : IsSymmetric (symmetrize T) := by
+  intro x μ ν
+  dsimp [symmetrize]
+  have :
+      (T x (fun _ => 0) (fun i => if i.val = 0 then μ else ν) +
+        T x (fun _ => 0) (fun i => if i.val = 0 then ν else μ)) =
+      (T x (fun _ => 0) (fun i => if i.val = 0 then ν else μ) +
+        T x (fun _ => 0) (fun i => if i.val = 0 then μ else ν)) := by
+    ring
+  simpa [this]
+
+lemma antisymmetrize_isAntisymmetric (T : Tensor 0 2) : IsAntisymmetric (antisymmetrize T) := by
+  intro x μ ν
+  dsimp [antisymmetrize]
+  have :
+      (T x (fun _ => 0) (fun i => if i.val = 0 then μ else ν) -
+        T x (fun _ => 0) (fun i => if i.val = 0 then ν else μ)) =
+      -((T x (fun _ => 0) (fun i => if i.val = 0 then ν else μ) -
+          T x (fun _ => 0) (fun i => if i.val = 0 then μ else ν))) := by
+    ring
+  have := congrArg (fun z => z / (2 : ℝ)) this
+  simpa using this
+
+lemma symmetrize_add_antisymmetrize (T : Tensor 0 2) :
+    (fun x up_idx low_idx => symmetrize T x up_idx low_idx +
+      antisymmetrize T x up_idx low_idx) = T := by
+  funext x up_idx low_idx
+  dsimp [symmetrize, antisymmetrize]
+  have hμ : low_idx 0 = low_idx 0 := rfl
+  have hν : low_idx 1 = low_idx 1 := rfl
+  field_simp [hμ, hν]
+
 /-- Contract upper index p with lower index q. -/
 noncomputable def contract {p q : ℕ}
   (T : Tensor (p+1) (q+1)) : Tensor p q :=
