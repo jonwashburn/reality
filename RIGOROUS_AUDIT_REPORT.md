@@ -210,3 +210,11 @@ The Relativity modules contain a mix of classical (acceptable) and RS-specific a
 
 **Recommendation:** Fix the circular dependency, then systematically address the 27 RS-specific axioms using the ILG kernel framework and Constants defined in `Source.txt`.
 
+### New Status (post-sealing)
+
+- Relativity subtree (`IndisputableMonolith/Relativity/…`) sealed; no active imports allowed.
+- Active code: 0 sorries / admits / axioms (CI guard enforced).
+- `docs/FINAL_SYSTEMATIC_AUDIT_REPORT.md` updated to reflect sealed status.
+- New files: `docs/OPEN_PHYSICS_TARGETS.md` and `Relativity/ROADMAP.md` track pending work.
+- Future work: discharge 27 RS-specific axioms before unsealing.
+

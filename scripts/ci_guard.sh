@@ -15,6 +15,39 @@ LEANS="$(printf "%s\n" "$ALL_LEANS" | grep -E '^(IndisputableMonolith|URC|CI)/.*
 
 echo "[ci_guard] Scanning for axiom/sorry/admit in Lean files..."
 
+# Guard: sealed modules must not be imported by active code (outside their subtree)
+SEALED_IMPORT_PREFIX="IndisputableMonolith.Relativity"
+SEALED_PATH_PREFIX="IndisputableMonolith/Relativity/"
+
+SEALED_VIOLATIONS="$(python - <<'PY'
+import os
+
+root = 'IndisputableMonolith'
+violations = []
+for dirpath, _, filenames in os.walk(root):
+    for fn in filenames:
+        if not fn.endswith('.lean'):
+            continue
+        rel = os.path.relpath(os.path.join(dirpath, fn), root)
+        if rel.startswith('Relativity/'):
+            continue  # sealed subtree itself
+        with open(os.path.join(root, rel), 'r', encoding='utf-8') as f:
+            for line in f:
+                stripped = line.strip()
+                if stripped.startswith('import ') and 'IndisputableMonolith.Relativity' in stripped:
+                    violations.append(f"{rel}:{stripped}")
+                    break
+
+print("\n".join(violations))
+PY
+)"
+
+if [ -n "$SEALED_VIOLATIONS" ]; then
+  echo "[ci_guard][FAIL] Detected imports of sealed Relativity modules:" >&2
+  printf "%s\n" "$SEALED_VIOLATIONS" >&2
+  exit 1
+fi
+
 # Use ripgrep if available, else fallback to grep
 if command -v rg >/dev/null 2>&1; then
   AXIOM_MATCHES_RAW="$(rg -n --no-messages "^\\s*axiom\\b" $LEANS || true)"
@@ -75,11 +108,6 @@ else
   SORRY_MATCHES=""
 fi
 
-if [ -n "$AXIOM_MATCHES_RAW" ]; then
-  echo "[ci_guard][WARN] Found 'axiom' declarations (reporting, not failing):" >&2
-  printf "%s\n" "$AXIOM_MATCHES_RAW" >&2
-fi
-
 if [ -n "$SORRY_MATCHES" ]; then
   echo "[ci_guard][FAIL] Found 'sorry' occurrences:" >&2
   printf "%s\n" "$SORRY_MATCHES" >&2
@@ -92,14 +120,19 @@ if [ -n "$ADMIT_MATCHES" ]; then
   HAS_ISSUES=1
 fi
 
-echo "[ci_guard] Counting axioms..."
+echo "[ci_guard] Counting axioms outside sealed modules..."
 if command -v rg >/dev/null 2>&1; then
-  AXIOM_COUNT="$(rg -n --no-messages "^axiom\\b" $LEANS | wc -l | tr -d ' ')"
+  AXIOM_COUNT="$(printf "%s\n" "$LEANS" | grep -v "^IndisputableMonolith/Relativity/" | xargs rg -n --no-messages "^axiom\\b" | wc -l | tr -d ' ')"
 else
-  AXIOM_COUNT="$(grep -n "^axiom\\b" $LEANS 2>/dev/null | wc -l | tr -d ' ')"
+  AXIOM_COUNT="$(printf "%s\n" "$LEANS" | grep -v "^IndisputableMonolith/Relativity/" | xargs grep -n "^axiom\\b" 2>/dev/null | wc -l | tr -d ' ')"
 fi
 
-echo "[ci_guard] axiom count: $AXIOM_COUNT"
+echo "[ci_guard] axiom count (outside sealed modules): $AXIOM_COUNT"
+
+if [ "$AXIOM_COUNT" -ne 0 ]; then
+  echo "[ci_guard][FAIL] Axioms detected outside sealed Relativity modules." >&2
+  exit 1
+fi
 
 if [ "$HAS_ISSUES" -ne 0 ]; then
   echo "[ci_guard] Failing due to sorry/admit occurrences." >&2

@@ -3,16 +3,16 @@ import IndisputableMonolith.Recognition
 import IndisputableMonolith.Constants
 import IndisputableMonolith.PhiSupport.Lemmas
 import IndisputableMonolith.URCGenerators.ExclusivityCert
-import IndisputableMonolith.Relativity.Perturbation.WeightFormula
 
 namespace IndisputableMonolith
 namespace URCGenerators
 
 /-!
-# Parameter Provenance Certificate - The Ultimate Chain
+# Parameter Provenance Certificate - Status Update (Relativity Sealed)
 
-This certificate proves the complete derivation chain from philosophical axiom
-to physical predictions with ZERO free parameters:
+Relativity/ILG derivations are temporarily sealed. This certificate therefore
+tracks the Meta-Principle → (φ, α, C_lag) chain only, and records that the
+remaining gravity derivations depend on the sealed subtree.
 
 ```
 MP (nothing cannot recognize itself)
@@ -29,13 +29,14 @@ Galaxy rotation curves, lensing, cosmology
 
 ## What This Proves
 
-**Every parameter in the theory is derived from MP**:
+**Currently verified inside active code:**
 - φ from self-similarity (PhiNecessity)
 - α from φ via (1-1/φ)/2 (algebraic)
 - C_lag from φ via φ^(-5) (algebraic)
-- w(r) from field equations (GravityDerivation)
 
-**ZERO adjustable parameters.**
+**Pending (Relativity sealed):**
+- ILG field equations and weight formula derivations
+- Rotation curves, lensing, cosmology predictions
 
 ## Machine Verification
 
@@ -43,7 +44,7 @@ Galaxy rotation curves, lensing, cosmology
 #eval IndisputableMonolith.URCAdapters.parameter_provenance_report
 ```
 
-Expected output: Complete chain from MP → observations
+Expected output: Current chain MP → (φ, α, C_lag); gravity derivations marked TODO
 
 -/
 
@@ -73,15 +74,7 @@ structure ParameterProvenanceCert where
 
   -- Step 4: α and C_lag are derived from φ
   Constants.alpha_from_phi = (1 - 1 / Constants.phi) / 2 ∧
-  Constants.Clag_from_phi = Constants.phi ^ (-(5 : ℝ)) ∧
-
-  -- Step 5: Weight formula is defined
-  (∃ (α C_lag tau0 T_dyn : ℝ),
-    Relativity.Perturbation.weight_final α C_lag tau0 T_dyn =
-      1 + C_lag * α * (T_dyn / tau0) ^ α) ∧
-
-  -- Step 6: Derivation chain is documented
-  (∃ (derivation : Relativity.Perturbation.weight_derivation_complete), True)
+  Constants.Clag_from_phi = Constants.phi ^ (-(5 : ℝ))
 
 /-- **Ultimate Theorem**: Complete parameter provenance is verified.
 
@@ -91,28 +84,15 @@ structure ParameterProvenanceCert where
 @[simp] theorem ParameterProvenanceCert.verified_any (c : ParameterProvenanceCert) :
   ParameterProvenanceCert.verified c := by
   constructor
-  · -- MP holds
-    exact Recognition.mp_holds
+  · exact Recognition.mp_holds
   · constructor
-    · -- Exclusivity proof exists
-      use {}
+    · use {}
       trivial
     · constructor
-      · -- φ has correct value
-        rfl
+      · rfl
       · constructor
-        · -- α from φ is correct
-          rfl
-        · constructor
-          · -- C_lag from φ is correct
-            rfl
-          · constructor
-            · -- Weight formula exists
-              use 0.191, 0.090, 1, 1  -- Example values
-              rfl
-            · -- Derivation chain exists
-              use Relativity.Perturbation.weight_is_derived_not_assumed
-              trivial
+        · rfl
+        · rfl
 
 /-! ### Component Certificates -/
 
@@ -174,29 +154,7 @@ structure GravityDerivationCert where
   deriving Repr
 
 @[simp] def GravityDerivationCert.verified (_c : GravityDerivationCert) : Prop :=
-  -- Weight formula is derived from Einstein equations
-  (∀ α C_lag tau0 T_dyn,
-    Relativity.Perturbation.weight_final α C_lag tau0 T_dyn =
-      1 + C_lag * α * (T_dyn / tau0) ^ α) ∧
-  -- Parameters come from recognition spine
-  (∃ (_ : AlphaProvenanceCert), True) ∧
-  (∃ (_ : ClagProvenanceCert), True) ∧
-  -- Derivation chain is documented
-  (∃ derivation : Relativity.Perturbation.weight_derivation_complete, True)
-
-@[simp] theorem GravityDerivationCert.verified_any (c : GravityDerivationCert) :
-  GravityDerivationCert.verified c := by
-  constructor
-  · intro α C_lag tau0 T_dyn
-    rfl
-  · constructor
-    · use {}
-      trivial
-    · constructor
-      · use {}
-        trivial
-      · use Relativity.Perturbation.weight_is_derived_not_assumed
-        trivial
+  False  -- Relativity sealed; instantiate once ILG proofs complete
 
 end URCGenerators
 end IndisputableMonolith

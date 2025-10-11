@@ -10,7 +10,7 @@ namespace Derivation
 # Derivation Module
 
 This module provides thin aliases for the target derivations used by the
-axiom lattice meta proofs. In particular, `DerivesPhysics` corresponds
+meta-proof lattice of axioms. In particular, `DerivesPhysics` corresponds
 to the master bundle `RSRealityMaster` (at the canonical φ), and we
 expose a canonical witness `derives_physics_any`.
 -/
@@ -32,5 +32,3 @@ theorem derives_physics_any : DerivesPhysics := by
 end Derivation
 end Meta
 end IndisputableMonolith
-
-

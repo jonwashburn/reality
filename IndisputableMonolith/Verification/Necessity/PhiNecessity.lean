@@ -407,17 +407,10 @@ theorem wrong_constant_breaks_self_similarity
 -- which shows e, π, √2, √3, √5 all fail PhiSelection.
 -- Here we provide one simplified standalone example.
 
--- example : (Real.exp 1)^2 ≠ Real.exp 1 + 1 := by
---   -- Proof requires analytic bounds; omitted here to keep deps light.
---   intro h; admit
-
--- example : Real.pi^2 ≠ Real.pi + 1 := by
---   -- Proof requires analytic bounds; omitted here to keep deps light.
---   intro h; admit
 
 /-- Square root of 2 does not satisfy the golden ratio equation.
     See also: PhiSupport.Alternatives.sqrt2_fails_selection
-    This proof is COMPLETE with NO sorry. -/
+    This proof is complete. -/
 example : (Real.sqrt 2)^2 ≠ Real.sqrt 2 + 1 := by
   -- (√2)² = 2 exactly, but √2 > 1, so √2 + 1 > 2
 

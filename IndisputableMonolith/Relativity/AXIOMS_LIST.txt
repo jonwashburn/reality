@@ -1,0 +1,130 @@
+# Relativity Axioms (Sealed Module)
+Total axioms: 75
+
+- GRLimit/Continuity.lean:
+  - action_continuous_at_gr_limit
+  - stress_energy_continuous_at_zero
+  - stress_energy_bounded_in_limit
+  - field_equations_continuous
+
+- Compact/StaticSpherical.lean:
+  - field_equations_static_exist
+  - solution_exists
+  - schwarzschild_limit
+
+- PostNewtonian/BetaExtraction.lean:
+  - beta_extraction_correct
+  - ppn_parameters_complete
+
+- PostNewtonian/Einstein1PN.lean:
+  - equations_reduce_to_GR
+
+- PostNewtonian/GammaExtraction.lean:
+  - extraction_correct
+
+- PostNewtonian/SolarSystemBounds.lean:
+  - RS_satisfies_cassini
+  - RS_satisfies_llr
+  - bounds_compatibility_check
+  - actual_coefficients_exist
+
+- PostNewtonian/Solutions.lean:
+  - newtonian_solution_exists
+  - gravitomagnetic_solution_exists
+  - onePN_correction_exists
+  - solution_1PN_exists
+  - solution_GR_limit
+  - solution_consistent
+  - scalar_modifies_potentials
+
+- Variation/Einstein.lean:
+  - field_eqs_gr_limit
+  - variation_gives_equations
+  - einstein_implies_conservation
+
+- Variation/Functional.lean:
+  - dalembertian_minkowski
+  - variational_principle
+
+- Perturbation/Einstein00.lean:
+  - spherical_source_test
+
+- GW/ActionExpansion.lean:
+  - expand_action_around_FRW
+  - isolate_tensor_contribution
+  - action_form_verified
+
+- GW/Constraints.lean:
+  - coupling_bound_from_GW170817
+  - RS_satisfies_GW_bound
+
+- GW/TensorDecomposition.lean:
+  - decompose_perturbation
+  - projection_operator_TT
+  - decomposition_unique
+
+- Fields/Integration.lean:
+  - integrate_add
+  - integrate_smul
+
+- Cosmology/FRWMetric.lean:
+  - christoffel_FRW_correct
+  - ricci_FRW_formulas_correct
+
+- Cosmology/Friedmann.lean:
+  - friedmann_from_einstein
+  - solution_exists
+  - GR_limit_friedmann
+
+- Cosmology/GrowthFactor.lean:
+  - growth_equation_exists
+  - modification_factor_GR
+  - modification_factor_ILG
+
+- Cosmology/Perturbations.lean:
+  - linearized_perturbation_equations
+  - mode_decomposition
+
+- Cosmology/ScalarOnFRW.lean:
+  - klein_gordon_solution_exists
+  - massless_scalar_not_exactly_radiation
+
+- Cosmology/Sigma8.lean:
+  - sigma8_evolution_ILG
+  - sigma8_tension
+  - CMB_consistency
+  - BAO_consistency
+  - BBN_consistency
+
+- Geometry/Curvature.lean:
+  - riemann_antisymm_last_two
+  - ricci_symmetric
+  - einstein_symmetric
+  - bianchi_contracted
+
+- Geodesics/Integration.lean:
+  - derive_simplified_equations
+  - integration_preserves_null
+  - integration_accuracy
+  - integration_minkowski_test
+
+- Geodesics/NullGeodesic.lean:
+  - null_geodesic_exists
+  - affine_reparametrization
+  - minkowski_straight_line_is_geodesic
+  - geodesic_unique
+
+- Lensing/ClusterPredictions.lean:
+  - cluster_lensing_bands
+  - strong_lensing_test
+
+- Lensing/Deflection.lean:
+  - schwarzschild_deflection
+  - deflection_small_correction
+  - analytical_matches_numerical
+
+- Lensing/TimeDelay.lean:
+  - shapiro_GR_formula
+  - time_delay_correction
+  - GR_limit_time_delay
+

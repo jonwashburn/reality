@@ -1,5 +1,9 @@
 # Axiom Classification: Relativity Modules
 
+// NOTE: The entire `IndisputableMonolith/Relativity` subtree is currently sealed
+// (excluded from the active build). This document tracks outstanding axioms for
+// future work when the module is reopened.
+
 ## Summary
 
 - Total axioms in `IndisputableMonolith/Relativity`: **67**

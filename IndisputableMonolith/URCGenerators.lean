@@ -2121,18 +2121,21 @@ def demo_generators (φ : ℝ) : VerifiedGenerators φ :=
       (And.intro h_fold (And.intro h_maxwell (And.intro h_pdg (And.intro h_unique (And.intro h_sector
       (And.intro h_timeDim (And.intro h_eff (And.intro h_rotId (And.intro h_abs (And.intro h_dd0
       (And.intro h_bianchi (And.intro h_inev (And.intro h_controls (And.intro h_lrecU
-      (And.intro h_ethicsPolicy (And.intro h_fairnessBatch (And.intro h_preferLex h_truthLedger))))))))))))))))))))))))))))))))))))))))))))))))))))))))
+      (And.intro h_ethicsPolicy (And.intro h_fairnessBatch (And.intro h_preferLex h_truthLedger))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
   ⟨C, hC⟩
 
 @[simp] def demo_generators_phi : VerifiedGenerators (0 : ℝ) :=
   demo_generators 0
 
 /-- Human-readable reports for Route B wiring. -/
-def routeB_report : String :=
-  "URC Route B: generators ⇒ bridge wired (minimal demo)."
+def routeA_report : String :=
+  "URC Route A: absolute layer witnesses verified in active code."
 
-def routeB_closure_demo : String :=
-  "URC Route B end-to-end: bridge from generators constructed; ready for closure wiring."
+def routeB_report : String :=
+  "URC Route B: pending — relies on sealed Relativity/ILG proofs."
+
+def routeB_closure_status : String :=
+  "URC Route B closure will resume once Relativity is unsealed."
 
 structure MaxwellContinuityCert where
   deriving Repr
@@ -2695,3 +2698,15 @@ structure GWQuadraticCert where deriving Repr
 
 end URCGenerators
 end IndisputableMonolith
+
+def routeA_end_to_end_demo : String :=
+  "URC Route A end-to-end: absolute layer accepts bridge (Relativity sealed)."
+
+def routeB_bridge_end_to_end_report : String :=
+  "URC Route B awaiting ILG derivations from sealed Relativity modules."
+
+def route_summary : String :=
+  "URC summary: Route A proven; Route B resumes after Relativity proofs."
+
+def grand_manifest : String :=
+  "URC Manifest: Active layers rigorous; Relativity sealed pending ILG/PPN proofs."

@@ -98,6 +98,60 @@ theorem J_zero (M : MaxwellModel A) : M.J 0 = 0 := by
 end MaxwellModel
 end CochainSpace
 
+/-! ### Example: trivial cochain instance
+A very small finite complex showing the structure is inhabited./-
+
+namespace Demo
+
+open DEC
+
+@[simp] def zeroMap (x : ℤ) : ℤ := 0
+
+@[simp] theorem zeroMap_add (x y : ℤ) : zeroMap (x + y) = zeroMap x + zeroMap y := by simp
+
+def trivialCochainSpace : CochainSpace ℤ :=
+{ d0 := zeroMap
+, d1 := zeroMap
+, d2 := zeroMap
+, d3 := zeroMap
+, d0_add := zeroMap_add
+, d1_add := zeroMap_add
+, d2_add := zeroMap_add
+, d3_add := zeroMap_add
+, d0_zero := by simp
+, d1_zero := by simp
+, d2_zero := by simp
+, d3_zero := by simp
+, dd01 := by intro x; simp
+, dd12 := by intro x; simp
+, dd23 := by intro x; simp }
+
+example (A1 : ℤ) : trivialCochainSpace.d2 (trivialCochainSpace.F A1) = 0 :=
+  CochainSpace.bianchi trivialCochainSpace A1
+
+example (A1 χ : ℤ) :
+    trivialCochainSpace.F (trivialCochainSpace.gauge A1 χ) =
+    trivialCochainSpace.F A1 :=
+  CochainSpace.F_gauge_invariant trivialCochainSpace A1 χ
+
+def trivialMaxwell : CochainSpace.MaxwellModel ℤ :=
+{ star2 := zeroMap
+, star2_add := zeroMap_add
+, star2_zero := by simp
+, sigma2 := zeroMap
+, sigma2_add := zeroMap_add
+, sigma2_zero := by simp
+, star2_star2 := by intro x; simp
+, ..trivialCochainSpace }
+
+example (A1 : ℤ) : trivialMaxwell.J A1 = 0 := by
+  simp [CochainSpace.MaxwellModel.J, trivialMaxwell]
+
+example (A1 : ℤ) : trivialMaxwell.d3 (trivialMaxwell.J A1) = 0 :=
+  CochainSpace.MaxwellModel.current_conservation trivialMaxwell A1
+
+end Demo
+
 end DEC
 
 /-! ## Electromagnetism (4D covariant DEC instance, typed)
@@ -258,7 +312,7 @@ theorem meshStar2_add [HasHodge α] (h4 : HasHodge.n = 4) :
   intro x y
   cases h4
   funext s
-  simpa using (HasHodge.star_add (α:=α) (k:=2) x y) 
+  simpa using (HasHodge.star_add (α:=α) (k:=2) x y)
 
 /-- Zero law of the mesh ⋆ on 2-forms. -/
 theorem meshStar2_zero [HasHodge α] (h4 : HasHodge.n = 4) :
@@ -273,7 +327,7 @@ theorem mesh_star2_star2 [HasHodge α] (h4 : HasHodge.n = 4) :
   intro ω
   cases h4
   funext s
-  simpa [meshSigma2] using (HasHodge.star_star (α:=α) (k:=2) ω) 
+  simpa [meshSigma2] using (HasHodge.star_star (α:=α) (k:=2) ω)
 
 end Bridge
 

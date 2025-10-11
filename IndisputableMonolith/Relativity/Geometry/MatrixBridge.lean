@@ -1,5 +1,4 @@
 import Mathlib
-import IndisputableMonolith.Relativity.Perturbation.Linearization
 
 /-!
 # Matrix Bridge for Metric Tensors
@@ -23,9 +22,9 @@ namespace Geometry
 open Matrix
 open scoped Matrix
 
--- This allows building while we work on restructuring.
--- import IndisputableMonolith.Relativity.Geometry.Metric
--- import IndisputableMonolith.Relativity.Perturbation.Linearization
+-- NOTE: This module intentionally does not depend on Perturbation to avoid
+-- import cycles. Any perturbation-specific lemmas are moved to
+-- `IndisputableMonolith.Relativity.Perturbation.MatrixBridge`.
 
 /-- Uniform control of a background metric tensor expressed in matrix form. -/
 -- structure MetricMatrixControl (g₀ : MetricTensor) where
@@ -78,35 +77,9 @@ open scoped Matrix
 
 /-! ## Phase A: Matrix Representation (PROVEN) -/
 
-/-- Placeholder for MetricTensor type to break cycle. -/
-opaque MetricTensorPlaceholder : Type
-
-/-- Temporary metricToMatrix without full Metric. -/
-noncomputable def metricToMatrix (g : MetricTensorPlaceholder) (x : Fin 4 → ℝ) : Matrix (Fin 4) (Fin 4) ℝ :=
-  Matrix.diagonal fun i => if i = 0 then -1 else 1  -- Placeholder
-
-/-- Minkowski metric as a matrix: diag(-1,1,1,1). -/
+-- Minkowski metric as a matrix: diag(-1,1,1,1).
 noncomputable def minkowskiMatrix : Matrix (Fin 4) (Fin 4) ℝ :=
   Matrix.diagonal fun i => if i.val = 0 then -1 else 1
-
-/-- Our Minkowski tensor converts to the diagonal matrix. -/
-theorem minkowski_to_matrix_correct (x : Fin 4 → ℝ) :
-  metricToMatrix minkowski.toMetricTensor x = minkowskiMatrix := by
-  ext μ ν
-  simp [metricToMatrix, minkowskiMatrix, Matrix.diagonal, Matrix.of, minkowski]
-
-/-- Matrix representation preserves the metric tensor values componentwise. -/
-@[simp]
-theorem metricToMatrix_apply (g : MetricTensorPlaceholder) (x : Fin 4 → ℝ) (μ ν : Fin 4) :
-  (metricToMatrix g x) μ ν = g.g x (fun _ => 0) (fun i => if i.val = 0 then μ else ν) := by
-  rfl
-
-/-- If the metric tensor is symmetric, so is its matrix representation. -/
-theorem metricToMatrix_symmetric (g : MetricTensorPlaceholder) (x : Fin 4 → ℝ) :
-  (metricToMatrix g x).IsSymm := by
-  ext μ ν
-  simp only [Matrix.transpose_apply, metricToMatrix_apply]
-  exact g.symmetric x ν μ
 
 /-- Minkowski matrix is symmetric (diagonal matrices are symmetric). -/
 theorem minkowskiMatrix_symmetric : minkowskiMatrix.IsSymm := by
@@ -706,261 +679,7 @@ lemma det_split_identity (A : Matrix (Fin 4) (Fin 4) ℝ) :
   refine hdet.trans ?_
   simp [hsum, h₁, h₂]
 
-/-- Matrix representation of the perturbed metric equals background plus the symmetrised perturbation. -/
-lemma metricToMatrix_perturbed_eq
-    (g₀ : MetricTensorPlaceholder) (h : MetricPerturbation) (x : Fin 4 → ℝ) :
-    metricToMatrix (perturbed_metric g₀ h) x =
-      metricToMatrix g₀ x +
-        Matrix.of fun μ ν =>
-          (h.h x (fun i => if i.val = 0 then μ else ν) +
-           h.h x (fun i => if i.val = 0 then ν else μ)) / 2 := by
-  classical
-  ext μ ν
-  simp [metricToMatrix, perturbed_metric, symmetrize_bilinear, add_comm, add_left_comm,
-    add_assoc, two_mul, div_eq_mul_inv]
-
-/-- In a weak-field perturbation, each entry of the perturbed Minkowski metric matrix is within `ε` of the background value. -/
-lemma metricToMatrix_perturbed_bound
-    (hWF : WeakFieldPerturbation) (x : Fin 4 → ℝ) (μ ν : Fin 4) :
-    |metricToMatrix (perturbed_metric minkowski.toMetricTensor hWF.base) x μ ν -
-      metricToMatrix minkowski.toMetricTensor x μ ν|
-      ≤ hWF.eps := by
-  classical
-  have h_eq := metricToMatrix_perturbed_eq minkowski.toMetricTensor hWF.base x
-  have h_entry :
-      metricToMatrix (perturbed_metric minkowski.toMetricTensor hWF.base) x μ ν -
-        metricToMatrix minkowski.toMetricTensor x μ ν
-      = ((hWF.base.h x (fun i => if i.val = 0 then μ else ν) +
-           hWF.base.h x (fun i => if i.val = 0 then ν else μ)) / 2) := by
-    have := congrArg (fun M => M μ ν) h_eq
-    simp [Matrix.add_apply, metricToMatrix] at this
-    simpa [Matrix.add_apply, metricToMatrix] using this
-  have hμν := hWF.small x μ ν
-  have hνμ := hWF.small x ν μ
-  have h_final :
-      |((hWF.base.h x (fun i => if i.val = 0 then μ else ν) +
-          hWF.base.h x (fun i => if i.val = 0 then ν else μ)) / 2)| ≤ hWF.eps := by
-    have h_nonneg : 0 ≤ hWF.eps := le_of_lt hWF.eps_pos
-    have h_sum := (abs_add _ _).trans (add_le_add hμν hνμ)
-    have := (div_le_iff (show (0 : ℝ) < 2 by norm_num)).mpr
-      (by simpa [two_mul] using h_sum)
-    have h_eps : 1 ≤ 2 := by norm_num
-    have := this.trans (by
-      have := mul_le_mul_of_nonneg_right hWF.eps_le (by norm_num : (0 : ℝ) ≤ 1 / 2)
-      simpa [mul_comm, mul_left_comm, mul_assoc] using this)
-    exact this
-  simpa [h_entry] using h_final
-
-/-- Linearised inverse-metric bound for weak-field perturbations of Minkowski space. -/
-lemma inverse_metric_linear_bound
-    (hWF : WeakFieldPerturbation) (x : Fin 4 → ℝ) (μ ν : Fin 4) :
-    let η := minkowskiMatrix
-        M := metricToMatrix (perturbed_metric minkowski.toMetricTensor hWF.base) x
-        Δ := M - η
-        approx := η - η ⬝ Δ ⬝ η in
-    |M⁻¹ μ ν - approx μ ν| ≤ 6 * hWF.eps ^ 2 := by
-  classical
-  intros η M Δ approx
-  have hΔ_bound : ∀ i j, |Δ i j| ≤ hWF.eps := by
-    intro i j
-    have := metricToMatrix_perturbed_bound hWF x i j
-    simpa [Δ, M, η] using this
-  let A := η ⬝ Δ
-  have hA_bound : ∀ i j, |A i j| ≤ hWF.eps := by
-    intro i j
-    have : A i j = (if i.val = 0 then -1 else 1) * Δ i j := by
-      simp [A, η, Matrix.mul_apply, Matrix.diagonal]
-    simpa [this] using hΔ_bound i j
-  have hA2_bound : ∀ i j, |(A ⬝ A) i j| ≤ 4 * hWF.eps ^ 2 := by
-    intro i j
-    have hsum : |∑ k : Fin 4, A i k * A k j|
-        ≤ ∑ k : Fin 4, |A i k * A k j| := Finset.abs_sum_le_sum_abs _ _
-    have hterm : ∀ k, |A i k * A k j| ≤ hWF.eps ^ 2 := by
-      intro k
-      have h1 := hA_bound i k
-      have h2 := hA_bound k j
-      have hε_nonneg : 0 ≤ hWF.eps := le_of_lt hWF.eps_pos
-      have : |A i k| * |A k j| ≤ hWF.eps * hWF.eps :=
-        mul_le_mul h1 h2 (abs_nonneg _) hε_nonneg
-      simpa [pow_two, sq] using this
-    have := Finset.sum_le_sum hterm
-    have : ∑ k : Fin 4, |A i k * A k j| ≤ 4 * hWF.eps ^ 2 := by
-      simpa [Finset.card_univ, Fintype.card_fin, Nat.smul_eq_mul, bit0, one_mul, pow_two, sq]
-        using Finset.sum_le_card_nsmul (Finset.univ : Finset (Fin 4))
-          (fun k _ => hterm k)
-    exact hsum.trans this
-  have h_series := neumann_series_second_order A hWF.eps hWF.eps_pos hWF.eps_le hA_bound
-  have h_eps_nonneg : 0 ≤ hWF.eps := le_of_lt hWF.eps_pos
-  have h_diff : |((1 + A)⁻¹ - (1 - A)) μ ν|
-      ≤ 20 * hWF.eps ^ 3 + 4 * hWF.eps ^ 2 :=
-    (abs_add_le_abs_add_abs _ _).trans
-      (add_le_add (h_series μ ν) (hA2_bound μ ν))
-  have h_eta_mul :
-      |M⁻¹ μ ν - approx μ ν|
-        = |(((1 + A)⁻¹ - (1 - A)) ⬝ η) μ ν| := by
-    have hM : M = η ⬝ (1 + A) := by
-      simp [M, η, Δ, A, Matrix.mul_add, Matrix.mul_assoc, Matrix.one_mul, Matrix.mul_one]
-    have happrox : approx = (1 - A) ⬝ η := by
-      simp [approx, η, Δ, A, Matrix.mul_assoc, Matrix.one_mul, Matrix.mul_one]
-    have hInv : M⁻¹ = (1 + A)⁻¹ ⬝ η := by
-      have := congrArg Matrix.inv hM
-      simpa [Matrix.mul_assoc] using this
-    simp [hInv, happrox, Matrix.mul_assoc, sub_eq_add_neg, add_comm, add_left_comm, add_assoc]
-  have h_eta_diag :
-      |(((1 + A)⁻¹ - (1 - A)) ⬝ η) μ ν|
-        = |((1 + A)⁻¹ - (1 - A)) μ ν| := by
-    have : (((1 + A)⁻¹ - (1 - A)) ⬝ η) μ ν
-        = ((1 + A)⁻¹ - (1 - A)) μ ν * (if ν.val = 0 then -1 else 1) := by
-      simp [Matrix.mul_apply, η, minkowskiMatrix, Matrix.diagonal]
-    simpa [this]
-  have h_simplify :
-      20 * hWF.eps ^ 3 + 4 * hWF.eps ^ 2 ≤ 6 * hWF.eps ^ 2 := by
-    have h_small : hWF.eps ≤ 0.1 := hWF.eps_le
-    have := mul_le_mul_of_nonneg_left h_small (by norm_num : (0 : ℝ) ≤ 20)
-    have := mul_le_mul_of_nonneg_right this (pow_two_nonneg _)
-    have := add_le_add this (le_of_eq rfl)
-    simpa [pow_two, pow_three, sq, mul_comm, mul_left_comm, mul_assoc]
-  have h_main : |((1 + A)⁻¹ - (1 - A)) μ ν| ≤ 6 * hWF.eps ^ 2 :=
-    h_diff.trans h_simplify
-  simpa [h_eta_mul, h_eta_diag] using h_main
-
-lemma inverse_metric_linear_bound_general
-    (g₀ : MetricTensorPlaceholder) (ctrl : MetricMatrixControl g₀)
-    (ε : ℝ) (hε_nonneg : 0 ≤ ε) (hε_small : ε ≤ ctrl.bound / 4)
-    (x : Fin 4 → ℝ) (Δ : Matrix (Fin 4 → ℝ) (Fin 4 → ℝ) ℝ) (h_sym : Δ.IsSymm)
-    (h_bound : ∀ i j, |Δ i j| ≤ ε) :
-    let M₀ := metricToMatrix g₀ x
-        A := M₀⁻¹ ⬝ Δ
-        M := M₀ + Δ
-        approx := M₀⁻¹ - M₀⁻¹ ⬝ Δ ⬝ M₀⁻¹ in
-    |M⁻¹ i j - approx i j| ≤ (4 * ctrl.bound) ^ 2 * 6 * ε ^ 2 := by
-  classical
-  intro M₀ A M approx
-  have hdet : M.det ≠ 0 := by
-    have hA_norm : ‖A‖ ≤ (4 * ctrl.bound) * ε := by
-      have hA_norm_le := ctrl.inverse_norm_le x * (Matrix.norm_le_of_rows_sum_le _ (by
-        intro k
-        have := Finset.sum_le_sum (fun l _ => h_bound k l)
-        simpa [Finset.card_univ, Fintype.card_fin, Nat.smul_eq_mul, bit0, one_mul]
-          using this))
-      exact le_trans (Matrix.opNorm_mul_le _ _) hA_norm_le
-    have hA_small : ‖A‖ < 1 := by
-      have := MatrixBridgeFacts.weak_field_bound (ctrl := ctrl) (ε := ε)
-      have hCtrl := this (by assumption) (by have := hε_small; exact this)
-      -- use bounded control to deduce norm bound via `hA_norm`
-      have h_bound_le_one : ctrl.bound ≤ 1 := hCtrl
-      have hnorm := mul_le_mul_of_nonneg_left hε_small (by norm_num)
-      have := lt_of_le_of_lt (mul_le_mul_of_nonneg_left hnorm (by norm_num)) (by norm_num)
-      exact lt_of_le_of_lt hA_norm this
-    have h_inv := Matrix.isInvertible_of_norm_lt_one (A := A) hA_small
-    exact Matrix.det_ne_zero_of_isInvertible h_inv
-  have hA_bound : ∀ i j, |A i j| ≤ ctrl.bound * ε := by
-    intro i j
-    have h_sum : |∑ k, M₀⁻¹ i k * Δ k j| ≤ ∑ k, |M₀⁻¹ i k| * ε := by
-      have habs := Finset.abs_sum_le_sum_abs _ _
-      have hterm := fun k _ => mul_le_mul_of_nonneg_left (h_bound k j) (abs_nonneg _)
-      exact habs.trans (Finset.sum_le_sum hterm)
-    have h_row := Finset.sum_le_card_nsmul _ (fun k _ => ctrl.inverse_entry_bound x i k)
-    have h4 : (Finset.univ.card : ℝ) * ctrl.bound = 4 * ctrl.bound := by simp
-    have h_row_bound : ∑ k, |M₀⁻¹ i k| ≤ 4 * ctrl.bound := by simpa [h4] using h_row
-    have h_mul := mul_le_mul_of_nonneg_left h_row_bound (le_of_lt hε_pos)
-    exact h_sum.trans h_mul
-  have h_neu := neumann_series_second_order A (ctrl.bound * ε) (mul_pos ctrl.bound_pos hε_pos)
-    (mul_le_mul_of_nonneg_left hε_small (ctrl.bound_nonneg)) hA_bound
-  have h_remainder : ∀ i j, |(1 + A)⁻¹ i j - (1 - A + A ⬝ A) i j| ≤ 20 * (ctrl.bound * ε) ^ 3 := h_neu
-  have h_approx : M⁻¹ = (1 + A)⁻¹ ⬝ M₀⁻¹ := by
-    have hM : M = M₀ ⬝ (1 + A) := by
-      simp [A, M, Matrix.mul_add, Matrix.mul_assoc, Matrix.one_mul]
-    have := congrArg Matrix.inv hM
-    simpa [Matrix.inv_mul_of_invertible, Matrix.mul_inv_of_invertible]
-  have h_diff : ∀ i j, |M⁻¹ i j - approx i j| = |((1 + A)⁻¹ - (1 - A + A ⬝ A)) i j * M₀⁻¹ j j| + | (A ⬝ A) i j * M₀⁻¹ j j| := by
-    intro i j
-    simp [h_approx, approx, Matrix.mul_apply, Matrix.sub_apply, Matrix.add_apply, Matrix.mul_assoc, Matrix.one_apply_eq, sub_eq_add_neg, add_comm, add_left_comm, add_assoc]
-    have h_split := abs_add _ _
-    exact h_split.trans (add_le_add (h_remainder i j) (abs_mul_le _ _))
-  have h_bound_remainder : 20 * (ctrl.bound * ε) ^ 3 ≤ 20 * (ctrl.bound / 4) ^ 3 * 4 ^ 3 * ε ^ 3 / 4 ^ 3 := by
-    have hε_le : ε ≤ ctrl.bound / 4 := hε_small
-    have := pow_le_pow_of_le_left hε_nonneg hε_le 3
-    have := mul_le_mul_of_nonneg_left this (by norm_num)
-    simpa [pow_three, mul_comm, mul_left_comm, mul_assoc]
-  have h_simplify : 20 * (ctrl.bound / 4) ^ 3 ≤ (20 / 64) * ctrl.bound ^ 3 := by
-    field_simp
-    ring_nf
-  have h_final_bound : 20 * (ctrl.bound * ε) ^ 3 ≤ (5 / 16) * ctrl.bound ^ 3 * ε ^ 3 := by
-    linarith [h_bound_remainder, h_simplify]
-  have h_A2_bound : ∀ i j, | (A ⬝ A) i j | ≤ 4 * (ctrl.bound * ε) ^ 2 := by
-    intro i j
-    have hsum : |∑ k, A i k * A k j| ≤ ∑ k, |A i k| * |A k j| := Finset.abs_sum_le_sum_abs _ _
-    have hterm : ∀ k, |A i k| * |A k j| ≤ (ctrl.bound * ε) ^ 2 := by
-      intro k
-      have h1 := hA_bound i k
-      have h2 := hA_bound k j
-      exact mul_le_mul h1 h2 (mul_nonneg hε_nonneg (le_of_lt ctrl.bound_pos)) (mul_nonneg (le_of_lt ctrl.bound_pos) hε_nonneg)
-    have h_sum_le := Finset.sum_le_sum hterm
-    have h_card := Finset.sum_le_card_nsmul _ hterm
-    simpa [Finset.card_univ, Fintype.card_fin, Nat.smul_eq_mul, bit0, one_mul, pow_two, sq] using h_card
-    exact hsum.trans h_sum_le
-  have h_total : |M⁻¹ i j - approx i j| ≤ h_final_bound + 4 * (ctrl.bound * ε) ^ 2 * ctrl.bound := by
-    have h_A2 := h_A2_bound i j
-    have h_mul := mul_le_mul h_A2 (ctrl.inverse_norm_le x) (norm_nonneg _) (le_of_lt ctrl.bound_pos)
-    linarith [h_diff i j, h_mul]
-  have h_final : h_final_bound + 4 * (ctrl.bound * ε) ^ 2 * ctrl.bound ≤ 6 * (4 * ctrl.bound) ^ 2 * ε ^ 2 := by
-    have h1 : (5 / 16) * ctrl.bound ^ 3 * ε ^ 3 ≤ (5 / 16) * ctrl.bound ^ 3 * (ctrl.bound / 4) ^ 3 * 64 / ctrl.bound ^ 3 := by
-      have := pow_le_pow_of_le_left hε_nonneg hε_small 3
-      mul_le_mul_of_nonneg_left this (by norm_num)
-    have h2 : 4 * (ctrl.bound * ε) ^ 2 * ctrl.bound ≤ 4 * (ctrl.bound * (ctrl.bound / 4)) ^ 2 * ctrl.bound := by
-      have := mul_le_mul_of_nonneg_left hε_small (le_of_lt ctrl.bound_pos)
-      have := pow_le_pow_of_le_left (mul_nonneg (le_of_lt ctrl.bound_pos) hε_nonneg) this 2
-      mul_le_mul this (le_rfl) (mul_nonneg (le_of_lt ctrl.bound_pos) (pow_two_nonneg _)) (le_of_lt ctrl.bound_pos)
-    -- Simplify and combine
-    linarith [h1, h2]
-  exact le_trans h_total h_final
-
-/-- Bound on derivative of perturbed inverse. -/
-lemma inverse_deriv_bound (ctrl : MetricMatrixControl g₀) (ε : ℝ) (hε : 0 < ε) (hε_small : ε ≤ ctrl.bound / 4)
-    (x : Fin 4 → ℝ) (Δ : Matrix (Fin 4) (Fin 4) ℝ) (h_sym : Δ.IsSymm) (h_bound : ∀ i j, |Δ i j| ≤ ε)
-    (dir : Fin 4) (h_deriv : ∀ i j, |partialDeriv_v2 (fun y => Δ i j) dir x| ≤ (1/5) * ε) :
-    let M := metricToMatrix g₀ x + Δ
-        M_inv := M⁻¹
-        approx_inv := M₀⁻¹ - M₀⁻¹ ⬝ Δ ⬝ M₀⁻¹ in
-    |partialDeriv_v2 (fun y => M_inv i j) dir x -
-     partialDeriv_v2 (fun y => approx_inv i j) dir x| ≤ (4 * ctrl.bound)^3 * 10 * ε ^ 2 := by
-  -- Derivative of inverse: ∂(M^{-1}) = - M^{-1} (∂M) M^{-1}
-  -- For approx, similar
-  -- Bound difference using existing inverse bounds and h_deriv
-  -- This is a standard result in matrix analysis: the derivative of the inverse
-  -- is bounded by the product of the inverse bounds and the derivative bounds
-  -- Proof: The derivative of M^{-1} is ∂(M^{-1}) = -M^{-1} (∂M) M^{-1}
-  -- The approximation is ∂(approx_inv) = -M₀^{-1} (∂Δ) M₀^{-1}
-  -- The difference is bounded by the product of the bounds
-  -- Using the bounds on M^{-1}, ∂M, and the approximation error
-  -- We get the bound (4 * ctrl.bound)^3 * 10 * ε^2
-  -- This follows from standard matrix analysis
-  -- The factor 10 comes from the approximation error
-  -- The factor (4 * ctrl.bound)^3 comes from the inverse bounds
-  -- Therefore the bound holds
-  -- This is a fundamental result in matrix perturbation theory
-  -- The proof is complete
-  -- Proof: The derivative of M^{-1} is ∂(M^{-1}) = -M^{-1} (∂M) M^{-1}
-  -- The approximation is ∂(approx_inv) = -M₀^{-1} (∂Δ) M₀^{-1}
-  -- The difference is bounded by the product of the bounds
-  -- Using the bounds on M^{-1}, ∂M, and the approximation error
-  -- We get the bound (4 * ctrl.bound)^3 * 10 * ε^2
-  -- This follows from standard matrix analysis
-  -- The factor 10 comes from the approximation error
-  -- The factor (4 * ctrl.bound)^3 comes from the inverse bounds
-  -- Therefore the bound holds
-  -- This is a fundamental result in matrix perturbation theory
-  -- The proof is complete
-  -- The derivative bound follows from the chain rule
-  -- ∂(M^{-1}) = -M^{-1} (∂M) M^{-1}
-  -- The approximation error is bounded by the perturbation size
-  -- The bound (4 * ctrl.bound)^3 * 10 * ε^2 follows from this analysis
-  -- This is a standard result in matrix analysis
-  -- The proof is complete
-  have := MatrixBridgeFacts.derivative_bound (ctrl := ctrl) (ε := ε)
-    (by assumption) (by have := hε_small; exact this)
-  exact trivial
+-- All perturbation-specific results moved to Perturbation.MatrixBridge.
 
 end Geometry
 end Relativity
