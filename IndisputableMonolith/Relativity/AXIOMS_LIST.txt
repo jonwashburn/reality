@@ -1,130 +1,128 @@
-# Relativity Axioms (Sealed Module)
-Total axioms: 75
+- GRLimit/Continuity.lean
+    L31: axiom action_continuous_at_gr_limit
+    L39: axiom stress_energy_continuous_at_zero
+    L66: axiom stress_energy_bounded_in_limit
+    L74: axiom field_equations_continuous
 
-- GRLimit/Continuity.lean:
-  - action_continuous_at_gr_limit
-  - stress_energy_continuous_at_zero
-  - stress_energy_bounded_in_limit
-  - field_equations_continuous
+- Compact/StaticSpherical.lean
+    L24: axiom field_equations_static_exist :
+    L27: axiom solution_exists (M : ℝ) :
+    L34: axiom schwarzschild_limit (M : ℝ) :
 
-- Compact/StaticSpherical.lean:
-  - field_equations_static_exist
-  - solution_exists
-  - schwarzschild_limit
+- PostNewtonian/BetaExtraction.lean
+    L70: axiom beta_extraction_correct (sol : Solution1PN ρ ψ α m_squared) :
+    L86: axiom ppn_parameters_complete :
 
-- PostNewtonian/BetaExtraction.lean:
-  - beta_extraction_correct
-  - ppn_parameters_complete
+- PostNewtonian/Einstein1PN.lean
+    L112: axiom equations_reduce_to_GR (pots : PPNPotentials) (params : PPNParameters) (ρ : (Fin 4 → ℝ) → ℝ) :
 
-- PostNewtonian/Einstein1PN.lean:
-  - equations_reduce_to_GR
+- PostNewtonian/GammaExtraction.lean
+    L69: axiom extraction_correct (sol : Solution1PN ρ ψ α m_squared) :
 
-- PostNewtonian/GammaExtraction.lean:
-  - extraction_correct
+- PostNewtonian/SolarSystemBounds.lean
+    L61: axiom RS_satisfies_cassini :
+    L65: axiom RS_satisfies_llr :
+    L69: axiom bounds_compatibility_check :
+    L77: axiom actual_coefficients_exist :
 
-- PostNewtonian/SolarSystemBounds.lean:
-  - RS_satisfies_cassini
-  - RS_satisfies_llr
-  - bounds_compatibility_check
-  - actual_coefficients_exist
+- PostNewtonian/Solutions.lean
+    L22: axiom newtonian_solution_exists (ρ : (Fin 4 → ℝ) → ℝ) :
+    L41: axiom gravitomagnetic_solution_exists (ρ : (Fin 4 → ℝ) → ℝ) (v : (Fin 4 → ℝ) → (Fin 3 → ℝ)) :
+    L46: axiom onePN_correction_exists (ρ : (Fin 4 → ℝ) → ℝ) (U : (Fin 4 → ℝ) → ℝ) :
+    L59: axiom solution_1PN_exists (ρ : (Fin 4 → ℝ) → ℝ) (ψ : Fields.ScalarField) (α m_squared : ℝ) :
+    L63: axiom solution_GR_limit (ρ : (Fin 4 → ℝ) → ℝ) :
+    L67: axiom solution_consistent :
+    L71: axiom scalar_modifies_potentials :
 
-- PostNewtonian/Solutions.lean:
-  - newtonian_solution_exists
-  - gravitomagnetic_solution_exists
-  - onePN_correction_exists
-  - solution_1PN_exists
-  - solution_GR_limit
-  - solution_consistent
-  - scalar_modifies_potentials
+- Variation/Einstein.lean
+    L42: axiom field_eqs_gr_limit (g : MetricTensor) (ψ : Fields.ScalarField) (vol : VolumeElement) :
+    L48: axiom variation_gives_equations (g : MetricTensor) (ψ : Fields.ScalarField) (vol : VolumeElement) (α m_squared : ℝ) :
+    L52: axiom einstein_implies_conservation
 
-- Variation/Einstein.lean:
-  - field_eqs_gr_limit
-  - variation_gives_equations
-  - einstein_implies_conservation
+- Variation/Functional.lean
+    L56: axiom dalembertian_minkowski (ψ : Fields.ScalarField) (x : Fin 4 → ℝ) :
+    L65: axiom variational_principle (ψ : Fields.ScalarField) (g : MetricTensor) (m_squared : ℝ) (vol : VolumeElement) :
 
-- Variation/Functional.lean:
-  - dalembertian_minkowski
-  - variational_principle
+- Perturbation/Einstein00.lean
+    L134: axiom spherical_source_test (M : ℝ) (hM : |M| < 0.1) (r_min : ℝ) (hr_min : r_min > 0.2) :
 
-- Perturbation/Einstein00.lean:
-  - spherical_source_test
+- GW/ActionExpansion.lean
+    L18: axiom expand_action_around_FRW (scale : ScaleFactor) (psi : Fields.ScalarField) (α C_lag : ℝ) :
+    L21: axiom isolate_tensor_contribution (scale : ScaleFactor) (h : TensorPerturbation) :
+    L32: axiom action_form_verified (scale : ScaleFactor) (h : TensorPerturbation) (α C_lag : ℝ) :
 
-- GW/ActionExpansion.lean:
-  - expand_action_around_FRW
-  - isolate_tensor_contribution
-  - action_form_verified
+- GW/Constraints.lean
+    L10: axiom coupling_bound_from_GW170817 (α C_lag : ℝ) :
+    L14: axiom RS_satisfies_GW_bound :
 
-- GW/Constraints.lean:
-  - coupling_bound_from_GW170817
-  - RS_satisfies_GW_bound
+- GW/TensorDecomposition.lean
+    L19: axiom decompose_perturbation :
+    L22: axiom projection_operator_TT :
+    L25: axiom decomposition_unique :
 
-- GW/TensorDecomposition.lean:
-  - decompose_perturbation
-  - projection_operator_TT
-  - decomposition_unique
+- Fields/Integration.lean
+    L52: axiom integrate_add (f₁ f₂ : (Fin 4 → ℝ) → ℝ) (g : MetricTensor) (vol : VolumeElement) :
+    L56: axiom integrate_smul (c : ℝ) (f : (Fin 4 → ℝ) → ℝ) (g : MetricTensor) (vol : VolumeElement) :
 
-- Fields/Integration.lean:
-  - integrate_add
-  - integrate_smul
+- Cosmology/FRWMetric.lean
+    L48: axiom christoffel_FRW_correct (scale : ScaleFactor) :
+    L59: axiom ricci_FRW_formulas_correct (scale : ScaleFactor) :
 
-- Cosmology/FRWMetric.lean:
-  - christoffel_FRW_correct
-  - ricci_FRW_formulas_correct
+- Cosmology/Friedmann.lean
+    L23: axiom friedmann_from_einstein (scale : ScaleFactor) (psi : ℝ → ℝ) (rho_matter : ℝ → ℝ) (m_squared : ℝ) :
+    L29: axiom solution_exists (rho_matter : ℝ → ℝ) (psi_initial : ℝ) :
+    L33: axiom GR_limit_friedmann (scale : ScaleFactor) (rho_matter : ℝ → ℝ) :
 
-- Cosmology/Friedmann.lean:
-  - friedmann_from_einstein
-  - solution_exists
-  - GR_limit_friedmann
+- Cosmology/GrowthFactor.lean
+    L24: axiom growth_equation_exists (scale : ScaleFactor) (Omega_m : ℝ → ℝ) :
+    L28: axiom modification_factor_GR (scale : ScaleFactor) (Omega_m : ℝ → ℝ) :
+    L31: axiom modification_factor_ILG (scale : ScaleFactor) (Omega_m : ℝ → ℝ) (α C_lag : ℝ) :
 
-- Cosmology/GrowthFactor.lean:
-  - growth_equation_exists
-  - modification_factor_GR
-  - modification_factor_ILG
+- Cosmology/Perturbations.lean
+    L20: axiom linearized_perturbation_equations (scale : ScaleFactor) (psi_bg : ℝ → ℝ) :
+    L29: axiom mode_decomposition (pert : Perturbations) :
 
-- Cosmology/Perturbations.lean:
-  - linearized_perturbation_equations
-  - mode_decomposition
+- Cosmology/ScalarOnFRW.lean
+    L26: axiom klein_gordon_solution_exists (scale : ScaleFactor) (m_squared : ℝ) :
+    L41: axiom massless_scalar_not_exactly_radiation (scale : ScaleFactor) (psi : ℝ → ℝ) :
 
-- Cosmology/ScalarOnFRW.lean:
-  - klein_gordon_solution_exists
-  - massless_scalar_not_exactly_radiation
+- Cosmology/Sigma8.lean
+    L11: axiom sigma8_evolution_ILG (growth_ILG growth_GR : GrowthFactor) (sigma8_0 : ℝ) (α C_lag : ℝ) :
+    L14: axiom sigma8_tension (growth_ILG : GrowthFactor) (sigma8_0 : ℝ) :
+    L17: axiom CMB_consistency (growth : GrowthFactor) :
+    L20: axiom BAO_consistency (growth : GrowthFactor) :
+    L23: axiom BBN_consistency :
 
-- Cosmology/Sigma8.lean:
-  - sigma8_evolution_ILG
-  - sigma8_tension
-  - CMB_consistency
-  - BAO_consistency
-  - BBN_consistency
+- Geometry/Curvature.lean
+    L34: axiom riemann_antisymm_last_two (g : MetricTensor) :
+    L51: axiom ricci_symmetric (g : MetricTensor) :
+    L70: axiom einstein_symmetric (g : MetricTensor) :
+    L74: axiom bianchi_contracted (g : MetricTensor) :
 
-- Geometry/Curvature.lean:
-  - riemann_antisymm_last_two
-  - ricci_symmetric
-  - einstein_symmetric
-  - bianchi_contracted
+- Geodesics/Integration.lean
+    L32: axiom derive_simplified_equations (ng : NewtonianGaugeMetric) (geo : NullGeodesic (newtonian_metric ng)) :
+    L42: axiom integration_preserves_null (ng : NewtonianGaugeMetric) (ic : InitialConditions) (lam_max : ℝ) :
+    L49: axiom integration_accuracy (ng : NewtonianGaugeMetric) (ic : InitialConditions) (lam_max tol : ℝ) :
+    L56: axiom integration_minkowski_test (ic : InitialConditions) :
 
-- Geodesics/Integration.lean:
-  - derive_simplified_equations
-  - integration_preserves_null
-  - integration_accuracy
-  - integration_minkowski_test
+- Geodesics/NullGeodesic.lean
+    L45: axiom null_geodesic_exists (g : MetricTensor) (ic : InitialConditions) :
+    L51: axiom affine_reparametrization (g : MetricTensor) (geo : NullGeodesic g) (a b : ℝ) (ha : a ≠ 0) :
+    L56: axiom minkowski_straight_line_is_geodesic (x₀ k : Fin 4 → ℝ)
+    L66: axiom geodesic_unique (g : MetricTensor) (ic : InitialConditions) (geo1 geo2 : NullGeodesic g) :
 
-- Geodesics/NullGeodesic.lean:
-  - null_geodesic_exists
-  - affine_reparametrization
-  - minkowski_straight_line_is_geodesic
-  - geodesic_unique
+- Lensing/ClusterPredictions.lean
+    L28: axiom cluster_lensing_bands (cluster : ClusterModel) (α C_lag : ℝ) :
+    L31: axiom strong_lensing_test (cluster : ClusterModel) :
 
-- Lensing/ClusterPredictions.lean:
-  - cluster_lensing_bands
-  - strong_lensing_test
+- Lensing/Deflection.lean
+    L24: axiom schwarzschild_deflection (M : ℝ) (impact : ImpactParameter) :
+    L30: axiom deflection_small_correction :
+    L36: axiom analytical_matches_numerical :
 
-- Lensing/Deflection.lean:
-  - schwarzschild_deflection
-  - deflection_small_correction
-  - analytical_matches_numerical
+- Lensing/TimeDelay.lean
+    L25: axiom shapiro_GR_formula (M b : ℝ) :
+    L31: axiom time_delay_correction (ng_ILG ng_GR : NewtonianGaugeMetric) (impact : ImpactParameter) (gamma_val : ℝ) :
+    L34: axiom GR_limit_time_delay (ng : NewtonianGaugeMetric) (impact : ImpactParameter) :
 
-- Lensing/TimeDelay.lean:
-  - shapiro_GR_formula
-  - time_delay_correction
-  - GR_limit_time_delay
-
+TOTAL: 75
