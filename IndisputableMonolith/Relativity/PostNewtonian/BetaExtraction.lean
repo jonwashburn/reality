@@ -82,9 +82,11 @@ theorem beta_derived_not_assumed :
   · intro α C_lag hα hC
     exact beta_near_one α C_lag hα hC
 
-/-- Both PPN parameters derived (structure established). -/
-axiom ppn_parameters_complete :
-  (gamma_ILG 0 0 = 1 ∧ beta_ILG 0 0 = 1)
+/-- Both PPN parameters match GR values when α = 0 and Cₗₐg = 0. -/
+theorem ppn_parameters_complete :
+    (gamma_ILG 0 0 = 1 ∧ beta_ILG 0 0 = 1) := by
+  refine ⟨gamma_GR_limit, ?_⟩
+  simpa using beta_GR_limit
 
 end PostNewtonian
 end Relativity
