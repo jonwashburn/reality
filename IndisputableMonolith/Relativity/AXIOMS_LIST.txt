@@ -34,15 +34,6 @@
     L67: axiom solution_consistent :
     L71: axiom scalar_modifies_potentials :
 
-- Variation/Einstein.lean
-    L42: axiom field_eqs_gr_limit (g : MetricTensor) (ψ : Fields.ScalarField) (vol : VolumeElement) :
-    L48: axiom variation_gives_equations (g : MetricTensor) (ψ : Fields.ScalarField) (vol : VolumeElement) (α m_squared : ℝ) :
-    L52: axiom einstein_implies_conservation
-
-- Variation/Functional.lean
-    L56: axiom dalembertian_minkowski (ψ : Fields.ScalarField) (x : Fin 4 → ℝ) :
-    L65: axiom variational_principle (ψ : Fields.ScalarField) (g : MetricTensor) (m_squared : ℝ) (vol : VolumeElement) :
-
 - Perturbation/Einstein00.lean
     L134: axiom spherical_source_test (M : ℝ) (hM : |M| < 0.1) (r_min : ℝ) (hr_min : r_min > 0.2) :
 
@@ -59,10 +50,6 @@
     L19: axiom decompose_perturbation :
     L22: axiom projection_operator_TT :
     L25: axiom decomposition_unique :
-
-- Fields/Integration.lean
-    L52: axiom integrate_add (f₁ f₂ : (Fin 4 → ℝ) → ℝ) (g : MetricTensor) (vol : VolumeElement) :
-    L56: axiom integrate_smul (c : ℝ) (f : (Fin 4 → ℝ) → ℝ) (g : MetricTensor) (vol : VolumeElement) :
 
 - Cosmology/FRWMetric.lean
     L48: axiom christoffel_FRW_correct (scale : ScaleFactor) :
@@ -93,24 +80,6 @@
     L20: axiom BAO_consistency (growth : GrowthFactor) :
     L23: axiom BBN_consistency :
 
-- Geometry/Curvature.lean
-    L34: axiom riemann_antisymm_last_two (g : MetricTensor) :
-    L51: axiom ricci_symmetric (g : MetricTensor) :
-    L70: axiom einstein_symmetric (g : MetricTensor) :
-    L74: axiom bianchi_contracted (g : MetricTensor) :
-
-- Geodesics/Integration.lean
-    L32: axiom derive_simplified_equations (ng : NewtonianGaugeMetric) (geo : NullGeodesic (newtonian_metric ng)) :
-    L42: axiom integration_preserves_null (ng : NewtonianGaugeMetric) (ic : InitialConditions) (lam_max : ℝ) :
-    L49: axiom integration_accuracy (ng : NewtonianGaugeMetric) (ic : InitialConditions) (lam_max tol : ℝ) :
-    L56: axiom integration_minkowski_test (ic : InitialConditions) :
-
-- Geodesics/NullGeodesic.lean
-    L45: axiom null_geodesic_exists (g : MetricTensor) (ic : InitialConditions) :
-    L51: axiom affine_reparametrization (g : MetricTensor) (geo : NullGeodesic g) (a b : ℝ) (ha : a ≠ 0) :
-    L56: axiom minkowski_straight_line_is_geodesic (x₀ k : Fin 4 → ℝ)
-    L66: axiom geodesic_unique (g : MetricTensor) (ic : InitialConditions) (geo1 geo2 : NullGeodesic g) :
-
 - Lensing/ClusterPredictions.lean
     L28: axiom cluster_lensing_bands (cluster : ClusterModel) (α C_lag : ℝ) :
     L31: axiom strong_lensing_test (cluster : ClusterModel) :
@@ -125,4 +94,4 @@
     L31: axiom time_delay_correction (ng_ILG ng_GR : NewtonianGaugeMetric) (impact : ImpactParameter) (gamma_val : ℝ) :
     L34: axiom GR_limit_time_delay (ng : NewtonianGaugeMetric) (impact : ImpactParameter) :
 
-TOTAL: 75
+TOTAL: 56
