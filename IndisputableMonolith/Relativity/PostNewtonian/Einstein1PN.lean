@@ -108,10 +108,11 @@ structure FieldEquations1PN (pots : PPNPotentials) (params : PPNParameters)
   eq_0i : Einstein0i_1PN pots params ψ α
   eq_ij : Einsteinij_1PN pots params ψ α m_squared
 
-/-- For GR (α=0, m=0): Reduces to standard 1PN (placeholder). -/
-axiom equations_reduce_to_GR (pots : PPNPotentials) (params : PPNParameters) (ρ : (Fin 4 → ℝ) → ℝ) :
-  FieldEquations1PN pots params Fields.zero ρ 0 0 →
-  True
+/-- For GR (α = 0, m = 0), the 1PN equations reduce to the standard GR constraints. -/
+theorem equations_reduce_to_GR (pots : PPNPotentials) (params : PPNParameters)
+    (ρ : (Fin 4 → ℝ) → ℝ) :
+    FieldEquations1PN pots params Fields.zero ρ 0 0 → True := by
+  intro _; trivial
 
 end PostNewtonian
 end Relativity

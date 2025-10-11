@@ -1,18 +1,3 @@
-- NewFixtures.lean
-    L65: -- based on algorithmic information theory axiom
-
-- GRLimit/Continuity.lean
-    L31: axiom action_continuous_at_gr_limit
-
-- GRLimit/Continuity.lean
-    L39: axiom stress_energy_continuous_at_zero
-
-- GRLimit/Continuity.lean
-    L66: axiom stress_energy_bounded_in_limit
-
-- GRLimit/Continuity.lean
-    L74: axiom field_equations_continuous
-
 - Compact/StaticSpherical.lean
     L24: axiom field_equations_static_exist :
 
@@ -22,80 +7,20 @@
 - Compact/StaticSpherical.lean
     L34: axiom schwarzschild_limit (M : ℝ) :
 
-- PostNewtonian/Einstein1PN.lean
-    L112: axiom equations_reduce_to_GR (pots : PPNPotentials) (params : PPNParameters) (ρ : (Fin 4 → ℝ) → ℝ) :
+- Cosmology/FRWMetric.lean
+    L48: axiom christoffel_FRW_correct (scale : ScaleFactor) :
 
-- PostNewtonian/GammaExtraction.lean
-    L69: axiom extraction_correct (sol : Solution1PN ρ ψ α m_squared) :
+- Cosmology/FRWMetric.lean
+    L59: axiom ricci_FRW_formulas_correct (scale : ScaleFactor) :
 
-- PostNewtonian/BetaExtraction.lean
-    L70: axiom beta_extraction_correct (sol : Solution1PN ρ ψ α m_squared) :
+- Cosmology/Friedmann.lean
+    L23: axiom friedmann_from_einstein (scale : ScaleFactor) (psi : ℝ → ℝ) (rho_matter : ℝ → ℝ) (m_squared : ℝ) :
 
-- PostNewtonian/BetaExtraction.lean
-    L86: axiom ppn_parameters_complete :
+- Cosmology/Friedmann.lean
+    L29: axiom solution_exists (rho_matter : ℝ → ℝ) (psi_initial : ℝ) :
 
-- PostNewtonian/SolarSystemBounds.lean
-    L61: axiom RS_satisfies_cassini :
-
-- PostNewtonian/SolarSystemBounds.lean
-    L65: axiom RS_satisfies_llr :
-
-- PostNewtonian/SolarSystemBounds.lean
-    L69: axiom bounds_compatibility_check :
-
-- PostNewtonian/SolarSystemBounds.lean
-    L77: axiom actual_coefficients_exist :
-
-- PostNewtonian/Solutions.lean
-    L22: axiom newtonian_solution_exists (ρ : (Fin 4 → ℝ) → ℝ) :
-
-- PostNewtonian/Solutions.lean
-    L41: axiom gravitomagnetic_solution_exists (ρ : (Fin 4 → ℝ) → ℝ) (v : (Fin 4 → ℝ) → (Fin 3 → ℝ)) :
-
-- PostNewtonian/Solutions.lean
-    L46: axiom onePN_correction_exists (ρ : (Fin 4 → ℝ) → ℝ) (U : (Fin 4 → ℝ) → ℝ) :
-
-- PostNewtonian/Solutions.lean
-    L59: axiom solution_1PN_exists (ρ : (Fin 4 → ℝ) → ℝ) (ψ : Fields.ScalarField) (α m_squared : ℝ) :
-
-- PostNewtonian/Solutions.lean
-    L63: axiom solution_GR_limit (ρ : (Fin 4 → ℝ) → ℝ) :
-
-- PostNewtonian/Solutions.lean
-    L67: axiom solution_consistent :
-
-- PostNewtonian/Solutions.lean
-    L71: axiom scalar_modifies_potentials :
-
-- Perturbation/Einsteinij.lean
-    L88: /-- Solve traceless system to express Φ−Ψ in terms of couplings (uses ILG coupling axiom). -/
-
-- Perturbation/Einstein00.lean
-    L134: axiom spherical_source_test (M : ℝ) (hM : |M| < 0.1) (r_min : ℝ) (hr_min : r_min > 0.2) :
-
-- GW/TensorDecomposition.lean
-    L19: axiom decompose_perturbation :
-
-- GW/TensorDecomposition.lean
-    L22: axiom projection_operator_TT :
-
-- GW/TensorDecomposition.lean
-    L25: axiom decomposition_unique :
-
-- GW/Constraints.lean
-    L10: axiom coupling_bound_from_GW170817 (α C_lag : ℝ) :
-
-- GW/Constraints.lean
-    L14: axiom RS_satisfies_GW_bound :
-
-- GW/ActionExpansion.lean
-    L18: axiom expand_action_around_FRW (scale : ScaleFactor) (psi : Fields.ScalarField) (α C_lag : ℝ) :
-
-- GW/ActionExpansion.lean
-    L21: axiom isolate_tensor_contribution (scale : ScaleFactor) (h : TensorPerturbation) :
-
-- GW/ActionExpansion.lean
-    L32: axiom action_form_verified (scale : ScaleFactor) (h : TensorPerturbation) (α C_lag : ℝ) :
+- Cosmology/Friedmann.lean
+    L33: axiom GR_limit_friedmann (scale : ScaleFactor) (rho_matter : ℝ → ℝ) :
 
 - Cosmology/GrowthFactor.lean
     L24: axiom growth_equation_exists (scale : ScaleFactor) (Omega_m : ℝ → ℝ) :
@@ -111,15 +36,6 @@
 
 - Cosmology/Perturbations.lean
     L29: axiom mode_decomposition (pert : Perturbations) :
-
-- Cosmology/Friedmann.lean
-    L23: axiom friedmann_from_einstein (scale : ScaleFactor) (psi : ℝ → ℝ) (rho_matter : ℝ → ℝ) (m_squared : ℝ) :
-
-- Cosmology/Friedmann.lean
-    L29: axiom solution_exists (rho_matter : ℝ → ℝ) (psi_initial : ℝ) :
-
-- Cosmology/Friedmann.lean
-    L33: axiom GR_limit_friedmann (scale : ScaleFactor) (rho_matter : ℝ → ℝ) :
 
 - Cosmology/ScalarOnFRW.lean
     L26: axiom klein_gordon_solution_exists (scale : ScaleFactor) (m_squared : ℝ) :
@@ -142,11 +58,41 @@
 - Cosmology/Sigma8.lean
     L23: axiom BBN_consistency :
 
-- Cosmology/FRWMetric.lean
-    L48: axiom christoffel_FRW_correct (scale : ScaleFactor) :
+- GRLimit/Continuity.lean
+    L31: axiom action_continuous_at_gr_limit
 
-- Cosmology/FRWMetric.lean
-    L59: axiom ricci_FRW_formulas_correct (scale : ScaleFactor) :
+- GRLimit/Continuity.lean
+    L39: axiom stress_energy_continuous_at_zero
+
+- GRLimit/Continuity.lean
+    L66: axiom stress_energy_bounded_in_limit
+
+- GRLimit/Continuity.lean
+    L74: axiom field_equations_continuous
+
+- GW/ActionExpansion.lean
+    L18: axiom expand_action_around_FRW (scale : ScaleFactor) (psi : Fields.ScalarField) (α C_lag : ℝ) :
+
+- GW/ActionExpansion.lean
+    L21: axiom isolate_tensor_contribution (scale : ScaleFactor) (h : TensorPerturbation) :
+
+- GW/ActionExpansion.lean
+    L32: axiom action_form_verified (scale : ScaleFactor) (h : TensorPerturbation) (α C_lag : ℝ) :
+
+- GW/Constraints.lean
+    L10: axiom coupling_bound_from_GW170817 (α C_lag : ℝ) :
+
+- GW/Constraints.lean
+    L14: axiom RS_satisfies_GW_bound :
+
+- GW/TensorDecomposition.lean
+    L19: axiom decompose_perturbation :
+
+- GW/TensorDecomposition.lean
+    L22: axiom projection_operator_TT :
+
+- GW/TensorDecomposition.lean
+    L25: axiom decomposition_unique :
 
 - Geometry/MatrixBridge.lean
     L345:     3. Accept this as an axiom and move forward (it's a standard linear algebra result)
@@ -175,4 +121,43 @@
 - Lensing/TimeDelay.lean
     L34: axiom GR_limit_time_delay (ng : NewtonianGaugeMetric) (impact : ImpactParameter) :
 
-TOTAL: 59
+- NewFixtures.lean
+    L65: -- based on algorithmic information theory axiom
+
+- Perturbation/Einstein00.lean
+    L134: axiom spherical_source_test (M : ℝ) (hM : |M| < 0.1) (r_min : ℝ) (hr_min : r_min > 0.2) :
+
+- Perturbation/Einsteinij.lean
+    L88: /-- Solve traceless system to express Φ−Ψ in terms of couplings (uses ILG coupling axiom). -/
+
+- PostNewtonian/BetaExtraction.lean
+    L70: axiom beta_extraction_correct (sol : Solution1PN ρ ψ α m_squared) :
+
+- PostNewtonian/Einstein1PN.lean
+    L112: axiom equations_reduce_to_GR (pots : PPNPotentials) (params : PPNParameters) (ρ : (Fin 4 → ℝ) → ℝ) :
+
+- PostNewtonian/GammaExtraction.lean
+    L69: axiom extraction_correct (sol : Solution1PN ρ ψ α m_squared) :
+
+- PostNewtonian/SolarSystemBounds.lean
+    L61: axiom RS_satisfies_cassini :
+
+- PostNewtonian/SolarSystemBounds.lean
+    L65: axiom RS_satisfies_llr :
+
+- PostNewtonian/SolarSystemBounds.lean
+    L69: axiom bounds_compatibility_check :
+
+- PostNewtonian/SolarSystemBounds.lean
+    L77: axiom actual_coefficients_exist :
+
+- PostNewtonian/Solutions.lean
+    L22: axiom newtonian_solution_exists (ρ : (Fin 4 → ℝ) → ℝ) :
+
+- PostNewtonian/Solutions.lean
+    L48: axiom onePN_correction_exists (ρ : (Fin 4 → ℝ) → ℝ) (U : (Fin 4 → ℝ) → ℝ) :
+
+- PostNewtonian/Solutions.lean
+    L61: axiom solution_1PN_exists (ρ : (Fin 4 → ℝ) → ℝ) (ψ : Fields.ScalarField) (α m_squared : ℝ) :
+
+TOTAL: 54
