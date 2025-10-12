@@ -2,11 +2,9 @@ import Mathlib
 import IndisputableMonolith.RSBridge.Anchor
 
 /-!
-Sterile Neutrino Exclusion from Discrete Generation Minimality
-
-This module proves exclusion of sterile neutrinos (4th generation) as corollary of genOf : Fermion → Fin 3 surjective (exactly 3 generations). No room for nu4 in rung structure (tau_g=0,11,19; next would violate minimality).
-
-Theorem: no_sterile (¬∃ nu4, genOf nu4 = 3).
+model -- sterile neutrino exclusion assumption.
+This module documents the modelling choice that only three neutrino generations
+are available (RSBridge.genOf surjective onto Fin 3).
 -/
 
 namespace IndisputableMonolith
@@ -60,6 +58,28 @@ theorem no_sterile : ¬ Function.Surjective genOf_hyp := by
 
 /-- Bound: Any sterile m_ν4 must > φ^{19+Δ} E_coh with Δ>0 (exclusion if detected in band). -/
 noncomputable def sterile_bound : ℝ := Constants.E_coh * (Constants.phi ^ 20 : ℝ)  -- Placeholder next rung >19
+
+/-!
+model -- sterile neutrino exclusion assumption.
+This module documents the modelling choice that only three neutrino generations
+are available (RSBridge.genOf surjective onto Fin 3).
+-/
+
+noncomputable def sterile_exclusion_assumption : Prop :=
+  ¬ Function.Surjective genOf_hyp
+
+lemma no_sterile_of_assumption
+    (h : sterile_exclusion_assumption) :
+    ¬ Function.Surjective genOf_hyp := h
+
+/-- Convenience predicate bundling the modelling assumption. -/
+lemma sterile_bound_placeholder : sterile_bound > 0 := by
+  have hφ : Constants.phi > 0 := Constants.phi_pos
+  have hE : Constants.E_coh > 0 := Constants.E_coh_pos
+  have hpow : Constants.phi ^ (20 : ℝ) > 0 :=
+    Real.rpow_pos_of_pos hφ _
+  simpa [sterile_bound, mul_comm, mul_left_comm, mul_assoc]
+    using mul_pos hE hpow
 
 end Physics
 end IndisputableMonolith

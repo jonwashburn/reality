@@ -1,6 +1,10 @@
 import Mathlib
 import IndisputableMonolith.Masses.Ribbons
 
+/-! model -- sector primitive placeholder.
+Provides witness records for ribbon-based mass ladders; documentation only.
+-/
+
 namespace IndisputableMonolith
 namespace Masses
 namespace SectorPrimitive

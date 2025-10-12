@@ -30,6 +30,19 @@ The index is referenced by Phase 3 of the robustness plan. See also the sealed r
   - Properties provided: `alphaLock_pos`, `alphaLock_lt_one`, `cLagLock_pos`
   - All consumer modules reference those definitions; no local duplicates remain
 
+## Mass Ladder
+
+- `IndisputableMonolith/Masses/Basic.lean`
+  - Assumption `mass_ladder_assumption`: current imported measurement set already
+    matches φ-powered rung exponents. Pending true data; tracked as a model.
+
+## Sterile Neutrino
+
+- `IndisputableMonolith/Physics/SterileExclusion.lean`
+  - Assumption `sterile_exclusion_assumption`: restricts to three neutrino generations
+    (no sterile `ν₄`). Model placeholder until a discrete-generation exclusion proof
+    is supplied.
+
 ## Pending
 
 - Document experiment tolerances once demo-to-test conversion (Phase 5) is complete

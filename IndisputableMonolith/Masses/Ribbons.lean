@@ -1,5 +1,12 @@
 import Mathlib
 
+/-!
+model -- placeholder mass-ribbon construction.
+This file records the φ-ladder ribbon machinery as a narrative scaffold; the
+RS derivations are not yet formalised.  Downstream code treats these as demo
+inputs and the module is categorised as `Model`.
+-/
+
 namespace IndisputableMonolith
 namespace Masses
 namespace Ribbons

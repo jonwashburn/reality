@@ -251,3 +251,21 @@ After the cleanup items above, this is **production-ready** for external scienti
 
 **Audit Status**: Session 1 complete. Recommend Session 2 for lines 6001-12000 to cover remaining modules (Patterns, Recognition, Verification, URCGenerators).
 
+
+---
+
+# Proof Audit Session 2: Lines 6001-12000
+
+**Date**: 2025-10-12  
+**Scope**: Deep read of lines 6001-12000  
+**Highlights**:
+- ✅ ILG/rotation and xi-bin lemmas (`Masses/ILG/*.lean`) well-founded.  
+- ✅ Information/CompressionPrior correctly references T5 uniqueness.  
+- ⚠️ `Masses/Basic.lean` mass ladder theorem demoted to assumption (`mass_ladder_assumption`).  
+- ⚠️ `Masses/ExponentKernel.lean` duplicated GaugeEq lemmas—file removed, canonicalised in `Exponent/Gauge.lean`.  
+- ⚠️ `Masses/Ribbons*` and `SectorPrimitive` marked as model scaffolding (docstrings added).  
+- ⚠️ `Physics/SterileExclusion.lean` recast as assumption (`sterile_exclusion_assumption`); documented in docs/Assumptions.md.  
+- Physics models (CKM/PMNS/Hadrons) remain phenomenological; noted as models in manifest.
+
+**Next steps**: continue audit for lines 12001+ if desired once Session-2 issues land in CI.
+

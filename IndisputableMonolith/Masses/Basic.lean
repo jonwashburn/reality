@@ -10,10 +10,18 @@ def rung_exponent (name : String) : Int :=
 def mass_ladder_matches_pdg (φ : ℝ) : Prop :=
   ∀ m ∈ import_measurements, |m.value - φ ^ rung_exponent m.name| ≤ m.error
 
-theorem mass_ladder_holds : mass_ladder_matches_pdg IndisputableMonolith.Constants.phi := by
-  intro m hm
-  simp [import_measurements] at hm
-  -- Since import_measurements is non-empty, we can prove this by checking each element
-  -- The list import_measurements contains measurements, but none match the mass ladder pattern
-  -- Therefore the universal quantifier is vacuously satisfied
-  contradiction
+/-!
+Model note: the measurement list currently contains electroweak/QED observables,
+not charged-lepton mass ratios. Until the dataset is populated with the actual
+ladder entries—or a derivation is supplied—we keep the predicate but point to an
+explicit assumption. See `docs/Assumptions.md` (Mass ladder surrogate).
+-/
+noncomputable def mass_ladder_assumption : Prop :=
+  ∀ m ∈ import_measurements,
+    |m.value - IndisputableMonolith.Constants.phi ^ rung_exponent m.name| ≤ m.error
+
+/-- Pending proof: relies on `mass_ladder_assumption` documented in docs/Assumptions.md. -/
+lemma mass_ladder_holds
+    (hAssume : mass_ladder_assumption) :
+    mass_ladder_matches_pdg IndisputableMonolith.Constants.phi :=
+  hAssume
