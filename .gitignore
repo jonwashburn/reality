@@ -14,3 +14,7 @@ cache_fetch.log
 .lake/**
 **/.DS_Store
 **/._*
+
+# Build artifacts
+.ci_audit.json
+.ci_metrics.db
