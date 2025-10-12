@@ -269,3 +269,9 @@ After the cleanup items above, this is **production-ready** for external scienti
 
 **Next steps**: continue audit for lines 12001+ if desired once Session-2 issues land in CI.
 
+### Session 3 (Masses fortification, Step 2–4)
+- Centralised canonical constants (`Masses/Anchor.lean`) and refactored dependents (`AnchorPolicy`).
+- Introduced shared assumptions module (`Masses/Assumptions.lean`) and updated `docs/Assumptions.md` with detailed masses entries.
+- Added audit harness scaffolding (`data/masses.json`, `tools/audit_masses.py`, `scripts/check_masses.py`) producing artefacts for the anchor relation; CI hook staged pending Lean bridge integration. See `docs/MASSES_AUDIT.md` for usage and next steps.
+- Updated `docs/MASSES_STATUS.md` to reflect completed steps and remaining numerical closure work.
+

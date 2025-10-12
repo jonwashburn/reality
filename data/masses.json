@@ -1,0 +1,20 @@
+{
+  "tolerance": 0.1,
+  "species": [
+    {"name": "e",   "sector": "Lepton",      "r": 2,  "mass_ref": 0.51099895},
+    {"name": "mu",  "sector": "Lepton",      "r": 13, "mass_ref": 105.6583745},
+    {"name": "tau", "sector": "Lepton",      "r": 19, "mass_ref": 1776.86},
+
+    {"name": "u", "sector": "UpQuark",   "r": 4,  "mass_ref": 2.16},
+    {"name": "c", "sector": "UpQuark",   "r": 15, "mass_ref": 1270.0},
+    {"name": "t", "sector": "UpQuark",   "r": 21, "mass_ref": 172760.0},
+
+    {"name": "d", "sector": "DownQuark", "r": 4,  "mass_ref": 4.67},
+    {"name": "s", "sector": "DownQuark", "r": 15, "mass_ref": 93.4},
+    {"name": "b", "sector": "DownQuark", "r": 21, "mass_ref": 4180.0},
+
+    {"name": "W", "sector": "Electroweak", "r": 1, "mass_ref": 80379.0},
+    {"name": "Z", "sector": "Electroweak", "r": 1, "mass_ref": 91187.6},
+    {"name": "H", "sector": "Electroweak", "r": 1, "mass_ref": 125200.0}
+  ]
+}

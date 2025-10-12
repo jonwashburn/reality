@@ -71,7 +71,8 @@
       ],
       "files": [
         "IndisputableMonolith/Complexity/ComputationBridge.lean",
-        "IndisputableMonolith/Complexity/RSVC.lean"
+        "IndisputableMonolith/Complexity/RSVC.lean",
+        "IndisputableMonolith/Masses/Manifest.lean"
       ]
     },
     {

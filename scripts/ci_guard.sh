@@ -289,6 +289,14 @@ TOLERANCE_OUTPUT="$("$ROOT_DIR/scripts/check_tolerances.py" 2>&1)" || {
 }
 printf "%s\n" "$TOLERANCE_OUTPUT"
 
+echo "[ci_guard] Running masses regression checks..."
+MASS_OUTPUT="$("$ROOT_DIR/scripts/check_masses.py" 2>&1)" || {
+  echo "$MASS_OUTPUT" >&2
+  echo "[ci_guard][FAIL] Masses regression failed." >&2
+  exit 1
+}
+printf "%s\n" "$MASS_OUTPUT"
+
 echo "[ci_guard] All CI checks passed (audit gate)."
 exit 0
 

@@ -43,6 +43,20 @@ The index is referenced by Phase 3 of the robustness plan. See also the sealed r
     (no sterile `ν₄`). Model placeholder until a discrete-generation exclusion proof
     is supplied.
 
+## Masses
+
+- `IndisputableMonolith/Masses/Assumptions.lean`
+  - `mass_ladder_assumption`: for each imported PDG entry `m`, the surrogate φ-ladder prediction matches within the declared experimental error. Tracks Paper 1 anchor ladder and remains an explicit model predicate.
+  - `sterile_exclusion_assumption`: re-exports the physics sterile assumption for shared use.
+- `IndisputableMonolith/Masses/Anchor.lean`
+  - Declares canonical anchor constants (`E_coh`, sector yardsticks, frozen rung integers, charge-based `Z` map) per Masses Paper 1, §2–3.
+- `IndisputableMonolith/Masses/AnchorPolicy.lean`
+  - Exposes helper `predict_mass` using the canonical anchor constants plus gap adjustment; currently treated as model scaffolding pending full residue proof.
+- `IndisputableMonolith/Masses/Ribbons*.lean`
+  - Ribbon/word constructors remain narrative scaffolding (Paper 3) with placeholder derivations.
+- `IndisputableMonolith/Masses/Manifest.lean`
+  - Catalogues module ↔ manuscript alignment; no additional assumptions beyond the entries above.
+
 ## Pending
 
 - Document experiment tolerances once demo-to-test conversion (Phase 5) is complete
