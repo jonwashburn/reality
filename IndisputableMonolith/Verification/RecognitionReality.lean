@@ -59,8 +59,8 @@ noncomputable def recognitionReality_phi : ℝ :=
 
 -- Provide existence directly from the unique witness.
 noncomputable def recognitionReality_exists :
-  ∃ φ : ℝ, (PhiSelection φ ∧ Recognition_Closure φ) ∧ RecognitionRealityAt φ := by
-  exact exists_of_exists_unique recognitionReality_exists_unique
+  ∃ φ : ℝ, (PhiSelection φ ∧ Recognition_Closure φ) ∧ RecognitionRealityAt φ :=
+  exists_of_exists_unique recognitionReality_exists_unique
 
 -- Chosen witness at the pinned scale (do not rely on the specific φ value).
 noncomputable def recognitionReality_at :

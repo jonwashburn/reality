@@ -275,3 +275,5 @@ After the cleanup items above, this is **production-ready** for external scienti
 - Added audit harness scaffolding (`data/masses.json`, `tools/audit_masses.py`, `scripts/check_masses.py`) producing artefacts for the anchor relation; CI hook staged pending Lean bridge integration. See `docs/MASSES_AUDIT.md` for usage and next steps.
 - Updated `docs/MASSES_STATUS.md` to reflect completed steps and remaining numerical closure work.
 
+**Assumptions documentation**: `docs/Assumptions.md` now enumerates the surfaced predicates (mass ladder surrogate, sterile exclusion, CKM phenomenology, exclusivity/recognition bundles) and cross-links to the corresponding Lean files; additions will continue as new scaffolds are identified.
+

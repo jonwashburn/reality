@@ -497,12 +497,19 @@ theorem exclusivity_at_of_framework_uniqueness (φ : ℝ)
   · exact Reality.rs_reality_master_any φ
   · exact definitional_uniqueness_of_framework_uniqueness hFU
 
+theorem exclusivity_at_from_assumptions (φ : ℝ)
+  (H : NoAlternativesAssumptions (RSFramework.toPhysicsFramework φ (RH.RS.zeroParamFramework_at φ))) :
+  ExclusivityAt φ := by
+  have hFU : FrameworkUniqueness φ := framework_uniqueness φ
+  refine exclusivity_at_of_framework_uniqueness φ hFU
+
 /‑! ### Global "exclusive reality" statement (once-and-for-all) -/
 
 /-- There exists a unique scale φ such that φ is pinned (selection+closure)
     and RS exhibits exclusivity at that scale (master + definitional uniqueness). -/
 def ExclusiveReality : Prop :=
-  ∃! φ : ℝ, (PhiSelection φ ∧ Recognition_Closure φ) ∧ ExclusivityAt φ
+  ∃! φ : ℝ,
+    (PhiSelection φ ∧ Recognition_Closure φ) ∧ ExclusivityAt φ
 
 theorem exclusive_reality_holds : ExclusiveReality := by
   -- Start from the pinned φ (selection ∧ closure) uniqueness

@@ -57,6 +57,17 @@ The index is referenced by Phase 3 of the robustness plan. See also the sealed r
 - `IndisputableMonolith/Masses/Manifest.lean`
   - Catalogues module ↔ manuscript alignment; no additional assumptions beyond the entries above.
 
+## Recognition / Exclusivity Bundles
+
+- `IndisputableMonolith/Verification/Exclusivity/NoAlternatives.lean`
+  - `NoAlternativesAssumptions`: bundles the prerequisites that feed the `no_alternative_frameworks` integration (inhabited state space, non-static evolution, zero parameters, recognition derivation, measure reflects change, self-similarity).
+  - Callers should use `no_alternative_frameworks_from` and supply this record explicitly.
+- `IndisputableMonolith/Verification/ZeroParamsNecessity.lean`
+  - `RecognitionEventsCountable`: assumption that ledger events admit a countable structure.
+  - `BoundedCapacity`: assumption providing an injective encoding of ledger events into a finite set; required for `ledger_finite` and `has_zero_params_from_ledger`.
+- `IndisputableMonolith/Verification/Necessity/RecognitionNecessity.lean`
+  - `ComparisonAssumptions`: summarises the classical/decidability gates used to internalize comparison (`lawOfExcludedMiddle`, `computableObservable`). Needed when invoking `observables_require_recognition`.
+
 ## Pending
 
 - Document experiment tolerances once demo-to-test conversion (Phase 5) is complete

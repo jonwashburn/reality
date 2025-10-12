@@ -65,33 +65,22 @@ import IndisputableMonolith.Information.CompressionPrior
 namespace IndisputableMonolith
 namespace URCAdapters
 
-/-- #eval-friendly report for EthicsPolicyCert. -/
+
+/-- Placeholder report for `EthicsPolicyCert` (predicate currently `False`). -/
 def ethics_policy_report : String :=
-  let cert : URCGenerators.EthicsPolicyCert := {}
-  have _ : URCGenerators.EthicsPolicyCert.verified cert :=
-    URCGenerators.EthicsPolicyCert.verified_any _
-  "EthicsPolicyCert: OK"
+  "EthicsPolicyCert: TODO (placeholder predicate = False)"
 
-/-- #eval-friendly report for FairnessBatchCert. -/
+/-- Placeholder report for `FairnessBatchCert` (predicate currently `False`). -/
 def fairness_batch_report : String :=
-  let cert : URCGenerators.FairnessBatchCert := {}
-  have _ : URCGenerators.FairnessBatchCert.verified cert :=
-    URCGenerators.FairnessBatchCert.verified_any _
-  "FairnessBatchCert: OK"
+  "FairnessBatchCert: TODO (placeholder predicate = False)"
 
-/-- #eval-friendly report for PreferLexCert. -/
+/-- Placeholder report for `PreferLexCert` (predicate currently `False`). -/
 def prefer_lex_report : String :=
-  let cert : URCGenerators.PreferLexCert := {}
-  have _ : URCGenerators.PreferLexCert.verified cert :=
-    URCGenerators.PreferLexCert.verified_any _
-  "PreferLexCert: OK"
+  "PreferLexCert: TODO (placeholder predicate = False)"
 
-/-- #eval-friendly report for TruthLedgerCert. -/
+/-- Placeholder report for `TruthLedgerCert` (predicate currently `False`). -/
 def truth_ledger_report : String :=
-  let cert : URCGenerators.TruthLedgerCert := {}
-  have _ : URCGenerators.TruthLedgerCert.verified cert :=
-    URCGenerators.TruthLedgerCert.verified_any _
-  "TruthLedgerCert: OK"
+  "TruthLedgerCert: TODO (placeholder predicate = False)"
 
 /-- #eval manifest confirming Route A wiring. -/
 def routeA_report : String :=
@@ -117,8 +106,13 @@ def reality_master_report : String :=
 /-- #eval-friendly report bundling RSRealityMaster with Bi-Interpretability. -/
 def recognition_reality_report : String :=
   let φ : ℝ := IndisputableMonolith.Constants.phi
-  have _ : IndisputableMonolith.Verification.RecognitionReality.RecognitionReality φ :=
-    IndisputableMonolith.Verification.RecognitionReality.recognitionReality_any φ
+  have _ : IndisputableMonolith.Verification.RecognitionReality.RecognitionReality φ := by
+    -- Provide surfaced assumptions for the RS framework at φ
+    exact
+      (IndisputableMonolith.Verification.BiInterpretability.recognitionReality_any
+        (φ := φ)
+        (assm :=
+          IndisputableMonolith.Verification.Exclusivity.RSFramework.rs_assumptions φ))
   "RecognitionReality: OK (RSRealityMaster + Bi-Interpretability)"
 
 /-- #eval-friendly recognition closure report (meta certificate). -/

@@ -24,13 +24,18 @@ def recog_lb_prop : Prop :=
 def rs_pres_prop : Prop :=
   ∀ x : ℝ, 0 ≤ x → 0 ≤ IndisputableMonolith.RH.RS.PhiPow x
 
-/-! Concrete mass ladder wiring via PhiPow:
-    `baseMass` is a sector/charge-dependent scale (set to 1 here for minimal demo),
-    and `massCanonUnits` applies the φ^r ladder. The φ‑rung step is proved below. -/
+/-!
+Model/demo scaffold: concrete mass ladder wiring via `PhiPow`.
+
+`baseMass` is intentionally set to `1` so this adapter stays algebraic and does
+not depend on the canonical yardsticks defined in
+`IndisputableMonolith.Masses.Anchor`. The production ladder lives in the Masses
+namespace; this module only demonstrates the φ‑rung shift in isolation.
+-/
 namespace Masses
 namespace Derivation
 
-/-- A base mass map per sector/word charge Z (nonzero scale choice = 1 for demo). -/
+/-- Demo base mass: fixed to `1` so no physical scale is assumed here. -/
 def baseMass (_U : IndisputableMonolith.Constants.RSUnits) (_Z : ℤ) : ℝ := 1
 
 /-- Canonical units mass ladder: base × PhiPow(r). -/

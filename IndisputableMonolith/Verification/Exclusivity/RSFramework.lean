@@ -111,7 +111,26 @@ theorem RS_HasZeroParameters (φ : ℝ) (F : ZeroParamFramework φ) :
 
 theorem RS_HasSelfSimilarity (φ : ℝ) (F : ZeroParamFramework φ) :
   HasSelfSimilarity (toPhysicsFramework φ F).StateSpace :=
-    self_similarity_from_discrete _ trivial trivial
+by
+  -- state space reduces to the units quotient carrier; reuse its self-similarity
+  simpa [toPhysicsFramework] using UnitsQuotCarrier.hasSelfSimilarity F
+
+theorem RS_NonStatic (φ : ℝ) (F : ZeroParamFramework φ) :
+  NonStatic (toPhysicsFramework φ F) := by
+  intro s t h
+  simpa [toPhysicsFramework] using h
+
+/-- Pack the surfaced assumption bundle for RS at scale `φ`. -/
+def rs_assumptions (φ : ℝ) (F : ZeroParamFramework φ) :
+  NoAlternativesAssumptions (toPhysicsFramework φ F) :=
+  { inhabited := zpf_unitsQuot_nonempty F
+  , nonStatic := RS_NonStatic φ F
+  , specNontrivial := RS_SpecNontrivial φ F
+  , zeroParams := RS_HasZeroParameters φ F
+  , derives := RS_DerivesObservables φ F
+  , measureReflects := RS_MeasureReflectsChange φ F
+  , selfSimilarity := RS_HasSelfSimilarity φ F
+  , recognition := Necessity.recognition_derivation_rs φ F }
 
 end Exclusivity
 end Verification

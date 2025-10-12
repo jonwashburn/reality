@@ -9,21 +9,23 @@ namespace URCGenerators
 /-! Minimal, dependency-light certificates sufficient for Recognition_Closure and Reality. -/
 
 structure EthicsPolicyCert where deriving Repr
-@[simp] def EthicsPolicyCert.verified (_c : EthicsPolicyCert) : Prop := True
-@[simp] theorem EthicsPolicyCert.verified_any (_c : EthicsPolicyCert) : EthicsPolicyCert.verified _c := trivial
+
+/-- Placeholder predicate: ethics policy certificate is not yet formalised. -/
+@[simp] def EthicsPolicyCert.verified (_c : EthicsPolicyCert) : Prop := False
 
 structure FairnessBatchCert where deriving Repr
-@[simp] def FairnessBatchCert.verified (_c : FairnessBatchCert) : Prop := True
-@[simp] theorem FairnessBatchCert.verified_any (_c : FairnessBatchCert) : FairnessBatchCert.verified _c := trivial
+
+/-- Placeholder predicate: fairness batch certificate is not yet formalised. -/
+@[simp] def FairnessBatchCert.verified (_c : FairnessBatchCert) : Prop := False
 
 structure PreferLexCert where deriving Repr
 
-@[simp] def PreferLexCert.verified (_c : PreferLexCert) : Prop := True
-@[simp] theorem PreferLexCert.verified_any (_c : PreferLexCert) : PreferLexCert.verified _c := trivial
+@[simp] def PreferLexCert.verified (_c : PreferLexCert) : Prop := False
 
 structure TruthLedgerCert where deriving Repr
-@[simp] def TruthLedgerCert.verified (_c : TruthLedgerCert) : Prop := True
-@[simp] theorem TruthLedgerCert.verified_any (_c : TruthLedgerCert) : TruthLedgerCert.verified _c := trivial
+
+/-- Placeholder predicate: truth ledger certificate is not yet formalised. -/
+@[simp] def TruthLedgerCert.verified (_c : TruthLedgerCert) : Prop := False
 
 
 /-! Units invariance certificates: observables invariant under anchor rescalings. -/

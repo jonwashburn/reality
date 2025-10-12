@@ -648,6 +648,46 @@ theorem no_future_alternative :
   exact RecognitionUniqueFacts.recognition_science_unique FT hZero hObs hSelfSim
 
 end NoAlternatives
+
+/-! ## Assumption bundle and derived wrapper (honest surface)
+
+To make dependencies explicit, we package the hypotheses commonly used by
+`no_alternative_frameworks` into a single record. Downstream callers that wish
+to rely on this result should pass an instance of this bundle rather than
+treating the theorem as assumption‑free.
+-/
+
+/-- Consolidated assumptions required by the `no_alternative_frameworks` flow. -/
+structure NoAlternativesAssumptions
+  (F : Framework.PhysicsFramework) : Prop where
+  inhabited : Inhabited F.StateSpace
+  nonStatic : Framework.NonStatic F
+  specNontrivial : Necessity.DiscreteNecessity.SpecNontrivial F.StateSpace
+  zeroParams : Framework.HasZeroParameters F
+  derives : Framework.DerivesObservables F
+  measureReflects : MeasureReflectsChange F
+  selfSimilarity : Necessity.PhiNecessity.HasSelfSimilarity F.StateSpace
+  recognition : Necessity.RecognitionDerivation AssumptionPack F
+
+/-- Wrapper: derive the main no‑alternatives conclusion under the explicit
+assumptions bundle. This does not strengthen the original theorem; it simply
+surfaces prerequisites in a single argument for honest plumbing. -/
+theorem no_alternative_frameworks_from
+  (F : Framework.PhysicsFramework)
+  (A : NoAlternativesAssumptions F) :
+  ∃ (φ : ℝ) (L : RH.RS.Ledger) (eqv : RH.RS.UnitsEqv L)
+    (equiv_framework : Framework.PhysicsFramework),
+    Framework.FrameworkEquiv F equiv_framework := by
+  -- Bring instances/hypotheses into scope from the bundle
+  let _ : Inhabited F.StateSpace := A.inhabited
+  let _ : Framework.NonStatic F := A.nonStatic
+  let _ : Necessity.DiscreteNecessity.SpecNontrivial F.StateSpace := A.specNontrivial
+  let _ : MeasureReflectsChange F := A.measureReflects
+  let _ : Necessity.RecognitionDerivation AssumptionPack F := A.recognition
+  -- Reuse the original theorem with the surfaced assumptions
+  exact no_alternative_frameworks (F:=F)
+    (hZero:=A.zeroParams) (hObs:=A.derives) (hSelfSim:=A.selfSimilarity)
+
 end Exclusivity
 end Verification
 end IndisputableMonolith

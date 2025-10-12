@@ -8,8 +8,10 @@ import IndisputableMonolith.Constants
 namespace IndisputableMonolith
 namespace URCAdapters
 
-/-- Route A adapter: treat a minimal URC bridge as the B (short lawful bridge)
-    input for absolute-layer assembly. -/
+/-- Route A adapter (demo scaffold): treats the minimal URC bridge as the
+    `LawfulBridge` input for absolute-layer assembly. The production Route A
+    wiring lives in the verification layer; this module keeps a minimal witness
+    for documentation/tests. -/
 @[simp] def RouteA_LawfulBridge : URCMinimal.LawfulBridge := URCMinimal.bridge
 
 /-- Minimal Route A carriers used to export explicit Spec theorems. -/
@@ -30,7 +32,7 @@ theorem RouteA_meetsBands :
   RH.RS.MeetsBands RA_Ledger RA_Bridge RA_Bands := by
   exact RH.RS.meetsBands_any_default RA_Ledger RA_Bridge RA_Units
 
-/-- Route A demo: existence-and-uniqueness (up to units) scaffold for the minimal model. -/
+/-- Route A demo: existence-and-uniqueness scaffold for the minimal model. -/
 theorem RouteA_existence_and_uniqueness (φ : ℝ) :
   RH.RS.ExistenceAndUniqueness φ RA_Ledger
     { Rel := fun _ _ => True
@@ -69,7 +71,8 @@ def unifyCertificates (φ : ℝ) (routeA : URCMinimal.LawfulBridge)
     verified := hB
   }
 
-/-- Demonstration of unified certificate system -/
+/-- Demonstration of unified certificate system (scaffold). The `routeB`
+    component is empty, so `Verified` holds vacuously. -/
 def demoUnifiedCertificate (φ : ℝ) : UnifiedCertificate φ :=
   let routeA := URCMinimal.bridge
   let routeB : URCGenerators.CertFamily := {

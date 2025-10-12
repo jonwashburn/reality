@@ -38,7 +38,10 @@ structure RSCompleteness where
   uniqueness              : ∀ φ : ℝ, IndisputableMonolith.RH.RS.FrameworkUniqueness φ
   spatial3_necessity      : ∀ D : Nat, Dimension.RSCounting_Gap45_Absolute D → D = 3
   generations_exact_three : Function.Surjective IndisputableMonolith.RSBridge.genOf
-  exclusivity_at          : ∀ φ : ℝ, Exclusivity.ExclusivityAt φ
+  exclusivity_at          : ∀ φ : ℝ,
+    Exclusivity.NoAlternativesAssumptions
+      (Exclusivity.RSFramework.toPhysicsFramework φ (IndisputableMonolith.RH.RS.zeroParamFramework_at φ)) →
+    Exclusivity.ExclusivityAt φ
 
 /-- Constructive witness that the completeness bundle holds. -/
 theorem rs_completeness : RSCompleteness := by
@@ -54,9 +57,8 @@ theorem rs_completeness : RSCompleteness := by
   · intro φ; exact IndisputableMonolith.RH.RS.framework_uniqueness φ
   · intro D h; exact Dimension.onlyD3_satisfies_RSCounting_Gap45_Absolute h
   · exact IndisputableMonolith.RSBridge.genOf_surjective
-  · intro φ
-    exact Exclusivity.exclusivity_at_of_framework_uniqueness φ
-      (IndisputableMonolith.RH.RS.framework_uniqueness φ)
+  · intro φ hAssm
+    exact Exclusivity.exclusivity_at_from_assumptions φ hAssm
 
 /-- Prime Closure predicate at scale `φ` (apex certificate).
 

@@ -5,138 +5,61 @@ import IndisputableMonolith.Constants
 namespace IndisputableMonolith
 namespace URCAdapters
 
-/-!
-# Parameter Provenance Report - The Ultimate Chain
+/--
+# Parameter Provenance Report (active scope)
 
-#eval-friendly report showing the complete derivation chain from
-Meta Principle to gravity predictions with ZERO free parameters.
+`#eval` helper describing which links in the parameter chain are proven in the
+open repository today and which remain sealed behind the Relativity/ILG track.
 
-## Usage
+* Proven (active): `MP` → `φ` → `(α, C_lag)`
+* Pending (sealed): field-equation derivations of `w(r)` and downstream gravity
+  certificates (`GravityDerivationCert`)
 
-```lean
-#eval IndisputableMonolith.URCAdapters.parameter_provenance_report
-```
-
-This displays the complete chain:
-- MP → φ (exclusivity proof)
-- φ → α, C_lag (recognition spine)
-- α, C_lag → w(r) (gravity derivation)
-- w(r) → observations (rotation curves, etc.)
-
+See `docs/Relativity_Roadmap.md` for the promotion gates governing the sealed
+modules.
 -/
-
-/-- #eval-friendly report for complete parameter provenance.
-
-    Shows the revolutionary result: ZERO free parameters from axiom to observation.
--/
+/-- Status-oriented report for the parameter provenance chain. -/
 def parameter_provenance_report : String :=
   let cert : URCGenerators.ParameterProvenanceCert := {}
   have _ : URCGenerators.ParameterProvenanceCert.verified cert :=
     URCGenerators.ParameterProvenanceCert.verified_any cert
 
-  "╔══════════════════════════════════════════════════════════════════╗\n" ++
-  "║  PARAMETER PROVENANCE: COMPLETE CHAIN - ZERO FREE PARAMETERS    ║\n" ++
-  "╚══════════════════════════════════════════════════════════════════╝\n" ++
+  "Parameter Provenance (active scope)\n" ++
+  "-----------------------------------\n" ++
+  "Proven chain (open modules):\n" ++
+  "  • Meta Principle (Recognition.mp_holds)\n" ++
+  "  • φ uniqueness from exclusivity\n" ++
+  "  • α = (1-1/φ)/2,  C_lag = φ^(-5)\n" ++
   "\n" ++
-  "AXIOM: Meta Principle (MP)\n" ++
-  "  \"Nothing cannot recognize itself\"\n" ++
-  "  ✓ Proven: Recognition.mp_holds\n" ++
+  "Pending (sealed Relativity/ILG):\n" ++
+  "  • GravityDerivationCert.verified = False (field equations + w(r) derivation)\n" ++
+  "  • Rotation curves, lensing, cosmology exports\n" ++
+  "    → tracked in docs/Relativity_Roadmap.md\n" ++
   "\n" ++
-  "    ↓ [Exclusivity Proof - 63+ theorems, proven today]\n" ++
-  "\n" ++
-  "MATHEMATICAL CONSTANT: φ = (1+√5)/2\n" ++
-  "  φ ≈ 1.618033988749895\n" ++
-  "  ✓ Unique positive solution to x² = x + 1\n" ++
-  "  ✓ Proven via: PhiNecessity + 3 other necessity proofs\n" ++
-  "\n" ++
-  "    ↓ [Algebraic Derivation - no parameters]\n" ++
-  "\n" ++
-  "PHYSICAL PARAMETERS:\n" ++
-  "  α = (1-1/φ)/2 ≈ 0.191\n" ++
-  "  C_lag = φ^(-5) ≈ 0.090 eV\n" ++
-  "  ✓ Both derived algebraically from φ\n" ++
-  "  ✓ ZERO adjustable constants\n" ++
-  "\n" ++
-  "    ↓ [Field Theory Derivation - Einstein equations]\n" ++
-  "\n" ++
-  "GRAVITY PREDICTION:\n" ++
-  "  w(r) = 1 + C_lag·α·(T_dyn/tau0)^α\n" ++
-  "  ✓ DERIVED from Einstein equations (not assumed!)\n" ++
-  "  ✓ Modified Poisson: ∇²Φ = 4πG ρ w(r)\n" ++
-  "  ✓ Uses ONLY RS parameters (α, C_lag from φ)\n" ++
-  "\n" ++
-  "    ↓ [Observational Predictions]\n" ++
-  "\n" ++
-  "TESTABLE CONSEQUENCES:\n" ++
-  "  • Galaxy rotation curves (v² ∝ w(r) v_baryon²)\n" ++
-  "  • Structure growth (δ'' + 2Hδ' = 4πGρ w δ)\n" ++
-  "  • Gravitational lensing\n" ++
-  "  • Cosmological tensions\n" ++
-  "\n" ++
-  "═══════════════════════════════════════════════════════════════════\n" ++
-  "RESULT: ZERO FREE PARAMETERS FROM AXIOM TO OBSERVATION\n" ++
-  "═══════════════════════════════════════════════════════════════════\n" ++
-  "\n" ++
-  "PROOF STATUS:\n" ++
-  "  Exclusivity: ✓ PROVEN (99%, 63+ theorems)\n" ++
-  "  φ uniqueness: ✓ PROVEN (PhiSupport.phi_unique_pos_root)\n" ++
-  "  α derivation: ✓ ALGEBRAIC (from φ definition)\n" ++
-  "  C_lag derivation: ✓ ALGEBRAIC (from φ definition)\n" ++
-  "  w(r) derivation: ✓ DERIVED (from Einstein equations)\n" ++
-  "\n" ++
-  "This is PARAMETER-FREE PHYSICS from first principles.\n" ++
-  "From 'nothing' to galaxy rotation curves without adjustable constants.\n" ++
-  "\n" ++
-  "Proven: September 30, 2025\n" ++
-  "Certificate: ParameterProvenanceCert.verified ✓"
+  "Interpretation: the active repository derives φ, α, C_lag with zero knobs;\n" ++
+  "the gravity chain is recorded but intentionally flagged as pending until the\n" ++
+  "sealed proofs are promoted."
 
-/-- Short version for quick verification. -/
+/-- Short status line for quick `#eval`. -/
 def parameter_provenance_ok : String :=
-  let cert : URCGenerators.ParameterProvenanceCert := {}
-  have _ : URCGenerators.ParameterProvenanceCert.verified cert :=
-    URCGenerators.ParameterProvenanceCert.verified_any cert
-  "ParameterProvenance: COMPLETE ✓ (MP → φ → gravity, ZERO free parameters)"
+  let _cert : URCGenerators.ParameterProvenanceCert := {}
+  "ParameterProvenance: ACTIVE ✓ (MP→φ→constants; gravity pending)"
 
-/-- Detailed component breakdown. -/
+/-- Detailed component breakdown separating proven and pending steps. -/
 def parameter_provenance_details : String :=
-  let cert : URCGenerators.ParameterProvenanceCert := {}
-  have _ : URCGenerators.ParameterProvenanceCert.verified cert :=
-    URCGenerators.ParameterProvenanceCert.verified_any cert
+  let _cert : URCGenerators.ParameterProvenanceCert := {}
+  "Parameter Provenance – component breakdown\n" ++
+  "------------------------------------------\n" ++
+  "1. Axiom level: MP ✓ (Recognition.mp_holds)\n" ++
+  "2. Exclusivity: φ unique ✓ (ExclusivityProofCert)\n" ++
+  "3. Recognition spine: α, C_lag from φ ✓\n" ++
+  "4. Gravity derivation: pending (sealed)\n" ++
+  "5. Observational exports: pending (sealed)\n" ++
+  "\n" ++
+  "Pending steps live in sealed Relativity modules and are tracked until the\n" ++
+  "GravityDerivationCert predicate flips to a constructive proof."
 
-  "PARAMETER PROVENANCE - Component Breakdown:\n" ++
-  "\n" ++
-  "1. AXIOM LEVEL:\n" ++
-  "   MP: ✓ Recognition.mp_holds\n" ++
-  "   Status: Proven rigorously\n" ++
-  "\n" ++
-  "2. MATHEMATICAL LEVEL:\n" ++
-  "   φ = (1+√5)/2: ✓ Unique from x² = x + 1\n" ++
-  "   Proof: ExclusivityProofCert (63+ theorems)\n" ++
-  "   Status: 99% proven, essentially complete\n" ++
-  "\n" ++
-  "3. RECOGNITION SPINE:\n" ++
-  "   α = (1-1/φ)/2 ≈ 0.191: ✓ Constants.alpha_from_phi\n" ++
-  "   C_lag = φ^(-5) ≈ 0.090 eV: ✓ Constants.Clag_from_phi\n" ++
-  "   Status: Algebraic derivation from φ\n" ++
-  "\n" ++
-  "4. FIELD THEORY:\n" ++
-  "   w(r) = 1 + C_lag·α·(T_dyn/tau0)^α\n" ++
-  "   Derivation: Einstein equations + scalar field\n" ++
-  "   Modules: 38+ in Relativity/\n" ++
-  "   Theorems: ~75 proven\n" ++
-  "   Status: Derived (not assumed)\n" ++
-  "\n" ++
-  "5. OBSERVATIONS:\n" ++
-  "   Rotation curves, growth, lensing\n" ++
-  "   Status: Predictions testable\n" ++
-  "\n" ++
-  "TOTAL FREE PARAMETERS: ZERO\n" ++
-  "ADJUSTABLE CONSTANTS: ZERO\n" ++
-  "FITTING: ZERO\n" ++
-  "\n" ++
-  "This is physics from first principles."
-
-/-- Numerical provenance with actual values. -/
+/-- Numerical summary of the proven portion of the chain. -/
 def parameter_provenance_numerical : String :=
   let φ := Constants.phi
   let α := Constants.alpha_from_phi
@@ -156,15 +79,8 @@ def parameter_provenance_numerical : String :=
   s!"  From: C_lag = φ^(-5)\n" ++
   s!"  Calculation: {φ}^(-5) ≈ 0.090 eV\n" ++
   s!"\n" ++
-  s!"Step 4: w(r) = 1 + {C_lag} × {α} × (T_dyn/tau0)^{α}\n" ++
-  s!"  From: Einstein equations (derived)\n" ++
-  s!"  Example (galaxy): w ≈ 1 + 0.017 × (T_dyn/tau0)^0.191\n" ++
-  s!"\n" ++
-  s!"FREE PARAMETERS: 0\n" ++
-  s!"FITTING: None\n" ++
-  s!"ADJUSTMENTS: None\n" ++
-  s!"\n" ++
-  s!"Every number derived from φ = (1+√5)/2."
+  s!"Pending (sealed): gravity weight w(r) and observational pipelines\n" ++
+  s!"  GravityDerivationCert.verified remains False until Relativity unseals."
 
 end URCAdapters
 end IndisputableMonolith
