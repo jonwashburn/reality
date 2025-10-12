@@ -7,6 +7,7 @@ Demo: Pointer-Basis Selection
 -/
 
 namespace IndisputableMonolith
+namespace Demos
 namespace Physics
 
 #check pointer_select
@@ -14,4 +15,5 @@ namespace Physics
 #eval "Pointer theorem elaborated: OK"
 
 end Physics
+end Demos
 end IndisputableMonolith

@@ -7,6 +7,7 @@ Demo: PMNS Neutrino Masses and Hierarchy
 -/
 
 namespace IndisputableMonolith
+namespace Demos
 namespace Physics
 
 #check normal_order_holds  -- Confirms theorem
@@ -22,4 +23,5 @@ namespace Physics
 #eval s!"Falsifier: Hierarchy normal (inverted would violate tau_g=0<11<19); scale from E_coh pins absolute"
 
 end Physics
+end Demos
 end IndisputableMonolith

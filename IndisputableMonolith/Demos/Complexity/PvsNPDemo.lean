@@ -12,13 +12,14 @@ an information-theoretic separation between computation and recognition.
 ## Executive Summary
 
 1. **The Problem Was Ill-Posed**: P vs NP conflated two different complexities
-2. **At Computation Scale**: P = NP (sub-polynomial evolution possible)  
+2. **At Computation Scale**: P = NP (sub-polynomial evolution possible)
 3. **At Recognition Scale**: P ≠ NP (linear observation required)
 4. **The Ledger Forces This**: Double-entry + flux conservation = information hiding
 
 -/
 
 namespace IndisputableMonolith
+namespace Demos
 namespace Complexity
 namespace PvsNPDemo
 
@@ -160,7 +161,7 @@ def validation_data : List Experiment := [
 
 /-- The data confirms: Tc scales sub-linearly, Tr requires full measurement -/
 theorem empirical_validation :
-  validation_data.all (fun e => 
+  validation_data.all (fun e =>
     e.measured_Tc < e.n ∧  -- Sub-linear computation
     (e.measured_Tr < e.n / 2 → e.error_with_half_queries ≥ 1/2)) :=  -- Linear recognition
 by decide
@@ -169,7 +170,7 @@ by decide
 theorem main_result :
   -- 1. Turing model incomplete (ignores recognition)
   (∃ TM : TuringModel, TM.recognition_free) ∧
-  -- 2. SAT has dual complexity  
+  -- 2. SAT has dual complexity
   (complete_SAT_model.Tc.1 < complete_SAT_model.Tr.1) ∧
   -- 3. P vs NP was ill-posed (conflated Tc and Tr)
   (clay_view complete_SAT_model ≠ complete_SAT_model.Tr) ∧
@@ -202,4 +203,5 @@ by simp
 
 end PvsNPDemo
 end Complexity
+end Demos
 end IndisputableMonolith

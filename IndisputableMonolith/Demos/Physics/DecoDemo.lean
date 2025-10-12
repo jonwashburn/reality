@@ -7,6 +7,7 @@ Demo: Decoherence Rate from Traffic
 -/
 
 namespace IndisputableMonolith
+namespace Demos
 namespace Physics
 
 #check deco_rate_holds
@@ -14,4 +15,5 @@ namespace Physics
 #eval "Decoherence theorem elaborated: OK (τ_dec ~ 1/traffic)"
 
 end Physics
+end Demos
 end IndisputableMonolith

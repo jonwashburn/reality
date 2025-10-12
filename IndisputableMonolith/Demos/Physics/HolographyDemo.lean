@@ -7,6 +7,7 @@ Demo: Holographic Area Law
 -/
 
 namespace IndisputableMonolith
+namespace Demos
 namespace Physics
 
 #check holographic_area_law
@@ -14,4 +15,5 @@ namespace Physics
 #eval "Holographic theorem elaborated: OK (area scaling from T3 flux=0)"
 
 end Physics
+end Demos
 end IndisputableMonolith

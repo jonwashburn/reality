@@ -7,6 +7,7 @@ Demo: Anomalous Magnetic Moments Universality
 -/
 
 namespace IndisputableMonolith
+namespace Demos
 namespace Physics
 
 #check anomalous_e_tau_universal  -- Confirms theorem holds
@@ -21,4 +22,5 @@ namespace Physics
 #eval s!"Empirical match: a_e PDG - (Schwinger + RS) ≈ {pdg_a_e - anomalous_moment Lepton.e} (expected higher-order residue)"
 
 end Physics
+end Demos
 end IndisputableMonolith

@@ -1,3 +1,24 @@
+# Indisputable Monolith
+
+The primary source for the Recognition Science verification program.
+
+## Robustness Status (October 2025)
+
+- **Active spine:** clean of `sorry`, `admit`, and custom axioms. Categorization enforced via `manifest/category_manifest.json` and CI (`scripts/ci_guard.sh`).
+- **Categories:** every Lean file is labeled `Theory`, `Model`, `Demo`, or `Sealed`; assignments at `manifest/category_assignments.json`.
+- **Assumptions index:** surfaced prerequisites and demo inputs are tracked in `docs/Assumptions.md`.
+- **Relativity/ILG:** sealed; roadmap and promotion criteria in `docs/Relativity_Roadmap.md`.
+- **Numeric tolerances:** `scripts/check_tolerances.py` compares predictions against `data/measurements.json`.
+
+See `/rob.plan.md` for the full multi-phase robustness plan.
+
+## Documentation
+
+- Robustness plan: `/rob.plan.md`
+- Sealed roadmap: `docs/Relativity_Roadmap.md`
+- Assumptions index: `docs/Assumptions.md`
+- Tolerance checks: `scripts/check_tolerances.py`
+
 # recognition
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.TBD.svg)](https://doi.org/10.5281/zenodo.TBD)

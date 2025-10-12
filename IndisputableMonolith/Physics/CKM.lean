@@ -47,15 +47,22 @@ noncomputable def jarlskog : ℝ :=
   let complex_cd : ℂ := real_toC V_cd
   Complex.im (complex_ud * complex_cb * Complex.conj complex_ub * complex_cd)
 
-/-- Empirical / phenomenological CKM facts that the framework assumes. -/
-class CKMPhenomenologyFacts : Prop where
-  jarlskog_positive : jarlskog > 0
-  jarlskog_matches_experiment : jarlskog ≈ 3.18e-5
+/-- Phenomenological facts required by the CKM demo.
+    Documented in `docs/Assumptions.md`. -/
+structure CKMPhenomenology where
+  j_value : ℝ
+  j_positive : j_value > 0
+  j_matches_experiment : jarlskog ≈ j_value
 
-/-- Dimensionless inevitability: J forced by φ-rungs and phase from RS (no fit). -/
-theorem jarlskog_holds [CKMPhenomenologyFacts] : jarlskog > 0 ∧ jarlskog ≈ 3.18e-5 :=
-  ⟨CKMPhenomenologyFacts.jarlskog_positive,
-    CKMPhenomenologyFacts.jarlskog_matches_experiment⟩
+/-- Dimensionless inevitability when supplied with phenomenological data. -/
+def jarlskog_summary (facts : CKMPhenomenology) : Prop :=
+  jarlskog > 0 ∧ jarlskog ≈ facts.j_value
+
+lemma jarlskog_summary_of_facts (facts : CKMPhenomenology)
+    (hpos : jarlskog > 0 := facts.j_positive)
+    (hexp : jarlskog ≈ facts.j_value := facts.j_matches_experiment) :
+    jarlskog_summary facts :=
+  ⟨hpos, hexp⟩
 
 /- Auxiliary positive witness using φ-rung sines (keeps algebra simple). -/
 noncomputable def s12_w : ℝ :=

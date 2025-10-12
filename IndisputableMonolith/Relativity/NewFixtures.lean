@@ -92,16 +92,6 @@ noncomputable def ppnInverseStub : PPNInverseFacts where
 
 instance : PPNInverseFacts := ppnInverseStub
 
-noncomputable def ckmPhenomenologyStub : CKMPhenomenologyFacts where
-  jarlskog_positive := by
-    -- placeholder bounds witness
-    have : (0 : ℝ) < 1 := by norm_num
-    simpa [CKMPhenomenologyFacts, jarlskog] using this
-  jarlskog_matches_experiment := by
-    simpa [CKMPhenomenologyFacts] using (by decide : (Real) ≈ 3.18e-5)
-
-instance : CKMPhenomenologyFacts := ckmPhenomenologyStub
-
 instance : PhenomenologyMatchingFacts :=
   { matches_correction := by
       intro ψ₀ ng ρ α C_lag tau0 M r hr hM htau0

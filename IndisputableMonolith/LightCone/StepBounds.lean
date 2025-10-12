@@ -89,30 +89,20 @@ lemma cone_bound
   have hcτ : U.ell0 = U.c * U.tau0 := by simpa using (U.c_ell0_tau0).symm
   simpa [hτ, hcτ, mul_left_comm, mul_assoc] using hℓ
 
-/-!
-Saturation: if every step saturates both the time and radial bounds
-monotonically in the forward direction, the cone inequality is achieved
-with equality. This witnesses the information/cover bound being tight
-under MP-structured step dynamics.
--/
-
-/-- Saturation equality under exact per-step increments. -/
+/-- Saturation lemma restated: equality holds when each step exactly reaches its bounds. -/
 lemma cone_bound_saturates
   (H : StepBounds K U time rad)
   (ht : ∀ {y z}, K.step y z → time z = time y + U.tau0)
   (hr : ∀ {y z}, K.step y z → rad z = rad y + U.ell0)
   {n x y} (h : Local.ReachN K n x y) :
   rad y - rad x = U.c * (time y - time x) := by
-  -- Obtain the inequality and show both sides match by computing both increments.
   have hineq := cone_bound (K:=K) (U:=U) (time:=time) (rad:=rad) H h
-  -- Compute exact increments from equalities
   have ht' : time y - time x = (n : ℝ) * U.tau0 := by
     have := H.reach_time_eq (K:=K) (U:=U) (time:=time) (rad:=rad) h
     have := congrArg (fun t => t - time x) this
     simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc] using this
   have hr' : rad y - rad x = (n : ℝ) * U.ell0 := by
     have base := H.reach_rad_le (K:=K) (U:=U) (time:=time) (rad:=rad) h
-    -- Upgrade ≤ to = using stepwise equalities hr by induction on h
     revert x y
     intro x y h
     induction h with
@@ -123,7 +113,6 @@ lemma cone_bound_saturates
         calc
           rad z - rad x = (rad y + U.ell0) - rad x := by simpa [hz]
           _ = (rad y - rad x) + U.ell0 := by
-                -- (a + b) - c = (a - c) + b
                 simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc]
           _ = (n : ℝ) * U.ell0 + U.ell0 := by simpa [ih']
           _ = ((n : ℝ) + 1) * U.ell0 := by
@@ -134,21 +123,12 @@ lemma cone_bound_saturates
                     _ = ((n : ℝ) + 1) * U.ell0 := by simpa [add_mul, one_mul]
                 simpa [this]
           _ = ((Nat.succ n : ℝ)) * U.ell0 := by simpa [Nat.cast_add, Nat.cast_one]
-  -- Replace both sides using unit identity ell0 = c * tau0
   have hcτ : U.ell0 = U.c * U.tau0 := by simpa using (U.c_ell0_tau0).symm
-  -- Conclude equality by arithmetic
-  have : (n : ℝ) * U.ell0 = U.c * ((n : ℝ) * U.tau0) := by
-    simpa [mul_left_comm, mul_assoc, hcτ]
-  -- Rewrite both sides
+  have : (n : ℝ) * U.ell0 = U.c * ((n : ℝ) * U.tau0) := by simpa [mul_left_comm, mul_assoc, hcτ]
   have lhs := hr'
   have rhs := by simpa [ht', mul_left_comm, mul_assoc] using this
-  -- Now use inequality both directions to get equality
-  -- We already have ≤; show ≥ via rhs ≥ lhs after rewriting
-  -- But both are equal numerically, so conclude equality directly
   simpa [lhs, rhs]
 
 end StepBounds
 end LightCone
 end IndisputableMonolith
-
-

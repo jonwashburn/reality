@@ -13,6 +13,120 @@ cd "$ROOT_DIR"
 ALL_LEANS="$(git ls-files '*.lean' || true)"
 LEANS="$(printf "%s\n" "$ALL_LEANS" | grep -E '^(IndisputableMonolith|URC|CI)/.*\\.lean$' || true)"
 
+CATEGORY_MANIFEST="$ROOT_DIR/manifest/category_manifest.json"
+CATEGORY_REPORT="$ROOT_DIR/manifest/category_assignments.json"
+CATEGORY_SUMMARY="$ROOT_DIR/manifest/category_summary.json"
+export CATEGORY_MANIFEST CATEGORY_REPORT CATEGORY_SUMMARY
+
+if [ ! -f "$CATEGORY_MANIFEST" ]; then
+  echo "[ci_guard][FAIL] Missing manifest/ category manifest at $CATEGORY_MANIFEST" >&2
+  exit 1
+fi
+
+echo "[ci_guard] Validating category manifest assignments..."
+CATEGORY_ERRORS="$(
+  printf "%s\n" "$LEANS" \
+  | python - <<'PY'
+import json
+import os
+import sys
+
+manifest_path = os.environ.get('CATEGORY_MANIFEST')
+report_path = os.environ.get('CATEGORY_REPORT')
+rules_data = []
+
+with open(manifest_path, 'r', encoding='utf-8') as f:
+    data = json.load(f)
+
+rules = data.get('rules', [])
+allowed = set(data.get('allowed', []))
+default = data.get('default', 'Model')
+
+def matches(rule, path):
+    # exact file match takes priority
+    files = rule.get('files', [])
+    if path in files:
+        return True
+    prefixes = rule.get('prefixes', [])
+    if any(path.startswith(prefix) for prefix in prefixes):
+        return True
+    suffixes = rule.get('suffixes', [])
+    if any(path.endswith(suffix) for suffix in suffixes):
+        return True
+    contains = rule.get('contains', [])
+    if any(sub in path for sub in contains):
+        return True
+    return False
+
+categories = {}
+errors = []
+
+for raw in sys.stdin:
+    path = raw.strip()
+    if not path:
+        continue
+    category = default
+    for rule in rules:
+        if matches(rule, path):
+            category = rule.get('category', category)
+            break
+    if category not in allowed:
+        errors.append(f"{path}: category '{category}' not permitted")
+    categories[path] = category
+
+    if path.startswith('IndisputableMonolith/Relativity/') and category != 'Sealed':
+        errors.append(f"{path}: must be categorized as Sealed")
+    if category == 'Sealed' and not path.startswith('IndisputableMonolith/Relativity/'):
+        errors.append(f"{path}: categorized as Sealed but not under Relativity/")
+    if category == 'Theory' and (path.endswith('Demo.lean') or '/Demo/' in path):
+        errors.append(f"{path}: Theory category may not include demo files")
+
+try:
+    with open(report_path, 'w', encoding='utf-8') as f:
+        json.dump(categories, f, indent=2, sort_keys=True)
+except OSError as err:
+    print(f"manifest/category_assignments.json write failed: {err}")
+    errors.append("Failed to write category assignments report")
+
+print('\n'.join(errors))
+PY
+)"
+
+if [ -n "$CATEGORY_ERRORS" ]; then
+  echo "[ci_guard][FAIL] Category validation errors detected:" >&2
+  printf "%s\n" "$CATEGORY_ERRORS" >&2
+  exit 1
+fi
+
+echo "[ci_guard] Computing category summary..."
+CATEGORY_COUNTS_OUTPUT="$(python - <<'PY'
+import json
+import os
+import sys
+
+report_path = os.environ.get('CATEGORY_REPORT')
+summary_path = os.environ.get('CATEGORY_SUMMARY')
+
+try:
+    with open(report_path, 'r', encoding='utf-8') as f:
+        assignments = json.load(f)
+except FileNotFoundError:
+    print(f"missing category assignments report: {report_path}", file=sys.stderr)
+    sys.exit(1)
+
+counts = {}
+for category in assignments.values():
+    counts[category] = counts.get(category, 0) + 1
+
+with open(summary_path, 'w', encoding='utf-8') as f:
+    json.dump(counts, f, indent=2, sort_keys=True)
+
+summary_line = " ".join(f"{cat}={counts[cat]}" for cat in sorted(counts))
+print(summary_line)
+PY
+)"
+echo "[ci_guard] Category counts: ${CATEGORY_COUNTS_OUTPUT:-none}"
+
 echo "[ci_guard] Scanning for axiom/sorry/admit in Lean files..."
 
 # Guard: sealed modules must not be imported by active code (outside their subtree)
@@ -156,7 +270,7 @@ echo "[ci_guard] ci_checks smoke passed."
 # Hard gate: audit comparator
 echo "[ci_guard] Running audit and comparator..."
 TMP_AUDIT_JSON="$ROOT_DIR/.ci_audit.json"
-MEASURES_JSON="$ROOT_DIR/measurements.json"
+MEASURES_JSON="$ROOT_DIR/data/measurements.json"
 AUDIT_OUTPUT="$(lake exe audit)"
 echo "$AUDIT_OUTPUT" | tee /dev/stderr
 printf "%s" "$AUDIT_OUTPUT" > "$TMP_AUDIT_JSON"
@@ -166,6 +280,14 @@ if ! "$ROOT_DIR/scripts/audit_compare.sh" "$TMP_AUDIT_JSON" "$MEASURES_JSON"; th
   echo "[ci_guard] Audit comparator failed." >&2
   exit 1
 fi
+
+echo "[ci_guard] Running tolerance regression checks..."
+TOLERANCE_OUTPUT="$("$ROOT_DIR/scripts/check_tolerances.py" 2>&1)" || {
+  echo "$TOLERANCE_OUTPUT" >&2
+  echo "[ci_guard][FAIL] Tolerance regression failed." >&2
+  exit 1
+}
+printf "%s\n" "$TOLERANCE_OUTPUT"
 
 echo "[ci_guard] All CI checks passed (audit gate)."
 exit 0

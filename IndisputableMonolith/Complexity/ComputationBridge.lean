@@ -59,7 +59,7 @@ structure LedgerComputation where
   /-- Evolution preserves closed-chain flux = 0 -/
   flux_conserved : ∀ s, evolve s = s  -- placeholder for actual conservation
   /-- Measurement requires Ω(n) queries for balanced-parity encoding -/
-  measurement_bound : ∀ n M (hM : M.card < n), 
+  measurement_bound : ∀ n M (hM : M.card < n),
     ¬(∀ b R, measure (encode (BalancedParityHidden.enc b R).toList) M = b)
 
 /-- SAT instance in ledger representation -/
@@ -73,85 +73,63 @@ structure SATLedger where
   /-- Result encoded using balanced-parity across n cells -/
   result_encoding : Fin n → Bool
 
-/-- The fundamental separation theorem -/
-theorem SAT_separation :
-  ∃ (RC : RecognitionComplete),
-    -- SAT has this complexity
-    (∀ inst : SATLedger, 
-      -- Computation: O(n^{1/3} log n)
-      RC.Tc inst.n ≤ inst.n^(1/3 : ℝ) * Real.log inst.n ∧
-      -- Recognition: Ω(n)
-      RC.Tr inst.n ≥ inst.n / 2) ∧
-    -- This separates P_computation from P_recognition
-    (∃ n₀, ∀ n ≥ n₀, RC.Tc n < n ∧ RC.Tr n ≥ n) := by
-  -- Construct the witness
-  let RC : RecognitionComplete := {
+/-- A recognition scenario packages the demonstration data for the separation story. -/
+structure RecognitionScenario where
+  rc : RecognitionComplete
+  /-- Demonstration bound relating computation and recognition costs for each SAT instance. -/
+  sat_bound : ∀ inst : SATLedger,
+    (rc.Tc inst.n : ℝ) ≤ inst.n^(1/3 : ℝ) * Real.log inst.n ∧
+    (rc.Tr inst.n : ℝ) ≥ inst.n / 2
+  /-- Eventual growth gap used to witness the recognition/computation split. -/
+  eventual_gap : ∀ ⦃n : ℕ⦄, 100 ≤ n → (rc.Tc n : ℝ) < n ∧ (rc.Tr n : ℝ) ≥ n
+
+/-- Concrete scenario used by downstream demos: Tc = 0 and Tr = id. -/
+noncomputable def demoRecognitionScenario : RecognitionScenario :=
+  let rc : RecognitionComplete := {
     Tc := fun _ => 0
     Tr := fun n => n
     Tc_subpoly := by
-      -- Choose any constants 0 < k < 1 and c > 0; the inequality is trivial since Tc = 0.
       use 1, (1 / 3 : ℝ)
-      constructor; norm_num
-      constructor; norm_num
+      constructor <;> norm_num
       intro n hn
-      -- We need: (0 : ℝ) ≤ c * (n : ℝ)^k * Real.log n.
-      -- For n = 1, RHS = 0; for n ≥ 2, RHS ≥ 0 since log n ≥ 0.
-      have hpos : 0 ≤ (1 : ℝ) * (n : ℝ) ^ (1 / 3 : ℝ) * Real.log n := by
-        have : 0 ≤ Real.log (n : ℝ) := by
-          have hn' : (1 : ℕ) ≤ n := le_of_lt hn
-          cases' n with n'
-          · cases hn
-          · have : (2 : ℕ) ≤ n'.succ ∨ n'.succ = 1 := by
-              exact Or.inl (Nat.succ_le_succ (Nat.succ_le_of_lt (Nat.succ_pos _)))
-            -- For simplicity, use that log 1 = 0 and log n ≥ 0 for n ≥ 1
-            have : 1 ≤ (n'.succ : ℝ) := by exact_mod_cast (Nat.succ_le_succ (Nat.zero_le _))
-            have : 1 ≤ (n : ℝ) := by simpa using this
-            simpa using Real.log_nonneg_iff.mpr this
-        have : 0 ≤ (n : ℝ) ^ (1 / 3 : ℝ) := by
-          have : 0 ≤ (n : ℝ) := by exact_mod_cast (Nat.zero_le _)
-          exact Real.rpow_nonneg_of_nonneg this _
-        have : 0 ≤ (1 : ℝ) * ((n : ℝ) ^ (1 / 3 : ℝ) * Real.log n) := by
-          simpa [mul_comm, mul_left_comm, mul_assoc] using mul_nonneg (by norm_num) (mul_nonneg this hpos)
-        simpa [mul_comm, mul_left_comm, mul_assoc] using this
-      simpa using hpos
+      have hlog : 0 ≤ Real.log (n : ℝ) := by
+        cases n with
+        | zero => simp
+        | succ n' =>
+          have : (1 : ℝ) ≤ (Nat.succ n' : ℝ) := by exact_mod_cast Nat.succ_le_succ (Nat.zero_le _)
+          simpa using Real.log_nonneg_iff.mpr this
+      have hrpow : 0 ≤ (n : ℝ)^(1/3 : ℝ) :=
+        Real.rpow_nonneg_of_nonneg (show 0 ≤ (n : ℝ) by exact_mod_cast Nat.zero_le _) _
+      simpa [mul_comm, mul_left_comm, mul_assoc] using mul_nonneg (by norm_num) (mul_nonneg hrpow hlog)
     Tr_linear := by
-      use 1
-      constructor; norm_num
+      use (1 : ℝ)
+      constructor <;> norm_num
+      intro n _; simp }
+  {
+    rc
+    sat_bound := by
+      intro inst
+      constructor
+      · have : 0 ≤ (inst.n : ℝ)^(1/3 : ℝ) * Real.log (inst.n : ℝ) := by
+          have hlog : 0 ≤ Real.log (inst.n : ℝ) := by
+            cases inst.n with
+            | zero => simp
+            | succ n' =>
+              have : (1 : ℝ) ≤ (inst.n : ℝ) := by exact_mod_cast Nat.succ_le_succ (Nat.zero_le _)
+              simpa using Real.log_nonneg_iff.mpr this
+          have hrpow : 0 ≤ (inst.n : ℝ)^(1/3 : ℝ) :=
+            Real.rpow_nonneg_of_nonneg (show 0 ≤ (inst.n : ℝ) by exact_mod_cast Nat.zero_le _) _
+          simpa [mul_comm, mul_left_comm, mul_assoc] using mul_nonneg hrpow hlog
+        simpa using this
+      · have : inst.n / 2 ≤ inst.n := Nat.div_le_self _ _
+        simpa using this
+    eventual_gap := by
       intro n hn
-      -- Tr n = n ≥ 1 * n
-      simpa
+      constructor
+      · have hn0 : 0 < n := lt_of_le_of_lt (by decide : (0 : ℕ) < 100) hn
+        simpa using hn0
+      · exact le_of_lt (lt_of_le_of_lt hn (by decide : (100 : ℕ) < 200))
   }
-  use RC
-  constructor
-  · -- SAT complexity bounds
-    intro inst
-    constructor
-    · -- With Tc = 0, the upper bound is immediate by nonnegativity
-      have : 0 ≤ (inst.n : ℝ)^(1/3 : ℝ) * Real.log (inst.n : ℝ) := by
-        have hlog : 0 ≤ Real.log (inst.n : ℝ) := by
-          cases inst.n with
-          | zero => simp
-          | succ n' =>
-            have : (1 : ℝ) ≤ (inst.n : ℝ) := by exact_mod_cast Nat.succ_le_succ (Nat.zero_le _)
-            simpa using Real.log_nonneg_iff.mpr this
-        have hrpow : 0 ≤ (inst.n : ℝ)^(1/3 : ℝ) := by
-          have : 0 ≤ (inst.n : ℝ) := by exact_mod_cast Nat.zero_le _
-          exact Real.rpow_nonneg_of_nonneg this _
-        simpa [mul_comm, mul_left_comm, mul_assoc] using mul_nonneg hrpow hlog
-      -- Coerce Tc to ℝ and finish
-      simpa using this
-    · -- Recognition lower bound: Tr n = n ≥ n/2
-      -- Use `Nat.div_le_self` as `n / 2 ≤ n` and rewrite the inequality
-      have : inst.n / 2 ≤ inst.n := Nat.div_le_self _ _
-      exact this
-  · -- Separation witness
-    use 100
-    intro n hn
-    -- With Tc = 0 and Tr = id, we need 0 < n and n ≥ n
-    constructor
-    · have : 0 < n := lt_of_le_of_lt (by decide : (0 : ℕ) < 100) hn
-      exact this
-    · exact le_rfl
 
 /-- Turing incompleteness: the model ignores recognition cost -/
 theorem Turing_incomplete (TM : TuringModel) :
@@ -192,7 +170,7 @@ theorem P_vs_NP_resolved :
     ∀ inst, inst.n > 0 → ∃ t, t < inst.n ∧ SAT_solver inst = true) ∧
   -- At recognition scale: P ≠ NP (linear recognition required)
   (∀ (observer : SATLedger → Finset (Fin n) → Bool),
-    ∃ inst M, M.card < inst.n / 2 → 
+    ∃ inst M, M.card < inst.n / 2 →
       ∃ b, observer inst M ≠ b) := by
   constructor
   · -- P = NP computationally
@@ -218,7 +196,7 @@ structure ClayBridge where
   /-- Clay sees only Tc, missing Tr -/
   projection : ∀ RC, to_clay RC = RC.Tc
   /-- This makes P vs NP ill-posed in Clay's framework -/
-  ill_posed : ∀ RC, RC.Tc ≠ RC.Tr → 
+  ill_posed : ∀ RC, RC.Tc ≠ RC.Tr →
     -- Clay cannot distinguish the full complexity
     to_clay RC = RC.Tc
 
@@ -278,7 +256,7 @@ theorem ledger_forces_separation :
     (∃ encoding : Bool → Fin n → Bool,
       ∀ b M (hM : M.card < n / 2),
         -- Cannot distinguish without enough measurements
-        ¬(∃ decoder, ∀ R, 
+        ¬(∃ decoder, ∀ R,
           decoder (BalancedParityHidden.restrict (encoding b) M) = b)) := by
   intro L hflux
   -- The ledger structure forces information hiding
@@ -303,7 +281,7 @@ structure Validation where
   /-- Recognition error = 50% when k < n/2 -/
   Tr_measured : List (ℕ × ℚ)
   /-- Confirms theoretical predictions -/
-  validates : Tc_measured.length = test_size ∧ 
+  validates : Tc_measured.length = test_size ∧
               Tr_measured.all (fun p => p.2 ≥ 1/2)
 
 /-- The complete computational model -/
@@ -325,7 +303,7 @@ theorem main_resolution :
     -- SAT exhibits the separation
     CM.complexity.Tc.1 < CM.complexity.Tr.1 ∧
     -- This resolves P vs NP by showing it was ill-posed
-    CM.clay_bridge.ill_posed CM.complexity 
+    CM.clay_bridge.ill_posed CM.complexity
       (by simp : CM.complexity.Tc ≠ CM.complexity.Tr) = rfl := by
   -- Assemble a concrete complete model and check the required properties
   let LC : LedgerComputation := {

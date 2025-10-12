@@ -7,6 +7,7 @@ Demo: Arrow of Time from Cost Ascent
 -/
 
 namespace IndisputableMonolith
+namespace Demos
 namespace Physics
 
 #check arrow_holds
@@ -14,4 +15,5 @@ namespace Physics
 #eval "Arrow theorem elaborated: OK (irreversible from microrev + monotone)"
 
 end Physics
+end Demos
 end IndisputableMonolith

@@ -1,8 +1,6 @@
 import Mathlib
 import IndisputableMonolith.Constants
 
-open IndisputableMonolith.Constants
-
 namespace IndisputableMonolith
 namespace Constants
 

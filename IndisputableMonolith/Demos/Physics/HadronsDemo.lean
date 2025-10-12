@@ -7,6 +7,7 @@ Demo: Hadron Masses and Regge Trajectories
 -/
 
 namespace IndisputableMonolith
+namespace Demos
 namespace Physics
 
 #check regge_holds  -- Confirms theorem
@@ -18,4 +19,5 @@ def rho_hadron : Hadron := ⟨RSBridge.Fermion.u, RSBridge.Fermion.d, 1⟩  -- u
 #eval s!"PDG pion Regge: slope ≈0.9 GeV^{-2}; RS matches via φ^{2r} tier (falsifier: non-linear m^2)"
 
 end Physics
+end Demos
 end IndisputableMonolith

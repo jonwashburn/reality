@@ -7,6 +7,7 @@ Demo: CKM Jarlskog from φ-Rungs
 -/
 
 namespace IndisputableMonolith
+namespace Demos
 namespace Physics
 
 #check jarlskog_holds  -- Confirms theorem (pos, approx match)
@@ -20,4 +21,5 @@ namespace Physics
 #eval s!"Bands check: {jarlskog} ∈ [{pdg_j - 0.15e-5}, {pdg_j + 0.15e-5}] = {jarlskog ∈ [pdg_j - 0.15e-5, pdg_j + 0.15e-5]}"
 
 end Physics
+end Demos
 end IndisputableMonolith

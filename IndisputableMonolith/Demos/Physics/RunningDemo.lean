@@ -7,6 +7,7 @@ Demo: Running-Coupling Crossovers
 -/
 
 namespace IndisputableMonolith
+namespace Demos
 namespace Physics
 
 #check crossover_holds
@@ -20,4 +21,5 @@ def b_quark : RSBridge.Fermion := RSBridge.Fermion.b  -- rung=21
 #eval s!"Empirical: PDG m_c≈1.27 GeV, RS pins via E_coh φ^r (falsifier: mismatch > bands)"
 
 end Physics
+end Demos
 end IndisputableMonolith

@@ -7,6 +7,7 @@ Demo: Black-Hole Entropy and Temperature
 -/
 
 namespace IndisputableMonolith
+namespace Demos
 namespace Physics
 
 #check bh_holds
@@ -17,4 +18,5 @@ namespace Physics
 #eval s!"Hawking T for M_sun = {bh_temperature solar_mass} K (matches ~6e-8 K)"
 
 end Physics
+end Demos
 end IndisputableMonolith

@@ -7,6 +7,7 @@ Demo: Contextuality Bounds
 -/
 
 namespace IndisputableMonolith
+namespace Demos
 namespace Physics
 
 #check context_bound
@@ -14,4 +15,5 @@ namespace Physics
 #eval "CHSH bound: ≤2 (Tsirelson); RS ledger convexity enforces: OK"
 
 end Physics
+end Demos
 end IndisputableMonolith

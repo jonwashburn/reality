@@ -1,0 +1,100 @@
+{
+  "rules": [
+    {
+      "category": "Sealed",
+      "prefixes": [
+        "IndisputableMonolith/Relativity/"
+      ]
+    },
+    {
+      "category": "Demo",
+      "prefixes": [
+        "IndisputableMonolith/Demos/"
+      ],
+      "suffixes": [
+        "Demo.lean",
+        ".eval.lean"
+      ],
+      "contains": [
+        "/Demo/"
+      ]
+    },
+    {
+      "category": "Theory",
+      "prefixes": [
+        "IndisputableMonolith/Bridge/",
+        "IndisputableMonolith/Cost/",
+        "IndisputableMonolith/Gap45/",
+        "IndisputableMonolith/LightCone/",
+        "IndisputableMonolith/Core/",
+        "IndisputableMonolith/Verification/",
+        "IndisputableMonolith/Recognition/",
+        "IndisputableMonolith/URCAdapters/",
+        "IndisputableMonolith/URCGenerators/",
+        "IndisputableMonolith/TruthCore/",
+        "IndisputableMonolith/Streams/"
+      ],
+      "files": [
+        "IndisputableMonolith/Bridge.lean",
+        "IndisputableMonolith/Cost.lean",
+        "IndisputableMonolith/Gap45.lean",
+        "IndisputableMonolith/LightCone.lean",
+        "IndisputableMonolith/Core.lean",
+        "IndisputableMonolith/Manifest.lean",
+        "IndisputableMonolith/Verification.lean",
+        "IndisputableMonolith/Recognition.lean",
+        "IndisputableMonolith/URCAdapters.lean",
+        "IndisputableMonolith/URCGenerators.lean",
+        "IndisputableMonolith/TruthCore.lean",
+        "IndisputableMonolith/Streams.lean",
+        "IndisputableMonolith/OKMini.lean",
+        "IndisputableMonolith/Ablation.lean",
+        "IndisputableMonolith/Core.lean"
+      ]
+    },
+    {
+      "category": "Model",
+      "prefixes": [
+        "IndisputableMonolith/Complexity/",
+        "IndisputableMonolith/Cosmology/",
+        "IndisputableMonolith/Masses/",
+        "IndisputableMonolith/PhiSupport/",
+        "IndisputableMonolith/Gravity/",
+        "IndisputableMonolith/Measurement/",
+        "IndisputableMonolith/Ethics/",
+        "IndisputableMonolith/Information/",
+        "IndisputableMonolith/Patterns/",
+        "IndisputableMonolith/Potential/",
+        "IndisputableMonolith/Quantum/",
+        "IndisputableMonolith/Streams/",
+        "IndisputableMonolith/Chain.lean"
+      ],
+      "files": [
+        "IndisputableMonolith/Complexity/ComputationBridge.lean",
+        "IndisputableMonolith/Complexity/RSVC.lean"
+      ]
+    },
+    {
+      "category": "Physics",
+      "prefixes": [
+        "IndisputableMonolith/Physics/"
+      ]
+    },
+    {
+      "category": "Theory",
+      "prefixes": [
+        "CI/",
+        "URC/"
+      ]
+    }
+  ],
+  "default": "Model",
+  "allowed": [
+    "Theory",
+    "Model",
+    "Demo",
+    "Sealed",
+    "Physics"
+  ]
+}
+
