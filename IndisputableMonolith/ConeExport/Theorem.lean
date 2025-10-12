@@ -39,17 +39,17 @@ theorem cone_bound_export
 end
 
 /-- Cone entropy bound: Entropy in a cone is bounded by area over 4 λ_rec².
-    
+
     This is currently an axiom (typeclass assumption). A full proof would require:
     - Voxel counting: number of voxels ~ area / λ_rec²
     - Entropy per voxel: ~ ln φ from ledger structure
     - Holographic principle: caps total at area/(4λ_rec²)
-    
+
     See docs/Assumptions.md for the status of this assumption.
 -/
 theorem cone_entropy_bound {α : Type _} (cone : LightCone α) (area : ℝ)
   [ConeEntropyFacts] :
-  entropy cone ≤ area / (4 * λ_rec^2) := 
+  entropy cone ≤ area / (4 * λ_rec^2) :=
   ConeEntropyFacts.cone_entropy_bound cone area
 
 end ConeExport
