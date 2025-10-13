@@ -25,7 +25,6 @@ and proves that it satisfies all the requirements for the exclusivity theorem.
 
 We show that Recognition Science itself is a valid physics framework satisfying:
 - `[NonStatic]`: Recognition events cause state transitions
-- `[MeasureReflectsChange]`: Bridge evaluation distinguishes different states
 - `[SpecNontrivial]`: Ledger is inhabited
 - `HasZeroParameters`: Algorithmically specified
 - `DerivesObservables`: Predicts α, masses, constants via UD_explicit
