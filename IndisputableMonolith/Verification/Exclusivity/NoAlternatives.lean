@@ -389,7 +389,7 @@ theorem no_alternative_frameworks (F : PhysicsFramework)
     simp [levels, Int.natAbs_natCast, hn, hd]
 
   -- Step 2: Get ledger structure ✅ PROVEN (LedgerNecessity 100%)
-  have hLedger : ∃ (L : RH.RS.Ledger), Nonempty (F.StateSpace ≃ L.Carrier) := by
+  have hLedger : ∃ (L : RH.RS.Ledger), Nonempty (F.StateSpace ≃ L.Carrier) ∧ Countable L.Carrier := by
     -- Convert discrete structure to event system
     obtain ⟨D, ι, hSurj, hCount⟩ := hDiscrete
 
@@ -429,7 +429,7 @@ theorem no_alternative_frameworks (F : PhysicsFramework)
       -- ✅ PROVEN using LedgerNecessity.lean
 
     -- Apply main theorem
-    exact Necessity.LedgerNecessity.discrete_forces_ledger E ev hFlow
+    exact Necessity.LedgerNecessity.discrete_forces_ledger_countable E ev hFlow
     -- ✅ FULLY PROVEN using LedgerNecessity.lean (100% complete, 6 axioms)
 
   -- Step 3: Get recognition structure ✅ PROVEN!
@@ -444,7 +444,7 @@ theorem no_alternative_frameworks (F : PhysicsFramework)
     -- ✅ PROVEN using PhiNecessity.lean (95% complete, 5 justified axioms)
 
   -- Extract components from proven necessities
-  obtain ⟨L, hL_equiv⟩ := hLedger
+  obtain ⟨L, hL_equiv, hL_count⟩ := hLedger
   obtain ⟨φ, hφ_eq, hφ_sq, hφ_pos⟩ := hPhi
 
   -- ========================================
@@ -660,9 +660,7 @@ treating the theorem as assumption‑free.
 /-- Consolidated assumptions required by the `no_alternative_frameworks` flow. -/
 structure NoAlternativesAssumptions
   (F : Framework.PhysicsFramework) : Prop where
-  inhabited : Inhabited F.StateSpace
   nonStatic : Framework.NonStatic F
-  specNontrivial : Necessity.DiscreteNecessity.SpecNontrivial F.StateSpace
   zeroParams : Framework.HasZeroParameters F
   derives : Framework.DerivesObservables F
   measureReflects : MeasureReflectsChange F
@@ -679,9 +677,14 @@ theorem no_alternative_frameworks_from
     (equiv_framework : Framework.PhysicsFramework),
     Framework.FrameworkEquiv F equiv_framework := by
   -- Bring instances/hypotheses into scope from the bundle
-  let _ : Inhabited F.StateSpace := A.inhabited
+  -- Inhabited and SpecNontrivial are derived from the framework's own initial state
+  have hNE : Nonempty F.StateSpace := F.hasInitialState
+  classical
+  let default : F.StateSpace := Classical.choice hNE
+  let _ : Inhabited F.StateSpace := ⟨default⟩
+  let _ : Necessity.DiscreteNecessity.SpecNontrivial F.StateSpace :=
+    ⟨F.hasInitialState⟩
   let _ : Framework.NonStatic F := A.nonStatic
-  let _ : Necessity.DiscreteNecessity.SpecNontrivial F.StateSpace := A.specNontrivial
   let _ : MeasureReflectsChange F := A.measureReflects
   let _ : Necessity.RecognitionDerivation AssumptionPack F := A.recognition
   -- Reuse the original theorem with the surfaced assumptions

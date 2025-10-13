@@ -97,18 +97,7 @@ theorem distinction_requires_comparison
       simp [compare, hDiff]
   }
 
-/-! ### Assumptions for internal comparison (classical/computability surface)
-
-We make explicit the (previously implicit) classical and computability gates
-that are used when upgrading a raw comparison into an internal recognition act.
--/
-
-/-- Consolidated assumptions used to internalize comparison into recognition. -/
-structure ComparisonAssumptions (StateSpace : Type) (obs : Observable StateSpace) : Prop where
-  lawOfExcludedMiddle : True
-  computableObservable : True
-
-/-! ### Comparison Without External Reference is Recognition -/
+/‑! ### Comparison Without External Reference is Recognition -/
 
 /-- In a zero-parameter framework, comparison cannot use external reference.
     This forces internal/self-recognition.
@@ -192,7 +181,6 @@ theorem zero_params_forces_internal_comparison
   {StateSpace : Type}
   {obs : Observable StateSpace}
   (comp : ComparisonMechanism StateSpace obs)
-  (A : ComparisonAssumptions StateSpace obs)
   (_hZeroParam : True)
   : ∃ intComp : InternalComparison StateSpace obs, intComp.toComparisonMechanism = comp := by
   -- Without external parameters, comparison must use only internal structure
@@ -207,7 +195,6 @@ theorem zero_params_forces_internal_comparison
     no_external_ref := by
       intro s₁ s₂
       -- The comparison function exists and equals itself
-      -- (exposes reliance on classical gates summarized by A)
       use comp.compare
   }
 
@@ -217,7 +204,6 @@ theorem observables_require_recognition
   [Inhabited StateSpace]  -- Need at least one state
   (obs : Observable StateSpace)
   (hNonTrivial : ∃ s₁ s₂, obs.value s₁ ≠ obs.value s₂)
-  (assm : ComparisonAssumptions StateSpace obs)
   (hZeroParam : True) :
   ∃ (Recognizer Recognized : Type),
     Nonempty (Recognition.Recognize Recognizer Recognized) := by
@@ -228,7 +214,7 @@ theorem observables_require_recognition
   obtain ⟨comp, _⟩ := distinction_requires_comparison_capability obs hDist
 
   -- Step 3: Zero parameters forces internal comparison
-  obtain ⟨intComp, _⟩ := zero_params_forces_internal_comparison comp assm hZeroParam
+  obtain ⟨intComp, _⟩ := zero_params_forces_internal_comparison comp hZeroParam
 
   -- Step 4: Internal comparison IS recognition
   exact ComparisonIsRecognition intComp
@@ -245,9 +231,7 @@ theorem RS_recognition_is_necessary
   ∃ (Recognizer Recognized : Type),
     Nonempty (Recognition.Recognize Recognizer Recognized) := by
   obtain ⟨obs, hNonTrivial⟩ := hObs
-  -- Provide a default assumption bundle; callers may substitute a stronger one
-  have A : ComparisonAssumptions Framework obs := { lawOfExcludedMiddle := trivial, computableObservable := trivial }
-  exact observables_require_recognition obs hNonTrivial A trivial
+  exact observables_require_recognition obs hNonTrivial trivial
 
 /-! ### Consequences -/
 
@@ -264,8 +248,7 @@ theorem no_observables_without_recognition
   -- If observables take different values, we need recognition
   haveI : Inhabited StateSpace := ⟨s₁⟩
   have : ∃ s₁ s₂, obs.value s₁ ≠ obs.value s₂ := ⟨s₁, s₂, hDiff⟩
-  have A : ComparisonAssumptions StateSpace obs := { lawOfExcludedMiddle := trivial, computableObservable := trivial }
-  obtain ⟨R₁, R₂, hRecog⟩ := observables_require_recognition obs this A trivial
+  obtain ⟨R₁, R₂, hRecog⟩ := observables_require_recognition obs this trivial
   -- But this contradicts the assumption of no recognition
   exact hNoRecog R₁ R₂ hRecog
 

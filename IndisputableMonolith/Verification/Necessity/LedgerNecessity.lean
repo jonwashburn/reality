@@ -140,6 +140,25 @@ theorem graph_with_balance_is_ledger
   refine ⟨⟨E.Event⟩, ?_⟩
   exact ⟨Equiv.refl E.Event⟩
 
+/-- Ledger obtained from a discrete event system inherits countability from the events. -/
+theorem graph_with_balance_ledger_countable
+  (E : DiscreteEventSystem)
+  (ev : EventEvolution E)
+  (f : Flow E ev)
+  (hCons : ConservationLaw E ev f) :
+  ∃ (L : RH.RS.Ledger), Nonempty (E.Event ≃ L.Carrier) ∧ Countable L.Carrier := by
+  refine ⟨⟨E.Event⟩, ?_, ?_⟩
+  · exact ⟨Equiv.refl E.Event⟩
+  · simpa using E.countable
+
+theorem discrete_forces_ledger_countable
+  (E : DiscreteEventSystem)
+  (ev : EventEvolution E)
+  (hFlow : ∃ f : Flow E ev, ∃ hCons : ConservationLaw E ev f, True) :
+  ∃ (L : RH.RS.Ledger), Nonempty (E.Event ≃ L.Carrier) ∧ Countable L.Carrier := by
+  obtain ⟨f, hCons, _⟩ := hFlow
+  exact graph_with_balance_ledger_countable E ev f hCons
+
 /-! ### Main Necessity Theorem -/
 
 /-- **Main Theorem**: Discrete events with conservation laws force a ledger structure.

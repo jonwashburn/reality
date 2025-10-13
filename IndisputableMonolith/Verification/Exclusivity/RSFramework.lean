@@ -107,7 +107,25 @@ theorem RS_is_unique_and_self_describing :
   exact zpf_isomorphic F G
 
 theorem RS_HasZeroParameters (φ : ℝ) (F : ZeroParamFramework φ) :
-  HasZeroParameters (toPhysicsFramework φ F) := has_zero_params_from_ledger φ F
+  HasZeroParameters (toPhysicsFramework φ F) := by
+  -- The units quotient carrier is a one-point space
+  have hOne : OnePoint (UnitsQuotCarrier F) := zpf_unitsQuot_onePoint F
+  have hNE : Nonempty (UnitsQuotCarrier F) := zpf_unitsQuot_nonempty F
+  classical
+  -- Choose a distinguished representative
+  let d : UnitsQuotCarrier F := Classical.choice hNE
+  -- Provide a trivial algorithmic specification that always decodes to d
+  let spec : Framework.AlgorithmicSpec := {
+    description := []
+    generates := fun _n => some ([] : List Bool)
+  }
+  let decode : List Bool → Option (UnitsQuotCarrier F) := fun _ => some d
+  -- Show every state is enumerated and decoded
+  refine ⟨spec, decode, ?_⟩
+  intro s
+  refine ⟨0, ([] : List Bool), by rfl, ?_⟩
+  -- In a one-point space, d = s
+  simpa [decode] using congrArg some (hOne d s)
 
 theorem RS_HasSelfSimilarity (φ : ℝ) (F : ZeroParamFramework φ) :
   HasSelfSimilarity (toPhysicsFramework φ F).StateSpace :=

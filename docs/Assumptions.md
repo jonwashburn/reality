@@ -62,11 +62,10 @@ The index is referenced by Phase 3 of the robustness plan. See also the sealed r
 - `IndisputableMonolith/Verification/Exclusivity/NoAlternatives.lean`
   - `NoAlternativesAssumptions`: bundles the prerequisites that feed the `no_alternative_frameworks` integration (inhabited state space, non-static evolution, zero parameters, recognition derivation, measure reflects change, self-similarity).
   - Callers should use `no_alternative_frameworks_from` and supply this record explicitly.
-- `IndisputableMonolith/Verification/ZeroParamsNecessity.lean`
-  - `RecognitionEventsCountable`: assumption that ledger events admit a countable structure.
-  - `BoundedCapacity`: assumption providing an injective encoding of ledger events into a finite set; required for `ledger_finite` and `has_zero_params_from_ledger`.
 - `IndisputableMonolith/Verification/Necessity/RecognitionNecessity.lean`
-  - `ComparisonAssumptions`: summarises the classical/decidability gates used to internalize comparison (`lawOfExcludedMiddle`, `computableObservable`). Needed when invoking `observables_require_recognition`.
+  - (None) `observables_require_recognition` now derives internal comparison directly from the observable data; no surfaced assumption remains.
+- `IndisputableMonolith/Verification/ZeroParamsNecessity.lean`
+  - `BoundedCapacity` (legacy): finite encoding assumption; no longer required for RS zero-parameters in `RSFramework`.
 
 ## Pending
 

@@ -12,10 +12,6 @@ depends on external analytical or information‑theoretic inputs, we expose them
 as hypothesis classes rather than returning unrealistic constructions.
 -/
 
-/-- Assumption: recognition events are countable for the given ledger. -/
-class RecognitionEventsCountable (L : RH.RS.Ledger) : Prop where
-  countable : Countable L.Carrier
-
 /-- Assumption: there exists an injective coding into some finite set `Fin n`. -/
 class BoundedCapacity (L : RH.RS.Ledger) : Prop where
   bound : ∃ n : ℕ, ∃ f : L.Carrier → Fin n, Function.Injective f
@@ -26,7 +22,7 @@ theorem ledger_finite (L : RH.RS.Ledger)
   rcases BoundedCapacity.bound (L:=L) with ⟨n, f, hf⟩
   exact Finite.of_injective f hf
 
-/-- HasZeroParameters from ledger finiteness (under honest assumptions). -/
+/- Legacy helper retained for compatibility (no longer used by RS_HasZeroParameters). -/
 theorem has_zero_params_from_ledger (φ : ℝ) (F : RH.RS.ZeroParamFramework φ)
   [BoundedCapacity F.L] :
   Exclusivity.Framework.HasZeroParameters (Exclusivity.RSFramework.toPhysicsFramework φ F) := by

@@ -2,7 +2,7 @@
 
 ## Core Proof Footprint
 
-- Recognition → Exclusivity → Necessity (active spine) – **proved**, no `sorry`, no custom axioms. Downstream modules consume the surfaced assumption bundles (`NoAlternativesAssumptions`, `RecognitionEventsCountable`, `BoundedCapacity`, `ComparisonAssumptions`).
+- Recognition → Exclusivity → Necessity (active spine) – **proved**, no `sorry`, no custom axioms. Downstream modules consume the surfaced assumption bundles (`NoAlternativesAssumptions`).
 - Gap45 arithmetic, Cost/Jensen calculus, Bridge/LightCone kinematics – **proved**, mathlib-compatible.
 
 ## Robustness Framework
