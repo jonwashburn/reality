@@ -60,7 +60,7 @@ The index is referenced by Phase 3 of the robustness plan. See also the sealed r
 ## Recognition / Exclusivity Bundles
 
 - `IndisputableMonolith/Verification/Exclusivity/NoAlternatives.lean`
-  - `NoAlternativesAssumptions`: bundles the prerequisites that feed the `no_alternative_frameworks` integration (non-static evolution, zero parameters, recognition derivation, self-similarity).
+  - `NoAlternativesAssumptions`: bundles the prerequisites that feed the `no_alternative_frameworks` integration (non-static evolution, zero parameters, self-similarity, derives observables). Recognition and sensitivity are now derived internally.
   - Callers should use `no_alternative_frameworks_from` and supply this record explicitly.
 - `IndisputableMonolith/Verification/Necessity/RecognitionNecessity.lean`
   - (None) `observables_require_recognition` now derives internal comparison directly from the observable data; no surfaced assumption remains.

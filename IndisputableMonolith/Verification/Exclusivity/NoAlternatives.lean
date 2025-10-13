@@ -647,9 +647,7 @@ structure NoAlternativesAssumptions
   nonStatic : Framework.NonStatic F
   zeroParams : Framework.HasZeroParameters F
   derives : Framework.DerivesObservables F
-  measureReflects : MeasureReflectsChange F
   selfSimilarity : Necessity.PhiNecessity.HasSelfSimilarity F.StateSpace
-  recognition : Necessity.RecognitionDerivation AssumptionPack F
 
 /-- Wrapper: derive the main no‑alternatives conclusion under the explicit
 assumptions bundle. This does not strengthen the original theorem; it simply
@@ -669,8 +667,7 @@ theorem no_alternative_frameworks_from
   let _ : Necessity.DiscreteNecessity.SpecNontrivial F.StateSpace :=
     ⟨F.hasInitialState⟩
   let _ : Framework.NonStatic F := A.nonStatic
-  let _ : MeasureReflectsChange F := A.measureReflects
-  let _ : Necessity.RecognitionDerivation AssumptionPack F := A.recognition
+  -- sensitivity and recognition are derived internally; no external fields required
   -- Reuse the original theorem with the surfaced assumptions
   exact no_alternative_frameworks (F:=F)
     (hZero:=A.zeroParams) (hObs:=A.derives) (hSelfSim:=A.selfSimilarity)

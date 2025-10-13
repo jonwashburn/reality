@@ -132,8 +132,7 @@ def rs_assumptions (φ : ℝ) (F : ZeroParamFramework φ) :
   { nonStatic := RS_NonStatic φ F
   , zeroParams := RS_HasZeroParameters φ F
   , derives := RS_DerivesObservables φ F
-  , selfSimilarity := RS_HasSelfSimilarity φ F
-  , recognition := Necessity.recognition_derivation_rs φ F }
+  , selfSimilarity := RS_HasSelfSimilarity φ F }
 
 end Exclusivity
 end Verification
