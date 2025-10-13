@@ -235,21 +235,6 @@ theorem observableFromDerivation_preserves_distinction (F : PhysicsFramework) (h
   have hinj := Classical.choose_spec (observable_encoding F)
   exact fun hEq => h (hinj hEq)
 
-/-- If measure reflects changes, then observableFromDerivation is sensitive. -/
-class MeasureReflectsChange (F : PhysicsFramework) : Prop where
-  reflects : ∀ s : F.StateSpace, F.evolve s ≠ s → F.measure (F.evolve s) ≠ F.measure s
-
-/-- Generic instance: if measure reflects changes, observableFromDerivation is sensitive. -/
-instance observableFromDerivation_sensitive (F : PhysicsFramework) (hObs : DerivesObservables F)
-  [MeasureReflectsChange F] :
-  ObservableSensitive F (observableFromDerivation F hObs) where
-  detects := by
-    intro s hchg
-    simp [observableFromDerivation]
-    have hmeas := MeasureReflectsChange.reflects s hchg
-    have hinj := Classical.choose_spec (observable_encoding F)
-    exact hinj.ne hmeas
-
 /-- Observable extraction in a zero-parameter framework requires recognition events.
 
     **PROVEN** using RecognitionNecessity.lean (concrete proof from observables_require_recognition)
@@ -261,7 +246,6 @@ theorem observables_require_recognition (F : PhysicsFramework)
   [Inhabited F.StateSpace]
   [NonStatic F]
   (hObs : DerivesObservables F)
-  [MeasureReflectsChange F]
   (hZero : HasZeroParameters F) :
   ∃ (recognizer : Type) (recognized : Type),
     Nonempty (Recognition.Recognize recognizer recognized) := by

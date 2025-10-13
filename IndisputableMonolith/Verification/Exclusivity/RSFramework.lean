@@ -62,18 +62,6 @@ instance RS_SpecNontrivial (φ : ℝ) (F : ZeroParamFramework φ) :
 
 /-! ### Instance: MeasureReflectsChange for RS -/
 
-/-- RS measure (constant α) trivially reflects changes in a one-point space.
-
-Since evolve = id in the one-point quotient space, the premise `evolve s ≠ s` is never
-satisfied, making the implication vacuously true. -/
-instance RS_MeasureReflectsChange (φ : ℝ) (F : ZeroParamFramework φ) :
-  MeasureReflectsChange (toPhysicsFramework φ F) where
-  reflects := by
-    intro s hchg
-    -- In a one-point space with evolve = id, we have evolve s = s for all s
-    simp [toPhysicsFramework] at hchg
-    -- The premise is false (s ≠ s), so the implication is vacuous
-
 /-! ### DerivesObservables for RS -/
 
 /-- RS derives observables: UD_explicit provides α, mass ratios, etc.
@@ -141,12 +129,9 @@ theorem RS_NonStatic (φ : ℝ) (F : ZeroParamFramework φ) :
 /-- Pack the surfaced assumption bundle for RS at scale `φ`. -/
 def rs_assumptions (φ : ℝ) (F : ZeroParamFramework φ) :
   NoAlternativesAssumptions (toPhysicsFramework φ F) :=
-  { inhabited := zpf_unitsQuot_nonempty F
-  , nonStatic := RS_NonStatic φ F
-  , specNontrivial := RS_SpecNontrivial φ F
+  { nonStatic := RS_NonStatic φ F
   , zeroParams := RS_HasZeroParameters φ F
   , derives := RS_DerivesObservables φ F
-  , measureReflects := RS_MeasureReflectsChange φ F
   , selfSimilarity := RS_HasSelfSimilarity φ F
   , recognition := Necessity.recognition_derivation_rs φ F }
 
