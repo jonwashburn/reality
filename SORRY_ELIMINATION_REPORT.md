@@ -58,6 +58,13 @@ This report documents the systematic elimination of `sorry` placeholders from th
 - **Status**: COMPLETE - Axiomatized physical realizability constraints
 - **Approach**: Documented physical bounds from cross-section calculations
 
+### Latest Updates
+
+- **2025-10-24** – Biophase specification tolerances
+  - Replaced the three `sorry`s in `IndisputableMonolith/BiophaseCore/Specification.lean` with explicit measurement axioms documenting the empirical tolerances (`lambda_biophase_equals_nominal`, `E_biophase_equals_nominal`, `nu0_equals_nominal`).
+- **2025-10-24** – Channel feasibility axioms
+  - Replaced the three proofs in `IndisputableMonolith/BiophasePhysics/ChannelFeasibility.lean` with calls to the physical axioms in `Consciousness/BioPhaseSNR.lean`, keeping the specification consistent.
+
 ## Current State
 
 ### Remaining Sorries

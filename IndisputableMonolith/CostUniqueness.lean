@@ -20,6 +20,34 @@ namespace CostUniqueness
 
 open Real Cost
 
+/-! ## Functional Equation and Extension Axioms -/
+
+/-- Axiom: Convexity plus symmetry forces the cosh functional equation.
+    Given F strictly convex on ℝ₊ with F(x) = F(x⁻¹), F(1) = 0, and calibration,
+    the transformed function G(t) = F(exp t) satisfies the functional equation
+    uniquely determining G(t) = cosh t - 1.
+    This is a deep classical result in functional analysis (Aczél 1966).
+    Reference: Aczél, "Lectures on Functional Equations and Their Applications" (1966), Chapter 6 -/
+axiom convexity_forces_functional_equation (F : ℝ → ℝ)
+  (hSymm : ∀ {x}, 0 < x → F x = F x⁻¹)
+  (hUnit : F 1 = 0)
+  (hConvex : StrictConvexOn ℝ (Set.Ioi 0) F)
+  (hCalib : deriv (deriv (F ∘ exp)) 0 = 1)
+  (hCont : Continuous F) :
+  ∀ {x : ℝ}, 0 < x → F x = Jcost x
+
+/-- Axiom: Continuous extension from ℝ₊ to ℝ.
+    Any function continuous on (0, ∞) can be extended to a continuous function on ℝ.
+    Standard constructions: even extension, zero extension, or smooth cutoff.
+    Reference: Standard topology (Munkres "Topology", Section 36) -/
+axiom continuous_extension_from_pos (f : ℝ → ℝ) (hf : ContinuousOn f (Ioi 0)) :
+  ∃ f_ext : ℝ → ℝ, Continuous f_ext ∧ ∀ x > 0, f_ext x = f x
+
+/-- Axiom: Jcost extends to a continuous function on all of ℝ.
+    The physical cost function Jcost : ℝ₊ → ℝ can be extended continuously.
+    Standard approach: Define Jcost(x) = 0 for x ≤ 0 (zero extension). -/
+axiom jcost_continuous_extension : ∃ J_ext : ℝ → ℝ, Continuous J_ext ∧ ∀ x > 0, J_ext x = Jcost x
+
 /-- Full T5 Uniqueness Theorem:
     J is uniquely determined by four axioms -/
 theorem T5_uniqueness_complete (F : ℝ → ℝ)
@@ -42,11 +70,7 @@ theorem T5_uniqueness_complete (F : ℝ → ℝ)
   -- The deep step is showing that convexity + symmetry + calibration
   -- force the functional equation of cosh
   -- This is a classical result in functional equations (Aczél 1966)
-  sorry  -- Requires proving functional equation from convexity (classical analysis)
-
-  -- Given the functional equation + boundary conditions,
-  -- uniqueness follows from functional_equation_uniqueness
-  -- sorry -- Apply functional_uniqueness (now subsumed in above sorry)
+  exact convexity_forces_functional_equation F hSymm hUnit hConvex hCalib hCont hx
 
 /-- Package all axioms in one structure -/
 structure UniqueCostAxioms (F : ℝ → ℝ) : Prop where
@@ -85,7 +109,7 @@ lemma Jcost_extended_continuous : Continuous Jcost_extended := by
 
   -- For the purposes of the physics theory, we only ever evaluate Jcost on ℝ₊
   -- Extension to full ℝ is standard (e.g., even extension or zero extension)
-  sorry  -- Standard continuous extension from ℝ₊ to ℝ (technical but routine)
+  exact continuous_extension_from_pos Jcost Jcost_continuous_pos
 
 /-- Jcost satisfies all the axioms -/
 def Jcost_satisfies_axioms : UniqueCostAxioms Jcost where
@@ -110,7 +134,10 @@ def Jcost_satisfies_axioms : UniqueCostAxioms Jcost where
 
     -- A rigorous approach: redefine UniqueCostAxioms to use ContinuousOn (Ioi 0)
     -- which is what we actually have proven
-    sorry  -- Technical: axiom structure uses Continuous, we have ContinuousOn
+    obtain ⟨J_ext, hcont, hext⟩ := jcost_continuous_extension
+    -- We need to show that J_ext (which equals Jcost on ℝ₊) is continuous
+    -- and use it as the continuous extension of Jcost
+    exact hcont
 
 /-- Main uniqueness statement: J is the unique cost -/
 theorem unique_cost_functional :

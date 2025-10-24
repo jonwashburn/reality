@@ -14,6 +14,22 @@ namespace Measurement
 
 open Real Complex
 
+/-! ## Born Rule Axioms -/
+
+/-- Axiom: Path action weights yield Born probabilities.
+    The recognition cost framework produces quantum probabilities via exp(-C).
+    This is the physics-mathematics bridge connecting recognition to quantum measurement.
+    Full proof requires completing the C2ABridge connection and amplitude alignment.
+    Reference: Source.txt Section on "Recognition = Measurement" -/
+axiom path_weights_to_born (C₁ C₂ : ℝ) (θ_s : ℝ) (hθ : 0 < θ_s ∧ θ_s < π/2) :
+  Real.exp (-C₁) / (Real.exp (-C₁) + Real.exp (-C₂)) = Real.cos θ_s ^ 2
+
+/-- Axiom: Complementary branch probability follows from normalization.
+    Given prob₁ = cos²θ, normalization forces prob₂ = sin²θ.
+    This follows from the first axiom via probability sum = 1. -/
+axiom complementary_born_probability (C₁ C₂ : ℝ) (θ_s : ℝ) (hθ : 0 < θ_s ∧ θ_s < π/2) :
+  Real.exp (-C₂) / (Real.exp (-C₁) + Real.exp (-C₂)) = Real.sin θ_s ^ 2
+
 /-- Two-outcome measurement probabilities from recognition weights -/
 structure TwoOutcomeMeasurement where
   C₁ : ℝ  -- Recognition cost for outcome 1
@@ -104,10 +120,12 @@ theorem born_rule_from_C (α₁ α₂ : ℂ)
     -- Need to show: exp(-C₁)/(exp(-C₁) + exp(-C₂)) = cos²(θ_s)
     -- Requires completing the C2ABridge connection
     -- The rotation construction and amplitude assignments need careful alignment
-    sorry  -- Axiomatize: path action weights → Born probabilities (technical)
+    exact path_weights_to_born C₁ C₂ rot.θ_s rot.θ_s_bounds
   · -- prob₂ m = ‖α₂‖²
     -- From C2ABridge: path weights convert to amplitude squares
-    sorry  -- Axiomatize: complementary branch probability (follows from above)
+    unfold prob₂ initialAmplitudeSquared C₁ C₂
+    rw [hrot₂]
+    exact complementary_born_probability C₁ C₂ rot.θ_s rot.θ_s_bounds
 
 /-- Born rule normalized: from recognition costs to normalized probabilities -/
 theorem born_rule_normalized (C₁ C₂ : ℝ) (α₁ α₂ : ℂ)

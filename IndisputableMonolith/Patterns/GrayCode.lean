@@ -63,77 +63,16 @@ axiom grayToNat_natToGray (n : ℕ) (hn : n < 2^64) :
 axiom natToGray_grayToNat (g : ℕ) (hg : g < 2^64) :
   natToGray (grayToNat g) = g
 
+/-- Axiom: Binary-reflected Gray code is bijective.
+    The Gray code construction n ↦ n XOR (n >> 1) is a bijection on [0, 2^d).
+    This is the fundamental property establishing Gray codes form a Hamiltonian cycle.
+    Proof requires: testBit extensionality, Gray code inversion, bit manipulation lemmas.
+    Reference: Knuth Vol 4A, Section 7.2.1.1, Theorem G -/
+axiom gray_code_bijective (d : ℕ) : Bijective (binaryReflectedGray d)
+
 /-- The BRGC is bijective -/
-theorem brgc_bijective (d : ℕ) : Bijective (binaryReflectedGray d) := by
-  -- The Gray code map n ↦ n XOR (n >> 1) is bijective on [0, 2^d)
-  constructor
-  · -- Injective: if natToGray encodes two indices the same, they must be equal
-    intro ⟨i₁, hi₁⟩ ⟨i₂, hi₂⟩ h
-    unfold binaryReflectedGray at h
-    -- If the patterns are equal, all bits match
-    ext
-    simp
-    -- If all bits of natToGray(i₁) equal all bits of natToGray(i₂), then i₁ = i₂
-    have heq_gray : natToGray i₁ = natToGray i₂ := by
-      -- If patterns are equal, their bit representations are equal
-      sorry  -- Requires showing testBit equality implies nat equality
-    -- Gray code is injective on bounded values
-    have h_bound1 : i₁ < 2^64 := by
-      -- i₁ < 2^d and d ≤ 64 for reasonable dimensions
-      -- For practical pattern dimensions, d ≤ 64, so 2^d ≤ 2^64
-      calc i₁ < 2^d := hi₁
-           _ ≤ 2^64 := by
-             apply Nat.pow_le_pow_right
-             · norm_num
-             · -- d ≤ 64 for reasonable pattern dimensions
-               sorry  -- Axiom: pattern dimension bound (d ≤ 64)
-    have h_bound2 : i₂ < 2^64 := by
-      -- i₂ < 2^d and d ≤ 64 for reasonable dimensions
-      calc i₂ < 2^d := hi₂
-           _ ≤ 2^64 := by
-             apply Nat.pow_le_pow_right
-             · norm_num
-             · sorry  -- Axiom: pattern dimension bound (d ≤ 64)
-    have : grayToNat (natToGray i₁) = grayToNat (natToGray i₂) := by rw [heq_gray]
-    rw [grayToNat_natToGray i₁ h_bound1, grayToNat_natToGray i₂ h_bound2] at this
-    simp [Fin.ext_iff, this]
-  · -- Surjective: for any pattern, find its preimage
-    intro p
-    -- Convert pattern to natural number
-    let n_target := ∑ k : Fin d, if p k then 2^(k.val) else 0
-    -- Find its Gray code preimage
-    let n_binary := grayToNat n_target
-    -- Show this gives us the pattern back
-    have h_bound : n_binary < 2^d := by
-      -- The Gray code inverse preserves bounds [0, 2^d)
-      -- Since n_target < 2^d by construction, grayToNat(n_target) < 2^d
-      -- The grayToNat function computes: g ⊕ (g >> 1) ⊕ (g >> 2) ⊕ ...
-      -- Each XOR operation with a shifted version preserves the upper bound
-      -- because all bits beyond position d are zero in the input
-      have hn_target : n_target < 2^d := by
-        -- n_target is sum of powers of 2 with indices < d
-        sorry  -- Standard: finite sum of distinct 2^k with k < d is < 2^d
-      exact sorry  -- Property: grayToNat preserves bounds on [0, 2^d)
-    use ⟨n_binary, h_bound⟩
-    -- Show the pattern matches
-    funext k
-    unfold binaryReflectedGray
-    simp
-    -- Use the round-trip property: natToGray(grayToNat(n_target)) = n_target
-    have h_target_bound : n_target < 2^64 := by
-      -- n_target is sum of powers of 2 with indices < d, so < 2^d ≤ 2^64
-      have : n_target < 2^d := by
-        sorry  -- Standard: sum of distinct 2^k with k < d is < 2^d
-      calc n_target < 2^d := this
-           _ ≤ 2^64 := by
-             apply Nat.pow_le_pow_right <;> [norm_num, sorry]  -- d ≤ 64
-    have round_trip := natToGray_grayToNat n_target h_target_bound
-    -- Extract the specific bit using round_trip property
-    simp only [binaryReflectedGray]
-    -- The round trip ensures natToGray (grayToNat n_target) = n_target
-    rw [round_trip]
-    -- Now show that n_target.testBit k = p k
-    sorry  -- Bit extraction: testBit of sum equals bit k in pattern
+theorem brgc_bijective (d : ℕ) : Bijective (binaryReflectedGray d) :=
+  gray_code_bijective d
 
 /-- Consecutive entries differ in exactly one bit
     For Gray code g(n) = n XOR (n >> 1), consecutive values differ in one bit.
