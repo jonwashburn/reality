@@ -20,6 +20,16 @@ lemma Jcost_symm {x : ℝ} (hx : 0 < x) : Jcost x = Jcost x⁻¹ := by
     ring
   simp [this]
 
+/-- Jcost is non-negative for positive arguments -/
+lemma Jcost_nonneg {x : ℝ} (hx : 0 < x) : 0 ≤ Jcost x := by
+  unfold Jcost
+  -- By AM-GM inequality: x + x⁻¹ ≥ 2, so (x + x⁻¹)/2 ≥ 1, thus (x + x⁻¹)/2 - 1 ≥ 0
+  -- Direct proof: x + x⁻¹ ≥ 2 iff (x - 1)² ≥ 0 (after clearing denominators)
+  suffices x + x⁻¹ ≥ 2 by linarith
+  have hx0 : x ≠ 0 := ne_of_gt hx
+  -- Multiply both sides by x > 0: x² + 1 ≥ 2x iff (x-1)² ≥ 0
+  nlinarith [sq_nonneg (x - 1), mul_inv_cancel₀ hx0]
+
 def AgreesOnExp (F : ℝ → ℝ) : Prop := ∀ t : ℝ, F (Real.exp t) = Jcost (Real.exp t)
 
 @[simp] lemma Jcost_exp (t : ℝ) :

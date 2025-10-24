@@ -223,5 +223,3 @@ theorem EL_global_min (t : ℝ) : Jlog 0 ≤ Jlog t := by
 
 end Cost
 end IndisputableMonolith
-
-

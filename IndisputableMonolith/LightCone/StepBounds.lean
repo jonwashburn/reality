@@ -102,32 +102,29 @@ lemma cone_bound_saturates
     have := congrArg (fun t => t - time x) this
     simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc] using this
   have hr' : rad y - rad x = (n : ℝ) * U.ell0 := by
-    have base := H.reach_rad_le (K:=K) (U:=U) (time:=time) (rad:=rad) h
-    revert x y
-    intro x y h
     induction h with
     | zero => simp
     | @succ n x y z hxy hyz ih =>
+        have hineq_y : rad y - rad x ≤ U.c * (time y - time x) := H.cone_bound hxy
+        have ht_y : time y - time x = (n : ℝ) * U.tau0 := by
+          have := H.reach_time_eq hxy
+          have := congrArg (fun t => t - time x) this
+          simp [sub_eq_add_neg, add_comm, add_left_comm] at this
+          exact this
+        have ih_applied := ih hineq_y ht_y
         have hz := hr hyz
-        have ih' := by simpa using ih
         calc
-          rad z - rad x = (rad y + U.ell0) - rad x := by simpa [hz]
-          _ = (rad y - rad x) + U.ell0 := by
-                simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc]
-          _ = (n : ℝ) * U.ell0 + U.ell0 := by simpa [ih']
-          _ = ((n : ℝ) + 1) * U.ell0 := by
-                have : (n : ℝ) * U.ell0 + U.ell0 = ((n : ℝ) + 1) * U.ell0 := by
-                  calc
-                    (n : ℝ) * U.ell0 + U.ell0
-                        = (n : ℝ) * U.ell0 + 1 * U.ell0 := by simpa [one_mul]
-                    _ = ((n : ℝ) + 1) * U.ell0 := by simpa [add_mul, one_mul]
-                simpa [this]
-          _ = ((Nat.succ n : ℝ)) * U.ell0 := by simpa [Nat.cast_add, Nat.cast_one]
+          rad z - rad x = (rad y + U.ell0) - rad x := by rw [hz]
+          _ = (rad y - rad x) + U.ell0 := by ring
+          _ = (n : ℝ) * U.ell0 + U.ell0 := by rw [ih_applied]
+          _ = ((n : ℝ) + 1) * U.ell0 := by ring
+          _ = ((Nat.succ n : ℝ)) * U.ell0 := by simp [Nat.cast_add, Nat.cast_one]
   have hcτ : U.ell0 = U.c * U.tau0 := by simpa using (U.c_ell0_tau0).symm
-  have : (n : ℝ) * U.ell0 = U.c * ((n : ℝ) * U.tau0) := by simpa [mul_left_comm, mul_assoc, hcτ]
-  have lhs := hr'
-  have rhs := by simpa [ht', mul_left_comm, mul_assoc] using this
-  simpa [lhs, rhs]
+  calc
+    rad y - rad x = (n : ℝ) * U.ell0 := hr'
+    _ = (n : ℝ) * (U.c * U.tau0) := by rw [hcτ]
+    _ = U.c * ((n : ℝ) * U.tau0) := by ring
+    _ = U.c * (time y - time x) := by rw [ht']
 
 end StepBounds
 end LightCone

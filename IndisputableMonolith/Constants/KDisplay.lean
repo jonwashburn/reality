@@ -64,22 +64,21 @@ theorem K_gate_triple (U : RSUnits) (hτ : U.tau0 ≠ 0) (hℓ : U.ell0 ≠ 0) :
 /-- Structural speed identity from units: ℓ0/τ0 = c. -/
 lemma ell0_div_tau0_eq_c (U : RSUnits) (h : U.tau0 ≠ 0) : U.ell0 / U.tau0 = U.c := by
   calc
-    U.ell0 / U.tau0 = (U.c * U.tau0) / U.tau0 := by simpa [U.c_ell0_tau0]
-    _ = U.c * (U.tau0 / U.tau0) := by simp [mul_div_assoc]
-    _ = U.c * 1 := by simp [div_self h]
-    _ = U.c := by simp
+    U.ell0 / U.tau0 = (U.c * U.tau0) / U.tau0 := by rw [U.c_ell0_tau0]
+    _ = U.c * (U.tau0 / U.tau0) := by rw [mul_div_assoc]
+    _ = U.c * 1 := by rw [div_self h]
+    _ = U.c := by rw [mul_one]
 
 /-- Display speed equals structural speed: (λ_kin/τ_rec) = c. -/
 lemma display_speed_eq_c_of_nonzero (U : RSUnits)
   (hτ : tau_rec_display U ≠ 0) : (lambda_kin_display U) / (tau_rec_display U) = U.c := by
+  have h := lambda_kin_from_tau_rec U
   calc
     (lambda_kin_display U) / (tau_rec_display U)
-        = (U.c * tau_rec_display U) / (tau_rec_display U) := by
-              simpa [lambda_kin_from_tau_rec]
-    _   = U.c * (tau_rec_display U / tau_rec_display U) := by
-              simpa using (mul_div_assoc U.c (tau_rec_display U) (tau_rec_display U))
-    _   = U.c * 1 := by simp [div_self hτ]
-    _   = U.c := by simp
+        = (U.c * tau_rec_display U) / (tau_rec_display U) := by rw [h]
+    _   = U.c * (tau_rec_display U / tau_rec_display U) := by rw [mul_div_assoc]
+    _   = U.c * 1 := by rw [div_self hτ]
+    _   = U.c := by rw [mul_one]
 
 /-! Strengthen display-speed equality: remove nonzero hypothesis by proving positivity. -/
 lemma tau_rec_display_pos (U : RSUnits) (h : 0 < U.tau0) : 0 < tau_rec_display U := by

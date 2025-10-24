@@ -24,15 +24,18 @@ class HasCoboundary (α : Type) where
 class HasHodge (α : Type) where
   n : Nat
   star : ∀ {k : Nat}, DForm α k → DForm α (n - k)
-  star_add : ∀ {k} (x y : DForm α k), star (x + y) = star x + star y
-  star_zero : ∀ {k}, star (0 : DForm α k) = 0
+  star_add : ∀ {k} (x y : DForm α k), star (fun s => x s + y s) = (fun s => star x s + star y s)
+  star_zero : ∀ {k}, star (fun (_ : Simplex α k) => 0) = (fun _ => 0)
   star_smul : ∀ {k} (c : ℝ) (x : DForm α k), star (fun s => c * x s) = (fun s => c * (star x s))
   signature : Nat → ℝ
-  star_star : ∀ {k} (x : DForm α k), star (star x) = (fun s => signature k * x s)
+  star_star : ∀ {k} (h : n - (n - k) = k) (x : DForm α k),
+    h ▸ (star (star x)) = (fun s => signature k * x s)
   /-- Optional positivity control on 2-forms (useful in 4D Riemannian media).
+      Requires n = 4 so that star maps 2-forms to 2-forms.
       Instances targeting Lorentzian signatures can simply provide a trivial
       proof such as `by intro; intro; exact le_of_eq (by ring)` if not used. -/
-  star2_psd : ∀ (x : DForm α 2) (s : Simplex α 2), 0 ≤ x s * (star (k:=2) x) s
+  star2_psd : ∀ (h : n - 2 = 2) (x : DForm α 2) (s : Simplex α 2),
+    0 ≤ x s * (h ▸ (star x)) s
 
 /-- Linear medium parameters. -/
 structure Medium (α : Type) [HasHodge α] where
@@ -60,22 +63,24 @@ structure Equations (α : Type) [HasCoboundary α] [HasHodge α] (M : Medium α)
   const_D    : True
   const_B    : True
 
-/-- Pointwise Hodge energy density for 2-forms: ω · (⋆ω) on each 2-simplex. -/
-def energy2 (ω : DForm α 2) [HasHodge α] : DForm α 2 :=
-  fun s => ω s * (HasHodge.star (k:=2) ω) s
+/-- Pointwise Hodge energy density for 2-forms: ω · (⋆ω) on each 2-simplex.
+    Requires n = 4 (spacetime dimension). -/
+def energy2 (ω : DForm α 2) [inst : HasHodge α] (h : inst.n - 2 = 2) : DForm α 2 :=
+  fun s => ω s * (h ▸ (HasHodge.star (k:=2) ω)) s
 
 /-- Admissibility: strictly positive material parameters. -/
-def Admissible (M : Medium α) : Prop := 0 < M.eps ∧ 0 < M.mu
+def Admissible [HasHodge α] (M : Medium α) : Prop := 0 < M.eps ∧ 0 < M.mu
 
 /-- Positivity of the Hodge energy density for admissible media, provided the
     instance supplies `star2_psd`. This is signature-agnostic and delegates the
     sign choice to the instance via `star2_psd`. -/
 theorem energy2_nonneg_pointwise
-  [HasHodge α] (M : Medium α) (hadm : Admissible (α:=α) M) (ω : DForm α 2)
-  : ∀ s, 0 ≤ energy2 (α:=α) ω s := by
+  [inst : HasHodge α] (h : inst.n - 2 = 2) (M : Medium α) (hadm : Admissible (α:=α) M) (ω : DForm α 2)
+  : ∀ s, 0 ≤ energy2 (α:=α) ω h s := by
   intro s
-  have h := HasHodge.star2_psd (α:=α) ω s
-  simpa [energy2]
+  have hpsd := HasHodge.star2_psd (α:=α) h ω s
+  simp [energy2]
+  exact hpsd
 
 /-- PEC boundary descriptor (edges where tangential E vanishes). -/
 structure PEC (β : Type) where
@@ -83,5 +88,3 @@ structure PEC (β : Type) where
 
 end MaxwellDEC
 end IndisputableMonolith
-
-

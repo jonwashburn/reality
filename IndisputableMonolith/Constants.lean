@@ -43,32 +43,36 @@ lemma alphaLock_pos : 0 < alphaLock := by
   have hφ_gt : 1 < phi := one_lt_phi
   have hsub : 0 < 1 - 1 / phi := by
     have hlt : 1 / phi < 1 := by
-      have hpos : 0 < (1 : ℝ) := by norm_num
-      exact (one_div_lt_one_div (zero_lt_one) hφ_gt)
+      rw [div_lt_one hφ]
+      exact hφ_gt
     exact sub_pos.mpr hlt
   have htwo : 0 < (2 : ℝ) := by norm_num
-  simpa [alphaLock] using div_pos hsub htwo
+  unfold alphaLock
+  exact div_pos hsub htwo
 
 lemma alphaLock_lt_one : alphaLock < 1 := by
   have hφ : 1 < phi := one_lt_phi
   -- (1 - 1/φ)/2 < 1 ↔ 1 - 1/φ < 2 ↔ -1/φ < 1 ↔ 1/φ > -1 (trivial).
   have hden : 0 < (2 : ℝ) := by norm_num
   have hnum : 1 - 1 / phi < 2 := by
-    have hinv_nonneg : 0 ≤ 1 / phi := by
-      have : 0 < phi := phi_pos
-      exact (one_div_nonneg.mpr (le_of_lt this))
-    have : -1 / phi ≤ 0 := by simpa using neg_nonpos.mpr hinv_nonneg
-    have : -1 / phi < 1 := lt_of_le_of_lt this (by norm_num)
-    simpa using this
+    have hinv_pos : 0 < 1 / phi := div_pos (by norm_num) phi_pos
+    have hinv_nonneg : 0 ≤ 1 / phi := le_of_lt hinv_pos
+    have h1 : -(1 / phi) ≤ 0 := neg_nonpos.mpr hinv_nonneg
+    have h2 : -(1 / phi) < 1 := lt_of_le_of_lt h1 (by norm_num)
+    calc
+      1 - 1 / phi = 1 + (-(1 / phi)) := by ring
+      _ < 1 + 1 := by linarith
+      _ = 2 := by norm_num
   have : (1 - 1 / phi) / 2 < (2 : ℝ) / 2 := (div_lt_div_of_pos_right hnum hden)
-  simpa [alphaLock] using (lt_of_lt_of_eq this (by norm_num : (2 : ℝ) / 2 = 1))
+  unfold alphaLock
+  calc
+    (1 - 1 / phi) / 2 < (2 : ℝ) / 2 := this
+    _ = 1 := by norm_num
 
 lemma cLagLock_pos : 0 < cLagLock := by
-  have : 0 < phi := phi_pos
-  have hpow : 0 < phi ^ (5 : ℝ) := by
-    have : (5 : ℝ) = (5 : ℕ) := by norm_num
-    simpa [this] using Real.rpow_pos_of_pos this (5 : ℝ)
-  simpa [cLagLock, Real.rpow_neg_one, one_div] using hpow
+  have hphi : 0 < phi := phi_pos
+  unfold cLagLock
+  exact Real.rpow_pos_of_pos hphi (-(5 : ℝ))
 
 /-- Minimal RS units used in Core. -/
 structure RSUnits where
