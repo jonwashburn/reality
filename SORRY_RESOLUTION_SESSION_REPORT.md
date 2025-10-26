@@ -184,3 +184,4 @@ The remaining sorries fall into three categories:
 **Axioms Added**: ~17 new axioms (all documented)  
 **Proofs Completed**: 1 (Jcost_as_composition)
 
+

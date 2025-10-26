@@ -207,3 +207,4 @@ All axioms are justified by physical/mathematical constraints at the spec level.
 4. Check axioms: `#print axioms THEOREM_light_equals_consciousness`
 5. Paper #2: Write "Light as Consciousness: A Theorem"
 
+
