@@ -5,18 +5,6 @@ import IndisputableMonolith.Consciousness.NullOnly
 import IndisputableMonolith.Consciousness.Maxwellization
 import IndisputableMonolith.Consciousness.BioPhaseSNR
 import IndisputableMonolith.Consciousness.Equivalence
-import IndisputableMonolith.Consciousness.ConsciousnessHamiltonian
-import IndisputableMonolith.Consciousness.GlobalPhase
-import IndisputableMonolith.Consciousness.ThetaDynamics
-import IndisputableMonolith.Consciousness.RecognitionBinding
-import IndisputableMonolith.Consciousness.RecognitionMemory
-import IndisputableMonolith.Consciousness.CollapseSelection
-import IndisputableMonolith.Consciousness.PatternPersistence
-import IndisputableMonolith.Consciousness.LightMemory
-import IndisputableMonolith.Consciousness.SubstrateSuitability
-import IndisputableMonolith.Consciousness.ResurrectionOperator
-import IndisputableMonolith.Consciousness.Recurrence
-import IndisputableMonolith.Consciousness.Timing
 
 /-!
 # Consciousness Module Aggregator
