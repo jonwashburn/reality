@@ -1,4 +1,5 @@
 import Mathlib
+import IndisputableMonolith.Recognition.CrossScale
 -- LightCone is not required by the minimal Recognition core; avoid heavy deps
 
 namespace IndisputableMonolith
