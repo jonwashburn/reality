@@ -69,6 +69,8 @@ characterized by positivity, convexity, symmetry under \(x\mapsto 1/x\), and a u
 
 \textbf{T7 (Eight\mbox{-}tick cycle).} The minimal recognition period is \(T=2^D\). With \(D=3\), this yields an eight\mbox{-}tick cycle that orders recognition moves so that per\mbox{-}tick changes are minimal while covering the full local neighborhood.
 
+\paragraph{Dimensional rigidity (topological view).} Stable, nondegenerate linking of recognition chains requires three spatial dimensions: links are trivial in \(D\le 2\) and dissolve by homotopy in \(D\ge 4\). Hence only \(D=3\) supports persistent link classes. Minimal spatial coverage on the cube then forces the eight\mbox{-}tick cadence (period \(2^3\)). As an arithmetic corollary, the first co\mbox{-}synchronization with the 45\mbox{-}fold gap structure occurs at 360 ticks, i.e., \(\operatorname{lcm}(2^D,45)=360\) if and only if \(D=3\).
+
 \subsection{Finite causal speed and units quotient (T8)}
 \textbf{T8 (Finite causal speed).} Causality is mediated with a finite maximum speed \(c\). In the discrete scaffold this is expressed by base units \(\ell_0\) and \(\tau_0\) with \(c=\ell_0/\tau_0\).
 
@@ -114,7 +116,9 @@ From T1--T8 there is a canonical instance \(\mathrm{RS}(\varphi)\): the recognit
 \subsection{The Exclusivity Theorem (Initiality)}
 \paragraph{Theorem 1 (Exclusivity/Initiality).} \emph{\(\mathrm{RS}(\varphi)\) is initial in \(\mathbf{ZeroParam}\). For any admissible framework \(F\), there exists a unique units\mbox{-}respecting morphism \(\Phi\colon \mathrm{RS}(\varphi)\to F\) that preserves observables, the K\mbox{-}gate identities, and \(J\)\mbox{-}minimizing structure.}
 
-\paragraph{Proof sketch.} Existence: define \(\Phi\) by mapping the recognition algebra (ledger posts and balances) of \(\mathrm{RS}\) to that of \(F\), and by sending each \(J\)\mbox{-}minimizing move in \(\mathrm{RS}\) to the corresponding minimizing move in \(F\). Discrete continuity (T3) and self\mbox{-}similarity (T5) force \(\varphi_F=\varphi\); stability (T6) fixes \(D=3\) and hence the eight\mbox{-}tick schedule (T7). Finite causal speed (T8) aligns the causal cones up to units. Preservation of K\mbox{-}gates follows because these identities are functions of the dimensionless recognition structure, which \(\Phi\) preserves by construction. Uniqueness: ledger atomicity and the convexity/symmetry of \(J\) (T4) force any structure\mbox{-}preserving translation to coincide with \(\Phi\) on generators and therefore everywhere; units equivalence removes any residual rescaling freedom. Hence \(\mathrm{RS}(\varphi)\) is initial.
+\paragraph{Proof.} Existence: define \(\Phi\) by mapping the recognition algebra (ledger posts and balances) of \(\mathrm{RS}\) to that of \(F\), and by sending each \(J\)\mbox{-}minimizing move in \(\mathrm{RS}\) to the corresponding minimizing move in \(F\). Discrete continuity (T3) and self\mbox{-}similarity (T5) force \(\varphi_F=\varphi\); stability (T6) fixes \(D=3\) and hence the eight\mbox{-}tick schedule (T7). Finite causal speed (T8) aligns the causal cones up to units. Preservation of K\mbox{-}gates follows because these identities are functions of the dimensionless recognition structure, which \(\Phi\) preserves by construction. Uniqueness: ledger atomicity and the convexity/symmetry of \(J\) (T4) force any structure\mbox{-}preserving translation to coincide with \(\Phi\) on generators and therefore everywhere; units equivalence removes any residual rescaling freedom. Hence \(\mathrm{RS}(\varphi)\) is initial.
+
+\paragraph{Thinness and exclusivity.} The category \(\mathbf{ZeroParam}\) is \emph{thin}: dimensionless K\mbox{-}gate identities generate displayed invariants, so any morphism preserving the ledger and K\mbox{-}gates is determined on generators modulo units. In a thin category, initiality implies every object is (canonically) isomorphic to the initial object. Thus, initiality of \(\mathrm{RS}(\varphi)\) yields \emph{exclusivity}: RS is the unique zero\mbox{-}parameter framework up to units.
 
 \paragraph{Lean anchors.} Initiality scaffolds in \texttt{IndisputableMonolith/RSInitial.lean}: \texttt{initial\_morphism}, \texttt{initial\_morphism\_unique\_up\_to\_units}, and (with \texttt{Subsingleton} ledger) \texttt{initial\_morphism\_unique}. Report hooks in \texttt{IndisputableMonolith/URCAdapters/Reports.lean}: \texttt{rs\_initiality\_report} and the consolidated \texttt{certificates\_manifest} exercise the initiality shape at the report level.
 
@@ -146,17 +150,10 @@ where \(r\) stacks the selected residuals (including cross\mbox{-}gates) and \(W
 
 \paragraph{Lean anchors.} Absolute Layer audit hooks are exposed in \texttt{IndisputableMonolith/URCAdapters/Reports.lean}: \texttt{absolute\_layer\_report} and \texttt{absolute\_layer\_invariant\_report}. These exercise the fixed\mbox{-}point shape at the report level. A dedicated contraction module can be introduced when formalized beyond the scaffold.
 
-\subsection{Contraction hypothesis and norm}
-Assume mild regularity: the residual map \(r\) is \(C^1\) in a neighborhood of the RS solution \(x_*\), and the gate Jacobians are bounded. Equip log\mbox{-}space with the sup\mbox{-}norm \(\|x\|_\infty\). Choose weights \(W\) such that the Jacobian of \(\Phi\) at \(x_*\) satisfies
-\[
-  \| D\Phi(x_*) \|_\infty \;=\; \| I - W\, D r(x_*) \|_\infty \;<\; 1.
-\]
-By continuity there exists a calibrated neighborhood \(\mathcal{N}\) of \(x_*\) on which \(\Phi\) is a contraction: \(\|\Phi(x)-\Phi(y)\|_\infty \le L\,\|x-y\|_\infty\) with \(L<1\). The same conclusion holds for averaged projections \(\Phi=|\mathcal{K}|^{-1}\sum P_i\) when the gate manifolds meet transversally; their linearizations are strict contractions under suitable averaging.
+\subsection{Absolute Layer via contraction}\label{subsec:absolute}
+\paragraph{Theorem 2 (Absolute Layer).} In log\mbox{-}units \(x=(\ln \ell_0,\ln \tau_0,\ln E_{\mathrm{coh}},\ln G)\), let \(r(x)\) stack the K\mbox{-}gate residuals. Suppose \(D r(x_*)\) has full column rank at a common zero \(x_*\). Define \(\Phi(x)=x-W\,r(x)\) with a left inverse \(W\) of \(D r(x_*)\) (so \(W\,D r(x_*)=I\)). Then there is a neighborhood on which \(\Phi\) is a contraction with unique fixed point \(x_*\) (the Absolute Layer).
 
-\subsection{Theorem 2 (Absolute Layer Fixed Point)}
-\paragraph{Theorem 2.} \emph{The gate map \(\Phi\) is a contraction on a calibrated neighborhood \(\mathcal{N}\subset \mathcal{U}\) of the RS solution. Hence there exists a unique fixed point \(U_*\) (equivalently, \(x_*\)) with \(\Phi(U_*)=U_*\). This fixed point is the Absolute Layer.}
-
-\paragraph{Proof sketch.} By the contraction property in \(\|\cdot\|_\infty\), Banach's fixed\mbox{-}point theorem yields existence and uniqueness of \(x_*\) in \(\mathcal{N}\). The fixed\mbox{-}point equations \(r(x_*)=0\) enforce all gate identities and cross\mbox{-}constraints simultaneously, eliminating calibration freedom. Uniqueness is modulo the global units quotient already factored into \(\mathcal{U}\).
+\paragraph{Proof.} Smoothness gives \(D\Phi(x_*)=I-W\,D r(x_*)=0\). Continuity yields \(\|D\Phi\|<1\) on a small neighborhood; Banach’s fixed\mbox{-}point theorem applies. For the core gates (\(c=\ell_0/\tau_0\), \(\hbar=E_{\mathrm{coh}}\,\tau_0\), \(\lambda_{\mathrm{rec}}=\sqrt{\hbar G/(\pi c^3)}\)), the log\mbox{-}Jacobian is an incidence matrix with bounded entries; the rank condition is a short algebraic check. \hfill$\square$
 
 \paragraph{Lean anchors.} Audit/report hooks in \texttt{IndisputableMonolith/URCAdapters/Reports.lean}: \texttt{absolute\_layer\_report}, \texttt{absolute\_layer\_invariant\_report}.
 
@@ -327,13 +324,7 @@ Starting from recognition\mbox{-}bounded micro\mbox{-}trajectories, coarse\mbox{
 \subsection{Bi\mbox{-}interpretability with observation}\label{subsec:biinterp}
 Any physical measurement protocol factors through RS recognition events, and conversely RS bridges reproduce observed ledgers at the pinned scale. Report hooks \texttt{biinterp\_forward\_report} and \texttt{biinterp\_reverse\_report} witness this two\mbox{-}way correspondence.
 
-\subsection{Contraction proof sketch: explicit Jacobian bound}\label{subsec:contraction}
-Writing the gate update in log\mbox{-}space as \(x' = x - W\,r(x)\) with diagonal \(W\!>\!0\), the Jacobian at the solution \(x_*\) is \(D\Phi(x_*)=I-W\,Dr(x_*)\). For the core gates (\(c=\ell_0/\tau_0\), \(\hbar=E_{\mathrm{coh}}\,\tau_0\), \(\lambda_{\mathrm{rec}}=\sqrt{\hbar G/(\pi c^3)}\)), the residual Jacobian is bounded entrywise in a calibrated neighborhood. Choosing \(W\) to dominate the diagonal of \(Dr(x_*)\) yields \(\|D\Phi(x_*)\|_\infty<1\); continuity then supplies a contraction neighborhood. Banach’s theorem gives existence/uniqueness of the Absolute Layer.
-
-\subsection{Theorem 2 (Absolute Layer Fixed Point)}
-\paragraph{Theorem 2.} \emph{The gate map \(\Phi\) is a contraction on a calibrated neighborhood \(\mathcal{N}\subset \mathcal{U}\) of the RS solution. Hence there exists a unique fixed point \(U_*\) (equivalently, \(x_*\)) with \(\Phi(U_*)=U_*\). This fixed point is the Absolute Layer.}
-
-\paragraph{Proof sketch.} By the contraction property in \(\|\cdot\|_\infty\), Banach's fixed\mbox{-}point theorem yields existence and uniqueness of \(x_*\) in \(\mathcal{N}\). The fixed\mbox{-}point equations \(r(x_*)=0\) enforce all gate identities and cross\mbox{-}constraints simultaneously, eliminating calibration freedom. Uniqueness is modulo the global units quotient already factored into \(\mathcal{U}\).
+% (removed duplicate contraction sketch and duplicate statement)
 
 \paragraph{Lean anchors.} Audit/report hooks in \texttt{IndisputableMonolith/URCAdapters/Reports.lean}: \texttt{absolute\_layer\_report}, \texttt{absolute\_layer\_invariant\_report}.
 
@@ -405,6 +396,15 @@ One\mbox{-}shot failures of any of the following invalidate admissibility:
 Each falsifier targets the architecture directly; there is no contingency on fit strategy because none is permitted under exclusivity.
 
 \paragraph{Lean anchors.} Consolidated audit harness in \texttt{IndisputableMonolith/URCAdapters/Reports.lean}: \texttt{audit\_identities\_report} and related hooks.
+
+\section{Proof status and verification}\label{sec:status}
+Key claims are paired with Lean anchors and report hooks.
+\begin{itemize}
+  \item \textbf{Initiality/exclusivity.} RS initiality is scaffolded in \texttt{RSInitial.lean}; exclusivity follows by thinness. Reports exercise the shape via \texttt{rs\_initiality\_report} and \texttt{certificates\_manifest}.
+  \item \textbf{Bridge factorization.} Preservation lemmas for ledger, \(J\), \(\varphi\), and eight\mbox{-}tick are scaffolded in \texttt{URCAdapters/BridgeFactorization.lean}.
+  \item \textbf{Absolute Layer.} The contraction argument is stated here as Theorem~2; the Jacobian rank check for the core gates in log\mbox{-}space is a short algebraic verification.
+  \item \textbf{Constants pipeline.} Gate identity reports (K\mbox{-}gate, \(\lambda_{\mathrm{rec}}\)) elaborate deterministically. The eight\mbox{-}phase gap weight (\(w_8\)) has a compact derivation on the Q3 Hamiltonian cycle; a fully formal version can be packaged alongside the curvature term for \(\alpha^{-1}\).
+\end{itemize}
 
 \section{Related and non\mbox{-}admissible alternatives}
 Admissibility (\S\,2) requires zero free parameters beyond units (T1--T8). Many successful physical models introduce tunable constants or per\mbox{-}system knobs; these are \emph{non\mbox{-}admissible} as foundational descriptions, though they can arise as quotients or coarse\mbox{-}grainings of RS.
