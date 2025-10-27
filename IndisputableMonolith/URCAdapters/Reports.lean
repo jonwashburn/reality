@@ -934,6 +934,9 @@ def certificates_manifest : String :=
     , generations_lower_bound_report
     , exact_three_generations_report
     , generations_count_report
+    , rs_initiality_report
+    , noether_from_J_report
+    , entropy_interface_report
   ]
 
 /-- #eval-friendly RSCompleteness-lite: shows which component is proven. -/
@@ -1377,6 +1380,14 @@ def entropy_interface_report : String :=
 def rs_initiality_report : String :=
   match (Classical.decEq True True) with
   | _ => "RSInitial: initiality scaffold present (unique morphism axiom)."
+
+/-- #eval demo: construct initial morphism and report admissibility. -/
+def rs_initiality_demo : String :=
+  let G : IndisputableMonolith.ZeroParam.Framework :=
+    { ledger := Unit, Jcost := fun x => x, phi := IndisputableMonolith.Constants.phi
+    , eight_tick := True, finite_c := True, inh := ⟨()⟩ }
+  let f := IndisputableMonolith.RSInitial.initial_morphism G
+  "RSInitial demo: morphism constructed; admissibility assumed (scaffold)."
 
 
 /-- #eval report: Anomalous moments universal for leptons (equal Z from φ-ladder). -/

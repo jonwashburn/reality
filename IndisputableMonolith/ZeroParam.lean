@@ -35,6 +35,7 @@ class Admissible (F : Framework) : Prop :=
   (eight_tick_3D : True)
   (finite_c : True)
   (units_quotient : UnitsQuot F)
+  (ledger_subsingleton : Subsingleton F.ledger)
 
 /-- Morphisms preserve observables, K‑gates, and J‑minimizers (scaffold). -/
 structure Morphism (F G : Framework) where
@@ -87,6 +88,32 @@ noncomputable def trivialMorph (F G : Framework) : Morphism F G :=
   , preserves_K_gate := True.intro
   , preserves_J_minimizers := True.intro
   , respects_units_quot := True.intro }
+
+/-- Equivalence of morphisms up to units quotient (scaffold). -/
+def morphismUpToUnits (F G : Framework) (f g : Morphism F G) : Prop := True
+
+/-- Reflexivity of up-to-units equivalence. -/
+theorem morphismUpToUnits_refl (F G : Framework) (f : Morphism F G) : morphismUpToUnits F G f f :=
+  True.intro
+
+/-- Symmetry of up-to-units equivalence. -/
+theorem morphismUpToUnits_symm (F G : Framework) {f g : Morphism F G}
+  (h : morphismUpToUnits F G f g) : morphismUpToUnits F G g f := True.intro
+
+/-- Transitivity of up-to-units equivalence. -/
+theorem morphismUpToUnits_trans (F G : Framework) {f g h : Morphism F G}
+  (h₁ : morphismUpToUnits F G f g) (h₂ : morphismUpToUnits F G g h) : morphismUpToUnits F G f h :=
+  True.intro
+
+/-- Extensionality lemma: equality of maps implies equality of morphisms. -/
+theorem morph_eq_of_map_eq {F G : Framework} {f g : Morphism F G}
+  (hmap : f.map = g.map) : f = g := by
+  cases f with
+  | mk mapf _ _ _ _ =>
+    cases g with
+    | mk mapg _ _ _ _ =>
+      cases hmap
+      rfl
 
 end ZeroParam
 end IndisputableMonolith
