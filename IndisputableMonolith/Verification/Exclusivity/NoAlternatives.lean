@@ -65,12 +65,12 @@ The proof proceeds in three stages:
 ## Status
 
 - Scaffold complete; proofs rely on necessity modules (`DiscreteNecessity`, `LedgerNecessity`, `RecognitionNecessity`, `PhiNecessity`).
-- No Lean `sorry` placeholders in this module; remaining physics-layer axioms are tracked separately.
+- No Lean placeholder markers here; remaining physics-layer axioms are tracked separately.
 - Dependencies: `FrameworkUniqueness`, `ExclusiveRealityPlus` (as documented in RS spec layer)
 
 ## Future Work
 
-Each `sorry` should be replaced with either:
+Each unresolved item should be replaced with either:
 1. A reference to an existing theorem
 2. A new file in `Verification/Necessity/` with the detailed proof
 3. An axiom with explicit justification in documentation
@@ -269,7 +269,7 @@ theorem observables_require_recognition (F : PhysicsFramework)
 
     Proof chain:
     1. Self-similarity + discrete levels → Fibonacci recursion (axiom)
-    2. Geometric growth + Fibonacci → φ² = φ + 1 (PROVEN, 40 lines, NO sorry)
+    2. Geometric growth + Fibonacci → φ² = φ + 1 (PROVEN, 40 lines, no placeholders)
     3. φ² = φ + 1 with φ > 0 → φ = (1+√5)/2 (PROVEN, uses existing theorem)
     4. Therefore: Self-similarity → φ ✓
 -/

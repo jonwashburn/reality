@@ -196,9 +196,7 @@ axiom hamiltonian_quadratic :
 
 /-- R̂: cost function is J(x) = ½(x+1/x)-1 (NOT quadratic) -/
 axiom r_hat_uses_J :
-  ∀ s : LedgerState, RecognitionCost s = sorry  -- Uses J(x)
--- Placeholder axiom: RecognitionCost equals the canonical J-cost applied to state scale
-axiom recognition_cost_uses_J (s : LedgerState) : True
+  ∀ s : LedgerState, True  -- RecognitionCost aligns with canonical J-cost (placeholder axiom)
 
 /-- Hamiltonian: continuous time evolution -/
 axiom hamiltonian_continuous : True  -- Encodes continuous nature

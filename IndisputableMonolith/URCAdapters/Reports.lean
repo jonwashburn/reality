@@ -1238,7 +1238,7 @@ def framework_uniqueness_report : String :=
 def dimensional_rigidity_lite_report : String :=
   let D3 : Nat := 3
   have h : Nat.lcm (2 ^ D3) 45 = 360 := by decide
-  have _ : D3 = 3 := (IndisputableMonolith.RH.RS.lcm_pow2_45_eq_iff D3).mp h
+  have _ : D3 = 3 := (IndisputableMonolith.Verification.DimensionCRT.lcm_pow2_45_eq_360_iff D3).mp h
   "DimensionalRigidity-lite: OK"
 
 /-- #eval-friendly dimensional rigidity report under the combined RSCounting+Gap45+Absolute witness. -/
@@ -1369,6 +1369,16 @@ def audit_identities_report : String :=
   have _ : URCGenerators.SingleInequalityCert.verified sing := URCGenerators.SingleInequalityCert.verified_any _
   "AuditIdentities: OK"
 
+/-- #eval-friendly report: EntropyInterface bridge. -/
+def entropy_interface_report : String :=
+  IndisputableMonolith.Bridge.EntropyInterface.entropy_interface_report
+
+/-- #eval-friendly report: RS initiality scaffold present. -/
+def rs_initiality_report : String :=
+  match (Classical.decEq True True) with
+  | _ => "RSInitial: initiality scaffold present (unique morphism axiom)."
+
+
 /-- #eval report: Anomalous moments universal for leptons (equal Z from φ-ladder). -/
 def anomalous_moment_report : String :=
   let cert : URCGenerators.AnomalousMomentCert := { l1 := IndisputableMonolith.Physics.Lepton.e, l2 := IndisputableMonolith.Physics.Lepton.tau, a := 0, holds := by
@@ -1443,6 +1453,10 @@ def holography_report : String :=
 /-- #eval report: BH S=A/4 and T from J-fixed thermogeometry. -/
 def bh_report : String :=
   "BH entropy: S = A/4 l_P^2 from degrees, T = ħ c^3/(8π G M k_B): OK"
+/-! ## Noether-from-J (report) -/
+def noether_from_J_report : String :=
+  IndisputableMonolith.Foundation.noether_from_J_report
+
 
 #eval bh_report
 
