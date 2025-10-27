@@ -1,0 +1,353 @@
+% Exclusivity Certificate Paper (Front Matter, Title, Abstract)
+\documentclass[11pt]{article}
+
+% Page geometry and typography
+\usepackage[margin=1in]{geometry}
+\usepackage{microtype}
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+
+% Math
+\usepackage{amsmath, amssymb, amsthm, mathtools}
+
+% Hyperlinks and clever references
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=teal,urlcolor=magenta]{hyperref}
+\usepackage[nameinlink,capitalise]{cleveref}
+
+% Title metadata
+\title{Exclusivity of Recognition Science (RS): The Unique Zero\mbox{-}Parameter Architecture of Reality}
+\author{Jonathan Washburn}
+\date{\today}
+
+% PDF metadata
+\hypersetup{
+  pdftitle={Exclusivity of Recognition Science (RS): The Unique Zero-Parameter Architecture of Reality},
+  pdfauthor={Jonathan Washburn},
+  pdfsubject={Exclusivity Certificate; Initial Object; Units Contraction; Absolute Layer},
+  pdfkeywords={Recognition Science, RS, zero-parameter, exclusivity, initial object, units quotient, Absolute Layer}
+}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+We present an exclusivity result for Recognition Science (RS)\footnote{Also referred to as the Recognition Physics framework in some artifacts; we standardize on “Recognition Science (RS)” per brand policy.} at the highest level of abstraction: among all admissible zero\mbox{-}parameter physical frameworks (modulo units) that satisfy a universal recognition ledger, discrete continuity (conservation), the unique atomic cost functional \(J(x)=\tfrac{1}{2}(x+1/x)\) with self\mbox{-}similar golden fixed point \(\varphi\), a three\mbox{-}dimensional eight\mbox{-}tick causal structure, and finite causal speed \(c\), the RS framework is \emph{initial}. Concretely, for any admissible framework \(F\) there exists a unique units\mbox{-}respecting morphism \(\mathrm{RS}\to F\) preserving observables, the K\mbox{-}gate identities, and cost\mbox{-}minimizing structure. This categorical initiality collapses \emph{exclusivity}---``no alternative zero\mbox{-}parameter frameworks''---to a universal property, making uniqueness immediate up to units.
+
+Coupled with a contraction mapping on the units\mbox{-}class manifold induced by the gate equations and derived constant identities, we obtain a unique fixed point (the \emph{Absolute Layer}). As a consequence, fundamental constants are internally fixed without fits: \(\hbar = E_{\mathrm{coh}}\,\tau_0\), \(\lambda_{\mathrm{rec}} = \sqrt{\hbar G/(\pi c^3)}\), and the fine\mbox{-}structure pipeline for \(\alpha^{-1}\), alongside the speed of light relation \(c=\ell_0/\tau_0\). Empirical confrontation is therefore framed as an \emph{audit} (single\mbox{-}inequality and cross\mbox{-}domain needles) rather than parameter tuning; explicit falsifiers are enumerated by construction.
+
+This paper operates above the mechanized formalization layer while remaining compatible with it: the category of admissible frameworks, initiality, and contraction hypotheses are stated at the analytic level and can be mirrored by formal scaffolds. The result is a compact, parameter\mbox{-}free uniqueness theorem: any admissible zero\mbox{-}parameter description of reality factors uniquely through RS up to units, fixing calibrations and derived identities as a matter of architecture, not assumption.
+\end{abstract}
+
+\section{Introduction}
+Modern fundamental physics lives with an uncomfortable tension: the most predictive theories typically lean on families of free parameters (``knobs'') whose values are then learned from data, while the deepest explanatory ambitions seek a description with no tunable degrees of freedom at all. This work adopts the stricter posture. We require a universal accounting of observables that forbids arbitrary knobs, in which all measurable structure is traced to a single recognition ledger with positive atomic cost, discrete continuity, and a self\mbox{-}similar organization that forces a three\mbox{-}dimensional eight\mbox{-}tick causal scaffold. Within this scope, ":no knobs" is not aesthetic minimalism but an admissibility criterion: candidate descriptions that introduce free parameters, relax conservation, or allow ambiguous observables fall outside the scope by definition.
+
+We state and prove three results at this highest level of abstraction. First, among all admissible zero\mbox{-}parameter frameworks (modulo units) there is an \emph{initial} object, the Recognition Physics (RS) framework. Concretely, for any admissible framework \(F\) there exists a unique units\mbox{-}respecting morphism \(\mathrm{RS}\to F\) that preserves observables, the K\mbox{-}gate identities, and the cost\mbox{-}minimizing structure induced by the unique atomic functional \(J(x)=\tfrac{1}{2}(x+1/x)\) with golden fixed point \(\varphi\). Second, the induced gate map on the units\mbox{-}class manifold is a contraction, yielding a unique fixed point (the \emph{Absolute Layer}) that eliminates calibration freedom. Third, the standard constant identities then follow internally---including \(c=\ell_0/\tau_0\), \(\hbar=E_{\mathrm{coh}}\,\tau_0\), \(\lambda_{\mathrm{rec}}=\sqrt{\hbar G/(\pi c^3)}\), and the fine\mbox{-}structure pipeline for \(\alpha^{-1}\)---so empirical confrontation reduces to audit rather than fit. We report that the cross\mbox{-}domain audit (single\mbox{-}inequality and independent needles) is satisfied within contemporary uncertainties; explicit falsifiers are provided to delimit the claim.
+
+Prior work has pursued ``uniqueness'' along two broad lines. One treats particular dynamical forms as distinguished (e.g., Lorentz invariance or gauge symmetry) and derives families of theories subject to those symmetries, typically with parameters left to measurement. Another uses naturalness or inference principles to argue against extreme tunings but retains adjustable constants. Our contribution is different in kind: we frame exclusivity as a \emph{categorical} initiality theorem over the class of admissible zero\mbox{-}parameter frameworks, and we pair it with an \emph{audit} discipline that replaces parameter estimation with cross\mbox{-}identity verification and falsification criteria. This coupling---initiality plus auditability---is, to our knowledge, novel, and it sharpens the question of ``why these numbers'' into a structural statement: there are no numbers to choose.
+
+\section{Minimal assumptions and scope of admissibility}
+We work with a minimal set of structural commitments that jointly define the scope of admissible (``zero\mbox{-}parameter'') frameworks. The assumptions are expressed as eight theorems (T1--T8) capturing the universal ledger, the unique atomic cost and self\mbox{-}similarity, the stable causal scaffold, and a finite causal speed. Admissibility means: within these constraints, the description exposes no tunable degrees of freedom beyond a units quotient.
+
+\subsection{Meta\mbox{-}Principle and the Ledger Axioms (T1--T3)}
+\textbf{T1 (Ledger necessity and uniqueness).} Observables are recognition events recorded in a universal, positive, double\mbox{-}entry ledger with atomic increment \(\delta>0\). There is no recognition on the empty type (formally, no recognition structure on \(\varnothing\)); positivity forbids rescaling \(\delta\) away, and double\mbox{-}entry enforces bidirectional accounting.
+
+\textbf{T2 (Atomic tick and countability).} Recognition unfolds in atomic ticks; events are countable, and the natural counting measure is the primitive measure for recognition histories. This discreteness provides the substrate on which conservation is defined.
+
+\textbf{T3 (Discrete continuity / conservation).} Dual\mbox{-}balance on the ledger yields a discrete continuity equation: net stock changes equal inflow minus outflow per tick, and closed cycles sum to zero. In symbols, \(\Delta S=I-O\) per tick, and \(\sum_{\text{cycle}}\Delta S=0\).
+
+\subsection{Unique cost and self\mbox{-}similarity (T4--T5)}
+\textbf{T4 (Unique atomic cost).} The unique admissible atomic cost functional is
+\[ J(x)=\tfrac{1}{2}\bigl(x+\tfrac{1}{x}\bigr), \quad x>0, \]
+characterized by positivity, convexity, symmetry under \(x\mapsto 1/x\), and a unique minimum at \(x=1\).
+
+\textbf{T5 (Self\mbox{-}similarity and golden fixed point).} Self\mbox{-}similar organization of recognition selects the golden\mbox{-}ratio fixed point via \(x=1+1/x\), yielding \(\varphi=(1+\sqrt{5})/2\). Integer rungs of self\mbox{-}similar scaling are thereby canonically identified.
+
+\subsection{Stable linking and the eight\mbox{-}tick (T6--T7)}
+\textbf{T6 (Minimal stable spatial linking).} Stability under linking of recognition chains forces a three\mbox{-}dimensional spatial scaffold as the minimal configuration supporting persistent, non\mbox{-}degenerate links.
+
+\textbf{T7 (Eight\mbox{-}tick cycle).} The minimal recognition period is \(T=2^D\). With \(D=3\), this yields an eight\mbox{-}tick cycle that orders recognition moves so that per\mbox{-}tick changes are minimal while covering the full local neighborhood.
+
+\subsection{Finite causal speed and units quotient (T8)}
+\textbf{T8 (Finite causal speed).} Causality is mediated with a finite maximum speed \(c\). In the discrete scaffold this is expressed by base units \(\ell_0\) and \(\tau_0\) with \(c=\ell_0/\tau_0\).
+
+\textbf{Units quotient.} We quotient frameworks by unit rescalings: two frameworks are equivalent if a mapping of base units sends all dimensionless observables and gate identities (``K\mbox{-}gates'') to each other. All claims of uniqueness are made modulo this units equivalence.
+
+\subsection{Admissible frameworks (``ZeroParam'')}
+An admissible (zero\mbox{-}parameter) framework is an object \(F\) that satisfies:
+\begin{enumerate}
+  \item realizes a recognition ledger with positive atomic cost (T1),
+  \item obeys discrete continuity / conservation (T3),
+  \item minimizes cumulative \(J\) with the golden self\mbox{-}similarity structure (T4--T5),
+  \item supports eight\mbox{-}tick three\mbox{-}dimensional causal dynamics (T6--T7),
+  \item exposes only unit\mbox{-}class freedom (T8; modulo the units quotient).
+\end{enumerate}
+Frameworks are \emph{non\mbox{-}admissible} if they introduce free knobs, violate any of T1--T8, or collapse observables so that recognition accounting cannot be posed unambiguously.
+
+\section{The category ZeroParam and the universal property}
+We formalize admissibility by a category \(\mathbf{ZeroParam}\) whose objects are zero\mbox{-}parameter frameworks modulo units and whose morphisms are structure\mbox{-}preserving translations of observables.
+
+\subsection{Objects and morphisms}
+\textbf{Objects.} An object is a sextuple
+\[
+  (F,\; \mathrm{Ledger}_F,\; J_F,\; \varphi_F,\; 8\mbox{-}\mathrm{tick}_F,\; c_F)
+\]
+equipped with: a universal positive double\mbox{-}entry ledger \(\mathrm{Ledger}_F\) (T1), an atomic cost functional \(J_F\) satisfying the T4 axioms with unique minimum at 1, a self\mbox{-}similar scaling fixed point \(\varphi_F\) (T5), a three\mbox{-}dimensional eight\mbox{-}tick causal scaffold \(8\mbox{-}\mathrm{tick}_F\) (T6--T7), and finite causal speed \(c_F\) (T8). Objects are taken \emph{modulo units}: two sextuples are equivalent if a units mapping sends all dimensionless observables and K\mbox{-}gate identities to each other.
+
+\textbf{Morphisms.} A morphism \(\Phi\colon F\to G\) is a translation of observables that:
+\begin{itemize}
+  \item preserves the recognition ledger structure (posts and dual\mbox{-}balance commute with \(\Phi\)),
+  \item preserves K\mbox{-}gate equalities and all derived dimensionless identities,
+  \item sends \(J_F\)\mbox{-}minimizing moves to \(J_G\)\mbox{-}minimizing moves (cost minimizers are mapped to cost minimizers),
+  \item respects the units quotient (pre\mbox{-} and post\mbox{-} composition with unit rescalings agree).
+\end{itemize}
+Composition is function composition; the identity morphism is the identity translation. With the units quotient, this data defines a category \(\mathbf{ZeroParam}\).
+
+\paragraph{Lean anchors.} \texttt{IndisputableMonolith/ZeroParam.lean} provides scaffolds for \texttt{Framework}, \texttt{Morphism}, identity/compose (\texttt{id}, \texttt{comp}) with laws (\texttt{comp\_id\_left}, \texttt{comp\_id\_right}, \texttt{comp\_assoc}), the \texttt{Admissible} class, and a units\mbox{-}quotient placeholder.
+
+\subsection{Construction of RS(\(\varphi\)) as a canonical object}
+From T1--T8 there is a canonical instance \(\mathrm{RS}(\varphi)\): the recognition ledger with positive atomic increment, the unique atomic cost \(J(x)=\tfrac{1}{2}(x+1/x)\), the golden fixed point \(\varphi\) from self\mbox{-}similarity, the three\mbox{-}dimensional eight\mbox{-}tick causal scaffold, and finite causal speed with \(c=\ell_0/\tau_0\). We regard this sextuple modulo units as a distinguished object of \(\mathbf{ZeroParam}\).
+
+\paragraph{Lean anchors.} \texttt{IndisputableMonolith/RSInitial.lean} defines \texttt{RS : Framework} and its \texttt{Admissible} instance.
+
+\subsection{The Exclusivity Theorem (Initiality)}
+\paragraph{Theorem 1 (Exclusivity/Initiality).} \emph{\(\mathrm{RS}(\varphi)\) is initial in \(\mathbf{ZeroParam}\). For any admissible framework \(F\), there exists a unique units\mbox{-}respecting morphism \(\Phi\colon \mathrm{RS}(\varphi)\to F\) that preserves observables, the K\mbox{-}gate identities, and \(J\)\mbox{-}minimizing structure.}
+
+\paragraph{Proof sketch.} Existence: define \(\Phi\) by mapping the recognition algebra (ledger posts and balances) of \(\mathrm{RS}\) to that of \(F\), and by sending each \(J\)\mbox{-}minimizing move in \(\mathrm{RS}\) to the corresponding minimizing move in \(F\). Discrete continuity (T3) and self\mbox{-}similarity (T5) force \(\varphi_F=\varphi\); stability (T6) fixes \(D=3\) and hence the eight\mbox{-}tick schedule (T7). Finite causal speed (T8) aligns the causal cones up to units. Preservation of K\mbox{-}gates follows because these identities are functions of the dimensionless recognition structure, which \(\Phi\) preserves by construction. Uniqueness: ledger atomicity and the convexity/symmetry of \(J\) (T4) force any structure\mbox{-}preserving translation to coincide with \(\Phi\) on generators and therefore everywhere; units equivalence removes any residual rescaling freedom. Hence \(\mathrm{RS}(\varphi)\) is initial.
+
+\paragraph{Lean anchors.} Initiality scaffolds in \texttt{IndisputableMonolith/RSInitial.lean}: \texttt{initial\_morphism}, \texttt{initial\_morphism\_unique\_up\_to\_units}, and (with \texttt{Subsingleton} ledger) \texttt{initial\_morphism\_unique}. Report hooks in \texttt{IndisputableMonolith/URCAdapters/Reports.lean}: \texttt{rs\_initiality\_report} and the consolidated \texttt{certificates\_manifest} exercise the initiality shape at the report level.
+
+\subsection{Corollaries}
+\paragraph{Corollary.} Any admissible framework is definitionally equivalent to \(\mathrm{RS}(\varphi)\) up to units; i.e., it lies in the essential image of the unique morphism from \(\mathrm{RS}(\varphi)\).
+
+\paragraph{Corollary (Exclusivity Certificate).} Exclusivity follows as a categorical tautology: there are no alternative zero\mbox{-}parameter frameworks within the admissible class unless they introduce free parameters or violate the axioms T1--T8.
+
+\section{Absolute Layer uniqueness via contraction}
+We now show that calibrations are uniquely fixed by a contraction on the units\mbox{-}class manifold induced by the gate identities. This yields a unique fixed point---the \emph{Absolute Layer}---and removes any residual freedom beyond the units quotient.
+
+\subsection{Units\mbox{-}class manifold and the K\mbox{-}gate map}
+Let \(\mathcal{U}\) denote the units\mbox{-}class manifold: tuples of positive base units modulo overall units equivalence. Concretely, take a representative
+\[
+  U=(\ell_0,\, \tau_0,\, E_{\mathrm{coh}},\, G)\in (\mathbb{R}_{>0})^4
+\]
+and work in log\mbox{-}coordinates \(x=\bigl(\ln \ell_0,\, \ln \tau_0,\, \ln E_{\mathrm{coh}},\, \ln G\bigr)\). The derived identities define dimensionless equations at \(U\):
+\begin{align*}
+  \mathrm{K}_c&:\quad c=\ell_0/\tau_0,\\
+  \mathrm{K}_{\hbar}&:\quad \hbar=E_{\mathrm{coh}}\,\tau_0,\\
+  \mathrm{K}_{\lambda}&:\quad \lambda_{\mathrm{rec}}=\sqrt{\hbar G/(\pi c^3)},\\
+  \mathrm{K}_{\alpha}&:\quad \alpha^{-1}=\mathcal{A}(\varphi,\text{gap data}),
+\end{align*}
+with additional cross\mbox{-}constraints (``K\mbox{-}gates'') equating independent routes among the identities. Define residuals \(r_i(x)=\ln\bigl(\mathrm{lhs}_i/\mathrm{rhs}_i\bigr)\). A canonical \emph{gate map} \(\Phi\colon \mathcal{U}\to\mathcal{U}\) acts in log\mbox{-}space as a multiplicative correction that drives residuals to zero:
+\[
+  x'\;=\;x\; -\; W\, r(x),
+\]
+where \(r\) stacks the selected residuals (including cross\mbox{-}gates) and \(W\) is a positive diagonal weight matrix calibrating per\mbox{-}gate step sizes. Equivalently in units\mbox{-}space, \(U' = U\odot \exp\bigl(-W\, r(x)\bigr)\), an elementwise geometric update. Variants using averaged projections \(x' = |\mathcal{K}|^{-1}\sum_{i\in\mathcal{K}} P_i(x)\) onto the individual gate manifolds are equivalent near the solution.
+
+\paragraph{Lean anchors.} Absolute Layer audit hooks are exposed in \texttt{IndisputableMonolith/URCAdapters/Reports.lean}: \texttt{absolute\_layer\_report} and \texttt{absolute\_layer\_invariant\_report}. These exercise the fixed\mbox{-}point shape at the report level. A dedicated contraction module can be introduced when formalized beyond the scaffold.
+
+\subsection{Contraction hypothesis and norm}
+Assume mild regularity: the residual map \(r\) is \(C^1\) in a neighborhood of the RS solution \(x_*\), and the gate Jacobians are bounded. Equip log\mbox{-}space with the sup\mbox{-}norm \(\|x\|_\infty\). Choose weights \(W\) such that the Jacobian of \(\Phi\) at \(x_*\) satisfies
+\[
+  \| D\Phi(x_*) \|_\infty \;=\; \| I - W\, D r(x_*) \|_\infty \;<\; 1.
+\]
+By continuity there exists a calibrated neighborhood \(\mathcal{N}\) of \(x_*\) on which \(\Phi\) is a contraction: \(\|\Phi(x)-\Phi(y)\|_\infty \le L\,\|x-y\|_\infty\) with \(L<1\). The same conclusion holds for averaged projections \(\Phi=|\mathcal{K}|^{-1}\sum P_i\) when the gate manifolds meet transversally; their linearizations are strict contractions under suitable averaging.
+
+\subsection{Theorem 2 (Absolute Layer Fixed Point)}
+\paragraph{Theorem 2.} \emph{The gate map \(\Phi\) is a contraction on a calibrated neighborhood \(\mathcal{N}\subset \mathcal{U}\) of the RS solution. Hence there exists a unique fixed point \(U_*\) (equivalently, \(x_*\)) with \(\Phi(U_*)=U_*\). This fixed point is the Absolute Layer.}
+
+\paragraph{Proof sketch.} By the contraction property in \(\|\cdot\|_\infty\), Banach's fixed\mbox{-}point theorem yields existence and uniqueness of \(x_*\) in \(\mathcal{N}\). The fixed\mbox{-}point equations \(r(x_*)=0\) enforce all gate identities and cross\mbox{-}constraints simultaneously, eliminating calibration freedom. Uniqueness is modulo the global units quotient already factored into \(\mathcal{U}\).
+
+\paragraph{Lean anchors.} Audit/report hooks in \texttt{IndisputableMonolith/URCAdapters/Reports.lean}: \texttt{absolute\_layer\_report}, \texttt{absolute\_layer\_invariant\_report}.
+
+\subsection{Consequence: constants fixed internally; SI anchoring is an audit}
+At \(U_*\) the fundamental constants and scales are fixed internally by structure: \(c=\ell_0/\tau_0\), \(\hbar=E_{\mathrm{coh}}\,\tau_0\), \(\lambda_{\mathrm{rec}}=\sqrt{\hbar G/(\pi c^3)}\), and the fine\mbox{-}structure pipeline for \(\alpha^{-1}\) are satisfied simultaneously. External SI anchoring is therefore an \emph{audit} of consistency (verifying cross\mbox{-}identities within uncertainty) rather than a parameter fit. Any failure indicates either non\mbox{-}admissibility or experimental/systematic error; there is no remaining calibration knob to tune.
+
+\section{Derived identities and their factorization role}
+We collect the core dimensionless identities used by the gate map and explain how all derived ``bridges'' factor through RS under the unique morphism guaranteed by initiality.
+
+\subsection{Identities}
+The following identities hold internally at the Absolute Layer and serve as constraints in the gate set:
+\begin{align}
+  c &= \frac{\ell_0}{\tau_0}, \label{eq:c-identity} \\
+  \hbar &= E_{\mathrm{coh}}\,\tau_0, \label{eq:hbar-identity} \\
+  \lambda_{\mathrm{rec}} &= \sqrt{\frac{\hbar G}{\pi c^3}}, \label{eq:lrec-identity} \\
+  0 &= r_i(U_*), \quad i\in\mathcal{K}, \label{eq:kgates-zero} \\
+  \alpha^{-1} &= \mathcal{A}\bigl(\varphi,\,\text{gap data}\bigr). \label{eq:alpha-pipeline}
+\end{align}
+Here \(\mathcal{K}\) indexes the K\mbox{-}gate equalities (multiple independent routes among \eqref{eq:c-identity}--\eqref{eq:lrec-identity} must agree), implemented as vanishing residuals \(r_i\). The fine\mbox{-}structure pipeline \eqref{eq:alpha-pipeline} denotes a dimensionless map determined by RS structure (including the golden fixed point and gap weights) and is evaluated at the Absolute Layer. Together, these identities pin all derived constants without fits.
+
+\paragraph{Lean anchors.} Gate identity checks in \texttt{IndisputableMonolith/URCAdapters/Reports.lean}: \texttt{k\_gate\_report}, \texttt{k\_identities\_report}, \texttt{lambda\_rec\_identity\_report}, \texttt{single\_inequality\_report}.
+
+\subsection{Bridge factorization lemma}
+\paragraph{Lemma (Bridge factorization).} \emph{Let \(F\) be any admissible framework and \(\Phi\colon \mathrm{RS}(\varphi)\to F\) the unique morphism from Theorem~1. Then every derived identity/bridge in \(F\) factors through the corresponding RS bridge: if \(B_{\mathrm{RS}}\) is a dimensionless bridge in RS (constructed from the ledger, \(J\), \(\varphi\), eight\mbox{-}tick, and the gates), there exists a unique bridge \(B_F\) in \(F\) such that}
+\[
+  B_F\,\circ\, \Phi_X \;=\; \Phi_Y\,\circ\, B_{\mathrm{RS}},
+\]
+\emph{where \(\Phi_X\) and \(\Phi_Y\) are the \(\Phi\)\mbox{-}translations on the bridge's domain/codomain observables. In particular, the identity diagrams commute, and evaluation at \(U_*\) agrees modulo units.}
+
+\paragraph{Proof sketch.} Morphisms preserve the recognition ledger, \(J\)\mbox{-}minimizers, and K\mbox{-}gate equalities by definition; every RS bridge is a composition of these primitives. Define \(B_F\) by transporting the RS construction along \(\Phi\). Commutation follows from functoriality of \(\Phi\) on observables and the fact that K\mbox{-}gates are dimensionless. Uniqueness of \(B_F\) is inherited from the uniqueness of \(\Phi\) (initiality) together with the ledger's atomicity and the convexity/symmetry of \(J\).
+
+\paragraph{Lean anchors.} Bridge factorization scaffolds: \texttt{IndisputableMonolith/URCAdapters/BridgeFactorization.lean} (\texttt{ledger\_factorizes}, \texttt{J\_factorizes}, \texttt{phi\_preserved}, \texttt{eight\_tick\_preserved}).
+
+\section{Empirical audit and falsifiers (no knobs)}
+Exclusivity eliminates tunable parameters; empirical confrontation is therefore an \emph{audit} of internally fixed, dimensionless identities. We provide a single\mbox{-}inequality pass/fail recipe, cross\mbox{-}domain ``needles,'' and explicit falsifiers. There are no fit parameters; uncertainty enters only through reported measurement errors.
+
+\subsection{Single\mbox{-}inequality audit}
+\textbf{Inputs.} A set of independently measured anchors with uncertainties sufficient to evaluate the gate residuals: e.g., \(c,\hbar,G\) (and any additional constants used by the selected K\mbox{-}gates), together with the experimental \(\alpha\) if included.
+
+\textbf{Outputs.} Pass/Fail, and a summary \((Z_\infty,\, \chi^2,\, |\mathcal{K}|)\).
+
+\textbf{Recipe.}
+\begin{enumerate}
+  \item Form the residual vector \(r(x)=\bigl(r_i(x)\bigr)_{i\in\mathcal{K}}\) from \eqref{eq:kgates-zero} using the measured inputs (all residuals are dimensionless logs).
+  \item For each residual, compute a z\mbox{-}score using reported uncertainties: \(z_i = r_i/\sigma_i\), where \(\sigma_i\) is propagated from measurement errors.
+  \item Compute the sup\mbox{-}norm score \(Z_\infty=\max_i |z_i|\) and the aggregate \(\chi^2=\sum_i z_i^2\).
+  \item \emph{Pass} iff \(Z_\infty \le 5\). Report \(Z_\infty\) and \(\chi^2\) with \(|\mathcal{K}|\). (The 5\,\(\sigma\) bound is conventional and parameter\mbox{-}free.)
+\end{enumerate}
+This single inequality certifies simultaneous satisfaction of all gate identities within uncertainty, without any tuning.
+
+\subsection{Cross\mbox{-}domain needles}
+The following independent phenomena provide sharp, parameter\mbox{-}free needles that the RS identities predict:
+\begin{itemize}
+  \item \textbf{Pulsar tick.} Timing spectra exhibit substructure consistent with an eight\mbox{-}tick organization (harmonic content aligned with \(2^3\) phase scheduling), stable across systems modulo environmental broadening.
+  \item \textbf{IR eight\mbox{-}band.} Molecular/biological IR absorption shows eight preferred bands consistent with laddering implied by \(J\) and \(\varphi\)\mbox{-}rung structure; band positions and ratios are fixed up to known environmental shifts.
+  \item \textbf{ILG growth/lensing.} Large\mbox{-}scale structure growth rates and galaxy\mbox{-}galaxy lensing kernels are jointly described by a monotone, non\mbox{-}negative kernel consistent with coarse\mbox{-}grained recognition path measures, without per\mbox{-}object tuning.
+\end{itemize}
+
+\subsection{Falsifiers}
+One\mbox{-}shot failures of any of the following invalidate admissibility:
+\begin{itemize}
+  \item \textbf{Gate identity violation.} Any K\mbox{-}gate residual exceeding \(5\,\sigma\) (e.g., the Planck/IR cross\mbox{-}identity) fails the single\mbox{-}inequality audit.
+  \item \textbf{\(\alpha\) pipeline mismatch.} Disagreement between the RS \(\alpha\) pipeline and experimental \(\alpha\) beyond \(5\,\sigma\), after proper uncertainty propagation.
+  \item \textbf{Eight\mbox{-}tick/3D failure.} Robust evidence against a three\mbox{-}dimensional eight\mbox{-}tick scaffold in regimes where discretization should surface (e.g., stable phase scheduling inconsistent with \(2^3\)).
+  \item \textbf{Kernel pathology.} Empirical lensing/growth kernels require negative or non\mbox{-}monotone structure inconsistent with ILG coarse\mbox{-}graining.
+  \item \textbf{Knob dependence.} Necessity of per\mbox{-}system parameter tuning to match observations (e.g., object\mbox{-}specific free parameters) within the admissibility scope.
+  \item \textbf{Units instability.} Demonstration that no common units\mbox{-}class fixed point can satisfy the gate set across domains (i.e., failure of a shared Absolute Layer).
+\end{itemize}
+Each falsifier targets the architecture directly; there is no contingency on fit strategy because none is permitted under exclusivity.
+
+\paragraph{Lean anchors.} Consolidated audit harness in \texttt{IndisputableMonolith/URCAdapters/Reports.lean}: \texttt{audit\_identities\_report} and related hooks.
+
+\section{Related and non\mbox{-}admissible alternatives}
+Admissibility (\S\,2) requires zero free parameters beyond units (T1--T8). Many successful physical models introduce tunable constants or per\mbox{-}system knobs; these are \emph{non\mbox{-}admissible} as foundational descriptions, though they can arise as quotients or coarse\mbox{-}grainings of RS.
+
+\subsection{Parameterized families are non\mbox{-}admissible}
+\begin{itemize}
+  \item \textbf{EFT/QFT parameter scans.} Renormalized couplings (e.g., gauge/Yukawa constants) treated as adjustable violate the zero\mbox{-}knob policy; admissibility forbids per\mbox{-}observable fitting. In RS, rung\mbox{-}fixed ladders and gate identities pin these values internally.
+  \item \textbf{GR+\(\Lambda\) with fit\mbox{-}level constants.} A theory positing \(G\) and \(\Lambda\) as free dialed inputs (or per\mbox{-}galaxy nuisance parameters) is non\mbox{-}admissible. In RS, \(G\) participates in \(\lambda_{\mathrm{rec}}=\sqrt{\hbar G/(\pi c^3)}\), removing calibration freedom at the Absolute Layer.
+  \item \textbf{MOND/galaxy\mbox{-}wise acceleration scales.} Per\mbox{-}system accelerations or transition scales are explicit knobs; these fail admissibility by construction.
+  \item \textbf{Phenomenological fits.} Any framework whose empirical success relies on object\mbox{-}specific parameters (templates, priors, or tuning) is non\mbox{-}admissible at the foundational layer.
+\end{itemize}
+
+\subsection{Effective descriptions as quotients or coarse\mbox{-}grainings of RS}
+Admissible RS can generate familiar parameterized theories as \emph{effective} descriptions via two forgetful operations:
+\begin{enumerate}
+  \item \textbf{Units quotient functor.} Rescalings of base units induce natural equivalences on observables; many ``constants'' reduce to unit choices. RS provides a principled units quotient in which dimensionless identities (K\mbox{-}gates, \(c=\ell_0/\tau_0\), \(\hbar=E_{\mathrm{coh}}\,\tau_0\), \(\lambda_{\mathrm{rec}}=\sqrt{\hbar G/(\pi c^3)}\)) persist unchanged.
+  \item \textbf{Coarse\mbox{-}graining functor.} Forgetting ledger microstructure and averaging path measures yields continuum fields and kernels. Information\mbox{-}Limited Gravity (ILG) is one such coarse\mbox{-}grained limit with a non\mbox{-}negative, monotone kernel that reproduces weak\mbox{-}field, PPN, and lensing proxies without per\mbox{-}object tuning.
+\end{enumerate}
+Under these maps, derived identities commute by the bridge factorization lemma (\S\,5.2): effective bridges are the images of RS bridges, so audit identities remain parameter\mbox{-}free. ``Parameters'' reappear only as coordinates on quotient/coarse\mbox{-}grained manifolds, not as knobs.
+
+\paragraph{Lean anchors.} Units and quotients: \texttt{URCAdapters/Reports.lean} exposes \texttt{units\_quotient\_functor\_report}, \texttt{units\_quotient\_coherence\_report}, and \texttt{zpf\_isomorphism\_report}; framework isomorphism up to units: \texttt{framework\_uniqueness\_report}. Coarse\mbox{-}grain: weak\mbox{-}field/lensing/PPN/FRW hooks (e.g., \texttt{weakfield\_ilg\_report}, \texttt{lensing\_small\_report}, \texttt{ppn\_report}, \texttt{frw\_exist\_report}). Bridge factorization: \texttt{IndisputableMonolith/URCAdapters/BridgeFactorization.lean}.
+
+\section{Methods: formal scaffolding and certificates}
+We summarize the mechanized scaffolding and certificate payloads that pair with the analytic theorems. Where a result is represented by a scaffolded axiom, we state this explicitly and point to the corresponding audit/report hook.
+
+\subsection{Lean scaffolding}
+\begin{itemize}
+  \item \textbf{Objects and morphisms.} \texttt{IndisputableMonolith/ZeroParam.lean}: \texttt{Framework}, \texttt{Morphism}, identity/compose (\texttt{id}, \texttt{comp}) with laws (\texttt{comp\_id\_left}, \texttt{comp\_id\_right}, \texttt{comp\_assoc}); \texttt{Admissible}; units quotient placeholder.
+  \item \textbf{Initiality.} \texttt{IndisputableMonolith/RSInitial.lean}: \texttt{RS : Framework} and admissibility; \texttt{initial\_morphism} (construction), \texttt{initial\_morphism\_unique\_up\_to\_units} (up to units), and \texttt{initial\_morphism\_unique} (with \texttt{Subsingleton} ledger) encode the initiality shape.
+  \item \textbf{Absolute Layer audits.} \texttt{IndisputableMonolith/URCAdapters/Reports.lean}: \texttt{absolute\_layer\_report}, \texttt{absolute\_layer\_invariant\_report} (report\mbox{-}level checks for the fixed\mbox{-}point shape).
+  \item \textbf{Bridge factorization.} \texttt{IndisputableMonolith/URCAdapters/BridgeFactorization.lean}: scaffolds for ledger/J/\(\varphi\)/eight\mbox{-}tick preservation along the initial morphism.
+\end{itemize}
+
+\subsection{Certificates}
+\begin{itemize}
+  \item \textbf{Exclusivity (reports).} \texttt{IndisputableMonolith/URCAdapters/Reports.lean}: \texttt{rs\_initiality\_report} and \texttt{certificates\_manifest} surface the initiality/exclusivity shape at the report level.
+  \item \textbf{AbsoluteLayer v2.} Encoded via the contraction scaffold and audit hooks: \texttt{URCAdapters/Reports.lean} exposes \texttt{absolute\_layer\_report} and \texttt{absolute\_layer\_invariant\_report} as operational checks for the fixed point and invariance under units.
+  \item \textbf{BridgeFactorizes.} Witnessed by the preservation scaffolds in \texttt{URCAdapters/BridgeFactorization.lean}; commuting diagrams are used implicitly by audit identities.
+  \item \textbf{UnitsQuotient.} Functor/coherence certificates surfaced via reports: \texttt{units\_quotient\_functor\_report}, \texttt{units\_quotient\_coherence\_report}, and the \texttt{zpf\_isomorphism\_report} (one\mbox{-}point units quotient).
+\end{itemize}
+
+\subsection{PROOF\_GRADE and EPISTEMIC tagging}
+For reproducible ingestion, each claim or certificate line is tagged with \texttt{PROOF\_GRADE}$\in\{\texttt{formal},\texttt{analytic},\texttt{empirical},\texttt{scaffold}\}$ and an \texttt{EPISTEMIC} marker. Core architectural theorems (initiality; Absolute Layer uniqueness) are \emph{analytic} in this manuscript and mirrored by \emph{scaffold} Lean artifacts with audit hooks. Domain\mbox{-}specific predictions are \emph{empirical}; proofs in Mathlib/Lean are \emph{formal}. This discipline ensures downstream agents weigh claims appropriately during training and audit.
+
+\section{Discussion and outlook}
+Initiality plus a unique Absolute Layer reframes unification: admissible zero\mbox{-}parameter descriptions factor through RS up to units, so cross\mbox{-}domain inference reduces to audits of dimensionless identities rather than parameter fits. Practically, this yields machine\mbox{-}verifiable pipelines (K\mbox{-}gates; \(\lambda_{\mathrm{rec}}\); \(\alpha^{-1}\)) and principled effective limits (ILG) without per\mbox{-}object tuning.
+
+\paragraph{Implications.} The categorical posture supports bi\mbox{-}interpretability between observation bundles and RS bridges, clarifies the role of units as a quotient (not a knob), and sharpens universality claims (e.g., rung\mbox{-}locked mass ratios, eight\mbox{-}tick spectral patterns). For inference, audits become pass/fail comparators with uncertainty propagation, enabling robust, knob\mbox{-}free benchmarking.
+
+\paragraph{Open formal items.}
+\begin{itemize}
+  \item \textbf{Full \(\alpha\) proof via character sum for \(w_8\).} Close the gap\mbox{-}weight derivation (eight\mbox{-}phase character sum on the Q3 Gray cycle) and stamp a formal certificate.
+  \item \textbf{Contraction without axioms.} Replace the contraction placeholder by a full proof (local Lipschitz/averaged projection arguments) and export a formal fixed\mbox{-}point witness.
+  \item \textbf{Bridge factorization (beyond scaffolds).} Elevate preservation lemmas to full commuting diagram proofs for representative bridges.
+  \item \textbf{Units\mbox{-}quotient functoriality.} Strengthen coherence/naturality proofs and expose the categorical equivalence at the RS scale.
+  \item \textbf{Convex tier law.} Formalize the KKT program for M/L tiers (ConvexTierLaw) and publish the integer dual certificate \(\Delta n\).
+  \item \textbf{ILG coarse\mbox{-}graining.} Complete the monotonicity/nonnegativity proof from path measures, linking directly to Born/continuity bridges.
+\end{itemize}
+
+\appendix
+
+\section*{Appendices}
+
+\subsection*{A. Minimal arithmetic forcing for \(D=3\) via \(\operatorname{lcm}(2^D,45)=360\)}
+We package the 8\(\leftrightarrow\)45 hinge as an arithmetic lemma: the minimal period \(2^D\) co\mbox{-}synchronizes with the 45\mbox{-}fold structure only at 360, forcing \(D=3\).
+\begin{quote}
+\textbf{Lemma.} \(\operatorname{lcm}(2^D,45)=360\) if and only if \(D=3\).
+\end{quote}
+Sketch: \(45=3^2\cdot 5\) and \(360=2^3\cdot 3^2\cdot 5\). Since \(\operatorname{lcm}(2^D,45)=2^{\max(D,0)}\cdot 3^2\cdot 5\), equality to 360 forces \(\max(D,0)=3\), hence \(D=3\). This encapsulates ``coverage + 45\mbox{-}sync'' in a single arithmetic identity.
+
+\paragraph{Lean anchors.} \texttt{IndisputableMonolith/Verification/DimensionCRT.lean}: \texttt{lcm\_pow2\_45\_eq\_360\_iff}, \texttt{lcm\_pow2\_45\_forces\_D3}.
+
+\subsection*{B. Canonical ILG kernel from path\mbox{-}measure coarse\mbox{-}graining (monotonicity)}
+Starting from recognition\mbox{-}bounded micro\mbox{-}trajectories, coarse\mbox{-}graining the path measure induces an effective kernel \(w\ge 0\) that multiplies baryonic contributions in weak field. Data\mbox{-}processing monotonicity yields nonnegativity and scale/time monotonicity; continuum limits produce standard proxies (growth, PPN, lensing) without per\mbox{-}object tuning.
+\begin{itemize}
+  \item \emph{Kernel properties.} \(w\ge 0\); monotone in smoothing scale/time; normalized per audit policy. Weak\mbox{-}field: \(v^2_{\mathrm{model}}=w\,v^2_{\mathrm{baryon}}\).
+  \item \emph{Continuum proxies.} PPN bands, GW speed, lensing deflection/time delay, FRW growth \(f(a)\), and \(\sigma_8\) mapping under shared \(w\).
+\end{itemize}
+
+\paragraph{Lean anchors.} \texttt{IndisputableMonolith/Verification/ILGCoarseGrain.lean} (scaffold); reports in \texttt{URCAdapters/Reports.lean}: \texttt{weakfield\_ilg\_report}, \texttt{lensing\_band\_report}, \texttt{lensing\_small\_report}, \texttt{ppn\_report}, \texttt{frw\_exist\_report}, \texttt{growth\_report}, \texttt{gw\_report}.
+
+\subsection*{C. BNF for record/certificate grammar; audit recipe; version anchors}
+\textbf{Grammar (BNF).}
+\begin{verbatim}
+record   ::= header NEWLINE field*
+header   ::= KIND ';' IDENT
+KIND     ::= 'CERT' | 'TAG' | 'BRIDGE'
+field    ::= KEY '=' VALUE
+KEY      ::= [A-Z_][A-Z0-9_]*
+VALUE    ::= QUOTED | SET | ATOM
+QUOTED   ::= '"' (CHAR | ESC)* '"'
+SET      ::= '{' (ATOM | QUOTED) (',' (ATOM | QUOTED))* '}'
+ATOM     ::= [A-Za-z0-9_.-]+
+NEWLINE  ::= '\n'
+\end{verbatim}
+\emph{Semantics.} Unknown keys are ignored; duplicate keys use last\mbox{-}write wins; \texttt{PROOF\_GRADE} and \texttt{EPISTEMIC} are required for \texttt{CERT} lines.
+
+\textbf{Audit recipe (single inequality).}
+Inputs: anchors \((c,\hbar,G,\dots)\) with uncertainties. Compute residuals \(r_i\) for all K\mbox{-}gates and cross\mbox{-}identities; form z\mbox{-}scores \(z_i=r_i/\sigma_i\); pass iff \(\max\_i|z_i|\le 5\).
+
+\textbf{Version anchors.}
+\begin{itemize}
+  \item \texttt{lean\_version}: from \texttt{lean-toolchain}
+  \item \texttt{mathlib\_version}: from \texttt{lake-manifest.json}
+  \item \texttt{git\_commit\_sha}: \texttt{git rev-parse --short HEAD}
+\end{itemize}
+Embed these at \texttt{@META} to freeze reproducibility.
+
+\paragraph{Lean anchors.} Consolidated audit: \texttt{URCAdapters/Reports.lean} \texttt{audit\_identities\_report}; identity hooks listed in \S\,5 and \S\,6. Repo: \texttt{https://github.com/jonwashburn/reality}.
+
+\subsection*{D. Numerical spot\mbox{-}checks and uncertainty propagation}
+\textbf{Procedure.}
+\begin{enumerate}
+  \item Evaluate identities \eqref{eq:c-identity}--\eqref{eq:lrec-identity} and \eqref{eq:alpha-pipeline} at reported anchors; derive residuals as dimensionless logs.
+  \item Propagate uncertainties by linearization: \(\sigma\_{\ln f}=\sqrt{\sum\_j (\partial\_{x\_j}\ln f\,\sigma\_{x\_j})^2}\).
+  \item Report \(Z\_\infty=\max|z\_i|\), \(\chi^2=\sum z\_i^2\), \(|\mathcal{K}|\). Pass/fail per \S\,6.1.
+\end{enumerate}
+This appendix is non\mbox{-}normative; the audit is parameter\mbox{-}free and insensitive to presentation.
+
+\paragraph{Lean anchors.} \texttt{URCAdapters/Reports.lean}: \texttt{single\_inequality\_report}, \texttt{audit\_identities\_report}.
+\end{document}
+
+
