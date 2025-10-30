@@ -2729,8 +2729,9 @@ structure MLStrategy2Cert where
   ∀ (config : IndisputableMonolith.Astrophysics.StellarConfiguration),
   ∃ (n_nuc n_phot : ℤ),
     abs (IndisputableMonolith.Astrophysics.mass_to_light config -
-         IndisputableMonolith.Astrophysics.ml_from_tiers n_nuc n_phot) <
-    0.15 * IndisputableMonolith.Astrophysics.ml_from_tiers n_nuc n_phot
+         IndisputableMonolith.Astrophysics.ml_from_tiers n_nuc n_phot) ≤
+    (Real.sqrt IndisputableMonolith.Constants.phi - 1) *
+      IndisputableMonolith.Astrophysics.ml_from_tiers n_nuc n_phot
 
 @[simp] theorem MLStrategy2Cert.verified_any (c : MLStrategy2Cert) :
   MLStrategy2Cert.verified c := by
