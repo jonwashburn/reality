@@ -1,3 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Install elan
+        run: |
+          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y
+          echo "$HOME/.elan/bin" >> $GITHUB_PATH
+      - name: Build
+        run: |
+          lake build
+      - name: Sorry gate (numerics/constants)
+        run: |
+          ! grep -R --line-number -E '\bsorry\b' IndisputableMonolith/Numerics IndisputableMonolith/Constants || (echo "Found 'sorry' in numerics/constants" && exit 1)
+      - name: Verify numeric certificates
+        run: |
+          python3 scripts/verify_certs.py
 name: Lean CI
 
 on:
