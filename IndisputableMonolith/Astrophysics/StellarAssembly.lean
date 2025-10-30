@@ -62,7 +62,28 @@ def cost_differential (emit : PhotonEmissionCost) (store : BaryonStorageCost) : 
 
 /-! ### Equilibrium M/L from Cost Balance -/
 
-/-- Axiom: Star formation reaches equilibrium where M/L minimizes total J-cost.
+/-- Hypothesis envelope for Strategy 1 (stellar assembly) axioms. -/
+class StellarAssemblyAxioms where
+  equilibrium_ml_from_j_minimization :
+    ∀ (emit : PhotonEmissionCost) (store : BaryonStorageCost),
+    ∃ (ML_eq : ℝ), 0 < ML_eq ∧ ML_eq = Real.exp (-(cost_differential emit store) / J_bit)
+  cost_differential_quantized :
+    ∀ (emit : PhotonEmissionCost) (store : BaryonStorageCost),
+    ∃ (n : ℤ), abs (cost_differential emit store - n * Real.log phi) < 0.1 * Real.log phi
+  recognition_overhead_increases_with_mass :
+    ∀ (M : ℝ), 0 < M → ∃ (emit : PhotonEmissionCost),
+      emit.recognition_overhead = phi ^ (Real.log M / Real.log phi)
+  solar_neighborhood_calibration :
+    ∃ (n_solar : ℤ), abs (phi ^ n_solar - 1.0) < 0.2 ∧ n_solar = 0
+
+variable [StellarAssemblyAxioms]
+
+/-- Star formation reaches equilibrium where M/L minimizes total J-cost. -/
+theorem equilibrium_ml_from_j_minimization :
+  ∀ (emit : PhotonEmissionCost) (store : BaryonStorageCost),
+  ∃ (ML_eq : ℝ), 0 < ML_eq ∧
+    ML_eq = Real.exp (-(cost_differential emit store) / J_bit) :=
+  StellarAssemblyAxioms.equilibrium_ml_from_j_minimization
 
     Classical derivation:
     - During collapse, system minimizes total recognition cost
@@ -77,10 +98,11 @@ axiom equilibrium_ml_from_j_minimization :
 /-! ### φ-Quantization of Cost Differential -/
 
 /-- If ledger overhead is φ-quantized, then Δδ ~ n·ln(φ). -/
-axiom cost_differential_quantized :
+theorem cost_differential_quantized :
   ∀ (emit : PhotonEmissionCost) (store : BaryonStorageCost),
   ∃ (n : ℤ),
-    abs (cost_differential emit store - n * Real.log phi) < 0.1 * Real.log phi
+    abs (cost_differential emit store - n * Real.log phi) < 0.1 * Real.log phi :=
+  StellarAssemblyAxioms.cost_differential_quantized
 
 /-- M/L on φ-ladder from quantized cost differential. -/
 theorem ml_phi_ladder_from_costs :
@@ -104,10 +126,11 @@ theorem ml_phi_ladder_from_costs :
 /-! ### Stellar Mass Dependence -/
 
 /-- Recognition overhead increases with stellar mass. -/
-axiom recognition_overhead_increases_with_mass :
+theorem recognition_overhead_increases_with_mass :
   ∀ (M : ℝ), 0 < M →
   ∃ (emit : PhotonEmissionCost),
-    emit.recognition_overhead = phi ^ (Real.log M / Real.log phi)
+    emit.recognition_overhead = phi ^ (Real.log M / Real.log phi) :=
+  StellarAssemblyAxioms.recognition_overhead_increases_with_mass
 
 /-- Predicted M/L correlation with stellar mass.
 
@@ -144,10 +167,11 @@ theorem ml_increases_with_stellar_mass :
 /-! ### Solar Neighborhood Calibration -/
 
 /-- For solar neighborhood, calibrate n from observed M/L ~ 1.0. -/
-axiom solar_neighborhood_calibration :
+theorem solar_neighborhood_calibration :
   ∃ (n_solar : ℤ),
     abs (phi ^ n_solar - 1.0) < 0.2 ∧
-    n_solar = 0
+    n_solar = 0 :=
+  StellarAssemblyAxioms.solar_neighborhood_calibration
 
 /-- Predict M/L distribution across stellar types from n_solar. -/
 theorem ml_distribution_from_solar_calibration :

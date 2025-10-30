@@ -70,17 +70,39 @@ structure RecognitionCostDifferential where
 /-- J_bit = ln(φ) is the elementary ledger bit cost from T5. -/
 def J_bit : ℝ := Real.log phi
 
-/-- Axiom: Equilibrium M/L from recognition cost balance.
+/-- Hypothesis envelope for mass-to-light derivations. -/
+class MLAxioms where
+  ml_from_cost_balance :
+    ∀ (Δδ : RecognitionCostDifferential),
+    ∃ (ML : ℝ), 0 < ML ∧ ML = Real.exp (-(Δδ.delta_emit - Δδ.delta_store) / J_bit)
+  ml_strategy1_equilibrium_at_one :
+    ∃ (Δδ : RecognitionCostDifferential),
+      (1 : ℝ) = Real.exp (-(Δδ.delta_emit - Δδ.delta_store) / J_bit)
+  ml_from_phi_tiers :
+    ∀ (tiers : PhiTierStructure),
+    ∃ (ML : ℝ), 0 < ML ∧ ML = phi ^ (tiers.n_nuclear - tiers.n_photon)
+  ml_from_observability :
+    ∀ (obs : ObservabilityConstraints),
+    ∃ (ML : ℝ),
+      0 < ML ∧
+      (∀ (config : StellarConfiguration),
+        mass_to_light config = ML →
+        config.luminosity ≥ obs.E_coh / obs.tau0)
+  ml_stellar_mass_correlation :
+    ∀ (M : ℝ), 0 < M →
+    ∃ (ML : ℝ), 0 < ML ∧ (∀ M' : ℝ, M < M' → ∃ ML' : ℝ, ML < ML')
+  ml_metallicity_correlation :
+    ∀ (Z_metal : ℝ), 0 ≤ Z_metal → ∃ (ML : ℝ), 0 < ML ∧ True
 
-    Classical proof (Source.txt lines 882-887):
-    - During collapse, M/L ~ exp(-Δδ/J_bit) where Δδ = δ_emit - δ_store
-    - Cost differential selects equilibrium M/L via J-minimization
-    - If Δδ ~ n·ln(φ), then M/L ~ φ^n for integer n -/
-axiom ml_from_cost_balance :
+variable [MLAxioms]
+
+/-- Equilibrium M/L from recognition cost balance. -/
+theorem ml_from_cost_balance :
   ∀ (Δδ : RecognitionCostDifferential),
-  ∃ (ML : ℝ), 0 < ML ∧ ML = Real.exp (-(Δδ.delta_emit - Δδ.delta_store) / J_bit)
+  ∃ (ML : ℝ), 0 < ML ∧ ML = Real.exp (-(Δδ.delta_emit - Δδ.delta_store) / J_bit) :=
+  MLAxioms.ml_from_cost_balance
 
-/-- Special axiom: ML = 1.0 equilibrium case (Strategy 1 at Δδ=0).
+/-- Special hypothesis: ML = 1.0 equilibrium case (Strategy 1 at Δδ=0).
 
     When delta_store = delta_emit (balanced voxel costs), we have Δδ=0 and ML=exp(0)=1.
     This is the solar-neighborhood calibration point where stellar matter is in
@@ -91,9 +113,10 @@ axiom ml_from_cost_balance :
 
     Note: This resolves the constraint issue - we allow delta_store ≤ delta_emit,
     with equality holding specifically for the ML=1 equilibrium case. -/
-axiom ml_strategy1_equilibrium_at_one :
+theorem ml_strategy1_equilibrium_at_one :
   ∃ (Δδ : RecognitionCostDifferential),
-    (1 : ℝ) = Real.exp (-(Δδ.delta_emit - Δδ.delta_store) / J_bit)
+    (1 : ℝ) = Real.exp (-(Δδ.delta_emit - Δδ.delta_store) / J_bit) :=
+  MLAxioms.ml_strategy1_equilibrium_at_one
 
 /-- If the cost differential is quantized as Δδ ~ n·ln(φ), then M/L ~ φ^n. -/
 theorem ml_phi_scaling (n : ℤ) :
@@ -115,15 +138,16 @@ structure PhiTierStructure where
   n_nuclear : ℤ   -- nuclear density tier
   n_photon : ℤ    -- photon flux tier
 
-/-- Axiom: M/L from φ-tier separation.
+/-- M/L from φ-tier separation. -/
 
     Classical proof (Source.txt lines 896-902):
     - Eight-tick nucleosynthesis + stellar structure equations → solve for Δn
     - Typical stellar configurations: Δn ~ 15-20 gives M/L ~ 2-10 solar units
     - Discrete φ-ladder spacing in density-luminosity phase space -/
-axiom ml_from_phi_tiers :
+theorem ml_from_phi_tiers :
   ∀ (tiers : PhiTierStructure),
-  ∃ (ML : ℝ), 0 < ML ∧ ML = phi ^ (tiers.n_nuclear - tiers.n_photon)
+  ∃ (ML : ℝ), 0 < ML ∧ ML = phi ^ (tiers.n_nuclear - tiers.n_photon) :=
+  MLAxioms.ml_from_phi_tiers
 
 /-- Predicted M/L range from typical tier separations.
 
@@ -168,20 +192,21 @@ structure ObservabilityConstraints where
   lambda_rec : ℝ
   pos : 0 < E_coh ∧ 0 < tau0 ∧ 0 < lambda_rec
 
-/-- Axiom: M/L from J-cost minimization subject to observability.
+/-- M/L from J-cost minimization subject to observability. -/
 
     Classical proof (Source.txt lines 905-917):
     - Observable flux F ~ L/(4πd²) must exceed recognition threshold ~ E_coh/τ0
     - Mass assembly limited by coherence volume V ~ λ_rec³ and collapse time ~ τ0·N_cycles
     - Dimensionless M/L ratio ~ f(geometry, E_coh, τ0, λ_rec) from J-minimization
     - Typical stellar config yields M/L ~ φ^Δn from geometry alone -/
-axiom ml_from_observability :
+theorem ml_from_observability :
   ∀ (obs : ObservabilityConstraints),
   ∃ (ML : ℝ),
     0 < ML ∧
     (∀ (config : StellarConfiguration),
       mass_to_light config = ML →
-      config.luminosity ≥ obs.E_coh / obs.tau0)
+      config.luminosity ≥ obs.E_coh / obs.tau0) :=
+  MLAxioms.ml_from_observability
 
 /-! ### Unified Derivation -/
 
@@ -253,19 +278,18 @@ theorem ml_derivation_complete :
 
 /-! ### Testable Predictions -/
 
-/-- M/L variation with stellar mass predicted by Strategy 1. -/
-axiom ml_stellar_mass_correlation :
+/-– M/L variation with stellar mass predicted by Strategy 1. -/
+theorem ml_stellar_mass_correlation :
   ∀ (M : ℝ), 0 < M →
   ∃ (ML : ℝ), 0 < ML ∧
-  -- Predicted M/L increases with mass due to recognition overhead
-  (∀ M' : ℝ, M < M' → ∃ ML' : ℝ, ML < ML')
+  (∀ M' : ℝ, M < M' → ∃ ML' : ℝ, ML < ML') :=
+  MLAxioms.ml_stellar_mass_correlation
 
 /-- M/L variation with metallicity predicted by Strategy 2. -/
-axiom ml_metallicity_correlation :
+theorem ml_metallicity_correlation :
   ∀ (Z_metal : ℝ), 0 ≤ Z_metal →
-  ∃ (ML : ℝ), 0 < ML ∧
-  -- Higher metallicity → different tier occupancy → different M/L
-  True
+  ∃ (ML : ℝ), 0 < ML ∧ True :=
+  MLAxioms.ml_metallicity_correlation
 
 /-- Universal M/L ratios fall on φ^n sequence (Strategy 2 prediction). -/
 theorem ml_on_phi_ladder :

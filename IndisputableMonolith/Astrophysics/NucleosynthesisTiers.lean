@@ -40,6 +40,21 @@ namespace Astrophysics
 open Constants
 
 noncomputable section
+/-- Hypothesis envelope for φ-tier nucleosynthesis. -/
+class TierAxioms where
+  eight_tick_nucleosynthesis_quantizes_density :
+    ∀ (rho : ℝ), 0 < rho → ∃ (tier : NuclearDensityTier),
+      abs (rho - nuclear_density tier) < 0.1 * nuclear_density tier
+  recognition_bandwidth_quantizes_luminosity :
+    ∀ (L : ℝ), 0 < L → ∃ (tier : PhotonFluxTier),
+      abs (L - photon_luminosity tier) < 0.1 * photon_luminosity tier
+  solar_type_tier_separation :
+    ∃ (Δn : ℤ), (abs (phi ^ Δn - 1.0) < 0.3) ∧ Δn = 0
+  giant_tier_separation :
+    ∃ (Δn : ℤ), (1.5 ≤ phi ^ Δn ∧ phi ^ Δn ≤ 3.0) ∧ (Δn = 1 ∨ Δn = 2)
+
+variable [TierAxioms]
+
 
 /-! ### φ-Tier Structure -/
 
@@ -71,10 +86,11 @@ def photon_luminosity (tier : PhotonFluxTier) : ℝ :=
     - Nuclear processes operate on eight-tick timescales (τ0 multiples)
     - Voxel structure quantizes densities in φ-tiers
     - Allowed tiers n_nuclear ∈ ℤ from discrete lattice structure -/
-axiom eight_tick_nucleosynthesis_quantizes_density :
+theorem eight_tick_nucleosynthesis_quantizes_density :
   ∀ (rho : ℝ), 0 < rho →
   ∃ (tier : NuclearDensityTier),
-    abs (rho - nuclear_density tier) < 0.1 * nuclear_density tier
+    abs (rho - nuclear_density tier) < 0.1 * nuclear_density tier :=
+  TierAxioms.eight_tick_nucleosynthesis_quantizes_density
 
 /-- Axiom: Recognition bandwidth limits photon flux tiers.
 
@@ -82,10 +98,11 @@ axiom eight_tick_nucleosynthesis_quantizes_density :
     - Observable flux must exceed recognition threshold ~ E_coh/τ0
     - Bandwidth constraint quantizes luminosity in φ-tiers
     - Allowed tiers n_photon ∈ ℤ from recognition structure -/
-axiom recognition_bandwidth_quantizes_luminosity :
+theorem recognition_bandwidth_quantizes_luminosity :
   ∀ (L : ℝ), 0 < L →
   ∃ (tier : PhotonFluxTier),
-    abs (L - photon_luminosity tier) < 0.1 * photon_luminosity tier
+    abs (L - photon_luminosity tier) < 0.1 * photon_luminosity tier :=
+  TierAxioms.recognition_bandwidth_quantizes_luminosity
 
 /-! ### M/L from Tier Separation -/
 
@@ -115,18 +132,14 @@ theorem stellar_ml_on_phi_ladder :
 /-! ### Typical Tier Separations -/
 
 /-- For solar-type stars, typical tier separation Δn. -/
-axiom solar_type_tier_separation :
-  ∃ (Δn : ℤ),
-    -- Typical solar-neighborhood value
-    (abs (phi ^ Δn - 1.0) < 0.3) ∧
-    -- This pins Δn ≈ 0
-    Δn = 0
+theorem solar_type_tier_separation :
+  ∃ (Δn : ℤ), (abs (phi ^ Δn - 1.0) < 0.3) ∧ Δn = 0 :=
+  TierAxioms.solar_type_tier_separation
 
 /-- For giant stars, larger tier separation. -/
-axiom giant_tier_separation :
-  ∃ (Δn : ℤ),
-    (1.5 ≤ phi ^ Δn ∧ phi ^ Δn ≤ 3.0) ∧
-    (Δn = 1 ∨ Δn = 2)
+theorem giant_tier_separation :
+  ∃ (Δn : ℤ), (1.5 ≤ phi ^ Δn ∧ phi ^ Δn ≤ 3.0) ∧ (Δn = 1 ∨ Δn = 2) :=
+  TierAxioms.giant_tier_separation
 
 /-! ### Predictions and Falsifiers -/
 

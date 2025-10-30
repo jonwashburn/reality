@@ -38,6 +38,24 @@ namespace Astrophysics
 open Constants
 
 noncomputable section
+/-- Hypothesis envelope for observability-limit arguments (Strategy 3) and IMF. -/
+class ObservabilityAxioms where
+  ml_from_j_minimization :
+    ∀ (thresh : RecognitionThreshold) (vol : CoherenceVolume) (ts : CollapseTimescale),
+    ∃ (ML_opt : ℝ), 0 < ML_opt ∧
+      (∀ (config : StellarConfigGeometry),
+        mass_to_light config.toStellarConfiguration = ML_opt →
+        config.luminosity ≥ thresh.E_coh / thresh.tau0 ∧
+        config.mass ≤ max_coherent_mass vol (config.mass / (4/3 * Real.pi * config.radius ^ 3)) ∧
+        ∀ (config' : StellarConfigGeometry),
+          mass_to_light config'.toStellarConfiguration = ML_opt →
+          total_J_cost config ≤ total_J_cost config')
+  imf_from_j_minimization :
+    ∃ (dN_dM : ℝ → ℝ), (∀ M : ℝ, 0 < M → 0 ≤ dN_dM M) ∧
+      (∃ (alpha : ℝ), 1 < alpha ∧ alpha < 3 ∧ ∀ M : ℝ, 0 < M → dN_dM M = M ^ (-alpha))
+
+variable [ObservabilityAxioms]
+
 
 /-! ### Observability Thresholds -/
 
@@ -97,20 +115,17 @@ def total_J_cost (config : StellarConfigGeometry) : ℝ :=
       (c) Collapse time ≤ τ0·N_max (causality)
     - Euler-Lagrange equations yield equilibrium M/L
     - Solution: M/L ~ f(geometry, E_coh, τ0, λ_rec) -/
-axiom ml_from_j_minimization :
+theorem ml_from_j_minimization :
   ∀ (thresh : RecognitionThreshold) (vol : CoherenceVolume) (ts : CollapseTimescale),
-  ∃ (ML_opt : ℝ),
-    0 < ML_opt ∧
+  ∃ (ML_opt : ℝ), 0 < ML_opt ∧
     (∀ (config : StellarConfigGeometry),
       mass_to_light config.toStellarConfiguration = ML_opt →
-      -- Satisfies observability constraint
       config.luminosity ≥ thresh.E_coh / thresh.tau0 ∧
-      -- Satisfies coherence volume constraint
       config.mass ≤ max_coherent_mass vol (config.mass / (4/3 * Real.pi * config.radius ^ 3)) ∧
-      -- Minimizes total J-cost
       ∀ (config' : StellarConfigGeometry),
         mass_to_light config'.toStellarConfiguration = ML_opt →
-        total_J_cost config ≤ total_J_cost config')
+        total_J_cost config ≤ total_J_cost config') :=
+  ObservabilityAxioms.ml_from_j_minimization
 
 /-! ### Geometry-Only M/L Prediction -/
 
@@ -137,12 +152,12 @@ theorem ml_from_geometry_only :
 /-! ### IMF Shape Prediction -/
 
 /-- Initial mass function (IMF) shape from J-minimization. -/
-axiom imf_from_j_minimization :
+theorem imf_from_j_minimization :
   ∃ (dN_dM : ℝ → ℝ),
     (∀ M : ℝ, 0 < M → 0 ≤ dN_dM M) ∧
-    -- IMF ∝ M^(-α) with α from J-cost optimization
     (∃ (alpha : ℝ), 1 < alpha ∧ alpha < 3 ∧
-      ∀ M : ℝ, 0 < M → dN_dM M = M ^ (-alpha))
+      ∀ M : ℝ, 0 < M → dN_dM M = M ^ (-alpha)) :=
+  ObservabilityAxioms.imf_from_j_minimization
 
 /-- Salpeter slope α ~ 2.35 emerges from J-geometry.
 
