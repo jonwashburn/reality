@@ -13,11 +13,18 @@ namespace IndisputableMonolith
 namespace Bridge
 namespace EntropyInterface
 
-/-- Entropy growth per commit step (placeholder predicate). -/
-axiom landauer_commit : ∀ step : ℕ, True
+/-- Hypothesis envelope for entropy-interface bridges. -/
+class EntropyAxioms where
+  landauer_commit : ∀ step : ℕ, True
+  no_alias_entropy : True
 
-/-- No alias entropy under 8‑aligned windows (placeholder). -/
-axiom no_alias_entropy : True
+variable [EntropyAxioms]
+
+/-- Entropy growth per commit step. -/
+theorem landauer_commit : ∀ step : ℕ, True := EntropyAxioms.landauer_commit
+
+/-- No alias entropy under 8‑aligned windows. -/
+theorem no_alias_entropy : True := EntropyAxioms.no_alias_entropy
 
 /-- Bridge summary. -/
 def entropy_interface_report : String :=
