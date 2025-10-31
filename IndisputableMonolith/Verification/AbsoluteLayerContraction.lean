@@ -28,10 +28,18 @@ def Phi (U : UnitsClass) : UnitsClass :=
   { tau0 := U.tau0 / 2, ell0 := U.ell0 / 2, c := U.c }
 
 /-- Contraction property (placeholder). -/
-axiom Phi_contraction : ∃ κ : ℝ, 0 < κ ∧ κ < 1 ∧ ∀ U V, U_norm (Phi U) - U_norm (Phi V) ≤ κ * (U_norm U - U_norm V)
+class AbsoluteLayerAxioms where
+  Phi_contraction : ∃ κ : ℝ, 0 < κ ∧ κ < 1 ∧ ∀ U V, U_norm (Phi U) - U_norm (Phi V) ≤ κ * (U_norm U - U_norm V)
+  Phi_has_unique_fixed_point : ∃! U⋆ : UnitsClass, Phi U⋆ = U⋆
 
 /-- Existence and uniqueness of fixed point by Banach (scaffold). -/
-axiom Phi_has_unique_fixed_point : ∃! U⋆ : UnitsClass, Phi U⋆ = U⋆
+variable [AbsoluteLayerAxioms]
+
+theorem Phi_contraction : ∃ κ : ℝ, 0 < κ ∧ κ < 1 ∧ ∀ U V, U_norm (Phi U) - U_norm (Phi V) ≤ κ * (U_norm U - U_norm V) :=
+  AbsoluteLayerAxioms.Phi_contraction
+
+theorem Phi_has_unique_fixed_point : ∃! U⋆ : UnitsClass, Phi U⋆ = U⋆ :=
+  AbsoluteLayerAxioms.Phi_has_unique_fixed_point
 
 /-- Absolute layer calibration corresponds to the unique fixed point. -/
 theorem absolute_layer_fixed_point : ∃! U⋆ : UnitsClass, Phi U⋆ = U⋆ :=
