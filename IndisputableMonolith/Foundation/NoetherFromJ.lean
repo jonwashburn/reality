@@ -34,16 +34,29 @@ def augmentedCost (γ : List LedgerState) (λ : ℝ) : ℝ :=
     no neighboring variation lowers PathAction (scaffolded predicate). -/
 def isJMinimizer (γ : List LedgerState) : Prop := continuityT3 γ ∧ True
 
+/-- Hypothesis envelope for Noether-from-J results. -/
+class NoetherAxioms where
+  noether_from_J_multiplier_exists :
+    (γ : List LedgerState) → isJMinimizer γ → ∃ λ : ℝ, True
+  multiplier_scale_unique :
+    (γ : List LedgerState) → isJMinimizer γ → ∃! λ : ℝ, True
+  hbar_is_Ecoh_tau0 : ℏ = Consciousness.E_coh * τ₀
+
+variable [NoetherAxioms]
+
 /-- Existence of a Lagrange multiplier for T3-feasible minimizers. -/
-axiom noether_from_J_multiplier_exists
-  (γ : List LedgerState) (hγ : isJMinimizer γ) : ∃ λ : ℝ, True
+theorem noether_from_J_multiplier_exists
+  (γ : List LedgerState) (hγ : isJMinimizer γ) : ∃ λ : ℝ, True :=
+  NoetherAxioms.noether_from_J_multiplier_exists γ hγ
 
 /-- Uniqueness of the multiplier scale under K-gate identities. -/
-axiom multiplier_scale_unique
-  (γ : List LedgerState) (hγ : isJMinimizer γ) : ∃! λ : ℝ, True
+theorem multiplier_scale_unique
+  (γ : List LedgerState) (hγ : isJMinimizer γ) : ∃! λ : ℝ, True :=
+  NoetherAxioms.multiplier_scale_unique γ hγ
 
 /-- The IR identity relating the multiplier scale to (E_coh, τ₀). -/
-axiom hbar_is_Ecoh_tau0 : ℏ = Consciousness.E_coh * τ₀
+theorem hbar_is_Ecoh_tau0 : ℏ = Consciousness.E_coh * τ₀ :=
+  NoetherAxioms.hbar_is_Ecoh_tau0
 
 /-- Main statement: Ĥ emerges as the unique Lagrange multiplier enforcing T3,
     and its scale is fixed by K-gate equalities as ħ = E_coh · τ₀. -/
