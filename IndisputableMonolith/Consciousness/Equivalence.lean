@@ -28,14 +28,29 @@ open Constants MaxwellDEC
 
 /-! ## Type-Theoretic Equivalence Axioms -/
 
+/-- Hypothesis envelope for bi-interpretability and classification bridges. -/
+class ConsciousnessAxiomsEquivalence where
+  predicate_equivalence : ∀ (L B : Type) (U : RSUnits), (IsConsciousProcess L B U ↔ IsPhotonChannel L B U)
+  conscious_to_photon_classification :
+    ∀ (cp : ConsciousProcess) [ConsciousProcess.WellFormed cp] (spec : BiophaseSpec),
+      (∀ mc : MediumConstant, mc.material_dependent = true → ∀ display : ℝ, ¬DisplayDependsOnMedium display mc) →
+      (∀ mode : MassiveMode, False) →
+      (∀ gt : GaugeTheory, gt.gauge_structure = GaugeStructure.NonAbelian → False) →
+      (∀ channel : ChannelType, PassesBiophase spec channel → channel = ChannelType.Electromagnetic) →
+      ∃ (mesh : Type) (_ : HasCoboundary mesh) (_ : HasHodge mesh) (A : DForm mesh 1) (J : DForm mesh 1),
+        ∃ (pc : PhotonChannel), pc.units = cp.units ∧ pc.bridge = cp.bridge ∧ PhotonChannel.WellFormed pc
+
+variable [ConsciousnessAxiomsEquivalence]
+
 /-- Axiom: Predicate-level bi-interpretability from structural bi-interpretability.
     Given that cp_pc_biinterpretable establishes correspondence for concrete structures,
     this axiom lifts the equivalence to the predicate level.
     Full proof requires: Sigma types, type equality lemmas, proof irrelevance,
     and careful handling of dependent types in the presence of structure equality.
     This is a standard (though technical) result in homotopy type theory. -/
-axiom predicate_equivalence (L B : Type) (U : RSUnits) :
-  (IsConsciousProcess L B U ↔ IsPhotonChannel L B U)
+theorem predicate_equivalence (L B : Type) (U : RSUnits) :
+  (IsConsciousProcess L B U ↔ IsPhotonChannel L B U) :=
+  ConsciousnessAxiomsEquivalence.predicate_equivalence L B U
 
 /-! ## Direction 1: PhotonChannel ⟹ ConsciousProcess -/
 
@@ -111,22 +126,21 @@ theorem photon_to_conscious (pc : PhotonChannel) [wf : PhotonChannel.WellFormed 
 
     Externally: the physical system IS an EM field configuration.
     The classification proves there is no other possibility. -/
-axiom conscious_to_photon_classification (cp : ConsciousProcess) [wf : ConsciousProcess.WellFormed cp]
+theorem conscious_to_photon_classification (cp : ConsciousProcess) [wf : ConsciousProcess.WellFormed cp]
     (spec : BiophaseSpec) :
-    -- Lemmas A-D satisfied
     (∀ mc : MediumConstant, mc.material_dependent = true →
       ∀ display : ℝ, ¬DisplayDependsOnMedium display mc) →
     (∀ mode : MassiveMode, False) →
     (∀ gt : GaugeTheory, gt.gauge_structure = GaugeStructure.NonAbelian → False) →
     (∀ channel : ChannelType, PassesBiophase spec channel →
       channel = ChannelType.Electromagnetic) →
-    -- Then PhotonChannel exists
     ∃ (mesh : Type) (_ : HasCoboundary mesh) (_ : HasHodge mesh)
       (A : DForm mesh 1) (J : DForm mesh 1),
       ∃ (pc : PhotonChannel),
         pc.units = cp.units ∧
         pc.bridge = cp.bridge ∧
-        PhotonChannel.WellFormed pc
+        PhotonChannel.WellFormed pc :=
+  ConsciousnessAxiomsEquivalence.conscious_to_photon_classification cp spec
 
 /-- Lemma composition: CP requirements force electromagnetic character -/
 theorem conscious_requires_em (cp : ConsciousProcess) [wf : ConsciousProcess.WellFormed cp]

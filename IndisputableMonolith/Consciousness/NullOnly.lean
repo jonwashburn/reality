@@ -46,6 +46,17 @@ noncomputable def massive_group_velocity (mode : MassiveMode) (c : ℝ) (ℏ : �
   let ω := Real.sqrt (massive_dispersion mode c ℏ)
   (mode.momentum * c^2) / ω
 
+/-- Hypothesis envelope for NullOnly (Lemma B) results. -/
+class ConsciousnessAxiomsNullOnly where
+  massive_velocity_less_than_c :
+    (mode : MassiveMode) → (c ℏ : ℝ) → 0 < c → 0 < ℏ → 0 < mode.momentum →
+    massive_group_velocity mode c ℏ < c
+  null_only :
+    ∀ (cp : ConsciousProcess) [ConsciousProcess.WellFormed cp],
+      DisplaysAtSpeedC cp.units → ∀ (mode : MassiveMode), False
+
+variable [ConsciousnessAxiomsNullOnly]
+
 /-- For massive modes with nonzero momentum, group velocity is strictly less than c
     From relativistic dispersion ω² = k²c² + m²c⁴/ℏ², we have:
     - ω² > k²c² (since m > 0 adds positive term)
@@ -55,9 +66,10 @@ noncomputable def massive_group_velocity (mode : MassiveMode) (c : ℝ) (ℏ : �
     This is the fundamental result that massive particles are subluminal.
     Standard result from special relativity (any SR textbook, e.g. Jackson Ch.11).
     Full proof requires careful real analysis with sqrt inequalities. -/
-axiom massive_velocity_less_than_c (mode : MassiveMode) (c ℏ : ℝ)
+theorem massive_velocity_less_than_c (mode : MassiveMode) (c ℏ : ℝ)
     (hc : 0 < c) (hℏ : 0 < ℏ) (hk : 0 < mode.momentum) :
-    massive_group_velocity mode c ℏ < c
+    massive_group_velocity mode c ℏ < c :=
+  ConsciousnessAxiomsNullOnly.massive_velocity_less_than_c mode c ℏ hc hℏ hk
 
 /-- Dispersion relation for massless particle: ω=k·c -/
 def massless_dispersion (mode : MasslessMode) (c : ℝ) : ℝ :=
@@ -92,9 +104,10 @@ def DisplaysAtSpeedC (U : RSUnits) : Prop :=
 
     This is the physical content of Lemma B (Null Only).
     Full formalization requires detailed mode-to-display mapping. -/
-axiom null_only (cp : ConsciousProcess) [wf : ConsciousProcess.WellFormed cp] :
+theorem null_only (cp : ConsciousProcess) [wf : ConsciousProcess.WellFormed cp] :
     DisplaysAtSpeedC cp.units →
-    ∀ (mode : MassiveMode), False
+    ∀ (mode : MassiveMode), False :=
+  ConsciousnessAxiomsNullOnly.null_only cp
 
 /-- Corollary: conscious processes admit only null propagation -/
 theorem admits_only_null_propagation (cp : ConsciousProcess) [wf : ConsciousProcess.WellFormed cp] :

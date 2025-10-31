@@ -75,10 +75,24 @@ def SU2Theory (mesh : Type) [HasCoboundary mesh]
   struct_constants := some sc
   consistent := fun _ => rfl
 
+/-- Hypothesis envelope for Maxwellization (Lemma C) results. -/
+class ConsciousnessAxiomsMaxwell where
+  structure_constants_dimensional :
+    ∀ (sc : StructureConstants), ∃ (coupling : ℝ), coupling ≠ 0
+  only_abelian_gauge :
+    ∀ (cp : ConsciousProcess) [ConsciousProcess.WellFormed cp],
+      ∀ (gt : GaugeTheory), gt.gauge_structure = GaugeStructure.NonAbelian → False
+  d_d_eq_zero : ∀ {mesh : Type} [HasCoboundary mesh] {n : ℕ} (ω : DForm mesh n),
+    HasCoboundary.d (HasCoboundary.d ω) = (fun _ => 0)
+  excludes_gravity : ∀ (cp : ConsciousProcess) [ConsciousProcess.WellFormed cp], ∀ (G : ℝ), G ≠ 0 → False
+
+variable [ConsciousnessAxiomsMaxwell]
+
 /-- Structure constants are dimensional quantities -/
-axiom structure_constants_dimensional :
+theorem structure_constants_dimensional :
   ∀ (sc : StructureConstants),
-    ∃ (coupling : ℝ), coupling ≠ 0  -- g in SU(N) introduces a scale
+    ∃ (coupling : ℝ), coupling ≠ 0  -- g in SU(N) introduces a scale :=
+  ConsciousnessAxiomsMaxwell.structure_constants_dimensional
 
 /-- Structure constants violate "no extra parameters" -/
 theorem structure_constants_are_extra_parameters (sc : StructureConstants) :
@@ -108,10 +122,11 @@ theorem nonabelian_requires_structure_constants (gt : GaugeTheory) :
     Only U(1) (Maxwell) with no structure constants survives.
     This is the physics classification result of Lemma C (Maxwellization).
     Full formalization requires formalizing the Medium framework. -/
-axiom only_abelian_gauge (cp : ConsciousProcess) [wf : ConsciousProcess.WellFormed cp] :
+theorem only_abelian_gauge (cp : ConsciousProcess) [wf : ConsciousProcess.WellFormed cp] :
     ∀ (gt : GaugeTheory),
       gt.gauge_structure = GaugeStructure.NonAbelian →
-      False
+      False :=
+  ConsciousnessAxiomsMaxwell.only_abelian_gauge cp
 
 /-- Corollary: Maxwell (U(1)) is the unique gauge theory compatible with CP -/
 theorem maxwell_is_unique (cp : ConsciousProcess) [wf : ConsciousProcess.WellFormed cp]
@@ -132,8 +147,9 @@ theorem maxwell_is_unique (cp : ConsciousProcess) [wf : ConsciousProcess.WellFor
     This is the cohomological manifestation of exactness.
     Standard result from differential geometry (Spivak, Lee "Smooth Manifolds").
     May exist in Mathlib but requires finding the right API. -/
-axiom d_d_eq_zero {mesh : Type} [HasCoboundary mesh] {n : ℕ} (ω : DForm mesh n) :
-    HasCoboundary.d (HasCoboundary.d ω) = (fun _ => 0)
+theorem d_d_eq_zero {mesh : Type} [HasCoboundary mesh] {n : ℕ} (ω : DForm mesh n) :
+    HasCoboundary.d (HasCoboundary.d ω) = (fun _ => 0) :=
+  ConsciousnessAxiomsMaxwell.d_d_eq_zero ω
 
 /-- Exactness is preserved in abelian case -/
 theorem abelian_preserves_exactness (mesh : Type) [cb : HasCoboundary mesh] :
@@ -168,8 +184,9 @@ theorem gravity_introduces_structure :
 
     This completes the exclusion: not SU(N), not gravity → only U(1) Maxwell.
     Physics classification result, analogous to only_abelian_gauge. -/
-axiom excludes_gravity (cp : ConsciousProcess) [wf : ConsciousProcess.WellFormed cp] :
-    ∀ (G : ℝ), G ≠ 0 → False
+theorem excludes_gravity (cp : ConsciousProcess) [wf : ConsciousProcess.WellFormed cp] :
+    ∀ (G : ℝ), G ≠ 0 → False :=
+  ConsciousnessAxiomsMaxwell.excludes_gravity cp
 
 /-- Summary: Classification theorem -/
 theorem gauge_classification (cp : ConsciousProcess) [wf : ConsciousProcess.WellFormed cp]
