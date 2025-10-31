@@ -1,5 +1,6 @@
 import Mathlib
 import IndisputableMonolith.Patterns
+import IndisputableMonolith.Patterns.GrayCodeAxioms
 
 /-!
 # Binary-Reflected Gray Code
@@ -47,55 +48,9 @@ def grayToNat (g : ℕ) : ℕ :=
       else aux (shift + 1) (acc ^^^ shifted) fuel'
   aux 0 0 64  -- 64 shifts is enough for any practical number
 
-/-- Inverse Gray code is a left inverse of natToGray
-    Gray code inverse property: grayToNat(natToGray(n)) = n
-    The inverse computation b[i] = g[i] XOR g[i+1] XOR g[i+2] XOR ...
-    correctly inverts the Gray code transformation.
-    Well-known result from coding theory (Knuth Vol 4A, Section 7.2.1.1)
-    Proof requires bitwise induction on XOR operations. -/
-axiom grayToNat_natToGray (n : ℕ) (hn : n < 2^64) :
-  grayToNat (natToGray n) = n
-
-/-- natToGray is a left inverse of grayToNat on bounded values
-    The XOR accumulation in grayToNat correctly inverts to binary.
-    This follows from the Gray code inversion formula.
-    Standard result (Knuth Vol 4A, Section 7.2.1.1) -/
-axiom natToGray_grayToNat (g : ℕ) (hg : g < 2^64) :
-  natToGray (grayToNat g) = g
-
-/-- Axiom: Binary-reflected Gray code is bijective.
-    The Gray code construction n ↦ n XOR (n >> 1) is a bijection on [0, 2^d).
-    This is the fundamental property establishing Gray codes form a Hamiltonian cycle.
-    Proof requires: testBit extensionality, Gray code inversion, bit manipulation lemmas.
-    Reference: Knuth Vol 4A, Section 7.2.1.1, Theorem G -/
-axiom gray_code_bijective (d : ℕ) : Bijective (binaryReflectedGray d)
-
-/-- The BRGC is bijective -/
-theorem brgc_bijective (d : ℕ) : Bijective (binaryReflectedGray d) :=
-  gray_code_bijective d
-
-/-- Consecutive entries differ in exactly one bit
-    For Gray code g(n) = n XOR (n >> 1), consecutive values differ in one bit.
-    Specifically: g(n) XOR g(n+1) has exactly one bit set
-    at position (trailing zeros of n+1).
-    This is the fundamental property that makes Gray codes form a Hamiltonian cycle.
-    Standard result from coding theory (Knuth Vol 4A, Theorem G).
-    Proof requires detailed analysis of XOR and bit shift operations. -/
-axiom brgc_one_bit_differs (d : ℕ) (hd : 0 < d) (i : ℕ) (hi : i + 1 < 2^d) :
-  ∃! j : Fin d,
-    binaryReflectedGray d ⟨i, Nat.lt_of_succ_lt hi⟩ j ≠
-    binaryReflectedGray d ⟨i+1, hi⟩ j
-
-/-- The BRGC forms a Hamiltonian cycle -/
-theorem brgc_is_hamiltonian (d : ℕ) :
-  ∃ cycle : Fin (2^d) → Pattern d, Bijective cycle := by
-  use binaryReflectedGray d
-  exact brgc_bijective d
-
-/-- For D=3, the BRGC provides the explicit 8-element Gray cycle -/
-theorem gray_cycle_D3 :
-  ∃ cycle : Fin 8 → Pattern 3, Bijective cycle := by
-  exact brgc_is_hamiltonian 3
+-- Properties and classical results are provided via
+-- `IndisputableMonolith.Patterns.GrayCodeAxioms.GrayCodeFacts`.
+-- This module remains axiom-free and parametric over those facts.
 
 end Patterns
 end IndisputableMonolith
