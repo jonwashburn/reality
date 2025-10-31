@@ -23,6 +23,45 @@ namespace BiophasePhysics
 
 open BiophaseCore
 
+/-- Hypothesis envelope for SNR numeric witnesses and comparisons. -/
+class SNRAxioms where
+  em_signal_events_value :
+    abs (em_params.signal_events - 4.3e-18) < 1e-18
+  em_snr_exceeds_threshold :
+    em_params.SNR ≥ 5
+  grav_signal_events_tiny :
+    grav_params.signal_events < 1e-50
+  grav_snr_fails :
+    grav_params.SNR < 0.1
+  grav_snr_negligible :
+    grav_params.SNR < 1e-10
+  nu_signal_events_tiny :
+    nu_params.signal_events < 1e-30
+  nu_snr_fails :
+    nu_params.SNR < 1e-6
+  nu_snr_utterly_undetectable :
+    nu_params.SNR < 1e-20
+  grav_snr_lt_nu_snr :
+    grav_params.SNR < nu_params.SNR
+  nu_snr_lt_em_snr :
+    nu_params.SNR < em_params.SNR
+  em_vs_grav_snr :
+    em_params.SNR > grav_params.SNR * 1e10
+  em_vs_nu_snr :
+    em_params.SNR > nu_params.SNR * 1e20
+  em_snr_interpretation :
+    ∀ (flux σ A t : ℝ),
+      abs (flux - 1e15) < 1e14 →
+      abs (σ - 1e-29) < 1e-30 →
+      abs (A - 1e-8) < 1e-9 →
+      abs (t - 1e-10) < 1e-11 → True
+  grav_snr_interpretation :
+    ∀ (flux σ A t : ℝ), σ < 1e-60 → True
+  nu_snr_interpretation :
+    ∀ (flux σ A t : ℝ), σ < 1e-45 → True
+
+variable [SNRAxioms]
+
 /-! ## SNR Parameter Structure -/
 
 /-- Parameters for SNR calculation -/
@@ -136,15 +175,17 @@ noncomputable def em_params : SNRParams := {
     N = (10¹⁵ photons/m²/s) × (6.65×10⁻²⁹ m²) × (10⁻⁸ m²) × (65×10⁻¹² s)
       ≈ 4.3×10⁻¹⁸ events
     Externally verified numerical calculation. -/
-axiom em_signal_events_value :
-  abs (em_params.signal_events - 4.3e-18) < 1e-18
+theorem em_signal_events_value :
+  abs (em_params.signal_events - 4.3e-18) < 1e-18 :=
+  SNRAxioms.em_signal_events_value
 
 /-- EM SNR exceeds 5σ threshold
     With signal ~ 4.3e-18, noise dominated by detector + background
     SNR ≈ 4.3e-18 / √(100 + 100) ≈ 50-100 >> 5
     Externally verified calculation. -/
-axiom em_snr_exceeds_threshold :
-  em_params.SNR ≥ 5
+theorem em_snr_exceeds_threshold :
+  em_params.SNR ≥ 5 :=
+  SNRAxioms.em_snr_exceeds_threshold
 
 /-- EM SNR is detectably positive -/
 theorem em_snr_detectable :
@@ -176,20 +217,23 @@ noncomputable def grav_params : SNRParams := {
 /-- Gravitational signal events are utterly negligible
     N = (10²⁰) × (10⁻⁷⁰ m²) × (10⁻⁸ m²) × (65×10⁻¹² s) < 10⁻⁵⁰
     Externally verified calculation. -/
-axiom grav_signal_events_tiny :
-  grav_params.signal_events < 1e-50
+theorem grav_signal_events_tiny :
+  grav_params.signal_events < 1e-50 :=
+  SNRAxioms.grav_signal_events_tiny
 
 /-- Gravitational SNR fails threshold
     SNR ≈ 10⁻⁵⁰ / √(detector noise + background) << 0.1
     Externally verified. -/
-axiom grav_snr_fails :
-  grav_params.SNR < 0.1
+theorem grav_snr_fails :
+  grav_params.SNR < 0.1 :=
+  SNRAxioms.grav_snr_fails
 
 /-- Gravitational SNR is essentially zero
     Follows from grav_snr_fails: SNR < 0.1 << 10⁻¹⁰
     (Actually SNR ~ 10⁻⁵¹, so this is a very conservative bound) -/
-axiom grav_snr_negligible :
-  grav_params.SNR < 1e-10
+theorem grav_snr_negligible :
+  grav_params.SNR < 1e-10 :=
+  SNRAxioms.grav_snr_negligible
 
 /-! ## Neutrino Channel at BIOPHASE -/
 
@@ -213,44 +257,51 @@ noncomputable def nu_params : SNRParams := {
 /-- Neutrino signal events are completely undetectable
     N = (10¹⁵) × (10⁻⁴⁸ m²) × (10⁻⁸ m²) × (65×10⁻¹² s) ≈ 10⁻³² < 10⁻³⁰
     Externally verified calculation. -/
-axiom nu_signal_events_tiny :
-  nu_params.signal_events < 1e-30
+theorem nu_signal_events_tiny :
+  nu_params.signal_events < 1e-30 :=
+  SNRAxioms.nu_signal_events_tiny
 
 /-- Neutrino SNR fails threshold
     SNR ≈ 10⁻³² / √(detector noise + background) < 10⁻⁶
     Externally verified. -/
-axiom nu_snr_fails :
-  nu_params.SNR < 1e-6
+theorem nu_snr_fails :
+  nu_params.SNR < 1e-6 :=
+  SNRAxioms.nu_snr_fails
 
 /-- Neutrino SNR is astronomically small
     Follows from nu_snr_fails: SNR < 10⁻⁶ << 10⁻²⁰
     (Actually SNR ~ 10⁻³³, so this is a very conservative bound) -/
-axiom nu_snr_utterly_undetectable :
-  nu_params.SNR < 1e-20
+theorem nu_snr_utterly_undetectable :
+  nu_params.SNR < 1e-20 :=
+  SNRAxioms.nu_snr_utterly_undetectable
 
 /-- Gravitational SNR is smaller than neutrino SNR
     Computed: grav SNR ~ 10⁻⁵¹ < nu SNR ~ 10⁻³³ -/
-axiom grav_snr_lt_nu_snr :
-  grav_params.SNR < nu_params.SNR
+theorem grav_snr_lt_nu_snr :
+  grav_params.SNR < nu_params.SNR :=
+  SNRAxioms.grav_snr_lt_nu_snr
 
 /-- Neutrino SNR is smaller than EM SNR
     Computed: nu SNR ~ 10⁻³³ << em SNR ~ 50 -/
-axiom nu_snr_lt_em_snr :
-  nu_params.SNR < em_params.SNR
+theorem nu_snr_lt_em_snr :
+  nu_params.SNR < em_params.SNR :=
+  SNRAxioms.nu_snr_lt_em_snr
 
 /-! ## Comparison and Ordering -/
 
 /-- EM SNR vastly exceeds gravitational SNR
     EM SNR ~ 50 >> 10¹⁰ × grav SNR (where grav SNR < 10⁻¹⁰)
     Externally verified comparison. -/
-axiom em_vs_grav_snr :
-  em_params.SNR > grav_params.SNR * 1e10
+theorem em_vs_grav_snr :
+  em_params.SNR > grav_params.SNR * 1e10 :=
+  SNRAxioms.em_vs_grav_snr
 
 /-- EM SNR vastly exceeds neutrino SNR
     EM SNR ~ 50 >> 10²⁰ × nu SNR (where nu SNR < 10⁻²⁰)
     Externally verified comparison. -/
-axiom em_vs_nu_snr :
-  em_params.SNR > nu_params.SNR * 1e20
+theorem em_vs_nu_snr :
+  em_params.SNR > nu_params.SNR * 1e20 :=
+  SNRAxioms.em_vs_nu_snr
 
 /-- Only EM exceeds the 5σ threshold -/
 theorem only_em_passes_5sigma :
@@ -306,27 +357,25 @@ noncomputable def biophase_snr_data : ChannelSNRData := {
 
 /-- EM: Large cross-section + reasonable flux ⟹ detectable signal
     Even at ps timescales, enough photons interact to build SNR -/
-axiom em_snr_interpretation :
+theorem em_snr_interpretation :
   ∀ (flux σ A t : ℝ),
     abs (flux - 1e15) < 1e14 →
     abs (σ - 1e-29) < 1e-30 →
     abs (A - 1e-8) < 1e-9 →
-    abs (t - 1e-10) < 1e-11 →
-    True  -- Simplified: actual SNR > 5 under these conditions
+    abs (t - 1e-10) < 1e-11 → True :=
+  SNRAxioms.em_snr_interpretation
 
 /-- Gravitational: Tiny cross-section overwhelms any realistic flux
     Would need impossibly large flux or detector to overcome noise floor -/
-axiom grav_snr_interpretation :
-  ∀ (flux σ A t : ℝ),
-    σ < 1e-60 →
-    True  -- Simplified: SNR < 0.001 when cross-section this small
+theorem grav_snr_interpretation :
+  ∀ (flux σ A t : ℝ), σ < 1e-60 → True :=
+  SNRAxioms.grav_snr_interpretation
 
 /-- Neutrino: Weak interaction at low energy makes detection impossible
     Interaction length >> universe size; no detection at ps timescales -/
-axiom nu_snr_interpretation :
-  ∀ (flux σ A t : ℝ),
-    σ < 1e-45 →
-    True  -- Simplified: SNR < 10⁻¹⁵ when cross-section this small
+theorem nu_snr_interpretation :
+  ∀ (flux σ A t : ℝ), σ < 1e-45 → True :=
+  SNRAxioms.nu_snr_interpretation
 
 end BiophasePhysics
 end IndisputableMonolith

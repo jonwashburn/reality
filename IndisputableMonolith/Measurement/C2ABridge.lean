@@ -1,5 +1,6 @@
 import Mathlib
 import IndisputableMonolith.Measurement.PathAction
+import IndisputableMonolith.Cost.ClassicalResults
 import IndisputableMonolith.Measurement.TwoBranchGeodesic
 import IndisputableMonolith.Measurement.KernelMatch
 
@@ -23,13 +24,6 @@ open Real Cost
 
 /-! ## Improper Integral Axioms -/
 
-/-- Axiom: Standard improper integral of tan from θ_s to π/2.
-    The integral ∫_{θ_s}^{π/2} tan θ dθ = -ln(sin θ_s) is a classical result.
-    The singularity at π/2 is logarithmic and integrable.
-    Full proof requires careful treatment of improper integrals with limits.
-    Reference: Standard calculus (Stewart 8th ed, Section 7.8; Spivak Ch. 19) -/
-axiom integral_tan_standard (θ_s : ℝ) (hθ : 0 < θ_s ∧ θ_s < π/2) :
-  ∫ θ in θ_s..(π/2), Real.tan θ = - Real.log (Real.sin θ_s)
 
 /-- Construct recognition path from geodesic rotation using recognition profile -/
 noncomputable def pathFromRotation (rot : TwoBranchRotation) : RecognitionPath where
@@ -94,12 +88,8 @@ theorem integral_tan_from_theta (θ_s : ℝ) (hθ : 0 < θ_s ∧ θ_s < π/2) :
   -- For now, let me document this as a known calculus result that requires
   -- careful handling of the improper integral
 
-  -- Standard improper integral result (requires regularization)
-  -- The singularity at π/2 is logarithmic and integrable
-  -- Full treatment requires careful limits and convergence proofs
-  -- This is a well-known result: ∫_{θ_s}^{π/2} tan θ dθ = -ln(sin θ_s)
-  -- Reference: Standard calculus texts (e.g., Stewart, Spivak)
-  exact integral_tan_standard θ_s hθ
+  -- Use the classical result from the hypothesis envelope
+  exact Cost.ClassicalResults.integral_tan_to_pi_half θ_s hθ.1 hθ.2
 
 /-- Main C=2A Bridge Theorem:
     The recognition action for the constructed path equals twice the rate action -/

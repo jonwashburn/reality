@@ -1,4 +1,5 @@
 import Mathlib
+import IndisputableMonolith.Cost.ClassicalResults
 
 namespace IndisputableMonolith
 namespace Cost
@@ -15,12 +16,12 @@ noncomputable def Jlog (t : ℝ) : ℝ := ((Real.exp t + Real.exp (-t)) / 2) - 1
     complex number projections. The identity is immediate from definitions but
     requires careful API navigation.
     Standard identity from any real analysis textbook. -/
-axiom real_cosh_exp : ∀ t : ℝ, Real.cosh t = (Real.exp t + Real.exp (-t)) / 2
-
 /-- Jlog equals Real.cosh - 1 -/
 lemma Jlog_eq_cosh_sub_one (t : ℝ) : Jlog t = Real.cosh t - 1 := by
   unfold Jlog
-  rw [real_cosh_exp]
+  -- Use classical result: ((e^t + e^{-t})/2) = cosh t
+  have h := IndisputableMonolith.Cost.ClassicalResults.real_cosh_exponential_expansion t
+  simpa [h]
 
 end Cost
 end IndisputableMonolith

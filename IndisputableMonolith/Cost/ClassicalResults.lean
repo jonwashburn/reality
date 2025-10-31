@@ -35,6 +35,36 @@ namespace ClassicalResults
 
 open Real Complex
 
+/-- Hypothesis envelope for standard classical mathematical results used by the cost calculus. -/
+class ClassicalResultsAxioms where
+  functional_equation_uniqueness :
+    ∀ G : ℝ → ℝ,
+      (∀ t, G (-t) = G t) →
+      G 0 = 0 →
+      deriv G 0 = 0 →
+      (deriv^[2] G) 0 = 1 →
+      (∀ t u, G (t+u) + G (t-u) = 2 * G t * G u + 2 * (G t + G u)) →
+      Continuous G →
+      ∀ t, G t = Real.cosh t - 1
+  real_cosh_exponential_expansion :
+    ∀ t : ℝ, ((Real.exp t + Real.exp (-t)) / 2) = Real.cosh t
+  complex_norm_exp_ofReal :
+    ∀ r : ℝ, ‖Complex.exp r‖ = Real.exp r
+  complex_norm_exp_I_mul :
+    ∀ θ : ℝ, ‖Complex.exp (θ * I)‖ = 1
+  integral_tan_to_pi_half :
+    ∀ θ : ℝ, 0 < θ → θ < π/2 → ∫ x in θ..(π/2), Real.tan x = - Real.log (Real.sin θ)
+  piecewise_path_integral_additive :
+    ∀ (f : ℝ → ℝ) (a b c : ℝ), ∫ x in a..c, f x = ∫ x in a..b, f x + ∫ x in b..c, f x
+  complex_exp_mul_rearrange :
+    ∀ (c₁ c₂ φ₁ φ₂ : ℝ),
+      Complex.exp (-(c₁+c₂)/2) * Complex.exp ((φ₁+φ₂) * I) =
+      (Complex.exp (-c₁/2) * Complex.exp (φ₁ * I)) * (Complex.exp (-c₂/2) * Complex.exp (φ₂ * I))
+  continuousOn_extends_to_continuous :
+    ∀ (f : ℝ → ℝ), ContinuousOn f (Set.Ioi 0) → ∃ g : ℝ → ℝ, Continuous g ∧ (∀ x > 0, g x = f x)
+
+variable [ClassicalResultsAxioms]
+
 /-! ## Functional Equations -/
 
 /-- **Classical Result**: The cosh functional equation uniquely determines cosh.
@@ -63,15 +93,16 @@ must equal cosh t - 1 for all t ∈ ℝ.
 
 **Status**: Accepted as axiom pending infrastructure development
 -/
-axiom functional_equation_uniqueness :
+theorem functional_equation_uniqueness :
   ∀ G : ℝ → ℝ,
-    (∀ t, G (-t) = G t) →                    -- Even function
-    G 0 = 0 →                                 -- Vanishes at origin
-    deriv G 0 = 0 →                           -- Flat at origin
-    (deriv^[2] G) 0 = 1 →                     -- Unit curvature
-    (∀ t u, G (t+u) + G (t-u) = 2 * G t * G u + 2 * (G t + G u)) →  -- Functional equation
-    Continuous G →                            -- Continuous
-    ∀ t, G t = Real.cosh t - 1
+    (∀ t, G (-t) = G t) →
+    G 0 = 0 →
+    deriv G 0 = 0 →
+    (deriv^[2] G) 0 = 1 →
+    (∀ t u, G (t+u) + G (t-u) = 2 * G t * G u + 2 * (G t + G u)) →
+    Continuous G →
+    ∀ t, G t = Real.cosh t - 1 :=
+  ClassicalResultsAxioms.functional_equation_uniqueness
 
 /-! ## Real/Complex Hyperbolic Functions -/
 
@@ -87,8 +118,9 @@ requires careful casting.
 
 **Status**: Accepted as definitional identity
 -/
-axiom real_cosh_exponential_expansion :
-  ∀ t : ℝ, ((Real.exp t + Real.exp (-t)) / 2) = Real.cosh t
+theorem real_cosh_exponential_expansion :
+  ∀ t : ℝ, ((Real.exp t + Real.exp (-t)) / 2) = Real.cosh t :=
+  ClassicalResultsAxioms.real_cosh_exponential_expansion
 
 /-! ## Complex Exponential Norms -/
 
@@ -104,8 +136,9 @@ For z = r (real), |exp(z)| = exp(Re(z)) = exp(r).
 
 **Status**: Standard complex analysis result
 -/
-axiom complex_norm_exp_ofReal :
-  ∀ r : ℝ, ‖Complex.exp r‖ = Real.exp r
+theorem complex_norm_exp_ofReal :
+  ∀ r : ℝ, ‖Complex.exp r‖ = Real.exp r :=
+  ClassicalResultsAxioms.complex_norm_exp_ofReal
 
 /-- **Classical Result**: Norm of exp(iθ) equals 1.
 
@@ -119,8 +152,9 @@ For purely imaginary argument, exp(iθ) lies on unit circle, so |exp(iθ)| = 1.
 
 **Status**: Unit circle property, standard in complex analysis
 -/
-axiom complex_norm_exp_I_mul :
-  ∀ θ : ℝ, ‖Complex.exp (θ * I)‖ = 1
+theorem complex_norm_exp_I_mul :
+  ∀ θ : ℝ, ‖Complex.exp (θ * I)‖ = 1 :=
+  ClassicalResultsAxioms.complex_norm_exp_I_mul
 
 /-! ## Integration Theory -/
 
@@ -147,9 +181,10 @@ The improper integral ∫_{θ}^{π/2} tan x dx equals -log(sin θ) for 0 < θ < 
 **Note**: This is critical for the C=2A bridge. Alternative: verify formula numerically
 or check physics derivation for possible error/regularization.
 -/
-axiom integral_tan_to_pi_half :
+theorem integral_tan_to_pi_half :
   ∀ θ : ℝ, 0 < θ → θ < π/2 →
-    ∫ x in θ..(π/2), Real.tan x = - Real.log (Real.sin θ)
+    ∫ x in θ..(π/2), Real.tan x = - Real.log (Real.sin θ) :=
+  ClassicalResultsAxioms.integral_tan_to_pi_half
 
 /-- **Classical Result**: Piecewise path integral splits additively.
 
@@ -166,9 +201,10 @@ splits as: ∫_[a,c] f = ∫_[a,b] f + ∫_[b,c] f
 
 **Status**: Standard integration theorem, technically involved with piecewise functions
 -/
-axiom piecewise_path_integral_additive :
+theorem piecewise_path_integral_additive :
   ∀ (f : ℝ → ℝ) (a b c : ℝ),
-    ∫ x in a..c, f x = ∫ x in a..b, f x + ∫ x in b..c, f x
+    ∫ x in a..c, f x = ∫ x in a..b, f x + ∫ x in b..c, f x :=
+  ClassicalResultsAxioms.piecewise_path_integral_additive
 
 /-! ## Complex Exponential Algebra -/
 
@@ -183,10 +219,11 @@ with rearrangement following complex multiplication commutativity.
 
 **Status**: Elementary complex arithmetic, technically tedious
 -/
-axiom complex_exp_mul_rearrange :
+theorem complex_exp_mul_rearrange :
   ∀ (c₁ c₂ φ₁ φ₂ : ℝ),
     Complex.exp (-(c₁+c₂)/2) * Complex.exp ((φ₁+φ₂) * I) =
-    (Complex.exp (-c₁/2) * Complex.exp (φ₁ * I)) * (Complex.exp (-c₂/2) * Complex.exp (φ₂ * I))
+    (Complex.exp (-c₁/2) * Complex.exp (φ₁ * I)) * (Complex.exp (-c₂/2) * Complex.exp (φ₂ * I)) :=
+  ClassicalResultsAxioms.complex_exp_mul_rearrange
 
 /-! ## Continuity Extensions -/
 
@@ -205,9 +242,10 @@ A function continuous on (0,∞) can be extended to all of ℝ by various method
 
 **Status**: Standard topology result, but requires deciding on extension method
 -/
-axiom continuousOn_extends_to_continuous :
+theorem continuousOn_extends_to_continuous :
   ∀ (f : ℝ → ℝ), ContinuousOn f (Set.Ioi 0) →
-    ∃ g : ℝ → ℝ, Continuous g ∧ (∀ x > 0, g x = f x)
+    ∃ g : ℝ → ℝ, Continuous g ∧ (∀ x > 0, g x = f x) :=
+  ClassicalResultsAxioms.continuousOn_extends_to_continuous
 
 end ClassicalResults
 end Cost

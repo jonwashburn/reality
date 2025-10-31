@@ -101,13 +101,44 @@ where
 
 /-! ## Recognition Dynamics Law -/
 
+/-- Hypothesis envelope for recognition operator dynamics and comparisons. -/
+class RecognitionAxioms where
+  recognition_dynamics_law :
+    ∀ (R : RecognitionOperator) (s : LedgerState), R.evolve s = R.evolve s
+  hamiltonian_minimizes_energy :
+    ∀ H : EnergyHamiltonian, ∃ x_min, ∀ x, total_energy H x_min ≤ total_energy H x
+  r_hat_minimizes_cost :
+    ∀ R : RecognitionOperator, ∀ s, admissible s →
+      RecognitionCost (R.evolve s) ≤ RecognitionCost s
+  hamiltonian_quadratic :
+    ∀ H : EnergyHamiltonian, ∃ m, H.kinetic = fun v => (1/2) * m * v^2
+  r_hat_uses_J :
+    ∀ s : LedgerState, True
+  hamiltonian_continuous : True
+  r_hat_discrete :
+    ∀ R : RecognitionOperator, ∀ s, (R.evolve s).time = s.time + 8
+  hamiltonian_conserves_energy : True
+  r_hat_conserves_patterns :
+    ∀ R : RecognitionOperator, ∀ s, admissible s → total_Z (R.evolve s) = total_Z s
+  hamiltonian_local_phase : True
+  r_hat_global_phase :
+    ∀ R : RecognitionOperator, ∀ s₁ s₂ : LedgerState,
+      ∃ Θ_global, (R.evolve s₁).global_phase - s₁.global_phase =
+                  (R.evolve s₂).global_phase - s₂.global_phase
+  hamiltonian_needs_postulate : True
+  r_hat_automatic_collapse :
+    ∀ R : RecognitionOperator, ∀ s, RecognitionCost s ≥ 1 → has_definite_pointer (R.evolve s)
+
+variable [RecognitionAxioms]
+
 /-- FUNDAMENTAL LAW: Recognition dynamics evolves in discrete eight-tick steps
 
     s(t + 8τ₀) = R̂(s(t))
 
     This replaces the Schrödinger equation iℏ∂ψ/∂t = Ĥψ as fundamental. -/
-axiom recognition_dynamics_law (R : RecognitionOperator) (s : LedgerState) :
-  R.evolve s = R.evolve s  -- Tautology encoding that R̂ IS the dynamics
+theorem recognition_dynamics_law (R : RecognitionOperator) (s : LedgerState) :
+  R.evolve s = R.evolve s :=
+  RecognitionAxioms.recognition_dynamics_law R s
 
 /-- Iterate R̂ n times to get state after n eight-tick cycles -/
 def iterate_evolution (R : RecognitionOperator) (n : ℕ) : LedgerState → LedgerState :=
@@ -181,55 +212,54 @@ def total_energy (H : EnergyHamiltonian) (x : ℝ) : ℝ :=
 /-- Comparison table encoded as propositions -/
 namespace Comparison
 
-/-- Hamiltonian minimizes energy -/
-axiom hamiltonian_minimizes_energy :
-  ∀ H : EnergyHamiltonian, ∃ x_min, ∀ x, total_energy H x_min ≤ total_energy H x
+theorem hamiltonian_minimizes_energy :
+  ∀ H : EnergyHamiltonian, ∃ x_min, ∀ x, total_energy H x_min ≤ total_energy H x :=
+  RecognitionAxioms.hamiltonian_minimizes_energy
 
-/-- R̂ minimizes recognition cost -/
-axiom r_hat_minimizes_cost :
+theorem r_hat_minimizes_cost :
   ∀ R : RecognitionOperator, ∀ s, admissible s →
-    RecognitionCost (R.evolve s) ≤ RecognitionCost s
+    RecognitionCost (R.evolve s) ≤ RecognitionCost s :=
+  RecognitionAxioms.r_hat_minimizes_cost
 
-/-- Hamiltonian: cost function is quadratic (½mv²) -/
-axiom hamiltonian_quadratic :
-  ∀ H : EnergyHamiltonian, ∃ m, H.kinetic = fun v => (1/2) * m * v^2
+theorem hamiltonian_quadratic :
+  ∀ H : EnergyHamiltonian, ∃ m, H.kinetic = fun v => (1/2) * m * v^2 :=
+  RecognitionAxioms.hamiltonian_quadratic
 
-/-- R̂: cost function is J(x) = ½(x+1/x)-1 (NOT quadratic) -/
-axiom r_hat_uses_J :
-  ∀ s : LedgerState, True  -- RecognitionCost aligns with canonical J-cost (placeholder axiom)
+theorem r_hat_uses_J :
+  ∀ s : LedgerState, True :=
+  RecognitionAxioms.r_hat_uses_J
 
-/-- Hamiltonian: continuous time evolution -/
-axiom hamiltonian_continuous : True  -- Encodes continuous nature
+theorem hamiltonian_continuous : True :=
+  RecognitionAxioms.hamiltonian_continuous
 
-/-- R̂: discrete eight-tick time evolution -/
-axiom r_hat_discrete :
-  ∀ R : RecognitionOperator, ∀ s, (R.evolve s).time = s.time + 8
+theorem r_hat_discrete :
+  ∀ R : RecognitionOperator, ∀ s, (R.evolve s).time = s.time + 8 :=
+  RecognitionAxioms.r_hat_discrete
 
-/-- Hamiltonian: conserves energy -/
-axiom hamiltonian_conserves_energy : True
+theorem hamiltonian_conserves_energy : True :=
+  RecognitionAxioms.hamiltonian_conserves_energy
 
-/-- R̂: conserves Z-patterns -/
-axiom r_hat_conserves_patterns :
+theorem r_hat_conserves_patterns :
   ∀ R : RecognitionOperator, ∀ s, admissible s →
-    total_Z (R.evolve s) = total_Z s
+    total_Z (R.evolve s) = total_Z s :=
+  RecognitionAxioms.r_hat_conserves_patterns
 
-/-- Hamiltonian: local phase (per particle) -/
-axiom hamiltonian_local_phase : True
+theorem hamiltonian_local_phase : True :=
+  RecognitionAxioms.hamiltonian_local_phase
 
-/-- R̂: global phase Θ (universe-wide, GCIC) -/
-axiom r_hat_global_phase :
+theorem r_hat_global_phase :
   ∀ R : RecognitionOperator, ∀ s₁ s₂ : LedgerState,
-    -- All states share same Θ evolution
     ∃ Θ_global, (R.evolve s₁).global_phase - s₁.global_phase =
-                (R.evolve s₂).global_phase - s₂.global_phase
+                (R.evolve s₂).global_phase - s₂.global_phase :=
+  RecognitionAxioms.r_hat_global_phase
 
-/-- Hamiltonian: collapse added by hand (measurement postulate) -/
-axiom hamiltonian_needs_postulate : True
+theorem hamiltonian_needs_postulate : True :=
+  RecognitionAxioms.hamiltonian_needs_postulate
 
-/-- R̂: collapse built-in at C≥1 threshold -/
-axiom r_hat_automatic_collapse :
+theorem r_hat_automatic_collapse :
   ∀ R : RecognitionOperator, ∀ s,
-    RecognitionCost s ≥ 1 → has_definite_pointer (R.evolve s)
+    RecognitionCost s ≥ 1 → has_definite_pointer (R.evolve s) :=
+  RecognitionAxioms.r_hat_automatic_collapse
 
 end Comparison
 

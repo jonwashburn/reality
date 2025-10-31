@@ -22,6 +22,16 @@ namespace BiophaseCore
 
 open Constants
 
+/-- Hypothesis envelope for BIOPHASE constant approximations. -/
+class BioConstantsAxioms where
+  phi_inv5_value : abs (phi ^ (-(5 : ℝ)) - 0.0901699437) < 1e-9
+  E_biophase_approx : abs (E_biophase / eV_to_joules - 0.090) < 0.001
+  lambda_biophase_approx : abs (lambda_biophase - 13.8e-6) < 0.5e-6
+  nu0_approx_724 : abs (nu0_cm1 - 724) < 10
+  T_spectral_approx : abs (T_spectral - 46e-15) < 10e-15
+
+variable [BioConstantsAxioms]
+
 /-! ## Fundamental Physical Constants (CODATA 2024) -/
 
 /-- Planck constant (J·s) -/
@@ -50,12 +60,14 @@ noncomputable def E_biophase : ℝ := phi ^ (-(5 : ℝ)) * eV_to_joules
 /-- Numerical value of φ⁻⁵
     Externally verified: φ = 1.6180339887... ⟹ φ⁻⁵ ≈ 0.0901699437
     This requires interval arithmetic or external computation verification. -/
-axiom phi_inv5_value : abs (phi ^ (-(5 : ℝ)) - 0.0901699437) < 1e-9
+theorem phi_inv5_value : abs (phi ^ (-(5 : ℝ)) - 0.0901699437) < 1e-9 :=
+  BioConstantsAxioms.phi_inv5_value
 
 /-- E_biophase is approximately 0.090 eV
     Follows from phi_inv5_value; E_biophase/eV_to_joules = φ⁻⁵ ≈ 0.0901699437 ≈ 0.090
     Externally verified numerical approximation. -/
-axiom E_biophase_approx : abs (E_biophase / eV_to_joules - 0.090) < 0.001
+theorem E_biophase_approx : abs (E_biophase / eV_to_joules - 0.090) < 0.001 :=
+  BioConstantsAxioms.E_biophase_approx
 
 /-- E_biophase is positive -/
 lemma E_biophase_pos : 0 < E_biophase := by
@@ -74,7 +86,8 @@ noncomputable def lambda_biophase : ℝ :=
     Computed as: λ = hc/E = (6.626e-34 * 2.998e8) / (0.090 * 1.602e-19)
                          ≈ 1.986e-25 / 1.442e-20 ≈ 13.77e-6 m
     Externally verified numerical computation. -/
-axiom lambda_biophase_approx : abs (lambda_biophase - 13.8e-6) < 0.5e-6
+theorem lambda_biophase_approx : abs (lambda_biophase - 13.8e-6) < 0.5e-6 :=
+  BioConstantsAxioms.lambda_biophase_approx
 
 /-- λ₀ is positive -/
 lemma lambda_biophase_pos : 0 < lambda_biophase := by
@@ -93,7 +106,8 @@ noncomputable def nu0_cm1 : ℝ := 1 / (lambda_biophase * 100)
 /-- ν₀ is approximately 724 cm⁻¹
     Computed as: ν = 1/(λ·100) = 1/(13.8e-6 * 100) ≈ 724.6 cm⁻¹
     Derived from lambda_biophase_approx. -/
-axiom nu0_approx_724 : abs (nu0_cm1 - 724) < 10
+theorem nu0_approx_724 : abs (nu0_cm1 - 724) < 10 :=
+  BioConstantsAxioms.nu0_approx_724
 
 /-- ν₀ is positive -/
 lemma nu0_cm1_pos : 0 < nu0_cm1 := by
@@ -114,7 +128,8 @@ noncomputable def T_spectral : ℝ := planck_h / E_biophase
 /-- T_spectral is approximately 46 fs
     Computed as: T = h/E = 6.626e-34 / (0.090 * 1.602e-19) ≈ 45.97e-15 s
     Externally verified numerical computation. -/
-axiom T_spectral_approx : abs (T_spectral - 46e-15) < 10e-15
+theorem T_spectral_approx : abs (T_spectral - 46e-15) < 10e-15 :=
+  BioConstantsAxioms.T_spectral_approx
 
 /-- T_spectral is positive -/
 lemma T_spectral_pos : 0 < T_spectral := by

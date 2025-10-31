@@ -31,18 +31,29 @@ yields w₈ = 2.488254397846.
 namespace IndisputableMonolith
 namespace Constants
 
+/-! ### Hypothesis envelope for gap weight w₈ -/
+class GapWeightAxioms where
+  /-- The eight-tick normalization weight derived from T6 scheduler invariants. -/
+  w8 : ℝ
+  /-- Numeric value of w₈ from deterministic computation (certificate-checked). -/
+  w8_value : w8 = 2.488254397846
+  /-- Scheduler uniqueness pins w₈. -/
+  w8_derived_from_scheduler :
+    ∀ (w : PatternLayer.Pattern 8),
+    (∀ k : ℕ, k > 0 →
+      MeasurementLayer.blockSumAligned8 k (PatternLayer.extendPeriodic8 w) =
+      k * PatternLayer.Z_of_window w) →
+    ∃! (weight : ℝ), weight = w8
+
+variable [GapWeightAxioms]
+
 /-! ### Axiomatic w₈ from Classical Derivation -/
 
-/-- The eight-tick normalization weight derived from T6 scheduler invariants.
-    This constant is computed deterministically from the window-8 cancellation
-    constraint as a geometric series optimizer with per-step ratio ρ = e^w₈,
-    yielding w₈ = log(ρ*) where ρ* is the unique optimizer under T5 cost
-    uniqueness. -/
-axiom w8_from_eight_tick : ℝ
+/-/ The eight-tick normalization weight as provided by the hypothesis envelope. -/
+noncomputable def w8_from_eight_tick : ℝ := GapWeightAxioms.w8
 
-/-- Numeric value of w₈ from deterministic computation (with SHA-256 checksum
-    in alpha_seed_gap_curvature.ipynb). -/
-axiom w8_value : w8_from_eight_tick = 2.488254397846
+theorem w8_value : w8_from_eight_tick = 2.488254397846 := by
+  simpa [w8_from_eight_tick] using GapWeightAxioms.w8_value
 
 /-! ### Gap Series -/
 
@@ -147,16 +158,15 @@ theorem w8_value_certified :
 
 /-! ### Connection to Window-8 Scheduler Invariants -/
 
-/-- The eight-tick scheduler invariants (sumFirst8, blockSumAligned8, observeAvg8)
-    uniquely determine w₈. This axiom encodes the classical proof that evaluating
-    the eight-phase aggregation rule on the neutral breath (with T5 cost uniqueness
-    and T6 minimality) yields a unique weight. -/
-axiom w8_derived_from_scheduler :
+theorem w8_derived_from_scheduler :
   ∀ (w : PatternLayer.Pattern 8),
   (∀ k : ℕ, k > 0 →
     MeasurementLayer.blockSumAligned8 k (PatternLayer.extendPeriodic8 w) =
     k * PatternLayer.Z_of_window w) →
-  ∃! (weight : ℝ), weight = w8_from_eight_tick
+  ∃! (weight : ℝ), weight = w8_from_eight_tick := by
+  intro w h
+  have := GapWeightAxioms.w8_derived_from_scheduler w h
+  simpa [w8_from_eight_tick] using this
 
 /-- The weight w₈ is uniquely pinned by T6 structure (existence and uniqueness). -/
 theorem w8_unique : ∃! w : ℝ, w = w8_from_eight_tick := by

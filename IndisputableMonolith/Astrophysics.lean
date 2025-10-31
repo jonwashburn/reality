@@ -74,5 +74,3 @@ namespace Astrophysics
 end Astrophysics
 
 end IndisputableMonolith
-
-

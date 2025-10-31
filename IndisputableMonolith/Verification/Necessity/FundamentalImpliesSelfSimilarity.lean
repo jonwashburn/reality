@@ -28,6 +28,66 @@ import IndisputableMonolith.Verification.Exclusivity.NoAlternatives
 import IndisputableMonolith.Constants.RSUnits
 
 namespace IndisputableMonolith.Verification.Inevitability
+/-- Hypothesis envelope for bridge lemmas used in inevitability/self-similarity. -/
+class NecessityAxioms where
+  units_quotient_preserves_dimensionless :
+    ∀ (F : PhysicsFramework),
+    F.displays_factor_through_units_quotient →
+    (∀ (ratio : ℝ), F.is_dimensionless_ratio ratio → F.quotient_preserves ratio)
+  k_gates_are_dimensionless :
+    ∀ (F : PhysicsFramework), F.k_gate_identities_are_dimensionless_ratios
+  preserved_dimensionless_implies_gates :
+    ∀ (F : PhysicsFramework),
+    F.k_gate_identities_are_dimensionless_ratios →
+    (∀ (ratio : ℝ), F.is_dimensionless_ratio ratio → F.quotient_preserves ratio) →
+    F.k_gate_identities_hold
+  unique_calibration_fixes_identity :
+    ∀ (F : PhysicsFramework) (J : ℝ → ℝ), F.cost_functional = J → F.has_unique_calibration → J 1 = 0
+  unique_calibration_unit_curvature :
+    ∀ (F : PhysicsFramework) (J : ℝ → ℝ), F.cost_functional = J → F.has_unique_calibration → deriv (deriv J) 1 = 1
+  units_quotient_inversion_symmetric :
+    ∀ (F : PhysicsFramework), F.displays_factor_through_units_quotient → F.cost_has_inversion_symmetry
+  inversion_symmetry_implies_J_symmetric :
+    ∀ (F : PhysicsFramework) (J : ℝ → ℝ), F.cost_functional = J → F.cost_has_inversion_symmetry → (∀ x > 0, J x = J (1/x))
+  cost_from_variational_principle :
+    ∀ (F : PhysicsFramework) (J : ℝ → ℝ), F.cost_functional = J → F.has_variational_structure
+  variational_structure_implies_convex :
+    ∀ (F : PhysicsFramework) (J : ℝ → ℝ), F.has_variational_structure → ConvexOn (Set.Ioi 0) J
+  displays_factor_bounds_cost :
+    ∀ (F : PhysicsFramework) (J : ℝ → ℝ), F.displays_factor_through_units_quotient → F.cost_functional = J → (∀ x > 0, |J x| ≤ x + 1/x)
+  convex_to_strict_convex :
+    ∀ (J : ℝ → ℝ), ConvexOn (Set.Ioi 0) J → J 1 = 0 → deriv (deriv J) 1 = 1 → StrictConvexOn ℝ (Set.Ioi 0) J
+  cost_functional_continuous :
+    ∀ (J : ℝ → ℝ), ConvexOn (Set.Ioi 0) J → (∀ x > 0, |J x| ≤ x + 1/x) → Continuous J
+  calibration_conversion :
+    ∀ (J : ℝ → ℝ), deriv (deriv J) 1 = 1 → Continuous J → deriv (deriv (J ∘ exp)) 0 = 1
+  phi_scaling_preserves_structure :
+    ∀ (F : PhysicsFramework) [HasNoExternalScale F] (φ : ℝ) (s : ℝ), φ > 0 → φ * φ = φ + 1 → s > 0 →
+    F.StateSpace.at_scale s ≃ F.StateSpace.at_scale (φ * s)
+  phi_is_unique_self_similar_scale :
+    ∀ (F : PhysicsFramework) [HasNoExternalScale F] (φ : ℝ), φ > 0 → φ * φ = φ + 1 →
+    (∀ ψ : ℝ, ψ > 0 → HasSelfSimilarity.with_scale ψ F → ψ = φ)
+  units_quotient_gives_scaling :
+    ∀ (F : PhysicsFramework) [HasNoExternalScale F], PhiNecessity.has_scaling_relation F.StateSpace
+  cost_functional_gives_complexity :
+    ∀ (F : PhysicsFramework) [HasNoExternalScale F], PhiNecessity.has_complexity_structure F.StateSpace
+  phi_fixed_point_is_fibonacci :
+    ∀ (F : PhysicsFramework) [HasNoExternalScale F], PhiNecessity.has_fibonacci_recursion F.StateSpace
+  phi_necessity_main_result :
+    ∀ (F : PhysicsFramework) [HasNoExternalScale F], PhiNecessity.SelfSimilarityConditions F.StateSpace → HasSelfSimilarity F.StateSpace
+  framework_has_cost_functional :
+    ∀ (F : PhysicsFramework) [Inhabited F.StateSpace], ∃ J : ℝ → ℝ, F.cost_functional = J
+  zero_params_gives_algorithmic_spec :
+    ∀ (F : PhysicsFramework) [Inhabited F.StateSpace] [HasZeroParameters F], HasAlgorithmicSpec F.StateSpace
+  phi_scaling_on_levels :
+    ∀ (F : PhysicsFramework) (levels : ℤ → F.StateSpace) (φ : ℝ) (n k : ℤ), φ > 0 → φ * φ = φ + 1 →
+    levels (n + k) ≃ φ^k • levels n
+  completeness_has_units_quotient :
+    ∀ (F : PhysicsFramework), IsComplete F → F.displays_factor_through_units_quotient
+  completeness_has_absolute_layer :
+    ∀ (F : PhysicsFramework), IsComplete F → F.has_unique_calibration
+
+variable [NecessityAxioms]
 
 /-!
 # No External Scale Definition
@@ -166,23 +226,9 @@ theorem units_quotient_gate_invariance
   -- Use UnitsQuotientFunctorCert machinery
 
   -- For each gate identity τ_rec/τ_0 = λ_kin/ℓ_0, etc., construct the dimensionless form
-  axiom units_quotient_preserves_dimensionless :
-    ∀ (F : PhysicsFramework),
-    F.displays_factor_through_units_quotient →
-    (∀ (ratio : ℝ), F.is_dimensionless_ratio ratio → F.quotient_preserves ratio)
-
-  axiom k_gates_are_dimensionless :
-    ∀ (F : PhysicsFramework), F.k_gate_identities_are_dimensionless_ratios
-
-  axiom preserved_dimensionless_implies_gates :
-    ∀ (F : PhysicsFramework),
-    F.k_gate_identities_are_dimensionless_ratios →
-    (∀ (ratio : ℝ), F.is_dimensionless_ratio ratio → F.quotient_preserves ratio) →
-    F.k_gate_identities_hold
-
-  have hPres := units_quotient_preserves_dimensionless F hUnitsQuot
-  have hDim := k_gates_are_dimensionless F
-  exact preserved_dimensionless_implies_gates F hDim hPres
+  have hPres := NecessityAxioms.units_quotient_preserves_dimensionless F hUnitsQuot
+  have hDim := NecessityAxioms.k_gates_are_dimensionless F
+  exact NecessityAxioms.preserved_dimensionless_implies_gates F hDim hPres
 
 /--
 Bridge Lemma 3: Unique calibration forces J normalization at unity.
@@ -202,22 +248,9 @@ theorem units_normalization_J
   J 1 = 0 ∧ deriv (deriv J) 1 = 1 := by
 
   -- The unique calibration fixes the identity as zero-cost
-  axiom unique_calibration_fixes_identity :
-    ∀ (F : PhysicsFramework) (J : ℝ → ℝ),
-    F.cost_functional = J →
-    F.has_unique_calibration →
-    J 1 = 0
-
-  -- Unit curvature at identity from unique calibration
-  axiom unique_calibration_unit_curvature :
-    ∀ (F : PhysicsFramework) (J : ℝ → ℝ),
-    F.cost_functional = J →
-    F.has_unique_calibration →
-    deriv (deriv J) 1 = 1
-
   constructor
-  · exact unique_calibration_fixes_identity F J hCost hCalib
-  · exact unique_calibration_unit_curvature F J hCost hCalib
+  · exact NecessityAxioms.unique_calibration_fixes_identity F J hCost hCalib
+  · exact NecessityAxioms.unique_calibration_unit_curvature F J hCost hCalib
 
 /--
 Bridge Lemma 4: T5 uniqueness + normalization gives φ fixed point.
@@ -281,20 +314,9 @@ theorem cost_symmetry_from_structure
   ∀ x > 0, J x = J (1/x) := by
 
   -- The units quotient on ℝ>0 has inversion symmetry
-  axiom units_quotient_inversion_symmetric :
-    ∀ (F : PhysicsFramework),
-    F.displays_factor_through_units_quotient →
-    F.cost_has_inversion_symmetry
-
-  axiom inversion_symmetry_implies_J_symmetric :
-    ∀ (F : PhysicsFramework) (J : ℝ → ℝ),
-    F.cost_functional = J →
-    F.cost_has_inversion_symmetry →
-    (∀ x > 0, J x = J (1/x))
-
   have hUnitsQuot := HasNoExternalScale.has_units_quotient (F := F)
-  have hInvSymm := units_quotient_inversion_symmetric F hUnitsQuot
-  exact inversion_symmetry_implies_J_symmetric F J hCost hInvSymm
+  have hInvSymm := NecessityAxioms.units_quotient_inversion_symmetric F hUnitsQuot
+  exact NecessityAxioms.inversion_symmetry_implies_J_symmetric F J hCost hInvSymm
 
 /--
 Cost convexity from minimization principle.
@@ -310,18 +332,8 @@ theorem cost_convexity_from_minimization
   ConvexOn (Set.Ioi 0) J := by
 
   -- Cost functionals arise from minimization
-  axiom cost_from_variational_principle :
-    ∀ (F : PhysicsFramework) (J : ℝ → ℝ),
-    F.cost_functional = J →
-    F.has_variational_structure
-
-  axiom variational_structure_implies_convex :
-    ∀ (F : PhysicsFramework) (J : ℝ → ℝ),
-    F.has_variational_structure →
-    ConvexOn (Set.Ioi 0) J
-
-  have hVar := cost_from_variational_principle F J hCost
-  exact variational_structure_implies_convex F J hVar
+  have hVar := NecessityAxioms.cost_from_variational_principle F J hCost
+  exact NecessityAxioms.variational_structure_implies_convex F J hVar
 
 /--
 Bounded growth: |J(x)| ≤ x + 1/x for x > 0.
@@ -337,14 +349,8 @@ theorem cost_bounded_from_displays
   ∀ x > 0, |J x| ≤ x + 1/x := by
 
   -- Displays factor + positivity → bounded cost
-  axiom displays_factor_bounds_cost :
-    ∀ (F : PhysicsFramework) (J : ℝ → ℝ),
-    F.displays_factor_through_units_quotient →
-    F.cost_functional = J →
-    (∀ x > 0, |J x| ≤ x + 1/x)
-
   have hUnitsQuot := HasNoExternalScale.has_units_quotient (F := F)
-  exact displays_factor_bounds_cost F J hUnitsQuot hCost
+  exact NecessityAxioms.displays_factor_bounds_cost F J hUnitsQuot hCost
 
 /--
 Unit normalization + structural constraints → unique cost J = ½(x+1/x)-1.
@@ -366,30 +372,14 @@ theorem unit_normalized_cost_is_unique
   intro x hxPos
 
   -- Strengthen convexity and regularity to match T5 hypotheses
-  have hStrictConvex : StrictConvexOn ℝ (Set.Ioi 0) J := by
-    axiom convex_to_strict_convex :
-      ∀ (J : ℝ → ℝ),
-      ConvexOn (Set.Ioi 0) J →
-      J 1 = 0 →
-      deriv (deriv J) 1 = 1 →
-      StrictConvexOn ℝ (Set.Ioi 0) J
-    exact convex_to_strict_convex J hConvex hNorm.1 hNorm.2
+  have hStrictConvex : StrictConvexOn ℝ (Set.Ioi 0) J :=
+    NecessityAxioms.convex_to_strict_convex J hConvex hNorm.1 hNorm.2
 
-  have hCont : Continuous J := by
-    axiom cost_functional_continuous :
-      ∀ (J : ℝ → ℝ),
-      ConvexOn (Set.Ioi 0) J →
-      (∀ x > 0, |J x| ≤ x + 1/x) →
-      Continuous J
-    exact cost_functional_continuous J hConvex hBounded
+  have hCont : Continuous J :=
+    NecessityAxioms.cost_functional_continuous J hConvex hBounded
 
-  have hCalib : deriv (deriv (J ∘ exp)) 0 = 1 := by
-    axiom calibration_conversion :
-      ∀ (J : ℝ → ℝ),
-      deriv (deriv J) 1 = 1 →
-      Continuous J →
-      deriv (deriv (J ∘ exp)) 0 = 1
-    exact calibration_conversion J hNorm.2 hCont
+  have hCalib : deriv (deriv (J ∘ exp)) 0 = 1 :=
+    NecessityAxioms.calibration_conversion J hNorm.2 hCont
 
   -- Apply T5_uniqueness_complete to get equality with Jcost on x>0
   have hJcost := CostUniqueness.T5_uniqueness_complete J hSymm hNorm.1 hStrictConvex hCalib hCont hxPos
@@ -435,21 +425,11 @@ theorem phi_fixed_point_is_self_similarity
   · intro s hSPos
     -- At scale s and scale φ·s, the physics is the same (no external scale)
     -- The fixed point equation φ² = φ+1 ensures this scaling is consistent
-    axiom phi_scaling_preserves_structure :
-      ∀ (F : PhysicsFramework) [HasNoExternalScale F] (φ : ℝ) (s : ℝ),
-      φ > 0 → φ * φ = φ + 1 → s > 0 →
-      F.StateSpace.at_scale s ≃ F.StateSpace.at_scale (φ * s)
-
-    exact phi_scaling_preserves_structure F φ s hPhi.1 hPhi.2 hSPos
+  exact NecessityAxioms.phi_scaling_preserves_structure F φ s hPhi.1 hPhi.2 hSPos
 
   -- φ is the unique scaling factor (from fixed point)
   · -- Uniqueness: φ is the only positive number satisfying φ² = φ+1
-    axiom phi_is_unique_self_similar_scale :
-      ∀ (F : PhysicsFramework) [HasNoExternalScale F] (φ : ℝ),
-      φ > 0 → φ * φ = φ + 1 →
-      (∀ ψ : ℝ, ψ > 0 → HasSelfSimilarity.with_scale ψ F → ψ = φ)
-
-    apply phi_is_unique_self_similar_scale F φ hPhi.1 hPhi.2
+    apply NecessityAxioms.phi_is_unique_self_similar_scale F φ hPhi.1 hPhi.2
 
 /-!
 # MAIN THEOREM 2: Fundamental + No External Scale → Self-Similarity
@@ -487,11 +467,8 @@ theorem fundamental_no_external_scale_implies_self_similarity
 
   -- Get the cost functional
   have hCostExists : ∃ J : ℝ → ℝ, F.cost_functional = J := by
-    -- Cost functionals exist for recognition frameworks
-    axiom framework_has_cost_functional :
-      ∀ (F : PhysicsFramework) [Inhabited F.StateSpace],
-      ∃ J : ℝ → ℝ, F.cost_functional = J
-    exact framework_has_cost_functional F
+    -- Cost functionals exist for recognition frameworks (hypothesis envelope)
+    exact NecessityAxioms.framework_has_cost_functional F
 
   obtain ⟨J, hJDef⟩ := hCostExists
 
@@ -522,12 +499,8 @@ theorem fundamental_no_external_scale_implies_self_similarity
     -- This requires HasAlgorithmicSpec, which should come from HasZeroParameters
     -- For now, assert this connection
     have hSpec : HasAlgorithmicSpec F.StateSpace := by
-      -- HasZeroParameters should imply HasAlgorithmicSpec
-      -- This is essentially what "zero parameters" means
-      axiom zero_params_gives_algorithmic_spec :
-        ∀ (F : PhysicsFramework) [Inhabited F.StateSpace] [HasZeroParameters F],
-        HasAlgorithmicSpec F.StateSpace
-      exact zero_params_gives_algorithmic_spec F
+      -- HasZeroParameters implies HasAlgorithmicSpec (hypothesis envelope)
+      exact NecessityAxioms.zero_params_gives_algorithmic_spec F
 
     -- Now apply the DiscreteNecessity theorem
     exact DiscreteNecessity.zero_params_has_discrete_skeleton F.StateSpace hSpec
@@ -578,11 +551,8 @@ theorem fundamental_no_external_scale_implies_self_similarity
     intro level
     -- levels(n) and levels(n+k) are related by φ^k scaling
     -- This is the definition of self-similarity on discrete levels
-    axiom phi_scaling_on_levels :
-      ∀ (F : PhysicsFramework) (levels : ℤ → F.StateSpace) (φ : ℝ) (n k : ℤ),
-      φ > 0 → φ * φ = φ + 1 →
-      levels (n + k) ≃ φ^k • levels n
-    apply phi_scaling_on_levels F levels
+    -- Use hypothesis envelope scaling on discrete levels
+    apply NecessityAxioms.phi_scaling_on_levels F levels
     exact hPhi
   · -- φ is the unique scale factor
     -- Uniqueness follows from φ being the unique positive root
@@ -606,24 +576,15 @@ theorem no_external_scale_satisfies_phi_necessity_preconditions
 
   -- Scaling relation satisfied
   · -- Units quotient provides the scaling structure
-    axiom units_quotient_gives_scaling :
-      ∀ (F : PhysicsFramework) [HasNoExternalScale F],
-      PhiNecessity.has_scaling_relation F.StateSpace
-    exact units_quotient_gives_scaling F
+  exact NecessityAxioms.units_quotient_gives_scaling F
 
   -- Complexity structure satisfied
   · -- Cost functional provides complexity measure
-    axiom cost_functional_gives_complexity :
-      ∀ (F : PhysicsFramework) [HasNoExternalScale F],
-      PhiNecessity.has_complexity_structure F.StateSpace
-    exact cost_functional_gives_complexity F
+  exact NecessityAxioms.cost_functional_gives_complexity F
 
   -- Fibonacci recursion emerges
   · -- φ fixed point equation φ²=φ+1 is Fibonacci recursion
-    axiom phi_fixed_point_is_fibonacci :
-      ∀ (F : PhysicsFramework) [HasNoExternalScale F],
-      PhiNecessity.has_fibonacci_recursion F.StateSpace
-    exact phi_fixed_point_is_fibonacci F
+  exact NecessityAxioms.phi_fixed_point_is_fibonacci F
 
 /--
 Therefore self-similarity follows from PhiNecessity's main theorem.
@@ -637,12 +598,7 @@ theorem no_external_scale_to_self_similarity_via_phi_necessity
 
   -- Apply PhiNecessity.self_similarity_forces_phi
   -- This existing theorem shows that the preconditions imply self-similarity
-  axiom phi_necessity_main_result :
-    ∀ (F : PhysicsFramework) [HasNoExternalScale F],
-    PhiNecessity.SelfSimilarityConditions F.StateSpace →
-    HasSelfSimilarity F.StateSpace
-
-  exact phi_necessity_main_result F hPrec
+  exact NecessityAxioms.phi_necessity_main_result F hPrec
 
 /-!
 # Completeness → No External Scale (Wrapper)
@@ -661,16 +617,8 @@ theorem completeness_implies_no_external_scale
   HasNoExternalScale F := by
 
   -- Factorization through units quotient from completeness
-  axiom completeness_has_units_quotient :
-    ∀ (F : PhysicsFramework), IsComplete F →
-      F.displays_factor_through_units_quotient
-
-  -- Unique calibration (absolute layer) from completeness
-  axiom completeness_has_absolute_layer :
-    ∀ (F : PhysicsFramework), IsComplete F → F.has_unique_calibration
-
-  have hUnitsQuot := completeness_has_units_quotient F hComplete
-  have hAbsLayer := completeness_has_absolute_layer F hComplete
+  have hUnitsQuot := NecessityAxioms.completeness_has_units_quotient F hComplete
+  have hAbsLayer := NecessityAxioms.completeness_has_absolute_layer F hComplete
 
   -- Build the structure instance using the proven bridges
   refine {

@@ -85,16 +85,6 @@ theorem equilibrium_ml_from_j_minimization :
     ML_eq = Real.exp (-(cost_differential emit store) / J_bit) :=
   StellarAssemblyAxioms.equilibrium_ml_from_j_minimization
 
-    Classical derivation:
-    - During collapse, system minimizes total recognition cost
-    - Photon emission (high δ) vs mass accumulation (low δ) trade-off
-    - Equilibrium at ∂J_total/∂(M/L) = 0
-    - Solution: M/L = exp(-Δδ/J_bit) -/
-axiom equilibrium_ml_from_j_minimization :
-  ∀ (emit : PhotonEmissionCost) (store : BaryonStorageCost),
-  ∃ (ML_eq : ℝ), 0 < ML_eq ∧
-    ML_eq = Real.exp (-(cost_differential emit store) / J_bit)
-
 /-! ### φ-Quantization of Cost Differential -/
 
 /-- If ledger overhead is φ-quantized, then Δδ ~ n·ln(φ). -/

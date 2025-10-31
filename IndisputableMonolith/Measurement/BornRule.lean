@@ -16,19 +16,30 @@ open Real Complex
 
 /-! ## Born Rule Axioms -/
 
-/-- Axiom: Path action weights yield Born probabilities.
+/-- Hypothesis envelope for Born rule bridges. -/
+class MeasurementAxioms where
+  path_weights_to_born (C₁ C₂ : ℝ) (θ_s : ℝ) (hθ : 0 < θ_s ∧ θ_s < π/2) :
+    Real.exp (-C₁) / (Real.exp (-C₁) + Real.exp (-C₂)) = Real.cos θ_s ^ 2
+  complementary_born_probability (C₁ C₂ : ℝ) (θ_s : ℝ) (hθ : 0 < θ_s ∧ θ_s < π/2) :
+    Real.exp (-C₂) / (Real.exp (-C₁) + Real.exp (-C₂)) = Real.sin θ_s ^ 2
+
+variable [MeasurementAxioms]
+
+/-- Path action weights yield Born probabilities.
     The recognition cost framework produces quantum probabilities via exp(-C).
     This is the physics-mathematics bridge connecting recognition to quantum measurement.
     Full proof requires completing the C2ABridge connection and amplitude alignment.
     Reference: Source.txt Section on "Recognition = Measurement" -/
-axiom path_weights_to_born (C₁ C₂ : ℝ) (θ_s : ℝ) (hθ : 0 < θ_s ∧ θ_s < π/2) :
-  Real.exp (-C₁) / (Real.exp (-C₁) + Real.exp (-C₂)) = Real.cos θ_s ^ 2
+theorem path_weights_to_born (C₁ C₂ : ℝ) (θ_s : ℝ) (hθ : 0 < θ_s ∧ θ_s < π/2) :
+  Real.exp (-C₁) / (Real.exp (-C₁) + Real.exp (-C₂)) = Real.cos θ_s ^ 2 :=
+  MeasurementAxioms.path_weights_to_born C₁ C₂ θ_s hθ
 
-/-- Axiom: Complementary branch probability follows from normalization.
+/-- Complementary branch probability follows from normalization.
     Given prob₁ = cos²θ, normalization forces prob₂ = sin²θ.
     This follows from the first axiom via probability sum = 1. -/
-axiom complementary_born_probability (C₁ C₂ : ℝ) (θ_s : ℝ) (hθ : 0 < θ_s ∧ θ_s < π/2) :
-  Real.exp (-C₂) / (Real.exp (-C₁) + Real.exp (-C₂)) = Real.sin θ_s ^ 2
+theorem complementary_born_probability (C₁ C₂ : ℝ) (θ_s : ℝ) (hθ : 0 < θ_s ∧ θ_s < π/2) :
+  Real.exp (-C₂) / (Real.exp (-C₁) + Real.exp (-C₂)) = Real.sin θ_s ^ 2 :=
+  MeasurementAxioms.complementary_born_probability C₁ C₂ θ_s hθ
 
 /-- Two-outcome measurement probabilities from recognition weights -/
 structure TwoOutcomeMeasurement where

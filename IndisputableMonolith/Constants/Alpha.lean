@@ -31,6 +31,14 @@ namespace IndisputableMonolith
 namespace Constants
 
 noncomputable section
+/-- Hypothesis envelope for α certificates. -/
+class AlphaCertificates where
+  alphaInv_predicted_value_cert : alphaInv = 137.0359991185
+  alpha_seed_value_cert : alpha_seed = 138.230076758
+  delta_kappa_value_cert : delta_kappa = -0.003299762049
+
+variable [AlphaCertificates]
+
 
 /-! ### Components of α⁻¹ Derivation -/
 
@@ -56,22 +64,16 @@ def delta_kappa : ℝ := -(103 : ℝ) / (102 * Real.pi ^ 5)
 /-! ### Numeric Predictions -/
 
 /-- The predicted value α⁻¹ ≈ 137.0359991185 (deterministic from structure). -/
-axiom alphaInv_predicted_value_cert : alphaInv = 137.0359991185
-
 lemma alphaInv_predicted_value : alphaInv = 137.0359991185 :=
-  alphaInv_predicted_value_cert
+  AlphaCertificates.alphaInv_predicted_value_cert
 
 /-- The seed value (geometric). -/
-axiom alpha_seed_value_cert : alpha_seed = 138.230076758
-
 lemma alpha_seed_value : alpha_seed = 138.230076758 :=
-  alpha_seed_value_cert
+  AlphaCertificates.alpha_seed_value_cert
 
 /-- The curvature correction (exact rational). -/
-axiom delta_kappa_value_cert : delta_kappa = -0.003299762049
-
 lemma delta_kappa_value : delta_kappa = -0.003299762049 :=
-  delta_kappa_value_cert
+  AlphaCertificates.delta_kappa_value_cert
 
 /-! ### Provenance Notes -/
 

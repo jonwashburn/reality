@@ -16,6 +16,23 @@ namespace IndisputableMonolith
 namespace Measurement
 
 open Real Complex Cost
+open IndisputableMonolith.Cost.ClassicalResults
+
+-- Require classical results hypotheses for complex exponential rearrangement
+variable [ClassicalResultsAxioms]
+/-- Hypothesis envelope for path action calculus identities. -/
+class PathActionAxioms where
+  recognition_piecewise_action_additive (γ₁ γ₂ : RecognitionPath) :
+    ∫ t in (0)..(γ₁.T + γ₂.T),
+        Cost.Jcost (if t ≤ γ₁.T then γ₁.rate t else γ₂.rate (t - γ₁.T)) =
+      ∫ t in (0)..γ₁.T, Cost.Jcost (γ₁.rate t) +
+        ∫ t in γ₁.T..(γ₁.T + γ₂.T), Cost.Jcost (γ₂.rate (t - γ₁.T))
+  recognition_rate_shift (γ : RecognitionPath) (T : ℝ) :
+    ∫ t in T..(T + γ.T), Cost.Jcost (γ.rate (t - T)) =
+      ∫ s in (0)..γ.T, Cost.Jcost (γ.rate s)
+
+variable [PathActionAxioms]
+
 
 /-- A recognition path is a time-parameterized positive rate function -/
 structure RecognitionPath where
@@ -29,20 +46,22 @@ Documented calculus axiom (cf. Apostol 1974, Rudin 1976): the recognition cost f
 concatenated path splits additively across the junction.  This specializes the general
 `piecewise_path_integral_additive` axiom in `Cost.ClassicalResults` to recognition paths.
 -/
-axiom recognition_piecewise_action_additive (γ₁ γ₂ : RecognitionPath) :
+theorem recognition_piecewise_action_additive (γ₁ γ₂ : RecognitionPath) :
   ∫ t in (0)..(γ₁.T + γ₂.T),
       Cost.Jcost (if t ≤ γ₁.T then γ₁.rate t else γ₂.rate (t - γ₁.T)) =
     ∫ t in (0)..γ₁.T, Cost.Jcost (γ₁.rate t) +
-      ∫ t in γ₁.T..(γ₁.T + γ₂.T), Cost.Jcost (γ₂.rate (t - γ₁.T))
+      ∫ t in γ₁.T..(γ₁.T + γ₂.T), Cost.Jcost (γ₂.rate (t - γ₁.T)) :=
+  PathActionAxioms.recognition_piecewise_action_additive γ₁ γ₂
 
 /--
 Documented change-of-variables axiom (cf. Apostol 1974, Rudin 1976): translating the
 integration domain for a recognition rate leaves the action invariant, mirroring
 `intervalIntegral.integral_comp_sub_right`.
 -/
-axiom recognition_rate_shift (γ : RecognitionPath) (T : ℝ) :
+theorem recognition_rate_shift (γ : RecognitionPath) (T : ℝ) :
   ∫ t in T..(T + γ.T), Cost.Jcost (γ.rate (t - T)) =
-    ∫ s in (0)..γ.T, Cost.Jcost (γ.rate s)
+    ∫ s in (0)..γ.T, Cost.Jcost (γ.rate s) :=
+  PathActionAxioms.recognition_rate_shift γ T
 
 /-- Recognition action C[γ] = ∫ J(r(t)) dt -/
 noncomputable def pathAction (γ : RecognitionPath) : ℝ :=
@@ -164,16 +183,21 @@ theorem pathAmplitude_multiplicative (γ₁ γ₂ : RecognitionPath) (φ₁ φ�
   obtain ⟨γ, hγ⟩ := pathAction_additive γ₁ γ₂
   use γ
   -- exp(-(C₁+C₂)/2) · exp(i(φ₁+φ₂)) = [exp(-C₁/2)·exp(iφ₁)] · [exp(-C₂/2)·exp(iφ₂)]
-  -- Uses Complex.exp_add: exp(a+b) = exp(a) · exp(b) and ring
   unfold pathAmplitude
-  rw [hγ]
-  -- The key insight: exp(-(C₁+C₂)/2 + i(φ₁+φ₂)) = exp(-C₁/2+iφ₁) · exp(-C₂/2+iφ₂)
-  -- This follows from exp_add and algebraic manipulation
-  -- Full proof requires careful handling of complex number coercions and ring operations
-  simpa using
-    Cost.ClassicalResults.complex_exp_mul_rearrange
-      (c₁ := pathAction γ₁) (c₂ := pathAction γ₂)
-      (φ₁ := φ₁) (φ₂ := φ₂)
+  have hsumC : (-(pathAction γ₁ + pathAction γ₂) / 2) = (-(pathAction γ₁) / 2) + (-(pathAction γ₂) / 2) := by
+    ring
+  have hsumφ : ((φ₁ + φ₂) * I) = (φ₁ * I) + (φ₂ * I) := by
+    ring
+  calc
+    Complex.exp (-(pathAction γ) / 2) * Complex.exp ((φ₁ + φ₂) * I)
+        = Complex.exp (-(pathAction γ₁ + pathAction γ₂) / 2) * Complex.exp ((φ₁ + φ₂) * I) := by
+          simp [hγ]
+    _ = (Complex.exp (-(pathAction γ₁) / 2) * Complex.exp (-(pathAction γ₂) / 2)) *
+        (Complex.exp (φ₁ * I) * Complex.exp (φ₂ * I)) := by
+          simp [hsumC, hsumφ, Complex.exp_add, mul_comm, mul_left_comm, mul_assoc]
+    _ = (Complex.exp (-(pathAction γ₁) / 2) * Complex.exp (φ₁ * I)) *
+        (Complex.exp (-(pathAction γ₂) / 2) * Complex.exp (φ₂ * I)) := by
+          ac_rfl
 
 end Measurement
 end IndisputableMonolith

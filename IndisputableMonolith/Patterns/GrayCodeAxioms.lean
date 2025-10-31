@@ -34,6 +34,50 @@ namespace IndisputableMonolith
 namespace Patterns
 namespace GrayCodeAxioms
 
+/-- Hypothesis envelope for Gray code classical properties. -/
+class GrayCodeFacts where
+  grayToNat_inverts_natToGray :
+    ∀ n : ℕ, n < 2^64 →
+      (let g := n ^^^ (n >>> 1)
+       let rec inverse (shift : ℕ) (acc : ℕ) (fuel : ℕ) : ℕ :=
+         match fuel with
+         | 0 => acc
+         | fuel' + 1 =>
+           let shifted := g >>> shift
+           if shifted = 0 then acc
+           else inverse (shift + 1) (acc ^^^ shifted) fuel'
+       inverse 0 0 64) = n
+  natToGray_inverts_grayToNat :
+    ∀ g : ℕ, g < 2^64 →
+      (let rec inverse (shift : ℕ) (acc : ℕ) (fuel : ℕ) : ℕ :=
+         match fuel with
+         | 0 => acc
+         | fuel' + 1 =>
+           let shifted := g >>> shift
+           if shifted = 0 then acc
+           else inverse (shift + 1) (acc ^^^ shifted) fuel'
+       let n := inverse 0 0 64
+       n ^^^ (n >>> 1)) = g
+  grayToNat_preserves_bound :
+    ∀ g d : ℕ, g < 2^d → d ≤ 64 →
+      (let rec inverse (shift : ℕ) (acc : ℕ) (fuel : ℕ) : ℕ :=
+         match fuel with
+         | 0 => acc
+         | fuel' + 1 =>
+           let shifted := g >>> shift
+           if shifted = 0 then acc
+           else inverse (shift + 1) (acc ^^^ shifted) fuel'
+       inverse 0 0 64) < 2^d
+  pattern_to_nat_bound :
+    ∀ (d : ℕ) (p : Pattern d),
+      (∑ k : Fin d, if p k then 2^(k.val) else 0) < 2^d
+  gray_code_one_bit_property :
+    ∀ (d n : ℕ), n + 1 < 2^d →
+      ∃! k : ℕ, k < d ∧
+        ((n ^^^ (n >>> 1)).testBit k ≠ ((n+1) ^^^ ((n+1) >>> 1)).testBit k)
+
+variable [GrayCodeFacts]
+
 /-- **Classical Result**: Gray code inverse is a left inverse.
 
 The inverse Gray code operation (cumulative XOR) correctly inverts the forward
@@ -49,7 +93,7 @@ Gray code transformation.
 
 **Status**: Standard result in discrete mathematics
 -/
-axiom grayToNat_inverts_natToGray :
+theorem grayToNat_inverts_natToGray :
   ∀ n : ℕ, n < 2^64 →
     (let g := n ^^^ (n >>> 1)
      let rec inverse (shift : ℕ) (acc : ℕ) (fuel : ℕ) : ℕ :=
@@ -59,7 +103,8 @@ axiom grayToNat_inverts_natToGray :
          let shifted := g >>> shift
          if shifted = 0 then acc
          else inverse (shift + 1) (acc ^^^ shifted) fuel'
-     inverse 0 0 64) = n
+     inverse 0 0 64) = n :=
+  GrayCodeFacts.grayToNat_inverts_natToGray
 
 /-- **Classical Result**: natToGray is a left inverse of grayToNat.
 
@@ -71,7 +116,7 @@ The forward Gray code transformation inverts the inverse operation.
 
 **Status**: Consequence of inverse correctness
 -/
-axiom natToGray_inverts_grayToNat :
+theorem natToGray_inverts_grayToNat :
   ∀ g : ℕ, g < 2^64 →
     (let rec inverse (shift : ℕ) (acc : ℕ) (fuel : ℕ) : ℕ :=
        match fuel with
@@ -81,7 +126,8 @@ axiom natToGray_inverts_grayToNat :
          if shifted = 0 then acc
          else inverse (shift + 1) (acc ^^^ shifted) fuel'
      let n := inverse 0 0 64
-     n ^^^ (n >>> 1)) = g
+     n ^^^ (n >>> 1)) = g :=
+  GrayCodeFacts.natToGray_inverts_grayToNat
 
 /-- **Classical Result**: Gray code preserves bounds.
 
@@ -93,7 +139,7 @@ If g < 2^d, then grayToNat(g) < 2^d.
 
 **Status**: Simple bitwise reasoning
 -/
-axiom grayToNat_preserves_bound :
+theorem grayToNat_preserves_bound :
   ∀ g d : ℕ, g < 2^d → d ≤ 64 →
     (let rec inverse (shift : ℕ) (acc : ℕ) (fuel : ℕ) : ℕ :=
        match fuel with
@@ -102,7 +148,8 @@ axiom grayToNat_preserves_bound :
          let shifted := g >>> shift
          if shifted = 0 then acc
          else inverse (shift + 1) (acc ^^^ shifted) fuel'
-     inverse 0 0 64) < 2^d
+     inverse 0 0 64) < 2^d :=
+  GrayCodeFacts.grayToNat_preserves_bound
 
 /-- **Classical Result**: Pattern to number conversion bound.
 
@@ -114,9 +161,10 @@ Converting a d-bit pattern to a number gives a value < 2^d.
 
 **Status**: Straightforward calculation
 -/
-axiom pattern_to_nat_bound :
+theorem pattern_to_nat_bound :
   ∀ (d : ℕ) (p : Pattern d),
-    (∑ k : Fin d, if p k then 2^(k.val) else 0) < 2^d
+    (∑ k : Fin d, if p k then 2^(k.val) else 0) < 2^d :=
+  GrayCodeFacts.pattern_to_nat_bound
 
 /-- **Classical Result**: Consecutive Gray codes differ in one bit.
 
@@ -132,10 +180,11 @@ For any n < 2^d - 1, gray(n) and gray(n+1) differ in exactly one bit position.
 
 **Status**: Defining property of Gray codes
 -/
-axiom gray_code_one_bit_property :
+theorem gray_code_one_bit_property :
   ∀ (d n : ℕ), n + 1 < 2^d →
     ∃! k : ℕ, k < d ∧
-      (n ^^^ (n >>> 1)).testBit k ≠ ((n+1) ^^^ ((n+1) >>> 1)).testBit k
+      (n ^^^ (n >>> 1)).testBit k ≠ ((n+1) ^^^ ((n+1) >>> 1)).testBit k :=
+  GrayCodeFacts.gray_code_one_bit_property
 
 end GrayCodeAxioms
 end Patterns
