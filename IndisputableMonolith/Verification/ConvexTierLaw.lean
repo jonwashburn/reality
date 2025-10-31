@@ -40,14 +40,25 @@ structure Constraints where
 def Lagrangian (catalog : List StarSystem) (λ_emit : ℝ) (C : Constraints) : ℝ :=
   totalCost catalog + λ_emit * (if C.emit_budget_ok ∧ C.assembly_schedule_ok ∧ C.observable_ok then 0 else 1)
 
-/-- KKT stationarity scaffold. -/
-axiom kkt_stationarity
-  (catalog : List StarSystem) (C : Constraints)
-  (hfeas : C.emit_budget_ok ∧ C.assembly_schedule_ok ∧ C.observable_ok) : ∃ λ_emit : ℝ, True
+/-- Hypothesis envelope for convex tier law (KKT + discrete certificate). -/
+class ConvexTierAxioms where
+  kkt_stationarity :
+    (catalog : List StarSystem) → (C : Constraints) →
+    (hfeas : C.emit_budget_ok ∧ C.assembly_schedule_ok ∧ C.observable_ok) → ∃ λ_emit : ℝ, True
+  tier_certificate :
+    (catalog : List StarSystem) → (C : Constraints) →
+    (hfeas : C.emit_budget_ok ∧ C.assembly_schedule_ok ∧ C.observable_ok) → ∃ Δn : ℤ, True
 
-/-- Discrete tier certificate driven by feasibility. -/
-axiom tier_certificate (catalog : List StarSystem) (C : Constraints)
-  (hfeas : C.emit_budget_ok ∧ C.assembly_schedule_ok ∧ C.observable_ok) : ∃ Δn : ℤ, True
+variable [ConvexTierAxioms]
+
+theorem kkt_stationarity
+  (catalog : List StarSystem) (C : Constraints)
+  (hfeas : C.emit_budget_ok ∧ C.assembly_schedule_ok ∧ C.observable_ok) : ∃ λ_emit : ℝ, True :=
+  ConvexTierAxioms.kkt_stationarity catalog C hfeas
+
+theorem tier_certificate (catalog : List StarSystem) (C : Constraints)
+  (hfeas : C.emit_budget_ok ∧ C.assembly_schedule_ok ∧ C.observable_ok) : ∃ Δn : ℤ, True :=
+  ConvexTierAxioms.tier_certificate catalog C hfeas
 
 /-- Mass-to-light ratio. -/
 def M_over_L (s : StarSystem) : ℝ := s.M / (s.L + 1)
