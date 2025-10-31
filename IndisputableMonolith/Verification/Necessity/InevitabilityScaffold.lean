@@ -39,6 +39,19 @@ namespace IndisputableMonolith.Verification.Inevitability
 
 open Necessity Exclusivity
 
+/-- Hypothesis envelope for scaffold-level bridges used only by inevitability wrappers. -/
+class NecessityScaffoldAxioms where
+  derivations_are_acyclic :
+    ∀ (F : PhysicsFramework) (d₁ d₂ : F.StructuralDerivation),
+      d₁.produces_element ∈ d₂.input_elements → d₂.produces_element ∉ d₁.input_elements
+  completeness_contradicts_unexplained :
+    ∀ (F : PhysicsFramework), IsComplete F → HasUnexplainedElements F → False
+  RS_is_complete : ∀ (φ : ℝ), IsComplete (RS_Framework φ)
+  completeness_preserved_by_equiv :
+    ∀ {F G : PhysicsFramework}, FrameworkEquiv F G → IsComplete G → IsComplete F
+
+variable [NecessityScaffoldAxioms]
+
 /-!
 # Re-export Key Definitions
 
@@ -254,11 +267,7 @@ theorem no_escape_from_RS
       derivations_acyclic := by
         -- Acyclicity is a structural property
         -- For now, assume this holds (should be provable from framework structure)
-        axiom derivations_are_acyclic :
-          ∀ (F : PhysicsFramework) (d₁ d₂ : F.StructuralDerivation),
-          d₁.produces_element ∈ d₂.input_elements →
-          d₂.produces_element ∉ d₁.input_elements
-        exact derivations_are_acyclic F
+        exact NecessityScaffoldAxioms.derivations_are_acyclic F
     }
 
     -- But then we get RS
@@ -308,18 +317,13 @@ theorem admissible_no_escape_from_RS
         -- Use the same contradiction pattern as in no_escape_from_RS
         -- (definitionally, unexplained elements contradict IsComplete)
         -- Assert elimination here as wrapper
-        axiom completeness_contradicts_unexplained :
-          ∀ (F : PhysicsFramework), IsComplete F → HasUnexplainedElements F → False
-        exact completeness_contradicts_unexplained F hComplete hUnexpl
+        exact NecessityScaffoldAxioms.completeness_contradicts_unexplained F hComplete hUnexpl
 
   · -- ← direction: RS ⇒ Complete (transport completeness along equivalence)
     intro hRS
-    axiom RS_is_complete : ∀ (φ : ℝ), IsComplete (RS_Framework φ)
-    axiom completeness_preserved_by_equiv :
-      ∀ {F G : PhysicsFramework}, FrameworkEquiv F G → IsComplete G → IsComplete F
     rcases hRS with ⟨φ, hEqv⟩
-    have hRScomplete : IsComplete (RS_Framework φ) := RS_is_complete φ
-    exact completeness_preserved_by_equiv hEqv hRScomplete
+    have hRScomplete : IsComplete (RS_Framework φ) := NecessityScaffoldAxioms.RS_is_complete φ
+    exact NecessityScaffoldAxioms.completeness_preserved_by_equiv hEqv hRScomplete
 
 /--
 Completeness ⇔ RS (up to units), no admissible side conditions.
@@ -341,16 +345,11 @@ theorem no_escape_biconditional
     | inl hRS => exact hRS
     | inr hUnexpl =>
         exfalso
-        axiom completeness_contradicts_unexplained :
-          ∀ (F : PhysicsFramework), IsComplete F → HasUnexplainedElements F → False
-        exact completeness_contradicts_unexplained F hComplete hUnexpl
+        exact NecessityScaffoldAxioms.completeness_contradicts_unexplained F hComplete hUnexpl
   · intro hRS
-    axiom RS_is_complete : ∀ (φ : ℝ), IsComplete (RS_Framework φ)
-    axiom completeness_preserved_by_equiv :
-      ∀ {F G : PhysicsFramework}, FrameworkEquiv F G → IsComplete G → IsComplete F
     rcases hRS with ⟨φ, hEqv⟩
-    have hRScomplete : IsComplete (RS_Framework φ) := RS_is_complete φ
-    exact completeness_preserved_by_equiv hEqv hRScomplete
+    have hRScomplete : IsComplete (RS_Framework φ) := NecessityScaffoldAxioms.RS_is_complete φ
+    exact NecessityScaffoldAxioms.completeness_preserved_by_equiv hEqv hRScomplete
 
 /-!
 # Certificate Generation
