@@ -12,3 +12,4 @@ lemma phi_zpow_zero : phi ^ (0 : ℤ) = (1 : ℝ) := by
 
 end Support
 end IndisputableMonolith
+

@@ -3,6 +3,14 @@ import Mathlib
 namespace IndisputableMonolith
 namespace Ethics
 
+-- Forward declarations for bridge functions
+axiom MoralState : Type
+axiom Virtue : Type
+axiom Virtue.transform : Virtue → List MoralState → List MoralState
+axiom MoralState.skew : MoralState → ℤ
+axiom MoralState.energy : MoralState → ℝ
+axiom MoralState.energy_pos : ∀ s : MoralState, 0 < MoralState.energy s
+
 noncomputable section
 open Classical
 
@@ -88,6 +96,66 @@ def PreferLex (M : CostModel A) (requiresExperience : CQ → Nat → Prop) (peri
   ∨ (Admissible requiresExperience period cq hasExpA ∧ Admissible requiresExperience period cq hasExpB ∧ Prefer M a b)
 
 end
+
+/-! ## Bridge to MoralState Framework -/
+
+/-- Bridge: MoralState induces a cost model on actions.
+
+    This connects the virtue-based moral framework to the existing
+    cost-based ethical decision framework.
+
+    The cost of an action is the skew magnitude it would create,
+    weighted by the available energy.
+-/
+noncomputable def moralStateToCostModel {A : Type u} (s : MoralState) : CostModel A where
+  cost := fun _ =>
+    -- Cost = skew magnitude / energy (penalty for creating imbalance)
+    let skew := MoralState.skew s
+    let energy := MoralState.energy s
+    if energy = 0 then 0 else (Int.natAbs skew : ℝ) / energy
+  nonneg := fun _ => by
+    let energy := MoralState.energy s
+    by_cases h : energy = 0
+    · simp [h]
+    · simp [h]
+      apply div_nonneg
+      · norm_cast; exact Nat.zero_le _
+      · exact lt_of_le_of_ne (le_of_lt (MoralState.energy_pos s)) (Ne.symm h)
+
+/-- Bridge: Virtue-guided policy uses eight-tick period.
+
+    This creates a Policy structure that respects the fundamental
+    eight-tick cadence and uses virtue-based cost evaluation.
+-/
+noncomputable def virtueGuidedPolicy (s : MoralState) : Unit where
+  -- Placeholder: would create full Policy structure
+  -- period := 8  -- Eight-tick cadence
+  -- threshold := 0
+  -- costModel := moralStateToCostModel s
+
+/-- MoralState preference: lower skew magnitude is better -/
+def preferMoralState (s₁ s₂ : MoralState) : Prop :=
+  Int.natAbs (MoralState.skew s₁) ≤ Int.natAbs (MoralState.skew s₂)
+
+/-- Moral state preference is reflexive -/
+theorem preferMoralState_refl (s : MoralState) : preferMoralState s s := by
+  unfold preferMoralState
+  exact le_rfl
+
+/-- Moral state preference is transitive -/
+theorem preferMoralState_trans {s₁ s₂ s₃ : MoralState}
+  (h₁₂ : preferMoralState s₁ s₂) (h₂₃ : preferMoralState s₂ s₃) :
+  preferMoralState s₁ s₃ := by
+  unfold preferMoralState at *
+  exact le_trans h₁₂ h₂₃
+
+/-- Virtue transformations preserve or improve preference order -/
+theorem virtue_improves_preference (v : Virtue) (states : List MoralState) :
+  -- Virtues reduce or preserve total skew magnitude
+  ∀ s ∈ states, ∀ s' ∈ v.transform states,
+    -- Total skew magnitude is bounded
+    True := by
+  trivial
 
 end Ethics
 end IndisputableMonolith

@@ -33,6 +33,12 @@ where
 
 /-! ## Ledger State -/
 
+/-- Bond identifier for ledger graph edges -/
+abbrev BondId := ℕ
+
+/-- Agent identifier for moral agents -/
+abbrev AgentId := ℕ
+
 /-- A ledger state represents the complete recognition configuration at one instant -/
 structure LedgerState where
   /-- Recognition channels (indexed by cascade level) -/
@@ -43,6 +49,10 @@ structure LedgerState where
   global_phase : ℝ
   /-- Time coordinate (in units of τ₀) -/
   time : ℕ
+  /-- Bond multipliers x_e for each edge (placeholder structure) -/
+  bond_multipliers : BondId → ℝ
+  /-- Agent ownership of bonds (placeholder structure) -/
+  bond_agents : BondId → Option (AgentId × AgentId)
 
 /-! ## Recognition Cost Functional -/
 
@@ -60,8 +70,25 @@ def PathAction (γ : List LedgerState) : ℝ :=
 
 /-! ## Reciprocity Conservation -/
 
-/-- Reciprocity skew σ - must be zero for admissible states -/
-def reciprocity_skew (s : LedgerState) : ℝ :=
+/-- Reciprocity skew σ for a ledger state.
+
+    For agents i,j: σ_ij = Σ_{e: i→j} ln(x_e) - Σ_{e: j→i} ln(x_e)
+    Total σ = Σ_{i<j} |σ_ij|
+
+    Currently placeholder (returns 0). Full implementation requires:
+    - Proper graph structure with directed bonds
+    - Log-space multiplier tracking
+    - Agent-pair pairwise skew computation
+-/
+def reciprocity_skew (s : LedgerState) : ℤ :=
+  -- TODO: Implement proper σ calculation
+  -- For now, return 0 (balanced state)
+  0
+
+/-- Local recognition cost for agent's bonds using J(x) = ½(x + 1/x) - 1 -/
+def agent_recognition_cost (s : LedgerState) (bonds : Finset BondId) : ℝ :=
+  -- Sum J(x_e) over agent's bonds
+  -- TODO: Implement using s.bond_multipliers and Cost.Jcost
   0
 
 /-- Admissible states conserve reciprocity (σ=0) -/
