@@ -2,6 +2,7 @@ import Mathlib
 import IndisputableMonolith.Foundation.RecognitionOperator
 import IndisputableMonolith.Ethics.MoralState
 import IndisputableMonolith.Ethics.ConservationLaw
+import IndisputableMonolith.Support.GoldenRatio
 import IndisputableMonolith.Ethics.Virtues.Love
 
 /-!

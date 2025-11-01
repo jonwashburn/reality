@@ -2,6 +2,7 @@ import Mathlib
 import IndisputableMonolith.Foundation.RecognitionOperator
 import IndisputableMonolith.Ethics.MoralState
 import IndisputableMonolith.Ethics.ConservationLaw
+import IndisputableMonolith.Support.GoldenRatio
 
 /-!
 # Wisdom: φ-Discounted Future Optimization
@@ -100,6 +101,10 @@ theorem wisdom_single_choice
   WiseChoice s [c] = c := by
   unfold WiseChoice
   simp
+  -- foldl over singleton list
+  split
+  · rfl
+  · rfl
 
 /-- Wisdom on empty list returns fallback -/
 theorem wisdom_empty_fallback
@@ -115,11 +120,8 @@ theorem future_weight_is_phi_squared :
   let φ := Foundation.φ
   let weight := 1 / (1 + φ)
   weight = 1 / (φ * φ) := by
-  unfold Foundation.φ
-  -- From φ² = φ + 1, we have 1 + φ = φ²
-  field_simp
-  ring_nf
-  sorry
+  -- Direct from GoldenRatio proven identity
+  exact Support.GoldenRatio.inv_one_plus_phi_eq_inv_phi_sq
 
 /-- φ-discounting is monotonic -/
 theorem phi_discounting_monotonic
@@ -239,9 +241,8 @@ theorem wisdom_phi_unique :
   let φ := Foundation.φ
   -- φ satisfies φ² = φ + 1 (unique positive solution)
   φ * φ = φ + 1 := by
-  unfold Foundation.φ
-  -- Golden ratio property
-  sorry
+  -- Direct from GoldenRatio defining equation
+  exact Support.GoldenRatio.phi_squared_eq_phi_plus_one
 
 /-- Wisdom preserves information across time (φ-scaling property) -/
 theorem wisdom_preserves_information :
@@ -249,9 +250,11 @@ theorem wisdom_preserves_information :
   let weight := 1 / (1 + φ)
   -- φ-weighting maintains self-similar structure
   weight * φ * φ = 1 := by
-  unfold Foundation.φ
-  field_simp
-  sorry
+  have h_weight := future_weight_is_phi_squared
+  simp at h_weight
+  calc (1 / (1 + φ)) * φ * φ
+    = (1 / (φ * φ)) * φ * φ := by rw [h_weight]
+    _ = 1 := by field_simp [Support.GoldenRatio.phi_ne_zero]
 
 /-- Wisdom is the temporal dual of Love (Love balances space, Wisdom balances time) -/
 theorem wisdom_temporal_dual_of_love :

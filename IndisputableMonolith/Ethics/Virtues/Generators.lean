@@ -6,6 +6,16 @@ import IndisputableMonolith.Ethics.Virtues.Love
 import IndisputableMonolith.Ethics.Virtues.Justice
 import IndisputableMonolith.Ethics.Virtues.Forgiveness
 import IndisputableMonolith.Ethics.Virtues.Wisdom
+import IndisputableMonolith.Ethics.Virtues.Courage
+import IndisputableMonolith.Ethics.Virtues.Temperance
+import IndisputableMonolith.Ethics.Virtues.Prudence
+import IndisputableMonolith.Ethics.Virtues.Compassion
+import IndisputableMonolith.Ethics.Virtues.Gratitude
+import IndisputableMonolith.Ethics.Virtues.Patience
+import IndisputableMonolith.Ethics.Virtues.Humility
+import IndisputableMonolith.Ethics.Virtues.Hope
+import IndisputableMonolith.Ethics.Virtues.Creativity
+import IndisputableMonolith.Ethics.Virtues.Sacrifice
 
 /-!
 # Virtues as Ethical Generators

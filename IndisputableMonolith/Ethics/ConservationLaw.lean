@@ -2,6 +2,7 @@ import Mathlib
 import IndisputableMonolith.Foundation.RecognitionOperator
 import IndisputableMonolith.Cost.JcostCore
 import IndisputableMonolith.Ethics.MoralState
+import IndisputableMonolith.Support.GoldenRatio
 
 /-!
 # Reciprocity Conservation Law
@@ -65,7 +66,11 @@ theorem J_symmetric (x : ℝ) (hx : 0 < x) : J x = J (1/x) := by
 theorem J_nonneg (x : ℝ) (hx : 0 < x) : 0 ≤ J x := by
   unfold J
   -- By AM-GM: (x + 1/x)/2 ≥ 1, so ½(x + 1/x) - 1 ≥ 0
-  sorry
+  -- Equivalently: x + 1/x ≥ 2, which is (x-1)² ≥ 0 after clearing denominators
+  suffices x + 1/x ≥ 2 by linarith
+  have hx0 : x ≠ 0 := ne_of_gt hx
+  -- Multiply by x > 0: x² + 1 ≥ 2x iff (x-1)² ≥ 0
+  nlinarith [sq_nonneg (x - 1), mul_inv_cancel₀ hx0]
 
 /-- The J-cost functional is strictly convex at x=1.
 
@@ -78,10 +83,42 @@ theorem J_strictly_convex_at_one (ε : ℝ) (hε : ε ≠ 0) (h1 : -1 < ε) (h2 
   rw [J_zero_at_one]
   simp
   unfold J
-  -- Expand: ½((1+ε) + 1/(1+ε)) - 1 + ½((1-ε) + 1/(1-ε)) - 1
-  -- Simplify and show > 0 using ε² term from Taylor expansion
-  -- J(1±ε) ≈ ε²/2 by second-order Taylor (J''(1)=1)
-  sorry
+  -- J(1+ε) = ½((1+ε) + 1/(1+ε)) - 1
+  -- J(1-ε) = ½((1-ε) + 1/(1-ε)) - 1
+  -- Sum = ½[(1+ε) + 1/(1+ε) + (1-ε) + 1/(1-ε)] - 2
+  --     = ½[2 + 1/(1+ε) + 1/(1-ε)] - 2
+  --     = 1 + ½[1/(1+ε) + 1/(1-ε)] - 2
+  --     = ½[1/(1+ε) + 1/(1-ε)] - 1
+  -- Need to show: 1/(1+ε) + 1/(1-ε) > 2
+  -- Common denominator: (1-ε + 1+ε)/((1+ε)(1-ε)) = 2/(1-ε²)
+  -- Since 0 < 1-ε² < 1 for ε≠0, we have 2/(1-ε²) > 2
+  have h_pos_sum : 0 < 1 + ε := by linarith
+  have h_pos_diff : 0 < 1 - ε := by linarith
+  have h_ne_sum : 1 + ε ≠ 0 := ne_of_gt h_pos_sum
+  have h_ne_diff : 1 - ε ≠ 0 := ne_of_gt h_pos_diff
+
+  suffices (1 + ε)⁻¹ + (1 - ε)⁻¹ > 2 by
+    calc (1 + ε + (1 + ε)⁻¹) / 2 - 1 + ((1 - ε + (1 - ε)⁻¹) / 2 - 1)
+      = ((1 + ε) + (1 + ε)⁻¹ + (1 - ε) + (1 - ε)⁻¹) / 2 - 2 := by ring
+      _ = (2 + ((1 + ε)⁻¹ + (1 - ε)⁻¹)) / 2 - 2 := by ring
+      _ = 1 + ((1 + ε)⁻¹ + (1 - ε)⁻¹) / 2 - 2 := by ring
+      _ = ((1 + ε)⁻¹ + (1 - ε)⁻¹) / 2 - 1 := by ring
+      _ > 2 / 2 - 1 := by linarith
+      _ = 0 := by norm_num
+
+  -- Show (1+ε)⁻¹ + (1-ε)⁻¹ = 2/(1-ε²) > 2
+  have : (1 + ε)⁻¹ + (1 - ε)⁻¹ = 2 / (1 - ε^2) := by
+    field_simp
+    ring
+  rw [this]
+  have h_eps_sq_pos : 0 < ε^2 := sq_pos_of_ne_zero ε hε
+  have h_denom : 0 < 1 - ε^2 := by nlinarith
+  calc 2 / (1 - ε^2) > 2 / 1 := by
+    apply div_lt_div_of_pos_left
+    · norm_num
+    · norm_num
+    · nlinarith
+  _ = 2 := by norm_num
 
 /-! ## Pairwise Smoothing -/
 
@@ -103,9 +140,16 @@ theorem balanced_product_optimal (x y : ℝ) (hx : 0 < x) (hy : 0 < y) (hprod : 
   J x + J y ≥ J 1 + J 1 := by
   simp [J_zero_at_one]
   -- When x·y = 1, we have y = 1/x
-  -- J(x) + J(1/x) = 2·J(x) by symmetry (when x = 1/x, i.e., x=1)
-  -- Minimum at x=1 by convexity
-  sorry
+  have hy_eq : y = 1/x := by
+    field_simp [ne_of_gt hx] at hprod ⊢
+    linarith
+  rw [hy_eq]
+  -- J(x) + J(1/x) = J(x) + J(x) = 2·J(x) by symmetry
+  have h_sym := J_symmetric x hx
+  rw [← h_sym]
+  -- 2·J(x) ≥ 0 since J is nonnegative
+  have : 0 ≤ J x := J_nonneg x hx
+  linarith
 
 /-! ## Cycle Minimality -/
 

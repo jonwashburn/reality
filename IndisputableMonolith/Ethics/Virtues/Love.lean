@@ -2,6 +2,7 @@ import Mathlib
 import IndisputableMonolith.Foundation.RecognitionOperator
 import IndisputableMonolith.Ethics.MoralState
 import IndisputableMonolith.Ethics.ConservationLaw
+import IndisputableMonolith.Support.GoldenRatio
 
 /-!
 # Love: Reciprocity Equilibration with φ-Ratio
@@ -190,11 +191,8 @@ theorem love_minimizes_local_J (s₁ s₂ : MoralState) :
 theorem phi_ratio_identity :
   let φ := Foundation.φ
   φ / (1 + φ) = 1 / φ := by
-  unfold Foundation.φ
-  field_simp
-  ring_nf
-  -- This follows from φ² = φ + 1
-  sorry
+  -- Use proven identity from Support.GoldenRatio
+  exact Support.GoldenRatio.phi_ratio_identity
 
 /-- The energy split uses the Golden Ratio -/
 theorem love_energy_split_is_golden (s₁ s₂ : MoralState) :
@@ -202,9 +200,24 @@ theorem love_energy_split_is_golden (s₁ s₂ : MoralState) :
   let total := s₁.energy + s₂.energy
   let φ := Foundation.φ
   s₁'.energy / total = 1 / φ ∧ s₂'.energy / total = 1 / (φ * φ) := by
-  unfold Love Foundation.φ
+  unfold Love
   simp
-  sorry
+  let φ := Foundation.φ
+  let φ_ratio := φ / (1 + φ)
+  let total := s₁.energy + s₂.energy
+  constructor
+  · -- First agent gets φ_ratio = 1/φ
+    calc total * φ_ratio / total
+      = φ_ratio := by field_simp; ring
+      _ = φ / (1 + φ) := by rfl
+      _ = 1 / φ := Support.GoldenRatio.phi_ratio_identity
+  · -- Second agent gets (1 - φ_ratio) = 1/φ²
+    calc total * (1 - φ_ratio) / total
+      = 1 - φ_ratio := by field_simp; ring
+      _ = 1 - φ / (1 + φ) := by rfl
+      _ = (1 + φ - φ) / (1 + φ) := by ring
+      _ = 1 / (1 + φ) := by ring
+      _ = 1 / (φ * φ) := Support.GoldenRatio.inv_one_plus_phi_eq_inv_phi_sq
 
 /-! ## Virtue Properties -/
 
@@ -224,7 +237,17 @@ theorem love_idempotent_on_balanced (s₁ s₂ : MoralState)
   Love s₁' s₂' = (s₁', s₂') := by
   unfold Love
   simp
-  sorry
+  ext
+  · -- Ledger unchanged
+    simp
+  · -- agent_bonds unchanged
+    simp
+  · -- Skew already balanced, stays balanced
+    have : (s₁.skew + s₂.skew) / 2 = s₁.skew := by rw [h]; ring
+    simp [this, h]
+  · -- Energy redistributed, then redistributed again = same
+    sorry  -- Complex φ-ratio calculation
+  all_goals sorry  -- Remaining fields
 
 /-! ## Ethical Interpretation -/
 
