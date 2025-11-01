@@ -100,9 +100,9 @@ def ApplyJustice (protocol : JusticeProtocol) (entry : Entry) (s : MoralState) :
 /-! ## Justice Theorems -/
 
 /-- Justice preserves global σ=0 when properly balanced -/
-theorem justice_preserves_sigma_zero 
-  (protocol : JusticeProtocol) 
-  (entry : Entry) 
+theorem justice_preserves_sigma_zero
+  (protocol : JusticeProtocol)
+  (entry : Entry)
   (s : MoralState)
   (h_balanced : entry.delta = 0) :  -- Balanced entry
   reciprocity_skew s.ledger = 0 →

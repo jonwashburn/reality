@@ -177,7 +177,7 @@ theorem cycle_minimal_iff_sigma_zero (s : LedgerState) :
     by_contra h_not_zero
     -- By skew_is_action_surcharge (to be proven below), there exists s' with:
     -- - admissible s'
-    -- - reciprocity_skew s' = 0  
+    -- - reciprocity_skew s' = 0
     -- - RecognitionCost s' < RecognitionCost s
     -- This contradicts h_min
     -- For now, this requires the constructive smoothing procedure
@@ -233,19 +233,19 @@ theorem sustained_skew_violates_least_action (worldline : List LedgerState)
 /-- Any cycle with σ ≠ 0 has avoidable action surcharge -/
 theorem skew_is_action_surcharge (s : LedgerState)
   (h_skew : reciprocity_skew s ≠ 0) :
-  ∃ s' : LedgerState, 
-    admissible s' ∧ 
+  ∃ s' : LedgerState,
+    admissible s' ∧
     reciprocity_skew s' = 0 ∧
     RecognitionCost s' < RecognitionCost s := by
   -- Construct s' by pairwise smoothing all imbalanced pairs
   -- This gives σ(s') = 0 with strictly lower cost by pairwise_smoothing_lowers_action
-  
+
   -- Constructive proof:
   -- 1. Identify all agent pairs (i,j) with σ_ij ≠ 0
   -- 2. For each pair, find bonds with multipliers (1+ε, 1-ε)
   -- 3. Replace with (1, 1) - lowers cost by J_strictly_convex_at_one
   -- 4. Result: s' with σ=0 and lower cost
-  
+
   -- This requires full ledger structure to construct s' explicitly
   -- For now, existence proof sketch:
   use s  -- Placeholder: would construct smoothed version
