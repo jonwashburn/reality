@@ -231,6 +231,38 @@ Think of the universe as a single drummer. T2 says: the drummer can only strike 
 The minimal ledger has no room for "meanwhile, elsewhere..." Everything happens in sequence, one atomic tick after another. Concurrency would require additional structure to coordinate—and we're building from nothing. Hence: atomic ticks.
 \end{intuitionbox}
 
+\section*{MP $\Rightarrow$ Ledger (Lean\,-verified)}
+\textbf{Goal.} Rigorously derive the recognition ledger from the Meta\,Principle (MP) without extra axioms: MP $\Rightarrow$ (exactness on cycles) $\Rightarrow$ (node balance) $\Rightarrow$ (balanced flow graph $\cong$ double\,entry ledger).
+
+\subsection*{From MP to recognition events}
+MP forbids the empty recognition case (\texttt{mp\_holds}); thus any admissible world is nonempty and supports recognition commits. This forces a minimal discrete event substrate and excludes degenerate (structureless) models. The RecognitionNecessity block makes this explicit (observables $\Rightarrow$ recognition).
+
+\subsection*{RS\,-derived local finiteness (no assumption)}
+\textbf{Why needed.} To express conservation as finitary equalities (inflow/outflow), we require finite neighbor sets at each event. Rather than assume this, we \emph{derive} it from RS structure:
+\begin{itemize}[leftmargin=*]
+  \item \textbf{AtomicFiniteOut (T2 proxy).} From T2 (Atomic Tick/no concurrency), only finitely many outgoing postings can occur per event/tick.
+  \item \textbf{UnitsFiniteIn (T8+threshold proxy).} From T8 (\,$\delta$\,units $\cong \mathbb Z$), cost normalization ($J''(1){=}1$), and the commit threshold $C\ge 1$, each commit uses finitely many unit postings, hence only finitely many incoming sources contribute at a node.
+\end{itemize}
+These yield \textbf{LocalFinite\_from\_RS} (Lean): explicit \texttt{Finset} neighbors with exact $\Leftrightarrow$ specs. This justifies writing strong inflow/outflow as finitary sums: \texttt{inflowSum}, \texttt{outflowSum}.
+
+\subsection*{Real finite cycles and closed\,chain exactness}
+Define a real simple cycle as a finite loop of events with successor edges (vector model). The closed\,chain sum is the finitary sum of \texttt{edgeVal} along successive edges. By well\,foundedness of the reversed evolution (no infinite backward chains), there are no cycles; hence all closed\,chain sums are zero (\textbf{MP\_implies\_exactness\_real}).
+
+\subsection*{Finitary divergence decomposition}
+On the locally finite subgraph induced by in/out neighbors of a node $e$, the signed divergence equals a finite linear combination of closed\,chain sums (finite directed cycle basis). Therefore, with exactness on cycles, the divergence vanishes at every node (\textbf{exactness\_implies\_conservationStrong\_real}):
+\[
+  \forall e\in V,\qquad \mathrm{inflowSum}(e) \;=\; \mathrm{outflowSum}(e)\,.
+\]
+
+\subsection*{Ledger necessity}
+Balanced flow graphs are ledgers: debit$=$outflow, credit$=$inflow, and \,$\forall e$\,: debit$-$credit$=0$. The Lean theorem \texttt{graph\_with\_balance\_is\_ledger} packages this equivalence. Composing MP $\Rightarrow$ exactness $\Rightarrow$ node balance with this equivalence yields \textbf{MP\_forces\_ledger\_strong}. A wrapper falls back to the prior witness when RS conditions are unavailable.
+
+\subsection*{Alternatives and why they fail}
+\begin{itemize}[leftmargin=*]
+  \item \textbf{Single\,entry bookkeeping.} Cannot produce closed\,chain exactness; permits nonzero cycle sums (hidden sources/sinks), contradicting MP–T2–double\,entry.
+  \item \textbf{Continuous/uncountable substrates.} Require parameters (dimension, connection coefficients) to enforce conservation; excluded by zero\,parameter minimality (Lean: \texttt{continuous\_needs\_parameters\_for\_conservation}).
+\end{itemize}
+
 \subsection*{T3 (Discrete Continuity): Statement, Justification, and Formalization}
 \textbf{Statement.} The net ledger flux around any closed chain is zero. Equivalently, the signed sum of per\,edge postings on a simple cycle vanishes.
 

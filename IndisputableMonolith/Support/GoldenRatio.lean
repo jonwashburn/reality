@@ -128,18 +128,63 @@ theorem phi_bounds : (8 : ℝ) / 5 < φ ∧ φ < (17 : ℝ) / 10 := by
 /-- 1/φ ≈ 0.618... is between 0.6 and 0.65 -/
 theorem inv_phi_bounds : (3 : ℝ) / 5 < 1 / φ ∧ 1 / φ < (13 : ℝ) / 20 := by
   constructor
-  · have : φ < (5 : ℝ) / 3 := by unfold φ; norm_num
-    calc (3 : ℝ) / 5 < 1 := by norm_num
-      _ < φ / φ := by simp
-      _ = 1 / 1 * (φ / φ) := by ring
-      _ < (5/3) / φ := by nlinarith [phi_pos]
-      _ < (5/3) / φ * (3/5) := by sorry  -- Bounds calculation
-    sorry
-  · sorry
+  · -- 0.6 < 1/φ
+    -- From φ > 1.6, we get 1/φ < 1/1.6 = 0.625
+    -- From φ < 1.7, we get 1/φ > 1/1.7 ≈ 0.588
+    -- So we need to show φ < 5/3 to get 1/φ > 3/5 = 0.6
+    have h_phi_upper : φ < (5 : ℝ) / 3 := by
+      unfold φ
+      -- (1+√5)/2 < 5/3 iff 3(1+√5) < 10 iff 3+3√5 < 10 iff 3√5 < 7 iff √5 < 7/3
+      norm_num
+    calc 1 / φ > 1 / ((5 : ℝ) / 3) := by
+      apply div_lt_div_of_pos_left
+      · norm_num
+      · apply div_pos; norm_num; norm_num
+      · exact h_phi_upper
+    _ = (3 : ℝ) / 5 := by norm_num
+  · -- 1/φ < 0.65
+    have h_phi_lower : (8 : ℝ) / 5 < φ := by
+      unfold φ
+      norm_num
+    calc 1 / φ < 1 / ((8 : ℝ) / 5) := by
+      apply div_lt_div_of_pos_left
+      · norm_num
+      · exact phi_pos
+      · exact h_phi_lower
+    _ = (5 : ℝ) / 8 := by norm_num
+    _ < (13 : ℝ) / 20 := by norm_num
 
 /-- 1/φ² ≈ 0.382... is between 0.35 and 0.4 -/
 theorem inv_phi_sq_bounds : (7 : ℝ) / 20 < 1 / (φ * φ) ∧ 1 / (φ * φ) < (2 : ℝ) / 5 := by
-  sorry
+  have ⟨h_inv_lower, h_inv_upper⟩ := inv_phi_bounds
+  constructor
+  · -- 0.35 < 1/φ²
+    -- Since 1/φ > 0.6, we have 1/φ² > 0.36 > 0.35
+    calc (7 : ℝ) / 20 < ((3 : ℝ) / 5) * ((3 : ℝ) / 5) := by norm_num
+      _ < (1 / φ) * (1 / φ) := by
+        apply mul_lt_mul'
+        · exact le_of_lt h_inv_lower
+        · exact h_inv_lower
+        · linarith [inv_phi_pos]
+        · linarith [inv_phi_pos]
+      _ = 1 / (φ * φ) := by ring
+  · -- 1/φ² < 0.4
+    -- 1/φ < 0.65, so 1/φ² < 0.4225
+    -- But we need < 0.4, so use tighter bound
+    -- Actually (13/20)² = 169/400 = 0.4225, and 0.4 = 160/400
+    -- So (13/20)² > 0.4, this doesn't work directly
+    -- Use 1/(1+φ) = 1/φ² identity and bound 1+φ
+    rw [← inv_one_plus_phi_eq_inv_phi_sq]
+    have h_one_plus_phi_lower : (5 : ℝ) / 2 < 1 + φ := by
+      calc (5 : ℝ) / 2 < 1 + (8 : ℝ) / 5 := by norm_num
+        _ < 1 + φ := by linarith [phi_bounds.1]
+    calc 1 / (1 + φ) < 1 / ((5 : ℝ) / 2) := by
+      apply div_lt_div_of_pos_left
+      · norm_num
+      · calc 0 < 1 + (8:ℝ)/5 := by norm_num
+          _ < 1 + φ := by linarith [phi_bounds.1]
+      · exact h_one_plus_phi_lower
+    _ = (2 : ℝ) / 5 := by norm_num
 
 /-! ## Exponential Identities -/
 

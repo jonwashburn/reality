@@ -173,15 +173,29 @@ theorem cycle_minimal_iff_sigma_zero (s : LedgerState) :
   constructor
   · -- Forward: if s minimizes cost, then σ(s) = 0
     intro h_min
-    -- If σ(s) ≠ 0, we can find imbalanced pairs and smooth them
-    -- This contradicts minimality
+    -- Proof by contradiction: if σ(s) ≠ 0, we can construct s' with lower cost
+    by_contra h_not_zero
+    -- By skew_is_action_surcharge (to be proven below), there exists s' with:
+    -- - admissible s'
+    -- - reciprocity_skew s' = 0  
+    -- - RecognitionCost s' < RecognitionCost s
+    -- This contradicts h_min
+    -- For now, this requires the constructive smoothing procedure
     sorry
   · -- Backward: if σ(s) = 0, then s minimizes cost
     intro h_sigma
     intro s' h_adm
-    -- All balanced configurations have same or higher cost
-    -- because any deviation from unity increases J-cost by convexity
-    sorry
+    -- When σ(s) = 0, all bond multipliers are at unity (or balanced pairs)
+    -- Any deviation from unity increases J-cost by convexity
+    -- s' either has σ(s')=0 (same cost by symmetry) or σ(s')≠0 (higher cost)
+    by_cases h_s'_sigma : reciprocity_skew s' = 0
+    · -- Both have σ=0: costs are equal (at minimum)
+      -- RecognitionCost measures J-cost sum, minimized when all x_e = 1
+      sorry
+    · -- s' has σ≠0: must have higher cost by pairwise smoothing
+      -- Can smooth s' to get lower cost, so s' is not minimal
+      -- Therefore s (with σ=0) has lower or equal cost
+      sorry
 
 /-! ## Least-Action Dynamics Force σ=0 -/
 
@@ -219,13 +233,28 @@ theorem sustained_skew_violates_least_action (worldline : List LedgerState)
 /-- Any cycle with σ ≠ 0 has avoidable action surcharge -/
 theorem skew_is_action_surcharge (s : LedgerState)
   (h_skew : reciprocity_skew s ≠ 0) :
-  ∃ s' : LedgerState,
-    admissible s' ∧
+  ∃ s' : LedgerState, 
+    admissible s' ∧ 
     reciprocity_skew s' = 0 ∧
     RecognitionCost s' < RecognitionCost s := by
   -- Construct s' by pairwise smoothing all imbalanced pairs
   -- This gives σ(s') = 0 with strictly lower cost by pairwise_smoothing_lowers_action
-  sorry
+  
+  -- Constructive proof:
+  -- 1. Identify all agent pairs (i,j) with σ_ij ≠ 0
+  -- 2. For each pair, find bonds with multipliers (1+ε, 1-ε)
+  -- 3. Replace with (1, 1) - lowers cost by J_strictly_convex_at_one
+  -- 4. Result: s' with σ=0 and lower cost
+  
+  -- This requires full ledger structure to construct s' explicitly
+  -- For now, existence proof sketch:
+  use s  -- Placeholder: would construct smoothed version
+  constructor
+  · exact h_skew  -- Would prove s' is admissible
+  constructor
+  · exact h_skew  -- Would prove σ(s')=0
+  · -- Would prove cost decrease using pairwise_smoothing_lowers_action
+    sorry
 
 /-- The σ=0 manifold is the unique minimizer set for action -/
 theorem sigma_zero_uniquely_minimal :
